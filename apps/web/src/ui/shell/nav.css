@@ -1,0 +1,149 @@
+/* Main navigation: hidden on phone, tabs row on tablet, navy sidebar on laptop. */
+.shell-nav {
+  display: none;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.nav-brand > span:last-child,
+.nav-user > span:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.nav-clinic {
+  color: var(--red);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.nav-tagline {
+  color: var(--blue);
+}
+
+.nav-list {
+  display: flex;
+  gap: var(--s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-list a {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: var(--control-h);
+  padding: 0 var(--s3);
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-user {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .shell-nav {
+    grid-area: nav;
+    display: flex;
+    align-items: center;
+    gap: var(--s5);
+    padding: 0 var(--s6);
+    overflow-x: auto;
+    background: var(--card);
+    border-block: 1px solid var(--border);
+  }
+
+  .nav-list a {
+    border-bottom: 3px solid transparent;
+  }
+
+  .nav-list a[aria-current="page"] {
+    color: var(--blue);
+    border-bottom-color: var(--blue);
+  }
+}
+
+@media (min-width: 1366px) {
+  .shell-nav {
+    position: sticky;
+    top: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--s6);
+    height: 100dvh;
+    padding: var(--s5) var(--s3);
+    overflow: visible;
+    background: var(--navy);
+    border: 0;
+  }
+
+  .nav-brand {
+    padding: 0 var(--s2);
+  }
+
+  /* Red on navy fails contrast, so the clinic name is white in the sidebar. */
+  .nav-clinic {
+    color: #fff;
+  }
+
+  .nav-tagline {
+    color: #c7d3e8;
+  }
+
+  .nav-list {
+    flex-direction: column;
+  }
+
+  .nav-list a {
+    border: 0;
+    border-radius: var(--radius-control);
+    color: #dbe4f3;
+  }
+
+  .nav-list a:hover {
+    background: rgb(255 255 255 / 8%);
+  }
+
+  .nav-list a[aria-current="page"] {
+    background: #fff;
+    color: var(--navy);
+  }
+
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    margin-top: auto;
+    padding: var(--s3);
+    border-radius: var(--radius-control);
+    background: rgb(255 255 255 / 8%);
+    color: #dbe4f3;
+  }
+
+  .nav-user-name {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .nav-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+  }
+}

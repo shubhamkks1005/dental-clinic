@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { financialYearOf, istDate } from "./time";
+import { financialYearOf, istDate, istHour, istLongDate } from "./time";
+
+describe("istLongDate and istHour", () => {
+  it("formats the IST day for headers", () => {
+    expect(istLongDate(new Date("2026-11-21T19:00:00Z"))).toBe("Sunday, 22 November");
+  });
+
+  it("gives the IST hour", () => {
+    expect(istHour(new Date("2026-11-22T03:30:00Z"))).toBe(9);
+  });
+});
 
 describe("istDate", () => {
   it("uses the IST calendar day, not the UTC one", () => {

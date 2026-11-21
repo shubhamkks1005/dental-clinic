@@ -1,0 +1,144 @@
+/* Today page layout: phone first (S14), then tablet and laptop (S01). Cards: today-cards.css. */
+.today {
+  display: grid;
+  gap: var(--s4);
+  padding: 0 var(--s4) var(--s6);
+}
+
+.today ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.today-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin: 0 calc(-1 * var(--s4));
+  padding: var(--s5) var(--s4) 64px;
+  border-radius: 0 0 24px 24px;
+  background: var(--navy);
+  color: #fff;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+  min-width: 0;
+}
+
+.hero-text h1 {
+  font-size: 22px;
+}
+
+.hero-date {
+  color: #c7d3e8;
+}
+
+.hero-search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+}
+
+.today-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+  margin-top: -56px;
+}
+
+.today-stats .wide-only,
+.today-calls,
+.today-link,
+.today-action {
+  display: none;
+}
+
+.today-body {
+  display: grid;
+  gap: var(--s4);
+  grid-template-areas: "next" "main";
+}
+
+.today-next {
+  grid-area: next;
+}
+
+.today-main {
+  grid-area: main;
+}
+
+.today-calls {
+  grid-area: calls;
+}
+
+@media (min-width: 768px) {
+  .today {
+    padding: 0 var(--s6) var(--s6);
+  }
+
+  .today-hero {
+    margin: 0;
+    padding: var(--s2) 0 0;
+    border-radius: 0;
+    background: none;
+    color: var(--text);
+  }
+
+  .hero-phone-only {
+    display: none;
+  }
+
+  .hero-text {
+    flex-direction: column;
+  }
+
+  .hero-text h1 {
+    font-size: 26px;
+  }
+
+  .hero-date {
+    color: var(--muted);
+  }
+
+  .today-stats {
+    margin-top: 0;
+  }
+
+  .today-stats .wide-only,
+  .today-calls {
+    display: block;
+  }
+
+  .today-link,
+  .today-action {
+    display: inline-flex;
+  }
+
+  /* Tablet: the two side cards in a row, the list full width below (rows need the room). */
+  .today-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "next calls" "main main";
+    align-items: start;
+  }
+}
+
+@media (min-width: 1366px) {
+  .today-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .today-body {
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+    grid-template-areas: "main next" "main calls";
+  }
+}

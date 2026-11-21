@@ -735,6 +735,12 @@ CANCELLED 1.4.9 Hindi ki taiyari (S, baad me). Saari strings ek t()  function se
 Done jab: ek screen ka Hindi demo chalta hai.
 1.4.10 Speed ka budget (S, baad me). Staff app ka pehla JS 300 KB gzip se kam, route-
 wise code splitting. Done jab: build report CI me dikhti hai.
+1.4.11 Shell restyle to DESIGN.md (S). [added by owner: do this before 1.3.1] Apply docs/DESIGN.md
+to the existing web shell: colours, Inter font (self-hosted InterVariable.woff2 from the official
+rsms/inter release, OFL licence next to it, font-display: swap), navy sidebar on laptop, top tabs on
+tablet, bottom tab bar and round "+" on phone, following S01 and S14. Today shows fake sample data only;
+no API calls, no new features. Done jab: /app looks like S01 at 1366 px and S14 at 360 px, works at 768
+px, the rupee sign renders in Inter, and pnpm check passes.
 1.5.1 Settings store (M). settings  table (key, JSON value, version) aur Zod se check,
 har badlav ka audit. Done jab: galat value save nahi hoti.
 1.5.2 Clinic profile editor (M). Naam, logo (R2 par upload, size aur type ki limit),

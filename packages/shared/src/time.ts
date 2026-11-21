@@ -10,6 +10,23 @@ export function istDate(instant: Date): string {
   return inIst(instant).toISOString().slice(0, 10);
 }
 
+// Hour of the day in IST, 0-23.
+export function istHour(instant: Date): number {
+  return inIst(instant).getUTCHours();
+}
+
+// Long date for screen headers, e.g. "Saturday, 22 November".
+export function istLongDate(instant: Date): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).formatToParts(inIst(instant));
+  const part = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${part("weekday")}, ${part("day")} ${part("month")}`;
+}
+
 // Financial year April-March by the IST date, e.g. "2026-27". Used as the counters period.
 export function financialYearOf(instant: Date): string {
   const ist = inIst(instant);

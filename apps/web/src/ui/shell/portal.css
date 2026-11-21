@@ -1,0 +1,18 @@
+/* Patient portal frame: phone first, one column. */
+.portal-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s4);
+  background: var(--navy);
+}
+
+.portal-clinic {
+  color: #fff;
+  font-weight: 700;
+}
+
+.portal-main {
+  max-width: 40rem;
+  margin: 0 auto;
+}

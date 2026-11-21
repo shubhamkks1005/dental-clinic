@@ -47,16 +47,31 @@
 - src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
 
 ## apps/web
-- index.html - SPA entry with viewport meta
+- index.html - SPA entry with viewport meta; preloads the Inter font
 - vite.config.ts - dev server 5173, proxy /api and /hooks to 8787, build to dist
-- src/main.tsx - mounts React + BrowserRouter, loads base.css
-- src/App.tsx - top routes: / -> /app, /app/* staff tree, /my/* portal tree, else NotFound
-- src/staff/StaffApp.tsx - staff route tree inside AppShell (home = example cards)
-- src/portal/PortalApp.tsx - portal route tree inside AppShell (home = example cards)
-- src/layout/AppShell.tsx - responsive shell: phone bottom tabs, tablet top tabs, laptop sidebar
-- src/layout/ExampleCards.tsx - placeholder card grid (1/2/3 columns) to show the layout adapting
-- src/NotFound.tsx - plain-sentence not-found message
-- src/styles/base.css - mobile-first base CSS, breakpoints 768px and 1366px, 44px tap targets
+- public/fonts/InterVariable.woff2 - Inter 4.1 variable font (full character set incl. ₹), from the official rsms/inter v4.1 release zip; sha256 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3
+- public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
+- src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
+- src/App.tsx - top routes: / -> /app, /app/* StaffRoutes, /my/* PortalRoutes, else NotFound
+- src/routes/StaffRoutes.tsx - staff route tree in StaffShell: index = Today; nav targets show "Not ready yet"
+- src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
+- src/styles/base.css - DESIGN.md tokens (colours, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn, .input, .card
+- src/ui/ui.css - status badges (5 tones), patient number chip, stat card, logo tile, page message
+- src/ui/icons.tsx - small inline stroke icons (no icon library)
+- src/ui/Logo.tsx - placeholder tooth mark until the owner uploads a logo
+- src/ui/StatusBadge.tsx - status word + DESIGN.md colours (never colour alone)
+- src/ui/PatientNoChip.tsx - soft-blue patient number chip (DESIGN.md "Patient number")
+- src/ui/StatCard.tsx - label / big value / note card
+- src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
+- src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width)
+- src/ui/shell/MainNav.tsx - brand, 7 nav items, user card: laptop navy sidebar 232px, tablet tabs row, phone hidden
+- src/ui/shell/TopBar.tsx - tablet/laptop: search, Walk-in, + New patient (not wired yet)
+- src/ui/shell/BottomTabs.tsx - phone: 5 bottom tabs + round "+" new patient button
+- src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name
+- src/ui/shell/nav-items.ts - MAIN_NAV (7), PHONE_TABS (5), NEW_PATIENT_PATH
+- src/ui/shell/sample-session.ts - FAKE clinic/user values until Settings (1.5.2) and login (1.3.3)
+- src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
+- src/features/today/ - Today screen (S01 laptop, S14 phone) with FAKE sample data: TodayScreen, TodayList, NextPatientCard, CallList, sample-data.ts, today.css (layout), today-cards.css (cards), index.ts
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
@@ -107,7 +122,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
-- src/time.ts - istDate() (YYYY-MM-DD in IST) and financialYearOf() ("2026-27", April-March by IST date)
+- src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
+- src/money.test.ts - grouping, paise, negative, refuses fractions
+- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), financialYearOf() ("2026-27", April-March by IST date)
 - src/time.test.ts - IST day boundary, 1 April boundary
 - src/ulid.ts - newUlid(): 26-char sortable ids (Web Crypto, no dependency)
 - src/ulid.test.ts - format, spec example, time order
@@ -119,4 +136,5 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - pnpm blocks dependency build scripts; only esbuild and workerd are allowed (pnpm-workspace.yaml).
 - Wrangler local commands run via the `wr` script so its config and logs stay in apps/worker/.wrangler, not your home folder. deploy:staging uses the normal home folder so `wrangler login` works.
 - pnpm 12 writes its own version into pnpm-lock.yaml (packageManager field). After changing packageManager, run `pnpm install` and commit the lockfile, or CI's frozen install fails.
+- CSS order matters: main.tsx must import base.css/ui.css before App, or base rules (like .btn display) override screen rules. A component's visibility rule lives in one CSS file only (e.g. .shell-nav in nav.css).
 - Vite build prints a harmless "use client" warning from react-router (no server rendering here).

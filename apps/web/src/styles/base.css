@@ -1,8 +1,43 @@
 /*
-  Mobile-first. Base styles are for phones (360 px wide).
+  Tokens from docs/DESIGN.md. Mobile-first: base styles are for phones (360 px).
   Breakpoints (min-width only): 768px = tablet, 1366px = laptop.
-  CSS variables cannot be used inside @media, so the numbers are repeated there.
 */
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --blue: #1e4fa3;
+  --navy: #0f2a5c;
+  --blue-hover: #163c80;
+  --blue-soft: #e6eefa;
+  --focus: #cfddf5;
+  --red: #c8202a;
+  --bg: #f3f6f7;
+  --card: #ffffff;
+  --border: #e3e9ee;
+  --text: #0e1b2b;
+  --muted: #5b6b7b;
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --control-h: 48px;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
 
 *,
 *::before,
@@ -10,184 +45,106 @@
   box-sizing: border-box;
 }
 
-:root {
-  --space: 1rem;
-  --radius: 8px;
-  --tap: 44px;
-  --color-bg: #f6f7f9;
-  --color-surface: #ffffff;
-  --color-border: #dfe3e8;
-  --color-text: #1b1f24;
-  --color-muted: #59636e;
-  --color-primary: #0b6e6e;
-  font-family:
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--color-text);
-  background: var(--color-bg);
-}
-
 body {
   margin: 0;
 }
 
 h1,
-h2 {
-  line-height: 1.25;
-  margin: 0 0 0.5rem;
-}
-
-h2 {
-  font-size: 1.125rem;
-}
-
+h2,
 p {
   margin: 0;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
-  min-height: var(--tap);
+h2 {
+  font-size: 16px;
+  font-weight: 700;
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--blue);
 }
 
-/* Shell: phone = header, content, bottom tab bar. */
-.shell {
-  display: grid;
-  min-height: 100dvh;
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas: "header" "main" "nav";
+button,
+input {
+  font: inherit;
 }
 
-.shell-header {
-  grid-area: header;
-  padding: 0.75rem var(--space);
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
-.shell-title {
-  font-size: 1.25rem;
-  margin: 0;
+.muted {
+  color: var(--muted);
 }
 
-.shell-nav {
-  grid-area: nav;
-  position: sticky;
-  bottom: 0;
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.shell-nav ul {
-  display: flex;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.shell-nav li {
-  flex: 1;
-}
-
-.shell-nav a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--tap);
-  padding: 0.5rem var(--space);
-  color: var(--color-muted);
-  text-decoration: none;
-}
-
-.shell-nav a[aria-current="page"] {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
-.shell-main {
-  grid-area: main;
-  min-width: 0;
-  padding: var(--space);
-}
-
-.cards {
-  display: grid;
-  gap: var(--space);
-  grid-template-columns: 1fr;
+.small {
+  font-size: 12px;
 }
 
 .card {
-  padding: var(--space);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
 }
 
-/* Tablet: nav moves under the header as a row of tabs. */
-@media (min-width: 768px) {
-  .shell {
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "header" "nav" "main";
-  }
-
-  .shell-nav {
-    position: static;
-    border-top: 0;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .shell-nav li {
-    flex: 0 0 auto;
-  }
-
-  .shell-main {
-    padding: 1.5rem;
-  }
-
-  .cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--control-h);
+  padding: 0 var(--s5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-/* Laptop: nav becomes a left sidebar. */
-@media (min-width: 1366px) {
-  .shell {
-    grid-template-columns: minmax(12rem, 16rem) 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas: "header header" "nav main";
-  }
+.btn:hover {
+  border-color: var(--blue);
+}
 
-  .shell-nav {
-    border-bottom: 0;
-    border-right: 1px solid var(--color-border);
-  }
+.btn-primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
 
-  .shell-nav ul {
-    flex-direction: column;
-  }
+.btn-primary:hover {
+  background: var(--blue-hover);
+}
 
-  .shell-nav a {
-    justify-content: flex-start;
-  }
+.btn-compact {
+  min-height: 44px;
+  padding: 0 var(--s4);
+}
 
-  .cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.input {
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0 var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  color: var(--text);
 }

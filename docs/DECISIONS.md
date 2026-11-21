@@ -43,4 +43,8 @@
 - 2026-11-22 - Append-only audit_log/access_log enforced by a source-scan test, not SQL triggers (no triggers until spike 3.2.6) - db rules - agent
 - 2026-11-22 - Permission table starts with settings.read (doctor, receptionist, developer) and settings.write (doctor, developer) from the plan's default matrix; receptionist's "timings only" limit and the rest come in 1.3.4 - plan - agent (doctor to confirm in 1.3.4)
 - 2026-11-22 - The PDF in docs/design/ is reference only and will be revised later. When the owner replaces it, the new PDF is the source of truth. If a screen was already built from the older PDF, tell me what differs and ask before changing it. - owner design - owner
+- 2026-11-22 - Font: self-hosted full InterVariable.woff2 (not a latin subset, the app shows ₹) from the official rsms/inter v4.1 release, OFL.txt next to it, font-display: swap, fallback "Inter, system-ui, sans-serif"; no Google Fonts - owner - owner
+- 2026-11-22 - PLAN 1.4.11 "Shell restyle to DESIGN.md" added and done before 1.3.1 - owner request - owner
+- 2026-11-22 - Laptop sidebar shows the clinic name in white, not brand red: red on navy fails the 4.5:1 contrast rule; red is used on white (tablet tabs row) - DESIGN.md contrast rule - agent
+- 2026-11-22 - Tablet Today: next-patient and call-list cards side by side, list full width below (list rows did not fit a half-width column) - responsive rule - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

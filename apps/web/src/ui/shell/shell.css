@@ -1,0 +1,114 @@
+/* Staff shell layout. Phone (base): content, bottom tab bar and round "+" (S14). */
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "main";
+  min-height: 100dvh;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+/* .shell-nav visibility lives in nav.css only, so load order cannot hide it. */
+.shell-top {
+  display: none;
+}
+
+.shell-main {
+  grid-area: main;
+  min-width: 0;
+}
+
+.shell-tabs {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+
+.shell-tabs a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 64px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.shell-tabs a[aria-current="page"] {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.shell-fab {
+  position: fixed;
+  right: var(--s4);
+  bottom: calc(80px + env(safe-area-inset-bottom));
+  z-index: 11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 6px 16px rgb(15 42 92 / 30%);
+}
+
+.top-search {
+  position: relative;
+  flex: 1;
+}
+
+.top-search .input {
+  padding-left: 44px;
+}
+
+.top-search-icon {
+  position: absolute;
+  top: 14px;
+  left: var(--s4);
+  color: var(--muted);
+}
+
+/* Tablet: search bar on top, then the tabs row (nav.css), then content. */
+@media (min-width: 768px) {
+  .shell {
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "top" "nav" "main";
+    padding-bottom: 0;
+  }
+
+  .shell-tabs,
+  .shell-fab {
+    display: none;
+  }
+
+  .shell-top {
+    grid-area: top;
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    padding: var(--s4) var(--s6);
+  }
+}
+
+/* Laptop: 232px navy sidebar on the left (S01). */
+@media (min-width: 1366px) {
+  .shell {
+    grid-template-columns: 232px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "nav top" "nav main";
+  }
+
+  .shell-top {
+    padding: var(--s5) var(--s6);
+  }
+}

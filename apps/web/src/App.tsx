@@ -1,14 +1,14 @@
 import { Navigate, Route, Routes } from "react-router";
-import { NotFound } from "./NotFound";
-import { PortalApp } from "./portal/PortalApp";
-import { StaffApp } from "./staff/StaffApp";
+import { PortalRoutes } from "./routes/PortalRoutes";
+import { StaffRoutes } from "./routes/StaffRoutes";
+import { NotFound } from "./ui/PageMessage";
 
 export function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/app" replace />} />
-      <Route path="/app/*" element={<StaffApp />} />
-      <Route path="/my/*" element={<PortalApp />} />
+      <Route path="/app/*" element={<StaffRoutes />} />
+      <Route path="/my/*" element={<PortalRoutes />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

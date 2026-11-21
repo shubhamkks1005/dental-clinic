@@ -1,0 +1,129 @@
+/* Today cards: list rows, next patient, call list. */
+.today-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--s2);
+}
+
+.today-list ul {
+  display: grid;
+  gap: var(--s2);
+}
+
+.today-link {
+  align-items: center;
+  min-height: 44px;
+}
+
+.today-row,
+.call-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+}
+
+.today-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.today-time {
+  flex: none;
+  width: 3.5em;
+  font-weight: 700;
+}
+
+.today-who,
+.call-row > span:last-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.today-name {
+  font-weight: 600;
+}
+
+.next-patient {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s5);
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, var(--blue), var(--navy));
+  color: #fff;
+}
+
+.next-label {
+  color: #c7d3e8;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.next-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.next-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  color: #dbe4f3;
+}
+
+.next-send {
+  margin-top: var(--s2);
+  border: 0;
+}
+
+.call-list {
+  padding: var(--s4) 0 var(--s2);
+}
+
+.call-list .today-list-head {
+  padding: 0 var(--s4) var(--s2);
+}
+
+.call-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue-hover);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Tablet and laptop: rows sit inside one card with dividers (S01). */
+@media (min-width: 768px) {
+  .today-list {
+    padding: var(--s4) 0 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+  }
+
+  .today-list .today-list-head {
+    padding: 0 var(--s4) var(--s2);
+  }
+
+  .today-list ul {
+    gap: 0;
+  }
+
+  .today-row {
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+  }
+}
