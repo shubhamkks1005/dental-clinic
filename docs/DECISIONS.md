@@ -37,4 +37,5 @@
 - 2026-11-22 - files.patient_id has no foreign key until the patients table exists (2.1.x); drizzle-kit rebuilds the table to add it - agent
 - 2026-11-22 - Default settings seeded by migration: patient_code.prefix "P-", patient_code.digits 6 (from the P-000123 format) - AGENTS.md - agent
 - 2026-11-22 - Migration tests use Node's built-in SQLite and hand-written minimal Node types instead of adding @types/node - no unapproved dependency - agent
+- 2026-11-22 - Code structure: one file one job (~200 lines smell, 300 split); worker routes thin, rules in src/domain/<feature>.ts; web in src/features/<name>/ with shared parts in src/ui/; one rule in one place; features talk through index.ts; MAP.md updated in the same task. Applies to new code from the next task; existing code is not refactored now - keep changes easy - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

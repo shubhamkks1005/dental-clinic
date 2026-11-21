@@ -7,3 +7,4 @@
 - Cron: one scheduled() handler; each job is a branch in src/cron/*.ts; each branch returns fast and respects the 30-subrequest guard. Messages per tick default to 5.
 - Provider calls (SMS, email, R2 backup) only inside src/adapters/*. Business code uses the adapter interface.
 - Logs must never contain patient names, numbers or health data.
+- File layout and size limits: follow "Code structure" in AGENTS.md (thin routes, rules in src/domain/<feature>.ts).

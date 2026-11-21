@@ -51,6 +51,15 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 - EVERY screen (staff app and portal) must be responsive: phone (360 px wide), tablet (768 px) and laptop (1366x768). Design mobile-first, one layout that adapts, no separate mobile site. Touch targets at least 44 px, no horizontal scroll, tables become cards or scroll inside their own box on phones, inputs use the right keyboard (tel, numeric). A UI task is done only when checked at 360, 768 and 1366 px widths.
 - Errors shown to staff are plain sentences (what happened, what to do). Never show stack traces.
 
+## Code structure (so changes stay easy)
+- One file, one job. Rule of thumb: a file over ~200 lines is a smell; over 300, split it before adding more.
+- apps/worker: a route file only validates input, calls one function, and returns the reply. Business rules live in src/domain/<feature>.ts as plain functions that are easy to test. Database access only in packages/db. Providers only in src/adapters/*.
+- apps/web: one folder per feature, src/features/<name>/ (screens, components, hooks, API calls for that feature). Shared building blocks only in src/ui/. A component over ~150 lines gets split.
+- One rule lives in one place (money, phone normaliser, number generation, date format). Before writing a helper, grep for an existing one. Never copy-paste logic.
+- A feature does not import another feature's internals. It uses that feature's index.ts.
+- When you add, move or split a file, update docs/MAP.md in the same task.
+- If a task forces you to touch an old file that breaks these rules, split it only as much as the task needs, and note it in docs/STATE.md.
+
 ## Do not
 - Do not build a public website, online payment, or any feature not in docs/PLAN.md.
 - Do not read, edit, search, run commands in, or cd into any folder outside this repo. The owner has other repos on this computer (some belong to his employer); they are off limits. Never touch global config (git config --global, global npm/pnpm packages, shell profile) without asking.
