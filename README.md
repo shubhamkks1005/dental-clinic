@@ -5,7 +5,7 @@ Rules for contributors and AI agents: see `AGENTS.md`. Plan: `docs/PLAN.md`.
 
 ## Setup
 
-Node 22 or newer (`.nvmrc` says 26) and pnpm.
+Node 26 (`.nvmrc`, pinned in `package.json` engines) and pnpm 12.21.0 (`packageManager`).
 
 ```
 pnpm install

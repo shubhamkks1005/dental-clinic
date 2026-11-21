@@ -1,10 +1,10 @@
 # STATE
 Last updated: 2026-11-22
 Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
-Current task: 1.1.5
-Status: 1.1.4 committed locally; owner pushes
-Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account)
-Next 3 tasks: 1.1.5, 1.1.6, 1.1.7
+Current task: 1.1.6
+Status: 1.1.5 committed locally; owner pushes
+Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account), 1.1.5 (dependabot.yml, Node 26 pinned; "weekly PRs arrive" can only be confirmed on GitHub)
+Next 3 tasks: 1.1.6, 1.1.7, 1.1.8
 Owner to-do from 1.1.3: push, check the Actions tab shows a green "CI" run; optional branch protection on main requiring the "check" job.
 Phase 0 still open: 0.1.1, 0.1.2, 0.1.3 and the rest (clinic-visit tasks for the owner)
 Open questions for owner:

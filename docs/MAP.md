@@ -4,7 +4,7 @@
 - docs/DESIGN.md - design rules and mockup links; every screen follows it (owner adds the file)
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 
-## Commands (run from repo root, Node 22+ and pnpm)
+## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
 - pnpm build - Vite build to apps/web/dist + Worker bundle dry-run to apps/worker/dist (one Worker with static assets)
 - pnpm check - typecheck (all packages) + eslint + prettier --check + vitest (all packages)
@@ -14,6 +14,7 @@
 
 ## CI (.github)
 - .github/workflows/ci.yml - on every push: job "check" (pnpm install --frozen-lockfile, pnpm check) and job "secret-scan" (gitleaks over full history). No deploy yet. Actions pinned by commit SHA
+- .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown
 
 ## Root
 - package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0
@@ -23,7 +24,7 @@
 - eslint.config.js - the one ESLint config (typescript-eslint recommended)
 - .prettierrc.json / .prettierignore - the one format config; docs and agent rules are ignored
 - .gitignore - node_modules, dist, .wrangler, .dev.vars*, .env*
-- .nvmrc - Node 26 (Homebrew node); `nvm use system` also works
+- .nvmrc - Node 26 (Homebrew node); `nvm use system` also works; package.json engines = >=26 <27
 - README.md - setup commands and the environments table (bindings, secrets)
 
 ## apps/worker
