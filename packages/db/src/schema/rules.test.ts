@@ -44,7 +44,20 @@ function ruleProblems(table: Table): string[] {
 }
 
 describe("table rules (1.2.1)", () => {
-  const tables = Object.values(schema).filter((v): v is Table => is(v, SQLiteTable));
+  const tables = Object.values(schema as Record<string, unknown>).filter((v): v is Table =>
+    is(v, SQLiteTable),
+  );
+
+  it("covers the base tables", () => {
+    expect(tables.map((t) => getTableConfig(t).name).sort()).toEqual([
+      "access_log",
+      "audit_log",
+      "counters",
+      "files",
+      "settings",
+      "users",
+    ]);
+  });
 
   it("every schema table follows the rules", () => {
     expect(tables.flatMap(ruleProblems)).toEqual([]);

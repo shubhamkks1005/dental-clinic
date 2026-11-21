@@ -12,6 +12,7 @@
     "db:lock": "node scripts/lock-migrations.mjs"
   },
   "dependencies": {
+    "@clinic/shared": "workspace:*",
     "drizzle-orm": "^0.45.4"
   },
   "devDependencies": {

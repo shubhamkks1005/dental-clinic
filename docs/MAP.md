@@ -54,13 +54,22 @@
 - src/styles/base.css - mobile-first base CSS, breakpoints 768px and 1366px, 44px tap targets
 
 ## packages/db (tables: name - purpose - key columns)
-- (no tables yet; base tables come in 1.2.3)
+All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
+- users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled)
+- settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
+- counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
+- audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
+- access_log - logins, views, exports (src/schema/access-log.ts) - action (login|view|export), resource, resource_id, request_id; who = created_by
+- files - R2 file metadata (src/schema/files.ts) - patient_id (no FK until patients exist), r2_key (unique), kind, mime, bytes > 0, sha256
+- migrations/0000_base_tables.sql - creates the 6 tables
+- migrations/0001_default_settings.sql - seeds patient_code.prefix "P-" and patient_code.digits 6
+- src/migrations-apply.test.ts - 1.2.3: applies all migrations to an empty SQLite DB (node:sqlite), checks tables, standard columns, seeds, CHECKs
 - drizzle.config.ts - drizzle-kit generates SQL into migrations/ (applied by wrangler)
 - migrations/checksums.json - sha256 of every committed migration (written by `pnpm db:lock`)
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
 - scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
 - src/migrations.test.ts - 1.2.2: every migration locked, none edited
-- src/node-builtins.d.ts - minimal node:fs / node:crypto types for tests (no @types/node)
+- src/node-builtins.d.ts - minimal node:fs / node:crypto / node:sqlite types for tests (no @types/node)
 - src/index.ts - createDb(d1) returns the Drizzle client
 - src/schema/index.ts - schema entry (exports every table)
 - src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs
@@ -74,6 +83,7 @@
 - src/api.test.ts - reply shape tests
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
+- src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/ulid.ts - newUlid(): 26-char sortable ids (Web Crypto, no dependency)
 - src/ulid.test.ts - format, spec example, time order
 - src/index.ts - package entry

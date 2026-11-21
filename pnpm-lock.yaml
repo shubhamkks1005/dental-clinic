@@ -228,6 +228,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@clinic/shared':
+        specifier: workspace:*
+        version: link:../shared
       drizzle-orm:
         specifier: ^0.45.4
         version: 0.45.4

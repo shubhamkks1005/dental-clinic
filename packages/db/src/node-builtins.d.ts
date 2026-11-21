@@ -5,6 +5,19 @@ declare module "node:fs" {
   export function readdirSync(path: string): string[];
 }
 
+declare module "node:sqlite" {
+  export class DatabaseSync {
+    constructor(path: string);
+    exec(sql: string): void;
+    prepare(sql: string): {
+      all(...params: unknown[]): Record<string, unknown>[];
+      get(...params: unknown[]): Record<string, unknown> | undefined;
+      run(...params: unknown[]): unknown;
+    };
+    close(): void;
+  }
+}
+
 declare module "node:crypto" {
   export function createHash(algorithm: "sha256"): {
     update(data: string): { digest(encoding: "hex"): string };

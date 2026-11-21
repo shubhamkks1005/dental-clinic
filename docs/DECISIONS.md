@@ -31,4 +31,10 @@
 - 2026-11-22 - UI (staff app, portal) and printed documents are English only; no Hindi, no Hinglish, no translation system. PLAN: 1.4.9, 4.5.3, 8.3.8 cancelled; Hindi/language parts removed from 1.4.1, 3.8.1, 4.1.1, 4.1.2, 4.2.1, 4.3.1, 4.3.3, 4.4.7, 4.5.1, 5.3.10, 6.5.5, 6.5.6, 8.3.1 and the Phase 4 / Phase 11 text. Not changed: SMS/WhatsApp tasks, 9.5.2 user manual (Hinglish staff guide), 11.9.2 rate list - owner decision - owner
 - OPEN 2026-11-22 - Patient SMS language: English or Hinglish? - to confirm with the clinic; affects 2.1.1, 7.1.1, 7.2.3, 7.4, 7.4.1, 7.4.4 - owner
 - OPEN 2026-11-22 - Rate list language (11.9.2): English only, or local language + English? - depends on the state clinic law found in 11.9.1 - owner
+- 2026-11-22 - Roles are a fixed list in code (doctor, receptionist, developer; TEXT + CHECK), not a table; names from PLAN 1.3.3 - plan; note: apps/worker/CLAUDE.md says "reception" - agent (owner to confirm)
+- 2026-11-22 - No users in seeds or migrations: staff emails are real personal data; first users are added in 1.3.3 - privacy rule - agent
+- 2026-11-22 - created_by / updated_by hold a users.id or 'system' (seeds, jobs); no foreign key so the first user can be created - agent
+- 2026-11-22 - files.patient_id has no foreign key until the patients table exists (2.1.x); drizzle-kit rebuilds the table to add it - agent
+- 2026-11-22 - Default settings seeded by migration: patient_code.prefix "P-", patient_code.digits 6 (from the P-000123 format) - AGENTS.md - agent
+- 2026-11-22 - Migration tests use Node's built-in SQLite and hand-written minimal Node types instead of adding @types/node - no unapproved dependency - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
