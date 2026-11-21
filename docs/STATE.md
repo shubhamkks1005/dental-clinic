@@ -4,7 +4,7 @@ Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
 Current task: waiting for owner (after 1.1.8)
 Status: 1.1.3-1.1.8 committed locally; owner pushes
 Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account), 1.1.5 (dependabot.yml, Node 26 pinned; "weekly PRs arrive" can only be confirmed on GitHub), 1.1.6 (path routing only, per plan note: /app, /my, /api/*, /hooks/*; no hostname routing), 1.1.8 (README deploy steps, T1-T10 in DECISIONS.md)
-Half done: 1.1.7 - fake patient generator + tests done; inserting into local D1 (`pnpm db:seed`) waits for the patients table (fields decided in 2.1.1). Done-when "new developer sees data in the app" cannot pass until a patient screen exists.
+Moved: rest of 1.1.7 (`pnpm db:seed` insert into local D1, "developer sees data in the app") is scheduled right after 2.1.1 (owner decision, noted in PLAN.md at 1.1.7 and 2.1.1). Generator + tests are done.
 Next 3 tasks: 1.2.1, 1.2.2, 1.2.3
 Owner checklist (accounts): Cloudflare account + README "First-time setup"; GitHub settings (Dependabot alerts + security updates on, optional branch protection); add tokens to docs/ACCOUNTS.md when created.
 Owner to-do from 1.1.3: push, check the Actions tab shows a green "CI" run; optional branch protection on main requiring the "check" job.

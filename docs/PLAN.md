@@ -597,7 +597,7 @@ version pinned. Done jab: haftewar update PR aate hain.
 ya portal ki hai: production me hostname se, workers.dev par pehle path prefix ( /app ,
 /my ) se. /api/*  Hono ko jaata hai, baaki static assets ko. Done jab: dono tareeko ka
 test hai.
-1.1.7 Local data (S). Seed script jo 5,000 nakli patients banata hai (spike ka code). Done
+1.1.7 Local data (S). Seed script jo 5,000 nakli patients banata hai (spike ka code). Done [note: fake-patient generator done in 1.1.7; the rest (pnpm db:seed insert and "developer sees data in the app") moved to right after 2.1.1]
 jab: naya developer 10 minute me app chala kar data dekh sakta hai.
 1.1.8 README aur faisle (S). docs/  me setup, deploy, environments ki table aur T1 se
 T10 ke faisle. Done jab: 6 mahine baad bhi bina yaad ke deploy kar sako.
@@ -816,7 +816,7 @@ lagana ya badalna, aur subah "Aaj" screen se din shuru karna. Ilaaj ki koi cheez
 chart) yahan nahi hai, wo Phase 3 me. Sister ko pehli baar asli software yahin dikhega,
 isliye buttons ke naam wahi hon jo wo roz bolti hai, aur har screen par ek hi bada kaam ho.
 2.1 Patient ka data model
-2.1.1 Fields tay karna (M). Phase 0 ke paper register se: patient code, poora naam,
+2.1.1 Fields tay karna (M). Phase 0 ke paper register se: patient code, poora naam, [note: right after this task, finish the rest of 1.1.7: pnpm db:seed inserts the 5,000 fake patients into local D1, and a developer sees them in the app]
 gender, DOB ya umar, mobile, doosra mobile, pata ya area, email, referral source
 (editable list), kisne bheja (text), emergency contact, message ki bhasha,
 legacy_ref  (purane register ka number), non-clinical notes, status. Sirf chaar zaruri:
