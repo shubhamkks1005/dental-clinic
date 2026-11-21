@@ -33,37 +33,47 @@ All environments also bind `ASSETS` (the built web app from `apps/web/dist`).
 
 ## Deploy
 
-All `wrangler` commands below run from `apps/worker` (`cd apps/worker`), using
-`pnpm exec wrangler ...`. Tokens and accounts are listed in `docs/ACCOUNTS.md`.
+No browser login on the dev Mac: wrangler uses an API token that is typed into the terminal
+for one session only. All `wrangler` commands go through `pnpm wr ...` from `apps/worker`
+(`cd apps/worker`), which keeps wrangler's config and logs inside the repo (`.wrangler/`,
+gitignored). Tokens and accounts are listed in `docs/ACCOUNTS.md`.
+
+### Each terminal session that talks to Cloudflare
+
+```
+read -rs "CLOUDFLARE_API_TOKEN?Cloudflare API token (hidden): "; echo
+export CLOUDFLARE_API_TOKEN
+export CLOUDFLARE_ACCOUNT_ID=<account id from the dashboard; not a secret>
+cd apps/worker && pnpm wr d1 list     # proves the token works
+```
+
+When done: `unset CLOUDFLARE_API_TOKEN` (or close the terminal). Never paste the token in chat,
+a file, a commit or a command line argument.
 
 ### First-time setup (once per Cloudflare account)
 
-1. `pnpm exec wrangler login` (opens the browser; use the clinic's Cloudflare account).
-2. `pnpm exec wrangler whoami` and check the account name is the clinic's.
-3. Create the databases (location hint apac, decision T2):
-   - `pnpm exec wrangler d1 create dental-clinic-staging --location apac`
-   - `pnpm exec wrangler d1 create dental-clinic-production --location apac`
-4. Create the file buckets:
-   - `pnpm exec wrangler r2 bucket create dental-clinic-staging-files --location apac`
-   - `pnpm exec wrangler r2 bucket create dental-clinic-production-files --location apac`
-5. Copy each `database_id` printed in step 3 into `apps/worker/wrangler.jsonc`
+1. Dashboard (personal device): create the account, the API token and the R2 buckets (see `docs/ACCOUNTS.md`).
+2. This Mac, in a session as above: create the databases (location hint apac, decision T2):
+   - `pnpm wr d1 create dental-clinic-staging --location apac`
+   - `pnpm wr d1 create dental-clinic-production --location apac`
+3. Copy each `database_id` printed in step 2 into `apps/worker/wrangler.jsonc`
    (`env.staging` and `env.production`), replacing the `00000000-...` placeholders.
    IDs are not secrets; commit them.
-6. `pnpm --filter @clinic/worker types` (refreshes `worker-configuration.d.ts`), then `pnpm check`.
+4. `pnpm --filter @clinic/worker types` (refreshes `worker-configuration.d.ts`), then `pnpm check`.
 
 ### Staging deploy (routine)
 
 1. `pnpm check`
-2. `pnpm exec wrangler d1 migrations apply DB --remote --env staging` (from `apps/worker`)
+2. `pnpm wr d1 migrations apply DB --remote --env staging` (from `apps/worker`)
 3. `pnpm deploy:staging` (from the repo root)
 4. Open the URL wrangler prints and check `/app` and `/my` load.
 
 ### Production deploy (only after staging works)
 
 1. Note a restore point first:
-   `pnpm exec wrangler d1 time-travel info DB --env production` (write the bookmark in the release note).
-2. `pnpm exec wrangler d1 migrations apply DB --remote --env production`
-3. From the repo root: `pnpm build`, then from `apps/worker`: `pnpm exec wrangler deploy --env production`
+   `pnpm wr d1 time-travel info DB --env production` (write the bookmark in the release note).
+2. `pnpm wr d1 migrations apply DB --remote --env production`
+3. From the repo root: `pnpm build`, then from `apps/worker`: `pnpm wr deploy --env production`
 4. Open the production URL and check `/app` and `/my` load.
 
 ### Database migrations
@@ -82,6 +92,6 @@ Rules:
 
 ### Secrets
 
-`pnpm exec wrangler secret put NAME --env staging` (or `--env production`). Never put a
+`pnpm wr secret put NAME --env staging` (or `--env production`; wrangler asks for the value with hidden input). Never put a
 secret in `wrangler.jsonc`, the repo, or chat. Local values go in `apps/worker/.dev.vars`.
 Add every secret to `docs/ACCOUNTS.md` (name and where it lives, never the value).

@@ -228,6 +228,9 @@ importers:
         specifier: ^4.13.19
         version: 4.13.19
     devDependencies:
+      drizzle-orm:
+        specifier: ^0.45.4
+        version: 0.45.4
       wrangler:
         specifier: ^4.166.0
         version: 4.166.0(@types/node@18.19.130)(vitest@5.1.1(@types/node@18.19.130)(vite@8.3.8(@types/node@18.19.130)(esbuild@0.28.2)(tsx@4.23.15)))

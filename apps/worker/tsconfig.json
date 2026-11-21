@@ -4,5 +4,5 @@
     "lib": ["ES2022"],
     "types": []
   },
-  "include": ["src", "worker-configuration.d.ts", "../../types"]
+  "include": ["src", "spike", "worker-configuration.d.ts", "../../types"]
 }

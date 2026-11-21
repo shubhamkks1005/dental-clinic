@@ -1,8 +1,8 @@
 # STATE
 Last updated: 2026-11-22
 Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
-Current task: waiting for owner (after 1.4.11)
-Status: 1.4.11 shell restyle committed locally; owner pushes
+Current task: 1.3.1 (files ready; waiting for the owner's Cloudflare checklist), then spike 0.6.3 on real D1, then 1.3.2
+Status: 1.3.1 prep committed locally; owner pushes. Spike 0.6.3 dry run on local D1: all 5 checks PASS; real-D1 run pending
 Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account), 1.1.5 (dependabot.yml, Node 26 pinned; "weekly PRs arrive" can only be confirmed on GitHub), 1.1.6 (path routing only, per plan note: /app, /my, /api/*, /hooks/*; no hostname routing), 1.1.8 (README deploy steps, T1-T10 in DECISIONS.md), 1.2.1 (table rules: standardColumns, oneOf, newUlid, rules test), 1.2.2 (db:generate, db:lock checksums + test, README migration rules; "applied on staging" waits for Cloudflare), 1.2.3 (6 base tables + default settings seed; migrations apply clean on empty SQLite and local D1), 1.2.4 (takeNumber + patientCodeSql; tested on a D1 stand-in; real-D1 rollback to be confirmed by spike 0.6.3), 1.2.5 (auditInsert/accessInsert + append-only guard test; "every write endpoint makes one audit row" is enforced per endpoint as endpoints arrive), 1.2.6 (repositories + permission table + settings repo; worker architecture guard; per-request repos middleware comes with 1.3 when ctx has a real user), 1.2.7 (version-checked updates, auditInsertIfChanged, ConflictError -> 409 "Reload" message; the UI side comes with the first edit screen), 1.4.11 (shell restyle to DESIGN.md, S01/S14, Inter self-hosted, checked at 360/768/1366, ₹ renders in Inter)
 Moved: rest of 1.1.7 (`pnpm db:seed` insert into local D1, "developer sees data in the app") is scheduled right after 2.1.1 (owner decision, noted in PLAN.md at 1.1.7 and 2.1.1). Generator + tests are done.
 Next 3 tasks: 1.2.8, 1.3.1, 1.3.2

@@ -17,7 +17,8 @@
     "db:generate": "pnpm --filter @clinic/db db:generate",
     "db:lock": "pnpm --filter @clinic/db db:lock",
     "db:migrate": "pnpm --filter @clinic/worker db:migrate",
-    "deploy:staging": "pnpm build && pnpm --filter @clinic/worker deploy:staging"
+    "deploy:staging": "pnpm build && pnpm --filter @clinic/worker deploy:staging",
+    "spike:d1": "pnpm --filter @clinic/worker spike:d1"
   },
   "devDependencies": {
     "eslint": "^10.15.0",

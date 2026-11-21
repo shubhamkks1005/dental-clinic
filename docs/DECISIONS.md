@@ -47,4 +47,7 @@
 - 2026-11-22 - PLAN 1.4.11 "Shell restyle to DESIGN.md" added and done before 1.3.1 - owner request - owner
 - 2026-11-22 - Laptop sidebar shows the clinic name in white, not brand red: red on navy fails the 4.5:1 contrast rule; red is used on white (tablet tabs row) - DESIGN.md contrast rule - agent
 - 2026-11-22 - Tablet Today: next-patient and call-list cards side by side, list full width below (list rows did not fit a half-width column) - responsive rule - agent
+- 2026-11-22 - No Cloudflare browser login on the dev Mac. The account is created and configured from the owner's personal device; the Mac uses a 30-day API token (D1 Edit + Workers Scripts Edit, this account only) typed with `read -s` per terminal session, never in chat, files or the repo - owner - owner
+- 2026-11-22 - Spike 0.6.3 runs the real repository code from the Mac via `wrangler dev` with a remote binding to a throwaway D1 ("dental-clinic-spike"), nothing deployed; the database is deleted afterwards - safest real-D1 test - agent
+- 2026-11-22 - preview_urls off for all environments, so Access always guards the only staging/production address - security - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

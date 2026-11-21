@@ -6,6 +6,8 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-11-01",
   "send_metrics": false,
+  // No version preview URLs: they would be a second address that Cloudflare Access does not guard.
+  "preview_urls": false,
   "assets": {
     "directory": "../web/dist",
     "binding": "ASSETS",
