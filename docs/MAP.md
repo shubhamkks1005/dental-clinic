@@ -25,7 +25,8 @@
 - .prettierrc.json / .prettierignore - the one format config; docs and agent rules are ignored
 - .gitignore - node_modules, dist, .wrangler, .dev.vars*, .env*
 - .nvmrc - Node 26 (Homebrew node); `nvm use system` also works; package.json engines = >=26 <27
-- README.md - setup commands and the environments table (bindings, secrets)
+- README.md - setup, environments table, first-time Cloudflare setup, staging and production deploy steps, secrets
+- docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
 
 ## apps/worker
 - wrangler.jsonc - Worker config: top level = local, env.staging, env.production; placeholder IDs; bindings DB, FILES, ASSETS, MESSAGING_MODE

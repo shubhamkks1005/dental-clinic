@@ -18,4 +18,14 @@
 - 2026-11-22 - "/" redirects to /app - owner confirmed - owner
 - 2026-11-22 - Agents never push; owner pushes himself - owner process - owner
 - 2026-11-22 - Every screen follows docs/DESIGN.md and its mockups - owner design - owner
+- 2026-11-21 - T1 Hosting: one Cloudflare Worker (free) serving the static frontend and the Hono API - static requests are free, average API ~2.2 ms CPU; if CPU is short: Workers Paid $5/month, ask the doctor first (over the Rs 1,000/year budget) - plan
+- 2026-11-21 - T2 Database: D1 (SQLite), location hint apac, Drizzle migrations - 500 MB, 7-day point-in-time restore, no cold start; fallback Neon Postgres free (Singapore) - plan
+- 2026-11-21 - T3 Staff login: Cloudflare Access, email one-time PIN, free up to 50 users - receptionist needs no password and we write no staff-login code; fallback own email + password (browser KDF) + authenticator app - plan
+- 2026-11-21 - T4 Patient login: SMS OTP and password; slow hash in the browser, server only checks a fast HMAC - free Worker cannot run OWASP-strength hashing (600,000 PBKDF2-SHA256); fallback OTP only, or server 80,000 iterations with strict rate limit - plan
+- 2026-11-21 - T5 X-rays and photos: private R2 bucket, files only through the Worker after an auth check, never a public URL - 10 GB free; fallback Backblaze B2 - plan
+- 2026-11-21 - T6 Backup: nightly GitHub Actions (D1 export, age encryption, upload to B2, Healthchecks ping) + weekly copy on the clinic PC - free cron has only 10 ms CPU, GitHub schedules can be late so Healthchecks alarms; fallback Cloudflare Workflows backup or clinic PC Task Scheduler - plan
+- 2026-11-21 - T7 SMS: old Android phone + clinic SIM running android-sms-gateway (cloud mode, end-to-end encryption on) - app is free, TextBee free is too small (300/month vs ~700 estimated); fallback DLT-registered paid SMS API or manual WhatsApp and calls - plan
+- 2026-11-21 - T8 WhatsApp and email: WhatsApp = receptionist clicks a wa.me link (manual); email = Brevo free (300/day), only for patients with email - official WhatsApp automation is paid; fallback SMS and calls only - plan
+- 2026-11-21 - T9 Monitoring: UptimeRobot free (50 monitors, 5 min) + Healthchecks.io free (20 checks) - free tiers fit, UptimeRobot terms changed in 2024 so recheck; fallback StatusCake or HetrixTools free (open question: 9.2.5 monitor now covers portal/staff only) - plan
+- 2026-11-21 - T10 Domain: .in from a registrar that sells .in, DNS on Cloudflare - Cloudflare Registrar does not list .in, the free rate-limit rule needs the domain on Cloudflare; fallback .com via Cloudflare Registrar - plan
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
