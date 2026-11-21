@@ -702,8 +702,8 @@ Sirf config, patient data nahi
 Audit log dekhna Haan Nahi Sirf troubleshooting, sister
 ki ijazat se
 Users add ya band karna Haan Nahi Haan
-1.4.1 Brand tokens (S). Logo se do rang, neutral greys, success aur warning aur danger
-ke rang, font (Inter ya system font; patient ke print ke liye Noto Sans Devanagari).
+1.4.1 Brand tokens (S). Logo se do rang, neutral greys, success aur warning aur danger [note: Devanagari print font removed, UI and print are English only, see docs/DECISIONS.md]
+ke rang, font (Inter ya system font).
 Contrast WCAG AA. Done jab: ek style-guide page par sab dikhta hai.
 1.4.2 Component base (M). Tailwind aur shadcn/ui (accessible Radix components):
 button, input, select, dialog, tabs, toast, badge, card. Done jab: har component
@@ -731,7 +731,7 @@ Page 17 of 150
 1.4.8 Print framework (M). PrintLayout  component, @page  A4 aur A5, header band
 ya chalu, clinic ke printer par test print. Done jab: ek dummy parcha sahi jagah par
 print hota hai.
-1.4.9 Hindi ki taiyari (S, baad me). Saari strings ek t()  function se, abhi sirf English.
+CANCELLED 1.4.9 Hindi ki taiyari (S, baad me). Saari strings ek t()  function se, abhi sirf English. [CANCELLED note: UI is English only, see docs/DECISIONS.md]
 Done jab: ek screen ka Hindi demo chalta hai.
 1.4.10 Speed ka budget (S, baad me). Staff app ka pehla JS 300 KB gzip se kam, route-
 wise code splitting. Done jab: build report CI me dikhti hai.
@@ -1346,8 +1346,8 @@ mahina
 10 GB kitne me
 bharega
 Bhaari 200 patients, 3 file, 2.5 MB 1,500 lagbhag 7 mahine
-3.8.1 Consent ke templates (M). Editable text: extraction, RCT, implant, whitening ya
-sundarta ke kaam, anaesthesia, photo aur X-ray ka istemal. Versioned, Hindi aur
+3.8.1 Consent ke templates (M). Editable text: extraction, RCT, implant, whitening ya [note: Hindi version removed, printed documents are English only, see docs/DECISIONS.md]
+sundarta ke kaam, anaesthesia, photo aur X-ray ka istemal. Versioned, sirf
 English. DCI ke code ke text me informed consent ka alag clause mujhe nahi mila, par
 invasive ya wapas na hone wale kaam par likhit sahmati achha tareeka hai (meri salaah,
 vakeel ya IDA se poochho). Done jab: sister ne har template padhkar haan kiya.
@@ -1418,7 +1418,7 @@ Phase 4: Parcha, dawai ki list aur print
 Yeh wo hissa hai jo patient ke haath me jaata hai, isliye sister ko sabse zyada yahin se
 "professional" lagega. Aapki baat: doctor diagnosis likhe, dawai par click kare, parcha ban
 jaye, print ya PDF. Yahan wahi banta hai, ek upgrade ke saath: har dawai ke saath uski dose,
-kitne din, khane se pehle ya baad, Hindi aur English me, sab doctor ki apni list se, taaki
+kitne din, khane se pehle ya baad, English me, sab doctor ki apni list se, taaki
 click ke baad kuch dobara likhna na pade. Aur ek niyam: parcha ek baar issue hone par
 badalta nahi, badlav naya "revised" parcha banata hai.
 DCI ke niyam jo yahan lagu hote hain (maine DCI code ka text padha, vakeel ya IDA se
@@ -1429,18 +1429,18 @@ prescription me saaf likhna (5.7.1); medical certificate ka register aur har cer
 copy, patient ka pata, signature ya angootha aur kam se kam ek pehchaan ka nishan
 (3.3.3); letterhead par dentist ki photo nahi (8.3.1).
 4.1 Dawai ki list
-4.1.1 Medicines ki schema (M). medicines : generic naam, brand naam (text), form
+4.1.1 Medicines ki schema (M). medicines : generic naam, brand naam (text), form [note: Hindi instruction column removed, English only, see docs/DECISIONS.md]
 (Tab, Cap, Syp, Gel, Mouthwash, Drops, Other), strength, default dose, default
 frequency, default din, khane ke saath (pehle, baad, sote waqt, kabhi bhi), instruction
-English aur Hindi, tags, category, active, order. Done jab: migration staging par chal
+(English), tags, category, active, order. Done jab: migration staging par chal
 gayi.
 Dental clinic software: ultra detail build plan
 Page 37 of 150
 
 4.2 Parcha banana (visit ka "Dawai" tab)
-4.1.2 Doctor ki list bharna (M). Sister ki aam istemal hone wali 40 se 60 dawaiyan
-(Phase 0 ke parchon se), har ek ki default dose aur Hindi instruction unhi ki likhi hui
-(machine translation se medical instruction kabhi nahi). Done jab: sister ne har row ke
+4.1.2 Doctor ki list bharna (M). Sister ki aam istemal hone wali 40 se 60 dawaiyan [note: Hindi instruction removed, English only, see docs/DECISIONS.md]
+(Phase 0 ke parchon se), har ek ki default dose aur English instruction unhi ki likhi hui.
+Done jab: sister ne har row ke
 saamne printout par sign kiya.
 4.1.3 List editor (M). 1.5.4 ke generic editor par: jodna, badalna, band karna (delete
 nahi), order. Badlav sirf naye parchon par lagta hai, purane issue hue parche jaise the
@@ -1452,7 +1452,7 @@ nsaid ) aur har allergen se tag jodo. Software sirf match dikhata hai. Done jab:
 4.1.5 Sets (M). Roz ke combos: "Extraction ke baad", "RCT ka dard", "Scaling ke baad".
 Ek click me kai dawaiyan, har ek baad me badli ja sakti. Done jab: ek set se 3 dawaiyan 1
 click me judti hain.
-4.2.1 Prescription schema (M). prescriptions  (visit, patient, bhasha, weight_kg
+4.2.1 Prescription schema (M). prescriptions  (visit, patient, weight_kg [note: language column removed, prescriptions are English only, see docs/DECISIONS.md]
 optional, advice, follow_up_date, status: draft, issued, revised, rx_no  financial year ke
 hisaab se gap-free, dentist_dispensed  flag aur note) aur prescription_items
 jisme dawai ke naam, strength, dose, frequency, din, timing aur instruction ki copy
@@ -1484,19 +1484,18 @@ Reception sirf issue hua parcha print kar sakti hai. Issue hone par patient port
 hai, dono versions dikhte hain.
 4.2.7 Pichla parcha copy (S). Wahi dawai wapas wale marij ke liye ek click. Done jab:
 copy ke baad naya draft banta hai, purana nahi chhua.
-4.3.1 Print layout engine (L). 1.4.8 ka PrintLayout  poora karo: A4 aur A5, header ya
+4.3.1 Print layout engine (L). 1.4.8 ka PrintLayout  poora karo: A4 aur A5, header ya [note: Hindi font and Hindi sample removed, print is English only, see docs/DECISIONS.md]
 footer chalu ya band, margins, page-break ke niyam, parche ke liye ek page ka niyam
-(zyada ho to chetavani). Fonts: Inter aur Hindi ke liye Noto Sans Devanagari (free, sirf
-print pages par load). Done jab: Hindi aur English dono ka sample bina kate, bina
+(zyada ho to chetavani). Font: Inter ya system font. Done jab: English sample bina kate, bina
 kharab akshar ke print.
 4.3.2 Letterhead aur niyam (S). Header me clinic ka naam, logo, pata, phone, timings,
 doctor ka naam, designation, degree aur registration number, saath me dastakhat ki
 image. Doctor ki photo nahi (8.3.1). Registration number khaali ho to parcha,
 certificate aur receipt print hi na ho: "Settings me registration number bharo". Done
 jab: test: khaali number par print blocked.
-4.3.3 Parche ka template (M). Sister ke saath baith kar: A5 portrait, patient ka hissa,
+4.3.3 Parche ka template (M). Sister ke saath baith kar: A5 portrait, patient ka hissa, [note: language setting removed, English only, see docs/DECISIONS.md]
 diagnosis (dikhao ya chhupao), Rx ki list, advice, agli visit, "dawai clinic se di" ka line
-(agar lagu), signature. Settings: font size, bhasha, header chalu ya band, kya dikhana
+(agar lagu), signature. Settings: font size, header chalu ya band, kya dikhana
 hai. Live preview. Koi drag-drop designer nahi. Done jab: sister ne preview par likhkar
 haan kiya.
 4.3.4 Asli printer par test (S). Sister ka asli printer aur kagaz: A4 ya A5, pehle se
@@ -1529,18 +1528,18 @@ page print.
 se kam.
 4.4.6 Khaali forms (S). Registration form, medical history form, sahmati ke khaali form.
 Paper downtime aur patients ke bharne ke liye. Done jab: 20 copies ek click se print.
-4.4.7 Ilaaj ke baad ki salaah ki sheets (M, baad me). Doctor ki likhi chhoti sheets
-(extraction ke baad, RCT ke baad, scaling ke baad), Hindi aur English. Done jab: sister
+4.4.7 Ilaaj ke baad ki salaah ki sheets (M, baad me). Doctor ki likhi chhoti sheets [note: Hindi version removed, printed documents are English only, see docs/DECISIONS.md]
+(extraction ke baad, RCT ke baad, scaling ke baad), English me. Done jab: sister
 ne har sheet ka text maanjoor kiya.
 4.4.8 Parche par QR (S, baad me). QR scan par ek page jo sirf batata hai "yeh parcha is
 clinic se is tareekh ko issue hua", medical detail nahi. Naqli parchon se bachav. Done
 jab: galat code par "nahi mila".
-4.5.1 Print ke regression tests (M). Playwright se sample parche (Hindi aur English, 1
-se 8 dawaiyan) ka screenshot compare. Hindi font gayab hone par fail. Done jab: CI me.
+4.5.1 Print ke regression tests (M). Playwright se sample parche (English, 1 [note: Hindi samples and Hindi font check removed, English only, see docs/DECISIONS.md]
+se 8 dawaiyan) ka screenshot compare. Done jab: CI me.
 4.5.2 Doctor ka sign-off (M). Purane asli parchon jaisi 10 nakli prescriptions banakar
 sister ki apni paper style se milao. Generic naam, typo, dose. Done jab: sister ne 10 par
 haan kiya.
-4.5.3 Hindi aur English padhai (S). Saari seed instructions printout par sister ki aankh
+CANCELLED 4.5.3 Hindi aur English padhai (S). Saari seed instructions printout par sister ki aankh [CANCELLED note: UI is English only, see docs/DECISIONS.md]
 se. Done jab: kuch bhi galat nahi.
 Dental clinic software: ultra detail build plan
 Page 40 of 150
@@ -1551,7 +1550,7 @@ galti ka jokhim bada.
 Diagnosis se dawai khud mat suggest karo. Alerts sirf doctor ke tag se.
 Dose calculator mat banao.
 Issue hue parche ko seedha mat badlo, revise karo.
-Hindi instruction machine se mat anuvaad karo.
+Koi translation system ya Hindi version mat jodo: UI aur print sirf English.
 Registration number ke bina letterhead mat chalao.
 Letterhead par doctor ki photo mat lagao.
 Server par PDF mat banao, browser print aur "Save as PDF" kaafi.
@@ -1566,7 +1565,7 @@ Master list badalne par purane parche nahi badle.
 Registration number khaali par parcha, certificate aur receipt print nahi hote.
 Allergy ki patti, duplicate aur adhoori row ke tests pass.
 Reprint par DUPLICATE watermark aur print log.
-Hindi aur English dono bina kate sahi print.
+English print bina kate sahi.
 Estimate, consent aur certificate ke print sister ne manzoor kiye, certificate ka
 number bina gap ke.
 Dawai list ka audit record bana.
@@ -1667,8 +1666,8 @@ karo". Band hone ke baad us din ki entry nahi, late entry agle din "late entry" 
 se, ya doctor ki ijazat se dobara kholna (audit). Cash aur digital ka share bhi dikhao.
 Print. Done jab: 10 payments ka nakli din band hota hai aur fark 0 ya likhit karan ke
 saath.
-5.3.10 Raqam shabdon me (S). "Rupees one lakh twenty five thousand only", lakh aur
-crore ke saath, Hindi optional. Done jab: 0, 1, 99, 100, 1,000, 1,00,000, 12,34,567,
+5.3.10 Raqam shabdon me (S). "Rupees one lakh twenty five thousand only", lakh aur [note: Hindi option removed, English only, see docs/DECISIONS.md]
+crore ke saath, sirf English. Done jab: 0, 1, 99, 100, 1,000, 1,00,000, 12,34,567,
 1,00,00,000 ke tests.
 5.3.11 Bill aur receipt print (M). Phase 4 ke engine par: bill (items aur payments
 neeche), alag payment receipt. Registration number, patient ka naam aur code, raqam
@@ -1890,9 +1889,9 @@ saath. README me list. Done jab: ek test code me ginti ke aise numbers dhoondhta
 hai aur fail hota hai agar koi settings se bahar hai (jaise grep  ki suchi).
 6.5.4 Holidays (S). Jodna, har saal doharana, band din. Naye saal ke national holidays ki
 suchi pehle se (sister badle). Done jab: holiday par calendar me booking nahi.
-6.5.5 Preferences (S). Notation (FDI, Universal, Palmer), bhasha, default views, print ki
+6.5.5 Preferences (S). Notation (FDI, Universal, Palmer), default views, print ki [note: language preference removed, UI is English only, see docs/DECISIONS.md]
 shuruaat. Done jab: badalne par turant lagu.
-6.5.6 Har setting ki samjhaish (S). Har setting ke saamne ek line Hinglish me: "yeh kya
+6.5.6 Har setting ki samjhaish (S). Har setting ke saamne ek line English me: "yeh kya [note: Hinglish changed to English, UI is English only, see docs/DECISIONS.md]
 karti hai, ek udaharan, badalne par kya hoga". Sister bina poochhe badal sake. Done
 jab: ek bhi setting bina samjhaish ke nahi.
 6.6.1 Speed (S). Dashboard kholne ka rows-read budget (2,000) aur clinic PC par pehla
@@ -2762,9 +2761,9 @@ ki 100,000 writes bhi. Cloudflare dashboard me Bot Fight Mode on karo aur portal
 raaston par rate limiting rule lagao (free plan me kitne rules milte hain ye check karo).
 Done jab: 3,000 nakli requests ke load test me D1 writes 3,000 se kam, aur staff API
 chalta rahe (staging me).
-8.3.1 Design tokens aur shell (S). 1.4.1 ke tokens ka patient-friendly roop: bada base
+8.3.1 Design tokens aur shell (S). 1.4.1 ke tokens ka patient-friendly roop: bada base [note: language toggle removed, UI is English only, see docs/DECISIONS.md]
 font (17 se 18 px), khula spacing, mobile par neeche tab bar (Home, Appointments,
-Records, Profile), upar clinic ka logo aur naam, bhasha toggle. Done jab: 360 px chaude
+Records, Profile), upar clinic ka logo aur naam. Done jab: 360 px chaude
 phone par har screen bina horizontal scroll ke.
 8.3.2 Login screens (M). Mobile number (7.7.2 ka function), 'password se' aur 'OTP se',
 Turnstile, saaf error copy, 'password bhool gaye', pehli baar ka activation. PBKDF2 ke
@@ -2796,7 +2795,7 @@ hai (test).
 wapas lena, jisse consents  me nayi row), anurodh ka form (8.2.11), 'meri jagahein' aur
 'sab jagah se logout', password badalna. Done jab: SMS ki anumati wapas lene par agla
 reminder queue nahi hota (Phase 7 ka test).
-8.3.8 Hindi aur English (M). Portal ke saare text i18n files me, Hindi ka text sister se
+CANCELLED 8.3.8 Hindi aur English (M). Portal ke saare text i18n files me, Hindi ka text sister se [CANCELLED note: UI is English only, see docs/DECISIONS.md]
 padhwana (bina review ke machine translation nahi), Devanagari font sirf Hindi
 chunne par load, tareekh aur rakam local format me. Done jab: pura portal Hindi me
 chal jata hai bina tute hue layout ke.
@@ -3910,7 +3909,7 @@ se bhej-bhej kar thak jaye
 Portal aur website 8.3.10, 8.3.11, 8.5.5, 8.6.9,
 8.6.10, 8.7.3, 8.9.2
 23 portal pilot theek chale, ya site
-par Hindi, education ya callback
+par education ya callback
 ki maang ho
 Dental clinic software: ultra detail build plan
 Page 101 of 150
@@ -3924,10 +3923,9 @@ dukh ho (merge, scan, bulk
 import)
 Suraksha aur
 sanchalan
-1.3.6, 1.4.9, 1.4.10, 1.6.5,
+1.3.6, 1.4.9 (cancelled), 1.4.10, 1.6.5,
 9.4.4, 9.5.6
-12 naya staff aaye, doctor Hindi
-screens maange, ya failure drill
+12 naya staff aaye, ya failure drill
 ka samay mile
 DICOM dekhna 3.7.8 6 sirf jab RVG sirf DICOM deta ho
 (11.5)

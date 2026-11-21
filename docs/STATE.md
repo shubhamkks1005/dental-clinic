@@ -13,8 +13,11 @@ Open questions for owner:
 - 8.10.1-8.10.4, 8.11.1, 8.11.3, the Phase 8 gate site lines, "form" in 8.2.13, plan lines 357-361 still mention the public site (see DECISIONS.md for what was already changed).
 - 9.2.5 refers to the cancelled 8.8.5 uptime monitor. Keep a monitor for the portal only?
 - SMS sender: clinic's own number or a separate SIM (DECISIONS.md says "to confirm").
+- Patient SMS language: English or Hinglish (OPEN in DECISIONS.md).
+- Rate list language (11.9.2): waits for the state law in 11.9.1 (OPEN in DECISIONS.md).
+Rule: UI and printed documents are English only (AGENTS.md); PLAN edited to match.
 Known issues:
 - Agents never push; the owner pushes. Leave git config and credentials alone.
-- docs/DESIGN.md is referenced by AGENTS.md but not in the repo yet (owner adds it).
+- docs/DESIGN.md is referenced by AGENTS.md but still not in the repo (checked 2026-11-22 01:30; owner to add it).
 - Real Cloudflare IDs (D1, R2) are placeholders until the owner creates the resources; deploy:staging will fail until then.
 Owner's real hours (owner fills): Phase 0: -
