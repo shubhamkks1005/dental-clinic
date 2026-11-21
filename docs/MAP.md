@@ -41,6 +41,7 @@
 - src/routes/portal.ts - /api/portal/* group (empty; read-only, Phase 8)
 - src/routes/hooks.ts - /hooks/* group (empty; signed webhooks)
 - src/index.test.ts - route-group tests (JSON 404 shape, static fallthrough)
+- src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
 
 ## apps/web
 - index.html - SPA entry with viewport meta
@@ -70,12 +71,18 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
 - scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
 - src/migrations.test.ts - 1.2.2: every migration locked, none edited
-- src/index.ts - package entry (createDb, Db, Ctx, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert)
+- src/index.ts - package entry (createDb, Db, Ctx, createRepos, Repos, permissions, errors, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert)
 - src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
 - src/context.ts - Ctx { userId, role, requestId } passed to every repository function
 - src/audit.ts - auditInsert() (put in the same db.batch as the change) and accessInsert() (views, exports, logins)
 - src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
 - src/append-only.test.ts - 1.2.5 guard: no app code updates or deletes audit_log / access_log (no triggers allowed yet)
+- src/errors.ts - RepoError (code forbidden|not_found) with plain-sentence messages; ForbiddenError, NotFoundError
+- src/permissions.ts - PERMISSIONS: the one role table (settings.read, settings.write so far; 1.3.4 completes it); assertAllowed()
+- src/permissions.test.ts - table uses known roles; only doctor and developer write settings
+- src/repos/index.ts - createRepos(db, ctx) -> { settings }; Repos type (built once per request by the Worker)
+- src/repos/settings.ts - settings.get(key), settings.update(key, value): permission check, version + 1, audit row in the same batch
+- src/repos/settings.test.ts - 1.2.6: doctor update = one audit row; receptionist refused and nothing written; not-found
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
 - src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
 - src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format

@@ -40,4 +40,6 @@
 - 2026-11-22 - Code structure: one file one job (~200 lines smell, 300 split); worker routes thin, rules in src/domain/<feature>.ts; web in src/features/<name>/ with shared parts in src/ui/; one rule in one place; features talk through index.ts; MAP.md updated in the same task. Applies to new code from the next task; existing code is not refactored now - keep changes easy - owner
 - 2026-11-22 - Role names are doctor, receptionist, developer everywhere ("reception" renamed in rules, SPEC and PLAN; PLAN line about the reception area in cancelled 8.5.4 kept) - consistency - owner
 - 2026-11-22 - Web API calls: shared typed client in src/api; each feature has its own small API functions that call it; components never call fetch - owner confirmed - owner
+- 2026-11-22 - Append-only audit_log/access_log enforced by a source-scan test, not SQL triggers (no triggers until spike 3.2.6) - db rules - agent
+- 2026-11-22 - Permission table starts with settings.read (doctor, receptionist, developer) and settings.write (doctor, developer) from the plan's default matrix; receptionist's "timings only" limit and the rest come in 1.3.4 - plan - agent (doctor to confirm in 1.3.4)
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

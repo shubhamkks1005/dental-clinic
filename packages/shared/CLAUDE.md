@@ -3,6 +3,7 @@
 - Every table uses standardColumns(): id (ULID text), created_at, updated_at, created_by, updated_by, deleted_at, version. Times are UTC ISO text (*_at), local dates YYYY-MM-DD text (*_on), money is integer paise (*_paise), enums are TEXT + CHECK via oneOf(). schema/rules.test.ts enforces this.
 - Keep indexes few: each index adds rows written on every insert (check the numbers in spike 0.6.2 before adding more).
 - No triggers unless spike 3.2.6 passed. No FTS5.
-- Numbering uses the counters table inside the same db.batch() as the insert.
+- Numbering uses the counters table inside the same db.batch() as the insert (takeNumber()).
+- All SQL lives in src/repos/*. Every repository function takes ctx, calls assertAllowed() first (src/permissions.ts is the only permission table), and writes the change and its auditInsert() in one db.batch().
 - Seeds and fixtures contain fake data only.
 - packages/shared holds zod schemas, enums, money helpers and the one mobile-number normaliser. It must not import Worker or DOM APIs.

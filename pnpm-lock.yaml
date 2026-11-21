@@ -215,6 +215,9 @@ importers:
 
   apps/worker:
     dependencies:
+      '@clinic/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@clinic/shared':
         specifier: workspace:*
         version: link:../../packages/shared
