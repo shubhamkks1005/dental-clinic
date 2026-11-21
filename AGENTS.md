@@ -47,6 +47,7 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 - Follow docs/DESIGN.md and the mockups linked there for every screen.
 - TypeScript strict. Small files, small functions, plain names. Comments only for the "why".
 - UI text is short and simple.
+- ALL UI text and printed documents (prescription, bill, receipt) are in English only: no Hindi, no Hinglish, no translation system.
 - EVERY screen (staff app and portal) must be responsive: phone (360 px wide), tablet (768 px) and laptop (1366x768). Design mobile-first, one layout that adapts, no separate mobile site. Touch targets at least 44 px, no horizontal scroll, tables become cards or scroll inside their own box on phones, inputs use the right keyboard (tel, numeric). A UI task is done only when checked at 360, 768 and 1366 px widths.
 - Errors shown to staff are plain sentences (what happened, what to do). Never show stack traces.
 

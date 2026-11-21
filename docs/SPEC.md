@@ -19,4 +19,4 @@ Appointments, prescriptions, bills. Nothing else. (confirm)
 All seeds, tests and screenshots use made-up names. Fake mobile numbers are only used with MESSAGING_MODE=dry_run, and real SMS goes only to allowed_test_numbers (owner's own numbers).
 
 ## Language
-Staff screens: (English / Hindi / mixed). Patient messages: (English / Hinglish).
+Staff screens, portal and printed documents: English only. Patient SMS language: (English / Hinglish, to confirm).
