@@ -55,7 +55,9 @@
 - (no tables yet; base tables come in 1.2.3)
 - drizzle.config.ts - drizzle-kit generates SQL into migrations/ (applied by wrangler)
 - src/index.ts - createDb(d1) returns the Drizzle client
-- src/schema/index.ts - schema entry (empty)
+- src/schema/index.ts - schema entry (exports every table)
+- src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs
+- src/schema/rules.test.ts - 1.2.1 rules: every table has the standard columns, *_paise integer, *_at/*_on text, enums have CHECK
 - migrations/ - SQL migrations (empty; never edit an applied one)
 - src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. (dry_run only)
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
@@ -65,6 +67,8 @@
 - src/api.test.ts - reply shape tests
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
+- src/ulid.ts - newUlid(): 26-char sortable ids (Web Crypto, no dependency)
+- src/ulid.test.ts - format, spec example, time order
 - src/index.ts - package entry
 
 ## Gotchas (things that surprised us)

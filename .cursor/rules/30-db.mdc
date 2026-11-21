@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 # packages/db and packages/shared rules
 - Drizzle schema in packages/db/src/schema. Generate migrations; never hand-edit a migration that was already applied.
-- Every table has id, created_at, updated_at, deleted_at. Money columns are integer paise and named *_paise.
+- Every table uses standardColumns(): id (ULID text), created_at, updated_at, created_by, updated_by, deleted_at, version. Times are UTC ISO text (*_at), local dates YYYY-MM-DD text (*_on), money is integer paise (*_paise), enums are TEXT + CHECK via oneOf(). schema/rules.test.ts enforces this.
 - Keep indexes few: each index adds rows written on every insert (check the numbers in spike 0.6.2 before adding more).
 - No triggers unless spike 3.2.6 passed. No FTS5.
 - Numbering uses the counters table inside the same db.batch() as the insert.
