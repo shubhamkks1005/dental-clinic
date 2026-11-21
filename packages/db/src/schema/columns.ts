@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { integer, text } from "drizzle-orm/sqlite-core";
+import { nowUtcSql } from "../sql";
 
 export const STANDARD_COLUMNS = [
   "id",
@@ -11,16 +12,13 @@ export const STANDARD_COLUMNS = [
   "version",
 ] as const;
 
-// UTC ISO text with milliseconds, e.g. 2026-11-22T05:30:00.000Z.
-const nowUtc = sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`;
-
 // New builders on every call: Drizzle column builders must not be shared between tables.
 // created_by / updated_by hold a users.id, or 'system' for seeds and jobs.
 export function standardColumns() {
   return {
     id: text("id").primaryKey(),
-    createdAt: text("created_at").notNull().default(nowUtc),
-    updatedAt: text("updated_at").notNull().default(nowUtc),
+    createdAt: text("created_at").notNull().default(nowUtcSql),
+    updatedAt: text("updated_at").notNull().default(nowUtcSql),
     createdBy: text("created_by").notNull(),
     updatedBy: text("updated_by").notNull(),
     deletedAt: text("deleted_at"),

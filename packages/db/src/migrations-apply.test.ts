@@ -1,23 +1,9 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { DatabaseSync } from "node:sqlite";
 import { afterAll, describe, expect, it } from "vitest";
 import { STANDARD_COLUMNS } from "./schema/columns";
+import { migratedSqlite } from "./testing";
 
 // D1 is SQLite, so Node's built-in SQLite is a faithful check of the migration SQL.
-// pnpm runs package scripts with packages/db as the working directory.
-const DIR = "migrations";
-
-function freshDatabase(): DatabaseSync {
-  const db = new DatabaseSync(":memory:");
-  db.exec("PRAGMA foreign_keys = ON");
-  const files = readdirSync(DIR)
-    .filter((f) => f.endsWith(".sql"))
-    .sort();
-  for (const file of files) db.exec(readFileSync(`${DIR}/${file}`, "utf8"));
-  return db;
-}
-
-const db = freshDatabase();
+const db = migratedSqlite();
 afterAll(() => db.close());
 
 const tableNames = () =>

@@ -28,6 +28,7 @@
 - .gitignore - node_modules, dist, .wrangler, .dev.vars*, .env*
 - .nvmrc - Node 26 (Homebrew node); `nvm use system` also works; package.json engines = >=26 <27
 - README.md - setup, environments table, first-time Cloudflare setup, staging and production deploy steps, secrets
+- types/node-builtins.d.ts - minimal node:fs / node:sqlite / node:crypto / import.meta.url types for tests (no @types/node); included by db and worker tsconfig
 - docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
 
 ## apps/worker
@@ -69,8 +70,14 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
 - scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
 - src/migrations.test.ts - 1.2.2: every migration locked, none edited
-- src/node-builtins.d.ts - minimal node:fs / node:crypto / node:sqlite types for tests (no @types/node)
-- src/index.ts - createDb(d1) returns the Drizzle client
+- src/index.ts - package entry (createDb, Db, takeNumber, patientCodeSql, NEVER_RESETS)
+- src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
+- src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
+- src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
+- src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format
+- src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction)
+- src/testing/test-db.ts - migratedSqlite() and testDb() (real drizzle D1 client over a migrated in-memory DB)
+- src/testing/index.ts - test helpers entry, imported as @clinic/db/testing (never from Worker/web code)
 - src/schema/index.ts - schema entry (exports every table)
 - src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs
 - src/schema/rules.test.ts - 1.2.1 rules: every table has the standard columns, *_paise integer, *_at/*_on text, enums have CHECK
@@ -84,6 +91,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
+- src/time.ts - istDate() (YYYY-MM-DD in IST) and financialYearOf() ("2026-27", April-March by IST date)
+- src/time.test.ts - IST day boundary, 1 April boundary
 - src/ulid.ts - newUlid(): 26-char sortable ids (Web Crypto, no dependency)
 - src/ulid.test.ts - format, spec example, time order
 - src/index.ts - package entry
