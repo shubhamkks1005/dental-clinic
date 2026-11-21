@@ -1,10 +1,11 @@
 # STATE
 Last updated: 2026-11-22
 Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
-Current task: 1.1.7
-Status: 1.1.6 committed locally; owner pushes
+Current task: 1.1.8
+Status: 1.1.7 HALF DONE (generator only) committed locally; owner pushes
 Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account), 1.1.5 (dependabot.yml, Node 26 pinned; "weekly PRs arrive" can only be confirmed on GitHub), 1.1.6 (path routing only, per plan note: /app, /my, /api/*, /hooks/*; no hostname routing)
-Next 3 tasks: 1.1.7, 1.1.8, 1.2.1
+Half done: 1.1.7 - fake patient generator + tests done; inserting into local D1 (`pnpm db:seed`) waits for the patients table (fields decided in 2.1.1). Done-when "new developer sees data in the app" cannot pass until a patient screen exists.
+Next 3 tasks: 1.1.8, 1.2.1, 1.2.2
 Owner to-do from 1.1.3: push, check the Actions tab shows a green "CI" run; optional branch protection on main requiring the "check" job.
 Phase 0 still open: 0.1.1, 0.1.2, 0.1.3 and the rest (clinic-visit tasks for the owner)
 Open questions for owner:

@@ -56,6 +56,8 @@
 - src/index.ts - createDb(d1) returns the Drizzle client
 - src/schema/index.ts - schema entry (empty)
 - migrations/ - SQL migrations (empty; never edit an applied one)
+- src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. (dry_run only)
+- src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint)
