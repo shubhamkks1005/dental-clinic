@@ -1,6 +1,6 @@
 # apps/web rules (Vite + React SPA)
 - Two separate route trees: /app/* (staff) and /my/* (patient portal). The portal has no forms except login.
-- All API calls go through the typed client in src/api. No raw fetch strings in components.
+- The shared typed API client lives in src/api. Each feature keeps its own small API functions in its folder that call that client. Components never call fetch directly.
 - Forms validate with the shared zod schema. Finalising a record shows a preview and asks for confirmation. Finalised data is shown read-only.
 - Print = browser print of HTML built from the saved immutable snapshot JSON, with @media print CSS. No PDF libraries.
 - Receptionist speed matters: keyboard-first patient search and new-patient form, big click targets, no page reloads.

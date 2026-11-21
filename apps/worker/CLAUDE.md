@@ -1,6 +1,6 @@
 # apps/worker rules (Hono API on Cloudflare Worker)
 - Only three route groups: /api/staff/* (Cloudflare Access JWT required), /api/portal/* (patient session, read-only), /hooks/* (signed webhooks). Nothing else.
-- Auth middleware runs first. Every staff route declares its allowed roles (doctor, reception). Add the route to the role test matrix.
+- Auth middleware runs first. Every staff route declares its allowed roles (doctor, receptionist, developer). Add the route to the role test matrix.
 - Validate every input with zod schemas from packages/shared. Reply shape: { ok: true, data } or { ok: false, error: { code, message } }.
 - Database only through functions in packages/db. Any write touching more than one row uses db.batch().
 - Unauthenticated endpoints: rate limit, at most one write per request, Turnstile where the plan says so.

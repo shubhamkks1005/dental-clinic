@@ -38,4 +38,6 @@
 - 2026-11-22 - Default settings seeded by migration: patient_code.prefix "P-", patient_code.digits 6 (from the P-000123 format) - AGENTS.md - agent
 - 2026-11-22 - Migration tests use Node's built-in SQLite and hand-written minimal Node types instead of adding @types/node - no unapproved dependency - agent
 - 2026-11-22 - Code structure: one file one job (~200 lines smell, 300 split); worker routes thin, rules in src/domain/<feature>.ts; web in src/features/<name>/ with shared parts in src/ui/; one rule in one place; features talk through index.ts; MAP.md updated in the same task. Applies to new code from the next task; existing code is not refactored now - keep changes easy - owner
+- 2026-11-22 - Role names are doctor, receptionist, developer everywhere ("reception" renamed in rules, SPEC and PLAN; PLAN line about the reception area in cancelled 8.5.4 kept) - consistency - owner
+- 2026-11-22 - Web API calls: shared typed client in src/api; each feature has its own small API functions that call it; components never call fetch - owner confirmed - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

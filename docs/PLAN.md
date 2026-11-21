@@ -73,7 +73,7 @@ milaya jata hai.
 Parcha. Browser se print hota hai, aur har finalise record ka ek snapshot rakha jata hai
 jo badla nahi ja sakta. Server par PDF nahi.
 Messaging. SMS ek purane Android phone se (alag SIM, sms-gate.app ka gateway),
-WhatsApp reception ke ek click se (wa.me), email Brevo se. SMS ya WhatsApp me
+WhatsApp receptionist ke ek click se (wa.me), email Brevo se. SMS ya WhatsApp me
 ilaaj ya dawai ki jaankari kabhi nahi.
 Data ki suraksha. Finalise hua record lock, sudhaar addendum se, delete sirf soft;
 paise integer paise me; bill aur receipt ke number har saal gap-free. Teen backup: D1
@@ -94,7 +94,7 @@ Developer akela hai (busy, beemar ya chhod de): bachav README, runbooks, sab
 accounts sister ke naam, aur ek dost developer.
 Mehnat andaaz se zyada nikle: 'baad me' tags, phase gates, spike pehle, Phase 1 par
 dobara hisaab.
-Reception shadow me thak jaye: shadow sirf 2 hafte, super-user, rollback ke triggers.
+Receptionist shadow me thak jaye: shadow sirf 2 hafte, super-user, rollback ke triggers.
 Sister ko software kagaz se behtar na lage: parcha unke saath design, har gate par
 demo, jo wo use nahi karegi wo banega nahi.
 Asli patient data developer ke laptop par: encrypted laptop, har drill ke baad secure
@@ -443,7 +443,7 @@ shortlist karo, availability dekho, kisi aur clinic ke naam se takrao nahi.
 theek), clinic ki alag SIM jisme SMS pack ho, SIM ki validity ke recharge ka calendar.
 Operator se poochna ki automated appointment-reminder SMS par unki kya policy
 hai.
-0.4.1 Reception PC (S). Chrome ya Edge naya, aur 1366x768 screen par UI sahi dikhna
+0.4.1 Receptionist PC (S). Chrome ya Edge naya, aur 1366x768 screen par UI sahi dikhna
 chahiye. Test karo.
 0.4.2 Printer (S). A4 par parcha aur bill ka test print. Letterhead use hota hai to
 alignment dekho.
@@ -710,7 +710,7 @@ button, input, select, dialog, tabs, toast, badge, card. Done jab: har component
 keyboard se chalta hai.
 1.4.3 Layout shell (M). Left nav (Aaj, Patients, Appointments, Billing, Reports,
 Settings), upar global search (shortcut / ), "Naya patient" button, role ke hisaab se
-menu. 1366x768 par theek, tablet par bhi. Done jab: reception PC par asli screen size
+menu. 1366x768 par theek, tablet par bhi. Done jab: receptionist PC par asli screen size
 par test hua.
 1.4.4 Form kit (M). react-hook-form aur Zod, inline errors, mobile number (+91, 10 digit
 check), tareekh DD/MM/YYYY, Enter se save, Tab ka sahi order. Done jab: ek form sirf
@@ -867,7 +867,7 @@ given_at, recorded_by, method) . Types: privacy_notice, sms_reminders, marketing
 Dental clinic software: ultra detail build plan
 Page 21 of 150
 
-2.2 Reception ke screens
+2.2 Receptionist ke screens
 settings me version ke saath, taaki pata rahe patient ne kaunsa text dekha. Sahmati
 wapas lena bhi ek nayi row (delete nahi). Done jab: ek patient ke liye "kab, kisne,
 kaunsa text" ek screen par dikhta hai.
@@ -889,7 +889,7 @@ dikhne chahiye. Done jab: koi dead button nahi.
 aur Enter. Result me naam, umar aur gender, mobile ke aakhri 4 digit, code, last visit.
 Kuch na mile to bada button "Naya patient banao: <jo likha>". Done jab: bina mouse ke
 search karke profile khul jaata hai.
-2.2.4 Patient edit (S). Basic details reception badal sakti hai. Mobile badalne par
+2.2.4 Patient edit (S). Basic details receptionist badal sakti hai. Mobile badalne par
 confirm aur audit me purana aur naya. Done jab: audit row banti hai aur do tabs me edit
 par version-check (1.2.7) rokta hai.
 2.2.5 Patient list (M). Table kit (1.4.5) se. Filters: is mahine naye, 6 mahine se nahi aaye,
@@ -1000,7 +1000,7 @@ hai. Done jab: sister ke printer par test print theek.
 samay, clinic ka phone" aur logo. Done jab: printer par test.
 2.4.6 Week view (M, baad me). Din-wise count aur bhare ya khaali slots. Done jab: ek
 nazar me pata chalta hai kaun sa din khaali hai.
-2.4.7 Auto-refresh (S). Reception aur doctor ke screens har 60 second me refresh,
+2.4.7 Auto-refresh (S). Receptionist aur doctor ke screens har 60 second me refresh,
 tab chhupa ho to ruk jaaye. Hisaab: 2 screens × 10 ghante × 60 = 1,200 requests roz,
 har ek ~30 rows, yani lagbhag 36,000 rows. Free limit (100,000 requests aur 5 million
 rows) ka 1.2% aur 0.7% (meri ganit). Done jab: dusre screen par badlav ek minute me
@@ -1174,9 +1174,9 @@ par UPDATE repository se bhi rukta hai aur DB ke trigger se bhi (D1 me trigger c
 hain ya nahi, 1 ghante me test karo; na chale to sirf repository check, tests ke saath).
 Addendum alag table: text, karan, samay, kisne. Done jab: finalised visit par seedha
 UPDATE dono jagah fail hota hai.
-3.2.7 Clinical permissions (S). Doctor: sab. Reception: patient ke basic aur alerts ka
+3.2.7 Clinical permissions (S). Doctor: sab. Receptionist: patient ke basic aur alerts ka
 sirf icon, notes ya chart nahi. Developer: kuch nahi. 1.3.4 ki matrix me jodo. Done jab:
-reception ke token se clinical API 403 deti hai (test).
+receptionist ke token se clinical API 403 deti hai (test).
 3.3.1 Medical history form (L). Checklist (editable list, Haan, Nahi, Pata nahi aur note),
 jaise aise standard dental checklists me hote hain: dil ki bimari ya artificial valve, BP,
 diabetes, thyroid, dama, mirgi, bleeding ki dikkat ya khoon patla karne wali dawai,
@@ -1196,8 +1196,8 @@ liye likha ("Bleeding risk", "Penicillin allergy"). Software koi salaah nahi jod
 patient profile, visit screen, appointment card par chhota icon. SMS, WhatsApp ya
 print par kabhi nahi. Done jab: ek allergy jodne par teeno jagah dikhti hai.
 3.3.3 Restricted alerts (M). Doctor jis item ko restricted kare (jaise HIV ya hepatitis),
-uska detail sirf doctor ko. Reception ko sirf " ⚠  Doctor ko dekhna hai", API se bhi detail
-nahi, aur doctor ke dekhne ka access_log  me record. Done jab: reception ke login me
+uska detail sirf doctor ko. Receptionist ko sirf " ⚠  Doctor ko dekhna hai", API se bhi detail
+nahi, aur doctor ke dekhne ka access_log  me record. Done jab: receptionist ke login me
 detail na screen par na network response me.
 3.3.4 "Koi badlav?" (S). History 6 mahine (setting) se purani ho to visit khulte hi ek-
 click sawal "Medical history me koi badlav?" Haan khole form, Nahi to review ki
@@ -1314,8 +1314,8 @@ MB ki photo ~500 KB bani, X-ray ke bytes wahi.
 zoom, pan, brightness, contrast, invert (CSS filters, asli file nahi badalti), rotate, do
 images saath-saath (pehle aur baad). Daant se jodo. Done jab: 2 X-ray saath-saath
 dekh kar contrast badla ja sakta hai.
-3.7.5 Ijazat aur access log (S). Doctor sab files. Reception sirf scan  aur consent
-upload aur dekh sake. Clinical image khulne par access_log . Done jab: reception se
+3.7.5 Ijazat aur access log (S). Doctor sab files. Receptionist sirf scan  aur consent
+upload aur dekh sake. Clinical image khulne par access_log . Done jab: receptionist se
 X-ray ka URL 403.
 3.7.6 Storage ka panel (S). files.bytes  ka jod (R2 API nahi), 7 GB par peela aur 9 GB
 par laal alert. Done jab: nakli 8 GB par panel peela dikhta hai.
@@ -1379,7 +1379,7 @@ Poora perio chart (masude ki gehrayi ke naap) v1 me mat, sirf gum condition
 dropdown. Phase 11 me dekhenge.
 Images D1 me (base64) mat rakho, sirf R2. Public URL kabhi nahi.
 X-ray dobara compress mat karo. Sirf phone ki photo chhoti karo.
-Restricted alerts reception ko mat dikhao. Medical alerts SMS, WhatsApp ya print me
+Restricted alerts receptionist ko mat dikhao. Medical alerts SMS, WhatsApp ya print me
 mat daalo.
 Kabhi auto-finalise mat karo.
 Notations mat milao: hamesha dikhao kaun sa chal raha hai.
@@ -1388,7 +1388,7 @@ open-dentist ya kisi aur ka code bina license aur security review ke asli data k
 mat chalao.
 ICD ya insurance coding v1 me mat.
 Galat entry delete mat karo, "entered in error" karo.
-3.10.1 Automated tests (L). Clinical permissions (reception API se notes ya restricted
+3.10.1 Automated tests (L). Clinical permissions (receptionist API se notes ya restricted
 alerts nahi paata), finalise lock (repository aur DB), addendum, entered-in-error,
 tooth_events se chart banna, plan ka status badlav, upload ki ijazat. Done jab: CI green.
 3.10.2 Autosave ki tod-phod (M). Internet ka aana-jaana, do tabs, version conflict,
@@ -1409,7 +1409,7 @@ Doctor ne ek nayi consultation (history, exam, chart me 3 daant, diagnosis, plan
 items) 5 minute ke aaspaas me bhari aur ek follow-up 60 second se kam me.
 Network 30 second band karke wapas laane par autosave me kuch nahi khoya.
 Finalise ke baad edit API aur DB dono se rukta hai, addendum chalta hai.
-Reception ke login se clinical notes aur restricted alerts API se bhi nahi milte.
+Receptionist ke login se clinical notes aur restricted alerts API se bhi nahi milte.
 X-ray upload, viewer aur access log chalte hain, R2 par koi public URL nahi.
 Chart ki disha aur notation sister ne manzoor kiye.
 Ek patient ka chart aur timeline 400 se kam rows padhkar khulta hai.
@@ -1479,7 +1479,7 @@ madadgaar se), vajan kg me (bachchon ke liye record aur print, hisaab nahi). Don
 advice aur tareekh parche par aate hain.
 4.2.6 Issue aur revise (M). "Issue" par parcha lock (print ya issue button se). Uske
 baad badlav "Revised" naya version, purana safe, parche par "Revised" likha.
-Reception sirf issue hua parcha print kar sakti hai. Issue hone par patient portal ke liye
+Receptionist sirf issue hua parcha print kar sakti hai. Issue hone par patient portal ke liye
 "share" flag (Phase 8 padhega). Done jab: issue ke baad seedha edit fail, revise chalta
 hai, dono versions dikhte hain.
 4.2.7 Pichla parcha copy (S). Wahi dawai wapas wale marij ke liye ek click. Done jab:
@@ -1648,7 +1648,7 @@ Dental clinic software: ultra detail build plan
 Page 43 of 150
 
 5.3.4 Baaki ki list (M). Jinka baaki hai, umar ke hisaab se (0 se 30, 30 se 60, 60 se zyada
-din), aakhri call ka note. Appointment card par "baaki hai" ka nishan (sirf reception ko
+din), aakhri call ka note. Appointment card par "baaki hai" ka nishan (sirf receptionist ko
 raqam). Done jab: list me saare baaki wale aur total khate se milta hai.
 5.3.5 Advance lagana (S). Naya bill banate hi credit lagane ka option. Done jab: credit
 ke baad baaki sahi.
@@ -1697,7 +1697,7 @@ Paise float me mat rakho.
 Baaki raqam ya treatment SMS ya WhatsApp me mat bhejo (generic yaad hi).
 Din band hone ke baad purani tareekh me entry mat daalo (late entry ya doctor ki
 ijazat).
-Reception ko poora revenue mat dikhao, sirf aaj ka summary.
+Receptionist ko poora revenue mat dikhao, sirf aaj ka summary.
 GST ka hisaab code me hard-code mat karo, category aur rate store karo.
 Insurance ya TPA v1 me mat.
 Dues apne aap "write off" mat karo.
@@ -1846,8 +1846,8 @@ din se sitting nahi (kul raqam ke saath, yeh aksar sabse kaam ki list hai), (b) 
 mahine se nahi aaye (recall). Patient par click, "sampark kiya" ka note, Phase 7 ke yaad
 dilane se judne ka hook. Done jab: ek nakli patient dono list me sahi aata hai aur
 sampark ke baad list se hat jaata hai.
-6.3.8 Reception ka "aaj ka summary" (S). Sirf aaj ke aaye, baaki, collected. Poora
-dashboard nahi (1.3.4 ki matrix). Done jab: reception ke login me dashboard URL 403.
+6.3.8 Receptionist ka "aaj ka summary" (S). Sirf aaj ke aaye, baaki, collected. Poora
+dashboard nahi (1.3.4 ki matrix). Done jab: receptionist ke login me dashboard URL 403.
 6.3.9 Intezaar aur kursi ka istemal (M, baad me). Intezaar ka median aur kursi kitne
 samay bhari rahi. Yeh tabhi sahi hoga jab statuses ka click aadat ban jaye, isliye pilot ke
 baad. Done jab: 2 hafte ka data sahi dikhta hai.
@@ -1908,7 +1908,7 @@ ko.
 Statuses ke click ke bharose wale metrics (intezaar, kursi) pilot se pehle sahi mat
 maano.
 Koi bhi setting code me chhupi mat rakho.
-Reception ko poora revenue mat dikhao.
+Receptionist ko poora revenue mat dikhao.
 Phase 6 ka gate
 Nakli dataset par har number haath ki ginti se milta hai (tests me).
 Dashboard ek baar kholne par 2,000 se kam rows padhta hai.
@@ -1916,12 +1916,12 @@ Dashboard ek baar kholne par 2,000 se kam rows padhta hai.
 Sister ne paribhasha, layout aur 4 top numbers manzoor kiye.
 Har chart table ke roop me aur keyboard se padha ja sakta hai.
 Holiday, timing ya list badalne par ek click me purani value par wapas ja sakte ho.
-Reception ke login se dashboard aur reports 403, sirf aaj ka summary milta hai.
+Receptionist ke login se dashboard aur reports 403, sirf aaj ka summary milta hai.
 Adhoora ilaaj aur recall ki list nakli data me sahi.
 Phase 7: Reminders aur messaging (SMS, WhatsApp, email)
 Yahan patient ko SMS ya WhatsApp se yaad dilane ka poora system banta hai:
 appointment confirm, ek din pehle reminder, badlav ya radd hone ki soochna, aur portal ka
-OTP. Maksad no-show kam karna aur reception ka call karne ka kaam bachana hai. Teen
+OTP. Maksad no-show kam karna aur receptionist ka call karne ka kaam bachana hai. Teen
 rules poore phase par lagte hain: (1) message me sirf pehla naam, clinic ka naam, tareekh-
 samay aur clinic ka number, ilaaj, dawai, rashi kuch nahi; (2) sirf unhe jinhone anumati di;
 (3) koi discount ya offer wala message nahi, kyunki DCI code me inducement aur rebate
@@ -1978,7 +1978,7 @@ aur OTP
 (Plan A)
 WhatsApp, hath
 se (wa.me link)
-Reception
+Receptionist
 laptop par link
 kholti hai, text
 bhara milta hai,
@@ -2150,7 +2150,7 @@ poochna: clinic ka apne patients ko appointment reminder normal SIM se bhejna th
 hai ya DLT zaruri hai. Done jab: faisle ka page hai aur operator ya vakeel ka jawab (ya
 'abhi pata nahi') likha hai.
 7.1.5 Plan B ki shart aur kharcha (S). Likho DLT par kab jaana hai: (a) SIM par warning
-ya band, (b) phone aksar offline aur reception thak gayi, (c) budget badhe. Kharcha
+ya band, (b) phone aksar offline aur receptionist thak gayi, (c) budget badhe. Kharcha
 meri ganit se: 300 visits per mahina, har visit par 2 message, yani 600 per mahina,
 Dental clinic software: ultra detail build plan
 Page 55 of 150
@@ -2181,9 +2181,9 @@ number, flag), wajah ke saath
 koi nahi
 unknown pata nahi gaya ya nahi, kabhi automatic
 dobara nahi
-reception check karti hai
-needs_human WhatsApp: reception ko bhejna hai done_manual
-done_manual reception ne 'bhej diya' dabaya koi nahi
+receptionist check karti hai
+needs_human WhatsApp: receptionist ko bhejna hai done_manual
+done_manual receptionist ne 'bhej diya' dabaya koi nahi
 dry_run test mode: banaya par bheja nahi koi nahi
 Dental clinic software: ultra detail build plan
 Page 56 of 150
@@ -2257,10 +2257,10 @@ jata.
 7.2.6 Retries, unknown, expiry aur fallback (M). Retryable error par 5, 15, 45 minute
 baad dobara (3 koshish, expire_at  ke baad nahi). Message sending  me 10 minute se
 zyada atka ho to unknown , aur kabhi automatic dobara nahi bhejna (duplicate ya galat
-OTP ka darr), reception ki list me 'check karo'. expire_at  guzar jaye to expired . SMS
+OTP ka darr), receptionist ki list me 'check karo'. expire_at  guzar jaye to expired . SMS
 permanent fail ho, expire hone wala ho, ya cap ya phone-down ki wajah se na ja paye to
 automatically whatsapp_manual  ka naya row ( fallback_of ) banta hai, taaki
-reception ek click me bhej de. Done jab: chaos test me har rasta (timeout, 500, beech
+receptionist ek click me bhej de. Done jab: chaos test me har rasta (timeout, 500, beech
 me crash) sahi status par pahunchta hai.
 Dental clinic software: ultra detail build plan
 Page 58 of 150
@@ -2304,7 +2304,7 @@ Done jab: test: ek din me 80 messages, 60 se zyada nahi jate, OTP phir bhi jata 
 Dental clinic software: ultra detail build plan
 Page 59 of 150
 
-7.3 Reception ke screens
+7.3 Receptionist ke screens
 7.3.1 'Aaj ke messages' board (L). Chaar khaane: 'Jaane wale' (queued, held), 'Gaye
 aaj' (sent, delivered), 'Dhyan do' (failed, unknown, expired, skipped, wajah ke saath),
 'WhatsApp se bhejna hai'. Har row par patient, message, samay, status, aur ek click par
@@ -2315,7 +2315,7 @@ badal kar bhej leti hai.
 7.3.2 WhatsApp manual queue (M). waLink(mobile, text) : sirf ankon wala number
 country code 91 ke saath (format https://wa.me/NUMBER?text=ENCODED , plus, zero,
 bracket, dash nahi, official FAQ), text UTF-8 percent-encode. 'Kholo' naye tab me link
-kholta hai ( noopener ), reception WhatsApp Web me Send dabati hai, wapas aakar
+kholta hai ( noopener ), receptionist WhatsApp Web me Send dabati hai, wapas aakar
 'Bhej diya' ya 'WhatsApp nahi hai' dabati hai (nahi hai to number par flag, agla raasta
 SMS ya call). Ek ke baad ek 'agla' flow aur keyboard shortcut. Link sirf browser me
 banta hai, hamari site ke URL me patient ka koi detail nahi. Done jab: Hindi naam wale
@@ -2409,7 +2409,7 @@ dekhta hai.
 override. Devanagari wale template tabhi jab doctor chune, aur editor 'ye 3 SMS
 ginega' dikhaye. Done jab: ek patient ko Hinglish aur dusre ko English message jata
 hai.
-7.5.1 Recall batches (M). Phase 6 ki recall list se doctor ya reception 'message banao'
+7.5.1 Recall batches (M). Phase 6 ki recall list se doctor ya receptionist 'message banao'
 dabate hain: roz zyada se zyada 5 (setting) patients ke liye recall queue hota hai, sirf
 anumati wale, default WhatsApp hath se (SMS bhi chun sakte hain). 'Sampark kiya' ka
 note apne aap. Jawab me 'galat number' ya 'badal gaye' aaye to number par flag. Done
@@ -2438,13 +2438,13 @@ Page 62 of 150
 7.7.1 Consent capture aur withdrawal (M). Registration par (aur patient page par)
 'appointment ki yaad dilane ke liye SMS ya WhatsApp' ka checkbox, pehle se tick nahi
 (DPDP me 'clear affirmative action' chahiye, meri samajh, vakeel se confirm), shabd ka
-version, kisne liya, kab, kis raaste se. Wapas lena: STOP reply ya reception ka switch,
+version, kisne liya, kab, kis raaste se. Wapas lena: STOP reply ya receptionist ka switch,
 dono turant lagu. Anumati ka ek printable saboot. Done jab: anumati ke bina kisi
 patient ko koi message queue nahi hota.
 7.7.2 Number hygiene (M). Ek hi function normalizeIndianMobile()  (10 ank, 6 se 9
 se shuru, +91  ke saath save, rule ek jagah taaki badle to ek hi jagah badalna pade).
 Landline ya galat format par SMS nahi. Ek number kai patients par ho to STOP sabke
-liye. Galat-number flag: reply me 'galat number' ya reception ka button. Logs me
+liye. Galat-number flag: reply me 'galat number' ya receptionist ka button. Logs me
 hamesha masked number. Done jab: 50 sample numbers (ghar ke, +91 , 0 se shuru,
 spaces) ka test.
 7.7.3 Notice me messaging ka paragraph (S). Privacy notice (patient portal /my ka login
@@ -2457,7 +2457,7 @@ phone down  2 ghante se zyada, backlog 50 se zyada. Done jab: phone band karke t
 7.8.2 Phone ka setup aur dainik jaanch (S). Ek page: purana Android, hamesha
 charger par, Wi-Fi par (mobile data backup), app ke liye battery optimisation off aur
 auto-start on, app recent apps me lock, screen lock ya PIN, SIM ke recharge ki tareekh
-(app ke FAQ bhi dekho). Reception ki subah ki 20 second ki jaanch: dashboard par
+(app ke FAQ bhi dekho). Receptionist ki subah ki 20 second ki jaanch: dashboard par
 'SMS phone: chalu'. Done jab: phone ko 24 ghante bina chhue chhod kar test, aur
 reboot ke baad app chalu.
 7.8.3 Runbook aur 'sab hath se' button (M). 'SMS nahi ja rahe' par ek page, 6 kadam:
@@ -2496,7 +2496,7 @@ cron dobara chalna. Done jab: CI me, aur ek niyam tod kar test fail hota hai.
 webhook, claim ke baad Worker crash, galat signature, clock 3 minute aage ya peeche.
 Done jab: koi message na do baar jata hai, na chup-chaap kho jata hai.
 7.9.3 7 din ka asli phone test (M). Asli phone aur asli SIM, sirf staff ke 3 se 4 numbers
-par (developer, sister, reception), roz 10 messages ka mix. Delivery %, delay, reboot,
+par (developer, sister, receptionist), roz 10 messages ka mix. Delivery %, delay, reboot,
 battery, ping ka record. Done jab: 7 din ki ek table hai aur koi unknown  bina wajah ke
 nahi.
 7.9.4 Sister ka sign-off (S). Sab messages ke text, samay, 'Dhyan do' screen, runbook.
@@ -2675,7 +2675,7 @@ plain me nahi ( mobile_hash  HMAC, IP sirf hash). Indexes: portal_accounts(mobil
 UNIQUE, portal_sessions(token_hash)  UNIQUE, otp_requests(mobile_hash,
 created_at) , rate_limits(key) . Done jab: migration aur rollback test chalte hain.
 8.2.2 Portal activate karna (M). Patient page par 'Portal chalu karo': pehle portal
-consent row (2.1.9), phir portal_links  row, audit. Reception patient ko batati hai ki
+consent row (2.1.9), phir portal_links  row, audit. Receptionist patient ko batati hai ki
 apne mobile number se my.  wale address par jao, password staff kabhi nahi banata ya
 dekhta. Bina consent ke button disabled. Nabalig ke liye relation guardian  aur
 guardian ka naam aur number zaruri. Band karna ek click me (link disabled, sessions
@@ -2734,7 +2734,7 @@ hai.
 8.2.10 Share flag aur 'patient ki nazar se dekho' (M). Staff app me parche (4.2.6 ka
 share flag), bill aur (baad me) treatment plan aur documents par 'Patient ko dikhao'
 switch, badalna audit hota hai. Patient page par 'Patient ki nazar se dekho' (sirf
-padhna, wahi DTO jo portal deta hai), taaki reception patient ko guide kar sake. Done
+padhna, wahi DTO jo portal deta hai), taaki receptionist patient ko guide kar sake. Done
 jab: switch OFF karte hi portal API se wo item gayab, aur preview aur portal ka output
 ek jaisa (test).
 Dental clinic software: ultra detail build plan
@@ -2826,7 +2826,7 @@ aur dost ki review ke issues band.
 200% zoom, Slow 4G par sasti Android. Done jab: login se bill tak ek patient bina
 madad ke 2 minute me.
 8.4.4 Pilot (M). Pehle 5 staff ya parivar, phir desk par 10 asli patients jinhone portal
-consent diya. Reception ke liye ek line ka script ('portal par aap apni appointment,
+consent diya. Receptionist ke liye ek line ka script ('portal par aap apni appointment,
 parcha aur bill dekh sakte hain'). Kagaz par feedback, top 5 issues theek. Done jab: 10
 me se kam se kam 8 patients bina madad ke login kar paye.
 CANCELLED 8.5.1 Pages ki list (S). Home, About (doctor), Services, Fees (agar doctor chahe), [CANCELLED note: no public website in this repo, see docs/DECISIONS.md]
@@ -2947,7 +2947,7 @@ public/  prefix me, alt text zaruri, aur invariant test ki patient files kabhi p
 serve nahi hoti. Done jab: GPS wali photo upload ke baad metadata khali, aur patient
 file ka public URL 404.
 CANCELLED 8.7.4 Publish aur history (M). Draft se Published par DCI lint ka natija aur diff dikhta [CANCELLED note: no public website in this repo, see docs/DECISIONS.md]
-hai, sirf doctor (reception nahi) publish kar sakta hai, naya version banta hai, overlay 5
+hai, sirf doctor (receptionist nahi) publish kar sakta hai, naya version banta hai, overlay 5
 minute me taaza, 'is version par wapas jao' ek click me (6.5.2 jaisa), audit. Done jab:
 galat text publish karke ek click me wapas.
 CANCELLED 8.7.5 Content lint (M). Warning: 'best', 'No.1', 'leading', 'top', 'guaranteed', '100%', 'cure', [CANCELLED note: no public website in this repo, see docs/DECISIONS.md]
@@ -2987,7 +2987,7 @@ CANCELLED 8.8.5 Uptime aur link monitoring (S). Site aur portal ke liye koi free
 mahine me ek baar link checker. Phase 9 isse monitoring se jodta hai. Done jab: test me
 site band karke alert aaya.
 CANCELLED 8.9.1 Sampark ka block (S). Click-to-call ( tel: ), WhatsApp ( wa.me  link, text me sirf [CANCELLED note: no public website in this repo, see docs/DECISIONS.md]
-'Hello, I would like to book an appointment', mareez khud shuru karta hai aur reception
+'Hello, I would like to book an appointment', mareez khud shuru karta hai aur receptionist
 jawab deti hai), pata aur 'Maps me kholo', timings (overlay se), 'aaj khula ya band'. Done
 jab: phone par ek tap me call aur WhatsApp dono khulte hain.
 CANCELLED 8.9.2 Callback form (M, baad me). Naam, mobile, kab call karein (subah, dopahar, [CANCELLED note: no public website in this repo, see docs/DECISIONS.md]
@@ -3205,7 +3205,7 @@ hai.
 reset subah 05:30 IST par. Static pages aur SPA ke files phir bhi chalte hain (free aur
 unlimited), par API nahi, isliye staff app 'server busy' dikhaye aur paper mode ka link
 de. Done jab: staging me seema nakli kam karke ye behaviour dekha.
-9.2.3 Kal ki list aur paper kit (M). Reception roz shaam 'kal ki appointments' ki list
+9.2.3 Kal ki list aur paper kit (M). Receptionist roz shaam 'kal ki appointments' ki list
 print karti hai (naam, samay, mobile, alerts ke label) aur file me rakhti hai, taaki app
 band ho tab bhi agla din chal sake. Paper kit: naye patient ka form (consent line ke
 saath), appointment sheet, parche ka pad, receipt book (alag series, baad me app me
@@ -3247,8 +3247,8 @@ recovery codes kagaz par. Done jab: ek table me har account, malik, 2FA, aakhri 
 9.3.5 Staff app ki suraksha (M). Access JWT jaanch ke tests (galat aud , issuer, expiry,
 algorithm), staff SPA ki CSP, Access ka session samay (kaam ke din jitna, 8 se 12
 ghante), idle par screen lock, bhaari endpoints par rate limit, export aur bulk print sirf
-doctor ko aur audit me. Patient list ka poora export reception ke liye nahi, search 25
-results se zyada nahi deta. Done jab: tests me galat token, purana token aur reception
+doctor ko aur audit me. Patient list ka poora export receptionist ke liye nahi, search 25
+results se zyada nahi deta. Done jab: tests me galat token, purana token aur receptionist
 ka export teeno fail.
 9.3.6 Audit log ki akhandta (M). audit_log  sirf jodne wala: har row me pichhli row ka
 hash (chhed-chhad dikhe), raat ko jaanch ka job, backups me shamil. Agar D1 triggers
@@ -3310,12 +3310,12 @@ cheez par pass.
 register ka final roop, runbooks ki list, 'naye developer ke liye pehla din' page (taaki
 sab kuch ek insaan ke sar par na rahe). Done jab: kisi dost developer ne sirf README
 se local chala liya.
-9.5.2 User manual (L). Hinglish me screenshots ke saath, doctor aur reception ke liye
+9.5.2 User manual (L). Hinglish me screenshots ke saath, doctor aur receptionist ke liye
 alag: roz ka kaam, naya patient, appointment, visit, parcha, billing, din band, backup ka
 haal, 'kuch gadbad ho to' (runbook ka saar). In-app samjhaish (6.5.6) ke saath milaakar.
-Done jab: reception ne bina developer ke ek poora din manual dekhkar chalaya.
+Done jab: receptionist ne bina developer ke ek poora din manual dekhkar chalaya.
 9.5.3 Training (M). Do sessions 90 minute ke, mock din, ek page ka cheat sheet print.
-Done jab: reception aur doctor ne mock din bina madad ke pura kiya.
+Done jab: receptionist aur doctor ne mock din bina madad ke pura kiya.
 9.5.4 Support ka process (S). App me 'problem batao' button (page ka naam aur
 samay jata hai, patient ka data nahi), developer ka WhatsApp, pehle mahine me clinic
 ke samay me jawab ki koshish 2 ghante me, bugs ki ek list, release notes saadi bhasha
@@ -3327,7 +3327,7 @@ hath ki manzoori ke baad, version tags, changelog, rollback. Phase 1 ke pipeline
 upar. Done jab: ek test release poore raste se gaya aur rollback bhi.
 9.5.6 Chhote videos (M, baad me). 8 videos 2 se 3 minute ke (naya patient,
 appointment, parcha, bill, din band, backup ka haal, password reset, paper mode).
-Done jab: reception ne dekhkar ek kaam bina puchhe kiya.
+Done jab: receptionist ne dekhkar ek kaam bina puchhe kiya.
 Dental clinic software: ultra detail build plan
 Page 86 of 150
 
@@ -3351,14 +3351,14 @@ Threat model, secrets ki list, access review aur privacy readiness page poore, a
 breach drill ek baar hua.
 ZAP baseline me koi high issue nahi, load test me CPU 10 ms ke andar aur har screen
 ka rows-read budget ke andar.
-Manual aur training ho gayi, aur reception ne mock din kiya.
+Manual aur training ho gayi, aur receptionist ne mock din kiya.
 Phase 10: Pilot aur go-live (kagaz se software par, bina clinic roke)
 Ab tak software banaya aur jaancha. Ab use asli clinic me chalana hai. Is phase me sabse
 bada khatra code nahi, badlaav hai: ek bhi patient chhute nahi, ek bhi bill gire nahi, aur
 kuch bigde to ek din me kagaz par wapas aa sakein. Isliye badlaav kadam-kadam se hota
 hai, aur har kadam par saaf likha hota hai ki asli record kaun sa hai (kagaz ya software).
 Dono ko ek hi samay asli maanna sabse bada jhagda banata hai.
-Clinic ka samay bhi ginna hai (meri andaaz, sister se poochho): Stage 1 me reception ko roz
+Clinic ka samay bhi ginna hai (meri andaaz, sister se poochho): Stage 1 me receptionist ko roz
 lagbhag 30 minute extra, doctor ko 10 se 15 minute, aur hypercare me roz 10 minute ka
 check-in. Ye developer ke ghanton me nahi ginta, par sister ko pehle batana zaroori hai,
 warna beech me thakaan aati hai.
@@ -3441,7 +3441,7 @@ Anuman (meri soch ya vendor blog ka sanket):
 Ek consultancy blog go-live ke baad 2 se 4 hafte me 10 se 25% productivity girne ki
 baat karta hai, aur uska doosra lekh duplicate patients ka aam 8 se 12% likhta hai. Dono
 US ke bade practices ke sanket hain, chhote clinic ka data nahi.
-3 se 4 hafte ki parallel avadhi, reception ka 30 minute extra, 20 se 30% kam booking,
+3 se 4 hafte ki parallel avadhi, receptionist ka 30 minute extra, 20 se 30% kam booking,
 aur rollback ka 'agle kaam ke din se kagaz par': sab meri soch.
 Raftaar ke targets (naya patient 2 minute, purane ka check-in 30 second, din band 15
 minute): pehle kagaz ka baseline naapo (10.1.4), phir ye badal sakte hain.
@@ -3463,9 +3463,9 @@ software-lead shuru, cutover) aur sister ne manzoor kiya.
 Dental clinic software: ultra detail build plan
 Page 89 of 150
 
-10.1.3 Zimmedaari aur backup user (S). Ek table: reception (super-user: roz ka kaam
+10.1.3 Zimmedaari aur backup user (S). Ek table: receptionist (super-user: roz ka kaam
 aur milaan), doctor (parcha templates, clinical content, publish ke faisle), developer
-(fixes aur nigrani), aur faisla karne wala ek (sister). Reception ki chhutti par kaam
+(fixes aur nigrani), aur faisla karne wala ek (sister). Receptionist ki chhutti par kaam
 chalane ke liye ek backup user (sister ya parivar ka koi) ko training do aur Access me
 uska email jodo. Do line ke gopniyata niyam: screen kisi ko mat dikhao, patient ka data
 WhatsApp par mat bhejo, computer chhodte waqt lock. Done jab: table bhari hui aur
@@ -3495,7 +3495,7 @@ manzoor kiya aur B me kitne cards aayenge ka andaaz likha.
 10.1.8 Pre-load ka data taiyar karna (M). B ke liye ek sheet, sirf developer ke
 encrypted laptop par (kisi cloud, WhatsApp ya email me nahi): naam, mobile, umar ya
 janmatithi, pata, chal rahe ilaaj ki ek line, agli appointment (tareekh aur samay). Kagaz
-se likhne me reception ya sister madad karte hain. Mobile ke liye 7.7.2 ka function,
+se likhne me receptionist ya sister madad karte hain. Mobile ke liye 7.7.2 ka function,
 duplicates mobile se. Ek column 'privacy notice diya gaya' ka, jiske bina SMS reminders
 off. Done jab: har row me valid mobile ya 'mobile nahi' likha aur duplicates 0.
 Dental clinic software: ultra detail build plan
@@ -3515,13 +3515,13 @@ payment aur baaki, bill radd, galat entry sudhaarna, parcha dobara print, X-ray 
 doctor ka din band, bijli jana (paper mode), SMS band hona, aur baaki. Har scenario ka
 expected result. Done jab: list repo me aur har line ka expected result likha.
 10.1.11 Dress rehearsal (M). Staging par nakli data ke saath ek poora din: doctor aur
-reception 30 scenarios chalate hain, timer ke saath, SMS dry_run , asli printer par
+receptionist 30 scenarios chalate hain, timer ke saath, SMS dry_run , asli printer par
 print, aakhir me din band aur milaan. Developer sirf dekhta hai, madad nahi karta. Jo
 atka wo bug ya manual ki line. Done jab: 30 me se kam se kam 28 scenarios bina madad
 ke pass, aur baaki ke fix ya workaround likhe.
 10.1.12 Patients aur staff ko soochna (S). Desk par chhota notice ('hum naya computer
 system shuru kar rahe hain, thoda samay lag sakta hai, dhanyavaad'), staff ki 15 minute
-ki briefing (kya badal raha hai, kab, kisko poochna), aur reception ka ek line ka script.
+ki briefing (kya badal raha hai, kab, kisko poochna), aur receptionist ka ek line ka script.
 Done jab: notice chhapa aur briefing hui.
 10.1.13 Booking load ka plan (S). Pehle 2 se 4 hafte me bookings thodi kam: har 3 se 4
 appointments ke baad ek khali slot ya roz 20 se 30% kam (meri soch, research ke
@@ -3529,7 +3529,7 @@ sanket ke hisaab se), naye patient ko 10 minute extra, aur doctor tay karta hai 
 normal. Done jab: doctor ne plan manzoor kiya aur appointment book me slot ka niyam
 set.
 10.1.14 Privacy aur consent taiyari (S). Privacy notice ka version fix (8.10.1), A5 par
-chhapa hua aur QR ke saath; reception ke liye consent ka script (notice dikhao, SMS
+chhapa hua aur QR ke saath; receptionist ke liye consent ka script (notice dikhao, SMS
 reminders ke liye alag haan ya na, portal baad me); consents  me entry (method:
 paper ya verbal); bachche ke liye guardian. Done jab: mock din me 5 patients ka
 consent record bana aur notice ka version number kagaz aur system me ek hi.
@@ -3547,7 +3547,7 @@ patient ginti normal dikhti hai. Messaging dry_run , portal band. Done jab: 6 te
 me dikhta hai.
 10.2.2 Stage 1: shadow entry ke niyam (S). Kagaz hi asli hai: register, parcha, receipt
 book. Appointments booking ke samay hi software me bhi (1 minute); baaki sab
-(patients, visits, bills) reception din ke ant me ya khali samay me bharti hai, patient ke
+(patients, visits, bills) receptionist din ke ant me ya khali samay me bharti hai, patient ke
 saamne nahi, 30 minute ke budget me (meri soch; zyada lage to wajah likho, wo
 software ki dikkat hai). Doctor patient ke saamne software nahi chalata. Jo bhi patient
 aaye uska notice aur consent abhi se (10.1.14). Done jab: niyam ek page me desk par,
@@ -3556,7 +3556,7 @@ aur pehle din ki entry 30 minute me poori hui ya wajah likhi.
 ginti = software ki 'aaj ke patients' ginti, (2) kagaz receipt book ka jod = software ka
 'Shadow' jod (paise me), (3) kal ki appointments ki kagaz diary = software ki list. Fark
 ho to jaane se pehle karan dhoondho. Done jab: ek kagaz 'milaan sheet' (tareekh, teen
-ginti, fark, karan, reception ka sign) aur 5 din lagatar fark 0 ya samjha hua.
+ginti, fark, karan, receptionist ka sign) aur 5 din lagatar fark 0 ya samjha hua.
 10.2.4 Fark ki list aur karan (S). Har fark ek line me: tareekh, P-code (naam nahi), kya
 fark, karan (entry bhool gayi, galat rakam, duplicate, galat patient, software bug, ya
 kagaz ki galti), kisne theek kiya. Hafte ke ant me developer karan ke hisaab se ginti
@@ -3580,17 +3580,17 @@ samay to nahi leta aur print kagaz par theek aata hai. Done jab: ek hafte ke par
 se 90% ki dawaiyan software list me mili (meri soch), aur ek parcha asli printer par
 kagaz wale se line-by-line mila.
 10.2.7 Messaging dry-run ka milaan (S). Shadow me MESSAGING_MODE=dry_run :
-system likhta hai ki 'live hota to kal ke liye ye N messages jaate'. Reception us list ko
+system likhta hai ki 'live hota to kal ke liye ye N messages jaate'. Receptionist us list ko
 kagaz diary ki kal ki appointments se milati hai (galat samay, galat number, bina
 consent wale). 7 din fark 0 ho to Stage 2 me live. Done jab: 7 din ke milaan, sab farak
 samjhe hue, aur gateway log me allowed_test_numbers  ke alawa koi asli SMS nahi.
 10.2.8 Stage 2 shuru karne ka faisla (S). Checkpoint 1 (kam se kam 10 kaam ke din
 baad): 5 din lagatar milaan me fark 0 ya samjha hua, koi khula P0 ya P1 nahi, dry-run list
-sahi, doctor ne parcha trial pass maana, reception ne kaha ki entry ka samay
+sahi, doctor ne parcha trial pass maana, receptionist ne kaha ki entry ka samay
 sambhalne laayak hai. Na ho to Stage 1 ek hafta aur. Done jab: checkpoint ka ek page
 sign ke saath, ya 'ek hafta aur' ka karan.
 10.2.9 Stage 2 ke niyam (S). Software-lead: appointments aur parcha software se
-(parcha print karke patient ko), reception patient ke saamne check-in karti hai, doctor
+(parcha print karke patient ko), receptionist patient ke saamne check-in karti hai, doctor
 visit software me. Paise: receipt abhi bhi kagaz ki book se (asli) aur software me S  bill
 saath me bante hain taaki jod milte rahein. Kagaz register me ek line per patient
 (naam, rakam) backup ke liye. Day-before reminders live, sirf unko jinhone SMS ka
@@ -3600,7 +3600,7 @@ paise ka milaan 100%.
 naya patient 2 minute ke andar, purane ka check-in 30 second ke andar, din band 15
 minute ke andar (meri targets; baseline dekh kar badlo). Jo screen dheemi usko top 3
 me fix. Done jab: tulna ki table aur top 3 fix, ya sister ne samay ko theek maana.
-10.2.11 Haftawar review (S). Har hafte 30 minute: doctor, reception aur developer. Kya
+10.2.11 Haftawar review (S). Har hafte 30 minute: doctor, receptionist aur developer. Kya
 atka, kya dheema, kya samajh nahi aaya, top 5 fixes, aur 'agle hafte aage ya ruko'. Faisle
 decision register me. Done jab: har review ke notes me top 5 aur owner likha.
 10.2.12 Asli data ke saath restore drill (M). 2 hafte asli entries ke baad: B2 ka latest
@@ -3625,7 +3625,7 @@ hui.
 10.3.2 Pre-load top-up (S). Cutover se pehle ke 2 din: agli 30 din ki appointments
 (kagaz diary se) aur naye ilaaj wale patients ka update, software ki list ka printout, aur
 use kagaz diary ke saath milao. Done jab: dono list ek jaisi (ya samjhe hue farak) aur
-reception ne sign kiya.
+receptionist ne sign kiya.
 10.3.3 Counters aur live switch (S). Kagaz receipt book ka aakhri number likho aur
 uske page ki photo lo (patient ka naam nahi dikhna chahiye). Software ke live series ka
 prefix kagaz se alag rakho taaki dono ke numbers kabhi na takrayein (Phase 5 ke
@@ -3655,7 +3655,7 @@ Page 94 of 150
 
 10.4 Hypercare (Stage 4, 2 hafte)
 Rollback agle kaam ke din se (meri soch). Done jab: staging me mode live se shadow
-wapas gaya, reception ne paper kit se ek mock ghanta chalaya, aur trigger list sister
+wapas gaya, receptionist ne paper kit se ek mock ghanta chalaya, aur trigger list sister
 ne sign ki.
 10.3.7 Kagaz kit aur receipt book band karna (S). 9.2.3 ki paper kit desk par (naye
 patient form, appointment sheet, parche ka pad, downtime receipt book alag series).
@@ -3684,7 +3684,7 @@ spike, Healthchecks sab green. Pehle hafte ke asli numbers 'quota budget' table 
 likho aur 9.4.1 ke naap se tulna karo. Done jab: roz ka ek tick sheet aur pehle hafte ke
 asli numbers table me.
 10.4.6 Patient ki shikayat aur galat message (S). Galat reminder, galat bill ya galat
-number gaya to: reception ki ek line ki maafi ki script, galti ka P-code ke saath record,
+number gaya to: receptionist ki ek line ki maafi ki script, galti ka P-code ke saath record,
 aur wajah ki jaanch 24 ghante me. Kisi ne SMS band karne ko kaha to turant consent
 Dental clinic software: ultra detail build plan
 Page 95 of 150
@@ -3699,9 +3699,9 @@ kuch bigde to sirf portal band (activation toggle), baaki software chalta rahe. 
 jab: 8.4.4 ka gate (10 me se 8 login).
 10.4.8 Hypercare ke fixes ka buffer (XL, buffer). Hypercare ke 2 hafton ke P0 aur P1
 fixes. 12 ghante meri soch. Done jab: sab P0 aur P1 band, baaki Phase 11 backlog me.
-10.5.1 Migration ka niyam (S). Purana patient agli baar aaye to: reception mobile se
+10.5.1 Migration ka niyam (S). Purana patient agli baar aaye to: receptionist mobile se
 search karti hai; na mile to quick-add (P-code), kagaz card par P-code likhti hai aur
-'software me' ka tick, doctor ya reception ek 'kagaz se history' note bharta hai (allergy
+'software me' ka tick, doctor ya receptionist ek 'kagaz se history' note bharta hai (allergy
 aur medical alerts, chal rahi dawaiyan, card par likhe zaruri pichhle ilaaj), aur card file
 me wapas. Agle visits me card ki zaroorat nahi par phenko mat. Done jab: niyam ek
 page me aur 10 mock purane patients me har ek 3 minute ke andar.
@@ -3721,7 +3721,7 @@ hai ya doctor ko history chahiye): phone ya scanner se, seedha aur roshni me, fi
 naam P-code aur tareekh, patient record me document ki tarah. Sab cards ka scan nahi
 (mehnga aur lamba kaam, upar ke sources). Done jab: 10 cards scan hokar patient
 page me dikhte hain aur har page 300 KB se kam.
-10.5.5 Poori list ka bulk import (L, baad me). Agar lazy migration me reception ko roz
+10.5.5 Poori list ka bulk import (L, baad me). Agar lazy migration me receptionist ko roz
 duplicates ya bahut samay lage: pichhle 12 mahine ke patients (lagbhag 1,200, 100 per
 mahine ke hisaab se) ki sheet typing (helper se), dry run developer ke laptop par,
 Dental clinic software: ultra detail build plan
@@ -3750,7 +3750,7 @@ bina mobile ke, invalid mobile, orphan records, shadow  rows ka bacha hua data, 
 Phase 5 ke weekly invariants. Jo mile unhe theek karo (merge audit ke saath, kabhi
 delete nahi). Target duplicates 3% se kam (vendor blog ke hisaab se aam 8 se 12%,
 chhote clinic me kam hona chahiye, meri soch). Done jab: duplicate % likha aur invalid
-mobile ki list reception ko di.
+mobile ki list receptionist ko di.
 10.6.5 Safai (S). Developer laptop se asli data ki saari copies (sheet, local database,
 restore dumps) secure delete; production me test ya dummy patients aur accounts
 hatao; pilot me share hue secrets badlo (9.3.3); staging me asli data nahi hone ka ek
@@ -3790,7 +3790,7 @@ Asli data ke saath restore drill (10.2.12) pass, aur cutover ke 30 din me backup
 kam 29 raat theek.
 Raftaar: naya patient, repeat check-in aur din band baseline se kharab nahi (ya doctor
 ne maana).
-Doctor aur reception ne likhit me 'kagaz ab sirf downtime ke liye' maana, aur CA ki
+Doctor aur receptionist ne likhit me 'kagaz ab sirf downtime ke liye' maana, aur CA ki
 baat likhi hai.
 Safai ki checklist poori aur Phase 11 backlog ordered.
 Dental clinic software: ultra detail build plan
@@ -3811,7 +3811,7 @@ Banane se pehle 'kab nahi banana' likho (kill criteria): jaise 60 din me mahine 
 kam use ho to chhupa do.
 Doctor se pehle ek sawal: 'mahine me kitni baar use karogi?' Jawab 'pata nahi' ho to
 nahi banana.
-Har feature flag ke peeche: pehle sirf doctor ke liye, phir reception, phir sab.
+Har feature flag ke peeche: pehle sirf doctor ke liye, phir receptionist, phir sab.
 Billing numbers, consent aur privacy se judi cheez par poore tests aur 'mat karo' list
 pehle.
 Pilot ke 30 din baad hi shuru, hypercare me kuch nahi (10.4.4).
@@ -3878,11 +3878,11 @@ Yeh tasks apne phase me ginte hain (Samay aur mehnat ke table me dobara nahi). Y
 unhe theme-wise rakha hai aur batata hai ki kab uthao. Phase 0 ke 'baad me' tasks is ginti
 me nahi.
 Theme Tasks Ghante Kab uthao (meri soch)
-Reception ki
+Receptionist ki
 raftaar
 2.3.9, 2.3.10, 2.3.11, 2.4.5,
 2.4.6
-11 reception roz haath se slot
+11 receptionist roz haath se slot
 dhoondhne ya appointments
 badalne me samay lagaye
 Doctor ki raftaar 3.5.10, 3.6.3, 4.4.4 7 doctor wahi 4 se 5 combo baar-
@@ -3941,7 +3941,7 @@ Faisle decision register me. Done jab: pehle review ka note aur agla feature chu
 me N se kam use ho (jaise perio chart me 5 se kam) to chhupa do, aur agle review me
 hatao ya rakho. Done jab: har chune feature ke saamne N likha.
 11.1.4 Feature flags (M). Settings hub (6.5) me har naye feature ka on ya off, default
-off, pehle sirf doctor ke role ke liye, phir reception, phir sab; flag badalna audit hota hai
+off, pehle sirf doctor ke role ke liye, phir receptionist, phir sab; flag badalna audit hota hai
 aur bina deploy ke. Done jab: ek test feature ek click me on aur off hota hai aur flag off
 hone par uske raaste 404 dete hain.
 11.1.5 Use ki ginti (S). Ek alag chhoti table feature_usage(day, feature, count)  me
@@ -4015,7 +4015,7 @@ naam, umar, daant, kaam, shade aur due (lab ko jitna chahiye utna, doctor tay ka
 Done jab: ek case bheje se fit tak ek screen se chala aur slip ek A5 page par.
 11.3.4 Dhyan dene wali baatein (S). Due nikla hua case aur 'kaam aa gaya, patient ko
 bulana hai' list dashboard ke 'dhyan dene wali baatein' me. Patient ko SMS me ilaaj ya
-lab ka zikr nahi (Phase 7 ka niyam), reception phone karti hai. Done jab: due se ek din
+lab ka zikr nahi (Phase 7 ka niyam), receptionist phone karti hai. Done jab: due se ek din
 upar ka case laal dikhta hai.
 11.3.5 Lab ka hisaab (M). Case ka lab cost, mahine ki lab ki list aur total, lab ke bill se
 milaan. Patient ke bill (Phase 5) se alag, aur kharcha (11.4) se jud sakta hai. Done jab: ek
@@ -4049,10 +4049,10 @@ account ka badal nahi'. Done jab: ek mahine ka total CA ki sheet se milta hai (y
 samjha hua).
 11.4.4 Stock, optional (L). Saamaan ki list (naam, unit, kam se kam kitna), 'kharida' aur
 'use hua' entry haath se, kam stock ki list. Barcode ya apne aap ghatna nahi. Sirf tab
-jab doctor ya reception sach me roz entry karne ko taiyar ho, warna kharidne ki list
+jab doctor ya receptionist sach me roz entry karne ko taiyar ho, warna kharidne ki list
 kagaz par. Done jab: 10 item ka ek hafte ka ginti-milaan sahi.
 11.4.5 Test (S). Paise integer, rounding, mahine ke jod ke tests, bill photo ka access
-(reception ko 403). Done jab: tests CI me.
+(receptionist ko 403). Done jab: tests CI me.
 11.5.1 RVG ka export dobara dekhna (S). 0.4.4 aur 3.7.1 ka natija: RVG JPEG ya PNG
 deta ho to DICOM ki zaroorat nahi, 3.7.8 pool me hi rahe. Done jab: decision register
 me 'DICOM: haan ya nahi'.
@@ -4124,7 +4124,7 @@ reminder aur pehli jaanch ka note.
 11.7.2 ABHA number ka optional field (S). Patient khud de to 14 ank ka number (sirf
 format ki jaanch, verification nahi), sensitive field ki tarah (portal par nahi, export me
 sirf doctor), consent line 'patient ne khud diya'. Done jab: galat length par error aur
-reception ko field dikhta hai par zaruri nahi.
+receptionist ko field dikhta hai par zaruri nahi.
 11.7.3 HFR aur HPR registration (M). Clinic ko HFR me aur doctor ko HPR me register
 karna (free hai ya nahi, kaun se documents lagte hain, aur software integration ke bina
 ho sakta hai ya nahi, ye maine check nahi kiya). Sirf tab jab 11.7.1 ka trigger ho ya doctor
@@ -4248,13 +4248,13 @@ Operations: chalte software ka rakhrakhaav
 Go-live ke baad software ko roz sambhalna nahi padna chahiye. Niyam simple hai: jo kaam
 machine kar sakti hai wo machine kare aur fail hone par khud batae (alert), aur jo kaam
 insaan ka hai wo calendar me, naam aur samay ke saath likha ho. Do log hain: developer
-(tum) aur sister (clinic ki malik). Reception sirf roz ka kaam karti hai aur 'problem batao'
+(tum) aur sister (clinic ki malik). Receptionist sirf roz ka kaam karti hai aur 'problem batao'
 button dabati hai. Har line ke aage task number hai, jahan wo cheez banti hai. Roz, hafte,
 mahine wali frequency meri salaah hai, jab tak task me alag na likha ho.
 Kaun kya dekhta hai
 Jo apne aap chalta hai
 Kaun Kya dekhta hai Kitna samay Kahan
-Reception 'Dhyan dene wali baatein'
+Receptionist 'Dhyan dene wali baatein'
 (aakhri backup, SMS
 phone online) aur kal ki list
 ka print
@@ -4442,7 +4442,7 @@ me
 SIM aur phone: recharge ya
 validity, battery, gateway app
 online, aakhri SMS delivery
-Reception ya
+Receptionist ya
 developer
 10
 minute
@@ -4462,7 +4462,7 @@ sudhaarna, mitana, sahmati
 wapas) jo baaki hain, 30 din ka
 target
 Sister aur
-reception
+receptionist
 10
 minute
 8.2.11, 8.10
@@ -4471,7 +4471,7 @@ me
 Paper kit ki ginti: naye patient
 form, appointment sheet,
 downtime receipt book
-Reception 5 minute 9.2.3
+Receptionist 5 minute 9.2.3
 Mahine
 me
 Sister ke saath 20 minute: 'is
@@ -4571,7 +4571,7 @@ recovery codes
 Sister 20
 minute
 9.1.6, 0.3.2
-Saal me Reception ka refresher
+Saal me Receptionist ka refresher
 training aur breach ka tabletop
 drill
 Developer 3 ghante 9.5.3, 9.3.9
@@ -4598,7 +4598,7 @@ parcha, bill aur receipt ka test (9.4.5).
 Kisi vendor (Cloudflare, Backblaze, GitHub, Brevo, Healthchecks) ki pricing ya terms
 ki email aaye to Accounts register me note aur agle mahine ke ritual me padhna.
 Support: kaun, kitni der me
-Reception ka raasta: app ka 'problem batao' button (page ka naam aur samay jata hai,
+Receptionist ka raasta: app ka 'problem batao' button (page ka naam aur samay jata hai,
 patient ka data nahi) aur developer ka WhatsApp (9.5.4). App band ho ya patient ka
 kaam ruke to phone call aur turant paper mode (9.2.3, 9.2.4).
 Jawab ka samay: Hypercare me 15 minute (10.4), uske baad clinic ke samay me 2
@@ -4611,7 +4611,7 @@ Staff badle ya developer badle to
 Naya staff aaye:
 Staff jaye:
 Cloudflare Access me uska email jodo (free plan 50 users tak) aur app me role
-(reception ya doctor) do. Alag login, shared login nahi, taaki audit me naam aaye.
+(receptionist ya doctor) do. Alag login, shared login nahi, taaki audit me naam aaye.
 Training ke do session aur manual (9.5.2, 9.5.3), phir ek mock din.
 Accounts aur access ki table (9.3.4) me entry.
 Usi din Access se email hatao aur app me user ko inactive karo. Uske baad ke 30 din ka
@@ -4633,7 +4633,7 @@ khatra hai. A×S ka matlab: asar (1 kam, 2 madhyam, 3 bada) gunaa sambhavna (1 k
 madhyam, 3 zyada). Ye bachav ke tasks lagne ke BAAD ka bacha hua jokhim hai, aur poora
 meri andaaz hai (koi data nahi). Table score ke hisaab se upar se neeche hai. Har phase ke
 gate par aur mahine ke ritual me 5 minute ye table dekho aur score badlo.
-Bitwarden ke shared passwords, gateway phone ka PIN aur reception ke jo bhi shared
+Bitwarden ke shared passwords, gateway phone ka PIN aur receptionist ke jo bhi shared
 secrets the, badlo.
 Patient data ka koi export ya copy uske paas na ho (9.3.5 me export sirf doctor ko hai).
 Sab accounts sister ke naam par aur naye developer ko delegated access (0.3).
@@ -4697,7 +4697,7 @@ Phase 9 aur 10
 ki suraksha
 kabhi mat
 chhodo
-Reception
+Receptionist
 shadow me
 thak jaye
 (kagaz aur
@@ -5020,7 +5020,7 @@ Free plans par koi support nahi, sirf docs aur community.
 Jo 5 jokhim roz dhyan me rakho
 Mehnat aur tareekh (Phase 1 ke baad dobara hisaab).
 Developer akela.
-Reception ki thakaan shadow me.
+Receptionist ki thakaan shadow me.
 Jokhim A×S Bachav (task) Pehla sanket Agar ho gaya
 Software ya
 typo se galat
@@ -5414,7 +5414,7 @@ WhatsApp manual
 WhatsApp
 (manual wa.me
 click)
-Reception ka
+Receptionist ka
 click
 Free; Terms of
 Service bulk
@@ -5582,7 +5582,7 @@ extension se automatic karna
 WhatsApp ki Terms of Service
 bulk aur automatic messaging
 mana karti hain aur account band
-kar sakti hain. Isliye reception ka
+kar sakti hain. Isliye receptionist ka
 manual wa.me click
 Phase 7
 Patients ko email Patient ke liye SMS aur portal
@@ -5650,7 +5650,7 @@ karna
 Paise ke faisle me insaan ki
 manzoori chahiye
 Phase 5
-Reception ko poora revenue;
+Receptionist ko poora revenue;
 dashboard me patient ka naam ya
 detail
 Jise jitna kaam, utni jaankari. Lists
@@ -5796,7 +5796,7 @@ wo integration nahi
 11.7.1 se 11.7.4, 11.9
 DLT par registered SMS 7.1.5 ki teen shartein: SIM par
 warning ya band, phone aksar
-offline aur reception thak gayi,
+offline aur receptionist thak gayi,
 ya budget badhe. Kharcha
 ₹ 720 se ₹ 1,296 per saal (meri
 ganit) aur upar se entity
@@ -5932,10 +5932,10 @@ Sep ke bajay 29 Nov 2027), 0.7 par 17 hafte pehle, 0.5 par 25 hafte pehle. Phase
 243 ghante pilot ke samiksha ke baad lagaen to wo velocity 1.0 par 11 Jan 2028 tak poore
 hote hain, yani poora plan lagbhag usi samay (raasta 1 ka samiksha 10 Jan 2028). Faayda
 isliye samay ka nahi, jokhim ka hai.
-Faayde (meri soch): reception roz ka kaam 12 hafte pehle software par karti hai; pehla
-pilot chhota aur kam jokhim wala; reception ke asli use se Phase 7 aur 8 behtar banenge;
+Faayde (meri soch): receptionist roz ka kaam 12 hafte pehle software par karti hai; pehla
+pilot chhota aur kam jokhim wala; receptionist ke asli use se Phase 7 aur 8 behtar banenge;
 akele developer ke liye chhote mile-stones.
-Nuksaan: reminders tab tak reception ke manual WhatsApp click se; portal aur public
+Nuksaan: reminders tab tak receptionist ke manual WhatsApp click se; portal aur public
 website baad me; Phase 7 aur 8 ke alag rollout (dry run, portal ka pehla activation) ka kuch
 kaam upar ki ginti me nahi hai; pilot ke dauran change freeze hai, isliye Phase 7 aur 8 ka
 kaam alag branch par chal sakta hai par live nahi hota.
@@ -6415,7 +6415,7 @@ chhote clinic ka
 data nahi
 10.1.4 ka baseline, 10.6.1
 Pilot 3 se 4 hafte ki parallel
-avadhi, reception ka 30
+avadhi, receptionist ka 30
 minute extra, 20 se 30%
 kam booking, rollback 'agle
 kaam ke din se kagaz par'

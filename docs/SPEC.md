@@ -4,7 +4,7 @@
 Name, address, phone, timings: (fill)
 
 ## Roles
-Doctor: sees and edits everything. Reception: patients, appointments, bills; no settings. (confirm)
+Doctor: sees and edits everything. Receptionist: patients, appointments, bills; no settings. (confirm)
 
 ## Parcha (prescription) layout
 (paste a photo description or the paper parcha fields in order)
