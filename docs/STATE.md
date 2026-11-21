@@ -19,6 +19,7 @@ Rule: UI and printed documents are English only (AGENTS.md); PLAN edited to matc
 Known issues:
 - Agents never push; the owner pushes. Leave git config and credentials alone.
 - Code structure rules (AGENTS.md) apply from the next task. Existing apps/web uses src/layout, src/staff, src/portal (not src/ui, src/features); move only when a task touches them.
-- docs/DESIGN.md is referenced by AGENTS.md but still not in the repo (checked 2026-11-22 01:30; owner to add it).
+- The PDF in docs/design/ is reference only and will be revised later. When the owner replaces it, the new PDF is the source of truth. If a screen was already built from the older PDF, tell me what differs and ask before changing it.
+- Existing web shell (src/layout, base.css) was built before DESIGN.md; it does not use the DESIGN.md colours, font or 232px sidebar yet. Restyle it in the first UI task (1.4.x) and follow S01/S14.
 - Real Cloudflare IDs (D1, R2) are placeholders until the owner creates the resources; deploy:staging will fail until then.
 Owner's real hours (owner fills): Phase 0: -

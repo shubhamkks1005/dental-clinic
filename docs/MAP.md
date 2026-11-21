@@ -1,7 +1,8 @@
 # MAP (one line per file: path - what it does). Keep current. Max ~150 lines.
 
 ## docs
-- docs/DESIGN.md - design rules and mockup links; every screen follows it (owner adds the file)
+- docs/DESIGN.md - look and feel, Screen map (S01-S19), patient number, colours, type, layout, words, print; every screen follows it
+- docs/design/align-dentistry-screens.pdf - mockups: p1 note, p2-3 DESIGN.md copy, then one screen per page with caption S01-S19 (screen N is on page N+3). Reference only; a newer PDF from the owner replaces it and becomes the source of truth
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 
 ## Commands (run from repo root, Node 26 and pnpm 12)

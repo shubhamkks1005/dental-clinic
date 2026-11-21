@@ -42,4 +42,5 @@
 - 2026-11-22 - Web API calls: shared typed client in src/api; each feature has its own small API functions that call it; components never call fetch - owner confirmed - owner
 - 2026-11-22 - Append-only audit_log/access_log enforced by a source-scan test, not SQL triggers (no triggers until spike 3.2.6) - db rules - agent
 - 2026-11-22 - Permission table starts with settings.read (doctor, receptionist, developer) and settings.write (doctor, developer) from the plan's default matrix; receptionist's "timings only" limit and the rest come in 1.3.4 - plan - agent (doctor to confirm in 1.3.4)
+- 2026-11-22 - The PDF in docs/design/ is reference only and will be revised later. When the owner replaces it, the new PDF is the source of truth. If a screen was already built from the older PDF, tell me what differs and ask before changing it. - owner design - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
