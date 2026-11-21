@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { fail } from "@clinic/shared";
+import { areaOf, fail, isWorkerArea } from "@clinic/shared";
 import { hooks } from "./routes/hooks";
 import { portal } from "./routes/portal";
 import { staff } from "./routes/staff";
@@ -12,7 +12,7 @@ app.route("/api/portal", portal);
 app.route("/hooks", hooks);
 
 app.notFound((c) => {
-  if (isApiPath(c.req.path)) {
+  if (isWorkerArea(areaOf(c.req.path))) {
     return c.json(fail("not_found", "This address does not exist."), 404);
   }
   return c.env.ASSETS.fetch(c.req.raw);
@@ -29,9 +29,5 @@ app.onError((err, c) => {
     500,
   );
 });
-
-function isApiPath(path: string): boolean {
-  return path.startsWith("/api/") || path.startsWith("/hooks/");
-}
 
 export default app;
