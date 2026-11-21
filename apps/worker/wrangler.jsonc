@@ -1,0 +1,54 @@
+// Top level = local (`wrangler dev`). Deploys must always pass --env staging or --env production.
+// All IDs below are placeholders. Secrets never go in this file: use `wrangler secret put` or .dev.vars.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dental-clinic-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "send_metrics": false,
+  "assets": {
+    "directory": "../web/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/hooks/*"],
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dental-clinic-local",
+      "database_id": "00000000-0000-0000-0000-000000000001",
+      "migrations_dir": "../../packages/db/migrations",
+    },
+  ],
+  "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-local-files" }],
+  "vars": { "MESSAGING_MODE": "dry_run" },
+  "env": {
+    "staging": {
+      "name": "dental-clinic-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "dental-clinic-staging",
+          "database_id": "00000000-0000-0000-0000-000000000002",
+          "migrations_dir": "../../packages/db/migrations",
+        },
+      ],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-staging-files" }],
+      "vars": { "MESSAGING_MODE": "dry_run" },
+    },
+    "production": {
+      "name": "dental-clinic-production",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "dental-clinic-production",
+          "database_id": "00000000-0000-0000-0000-000000000003",
+          "migrations_dir": "../../packages/db/migrations",
+        },
+      ],
+      "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-production-files" }],
+      // Stays dry_run until Phase 7 sends real messages.
+      "vars": { "MESSAGING_MODE": "dry_run" },
+    },
+  },
+}

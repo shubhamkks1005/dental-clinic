@@ -11,4 +11,8 @@
 - 2026-11-21 - PLAN 9.3.1 reworded: threat model has three parts (staff app + portal /my, gateway + webhook, backups + CI) - no public website - owner
 - 2026-11-21 - PLAN 11.9.2 reworded: rates shown only in the clinic and on printed rate lists - no public website - owner
 - 2026-11-21 - PLAN Phase 8 "Mat karo": removed site-only rules (public site photos/reviews, marketing words, listing platforms, review replies, site rebuild); portal rules kept - no public website - owner
+- 2026-11-22 - Extra dev dependencies allowed: @types/react, @types/react-dom, typescript-eslint - needed for strict TS + lint - owner
+- 2026-11-22 - Toolchain: Homebrew Node 26 + pnpm (brew install pnpm); .nvmrc = 26 - local Node was 16 - owner
+- 2026-11-22 - TypeScript pinned to ~6.0 - typescript-eslint 8.x supports < 6.1 only - agent (within allowed deps)
+- 2026-11-22 - wrangler.jsonc top level = local; staging and production are named envs; MESSAGING_MODE=dry_run everywhere until Phase 7 - safety - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

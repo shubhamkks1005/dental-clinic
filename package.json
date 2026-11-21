@@ -1,0 +1,26 @@
+{
+  "name": "dental-clinic",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @clinic/web build && pnpm --parallel --filter @clinic/web --filter @clinic/worker dev",
+    "build": "pnpm --filter @clinic/web build && pnpm --filter @clinic/worker build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "pnpm -r test",
+    "db:migrate": "pnpm --filter @clinic/worker db:migrate",
+    "deploy:staging": "pnpm build && pnpm --filter @clinic/worker deploy:staging"
+  },
+  "devDependencies": {
+    "eslint": "^10.15.0",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1"
+  }
+}

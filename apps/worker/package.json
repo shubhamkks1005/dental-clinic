@@ -1,0 +1,22 @@
+{
+  "name": "@clinic/worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "wr": "XDG_CONFIG_HOME=.wrangler/config WRANGLER_LOG_PATH=.wrangler/logs WRANGLER_SEND_METRICS=false wrangler",
+    "dev": "pnpm wr dev --env=''",
+    "build": "pnpm wr deploy --dry-run --outdir dist --env=''",
+    "types": "pnpm wr types",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:migrate": "pnpm wr d1 migrations apply DB --local --env=''",
+    "deploy:staging": "WRANGLER_LOG_PATH=.wrangler/logs WRANGLER_SEND_METRICS=false wrangler deploy --env staging"
+  },
+  "devDependencies": {
+    "wrangler": "^4.166.0"
+  },
+  "dependencies": {
+    "@clinic/shared": "workspace:*",
+    "hono": "^4.13.19"
+  }
+}
