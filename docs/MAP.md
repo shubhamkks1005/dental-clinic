@@ -11,8 +11,11 @@
 - pnpm deploy:staging - build, then `wrangler deploy --env staging` (needs wrangler login + real IDs)
 - pnpm format - prettier --write (never touches *.md or .cursor)
 
+## CI (.github)
+- .github/workflows/ci.yml - on every push: pnpm install --frozen-lockfile, pnpm check. No deploy yet. Actions pinned by commit SHA
+
 ## Root
-- package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest)
+- package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0
 - pnpm-workspace.yaml - workspace = apps/*, packages/*; allowBuilds for esbuild and workerd only
 - pnpm-lock.yaml - lockfile (commit it)
 - tsconfig.base.json - strict TS settings every package extends
@@ -62,4 +65,5 @@
 - TypeScript is pinned to 6.0 because typescript-eslint 8.x does not support TypeScript 7 yet.
 - pnpm blocks dependency build scripts; only esbuild and workerd are allowed (pnpm-workspace.yaml).
 - Wrangler local commands run via the `wr` script so its config and logs stay in apps/worker/.wrangler, not your home folder. deploy:staging uses the normal home folder so `wrangler login` works.
+- pnpm 12 writes its own version into pnpm-lock.yaml (packageManager field). After changing packageManager, run `pnpm install` and commit the lockfile, or CI's frozen install fails.
 - Vite build prints a harmless "use client" warning from react-router (no server rendering here).
