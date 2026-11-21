@@ -10,8 +10,8 @@ Open questions for owner:
 - 8.10.1-8.10.4, 8.11.1, 8.11.3, the Phase 8 gate site lines, "form" in 8.2.13, plan lines 357-361 still mention the public site (see DECISIONS.md for what was already changed).
 - 9.2.5 refers to the cancelled 8.8.5 uptime monitor. Keep a monitor for the portal only?
 - SMS sender: clinic's own number or a separate SIM (DECISIONS.md says "to confirm").
-- "/" currently redirects to /app. OK, or should it go somewhere else?
 Known issues:
-- Push not done: the global git credential helper (gh CLI) logs in as the work account shubhamkumar-jpg. Repo-only fix proposed, waiting for owner.
+- Agents never push; the owner pushes. Leave git config and credentials alone.
+- docs/DESIGN.md is referenced by AGENTS.md but not in the repo yet (owner adds it).
 - Real Cloudflare IDs (D1, R2) are placeholders until the owner creates the resources; deploy:staging will fail until then.
 Owner's real hours (owner fills): Phase 0: -

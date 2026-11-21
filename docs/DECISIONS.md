@@ -15,4 +15,7 @@
 - 2026-11-22 - Toolchain: Homebrew Node 26 + pnpm (brew install pnpm); .nvmrc = 26 - local Node was 16 - owner
 - 2026-11-22 - TypeScript pinned to ~6.0 - typescript-eslint 8.x supports < 6.1 only - agent (within allowed deps)
 - 2026-11-22 - wrangler.jsonc top level = local; staging and production are named envs; MESSAGING_MODE=dry_run everywhere until Phase 7 - safety - agent
+- 2026-11-22 - "/" redirects to /app - owner confirmed - owner
+- 2026-11-22 - Agents never push; owner pushes himself - owner process - owner
+- 2026-11-22 - Every screen follows docs/DESIGN.md and its mockups - owner design - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

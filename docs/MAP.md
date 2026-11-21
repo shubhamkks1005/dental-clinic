@@ -1,5 +1,8 @@
 # MAP (one line per file: path - what it does). Keep current. Max ~150 lines.
 
+## docs
+- docs/DESIGN.md - design rules and mockup links; every screen follows it (owner adds the file)
+
 ## Commands (run from repo root, Node 22+ and pnpm)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
 - pnpm build - Vite build to apps/web/dist + Worker bundle dry-run to apps/worker/dist (one Worker with static assets)
