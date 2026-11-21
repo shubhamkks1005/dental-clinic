@@ -8,7 +8,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "db:lock": "node scripts/lock-migrations.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4"

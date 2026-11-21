@@ -66,6 +66,20 @@ All `wrangler` commands below run from `apps/worker` (`cd apps/worker`), using
 3. From the repo root: `pnpm build`, then from `apps/worker`: `pnpm exec wrangler deploy --env production`
 4. Open the production URL and check `/app` and `/my` load.
 
+### Database migrations
+
+1. Change the schema in `packages/db/src/schema` (rules: `packages/db/CLAUDE.md`).
+2. `pnpm db:generate` writes `packages/db/migrations/NNNN_name.sql`. Read the SQL.
+   For data-only changes (seed rows): `pnpm --filter @clinic/db exec drizzle-kit generate --custom --name <name>`, then write the SQL.
+3. `pnpm db:lock` records the file's checksum. Commit the SQL, `meta/` and `checksums.json` together.
+4. `pnpm db:migrate` applies it to the local D1. Staging and production: see the deploy steps above.
+
+Rules:
+- Never edit a migration after it is committed. A test (`pnpm check`) fails if you do; put the change in a new migration.
+- One change per migration.
+- Breaking changes take two releases: first add the new column or table, later remove the old one.
+- Before applying to production, note a Time Travel bookmark (production deploy, step 1).
+
 ### Secrets
 
 `pnpm exec wrangler secret put NAME --env staging` (or `--env production`). Never put a

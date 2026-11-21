@@ -8,6 +8,8 @@
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
 - pnpm build - Vite build to apps/web/dist + Worker bundle dry-run to apps/worker/dist (one Worker with static assets)
 - pnpm check - typecheck (all packages) + eslint + prettier --check + vitest (all packages)
+- pnpm db:generate - drizzle-kit writes a new SQL migration from the schema
+- pnpm db:lock - record checksums of new migrations (required before commit; test checks it)
 - pnpm db:migrate - apply packages/db/migrations to the LOCAL D1
 - pnpm deploy:staging - build, then `wrangler deploy --env staging` (needs wrangler login + real IDs)
 - pnpm format - prettier --write (never touches *.md or .cursor)
@@ -54,11 +56,16 @@
 ## packages/db (tables: name - purpose - key columns)
 - (no tables yet; base tables come in 1.2.3)
 - drizzle.config.ts - drizzle-kit generates SQL into migrations/ (applied by wrangler)
+- migrations/checksums.json - sha256 of every committed migration (written by `pnpm db:lock`)
+- migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
+- scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
+- src/migrations.test.ts - 1.2.2: every migration locked, none edited
+- src/node-builtins.d.ts - minimal node:fs / node:crypto types for tests (no @types/node)
 - src/index.ts - createDb(d1) returns the Drizzle client
 - src/schema/index.ts - schema entry (exports every table)
 - src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs
 - src/schema/rules.test.ts - 1.2.1 rules: every table has the standard columns, *_paise integer, *_at/*_on text, enums have CHECK
-- migrations/ - SQL migrations (empty; never edit an applied one)
+- migrations/ - SQL migrations (never edit a committed one)
 - src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. (dry_run only)
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
 
