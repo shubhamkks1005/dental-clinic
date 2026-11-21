@@ -1,0 +1,5 @@
+---
+description: Safety reminder for any code touching patients, money, messages or files
+alwaysApply: true
+---
+Before writing code that touches patients, money, SMS/WhatsApp/email or uploaded files, re-read the sections "Data rules" and "Privacy and safety rules" in AGENTS.md and follow them exactly. If a rule blocks the task, stop and ask the owner.

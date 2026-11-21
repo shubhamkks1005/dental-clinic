@@ -1,0 +1,14 @@
+# DECISIONS (date - decision - why - by)
+- 2026-11-21 - No public website in this repo; portal only for patients to view their own data - owner scope - owner
+- 2026-11-21 - Portal is read-only; appointments are booked by phone - owner scope - owner
+- 2026-11-21 - Code is written by AI from the plan; owner reviews and tests - owner process - owner
+- 2026-11-21 - SMS goes from the clinic's number (to confirm: the plan advised a separate SIM) - owner said so - owner
+- 2026-11-21 - PLAN 8.11.4 and 8.11.5 CANCELLED (site soft launch, noindex, Google profile) - no public website - owner
+- 2026-11-21 - PLAN Phase 8 gate: removed "DCI checklist sign-off and content lint clean" (from cancelled 8.5.2, 8.7.5); rest of gate kept - no public website - owner
+- 2026-11-21 - PLAN 3.8.3 reworded: photo consent check is in the staff app; "website" removed - no public website - owner
+- 2026-11-21 - PLAN 7.7.3 reworded: privacy notice goes on the portal (/my) login page and paper - no public website - owner
+- 2026-11-21 - PLAN 8.2.13 reworded: protects portal (/my) no-login routes; "public site API" removed - no public website - owner
+- 2026-11-21 - PLAN 9.3.1 reworded: threat model has three parts (staff app + portal /my, gateway + webhook, backups + CI) - no public website - owner
+- 2026-11-21 - PLAN 11.9.2 reworded: rates shown only in the clinic and on printed rate lists - no public website - owner
+- 2026-11-21 - PLAN Phase 8 "Mat karo": removed site-only rules (public site photos/reviews, marketing words, listing platforms, review replies, site rebuild); portal rules kept - no public website - owner
+- Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
