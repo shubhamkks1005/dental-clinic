@@ -1,4 +1,5 @@
 import { newUlid, type AccessAction, type AuditAction } from "@clinic/shared";
+import { getTableColumns, is, SQL, sql } from "drizzle-orm";
 import type { Db } from "./client";
 import type { Ctx } from "./context";
 import { accessLog, auditLog } from "./schema";
@@ -11,10 +12,8 @@ export type AuditEntry = {
   after?: unknown;
 };
 
-// Put this in the SAME db.batch() as the change it describes, so both are saved or neither is.
-// audit_log is append-only: nothing in app code may update or delete it (append-only.test.ts).
-export function auditInsert(db: Db, ctx: Ctx, entry: AuditEntry) {
-  return db.insert(auditLog).values({
+function auditValues(ctx: Ctx, entry: AuditEntry) {
+  return {
     id: newUlid(),
     action: entry.action,
     tableName: entry.table,
@@ -24,7 +23,26 @@ export function auditInsert(db: Db, ctx: Ctx, entry: AuditEntry) {
     requestId: ctx.requestId,
     createdBy: ctx.userId,
     updatedBy: ctx.userId,
+  } satisfies typeof auditLog.$inferInsert;
+}
+
+// Put this in the SAME db.batch() as the change it describes, so both are saved or neither is.
+// audit_log is append-only: nothing in app code may update or delete it (append-only.test.ts).
+export function auditInsert(db: Db, ctx: Ctx, entry: AuditEntry) {
+  return db.insert(auditLog).values(auditValues(ctx, entry));
+}
+
+// For version-checked updates (1.2.7): place right after the UPDATE in the batch. It writes the
+// audit row only if that UPDATE changed a row (SQLite changes()), so a lost race leaves no audit row.
+export function auditInsertIfChanged(db: Db, ctx: Ctx, entry: AuditEntry) {
+  const values: Record<string, unknown> = auditValues(ctx, entry);
+  // insert().select(sql) fills every column in table order, so give each one a value or its default.
+  const cells = Object.entries(getTableColumns(auditLog)).map(([key, column]) => {
+    if (key in values) return sql`${values[key]}`;
+    if (is(column.default, SQL)) return column.default;
+    return column.default === undefined ? sql`NULL` : sql`${column.default}`;
   });
+  return db.insert(auditLog).select(sql`SELECT ${sql.join(cells, sql`, `)} WHERE changes() > 0`);
 }
 
 export type AccessEntry = { action: AccessAction; resource: string; resourceId?: string };

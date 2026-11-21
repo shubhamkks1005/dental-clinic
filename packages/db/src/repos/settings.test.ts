@@ -1,32 +1,31 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
-import { ForbiddenError, NotFoundError } from "../errors";
+import { ConflictError, ForbiddenError, NotFoundError } from "../errors";
 import { testDb } from "../testing";
 import { createRepos } from "./index";
 
 const doctor: Ctx = { userId: "user-doctor", role: "doctor", requestId: "req-1" };
+const developer: Ctx = { userId: "user-dev", role: "developer", requestId: "req-3" };
 const receptionist: Ctx = { userId: "user-rec", role: "receptionist", requestId: "req-2" };
+const KEY = "patient_code.prefix";
 
 let t: ReturnType<typeof testDb>;
 const rows = (sqlText: string) => t.sqlite.prepare(sqlText).all();
+const repo = (ctx: Ctx) => createRepos(t.db, ctx).settings;
+const stored = () => rows(`SELECT value_json, version FROM settings WHERE key = '${KEY}'`)[0];
 
 beforeEach(() => {
   t = testDb();
 });
 
 describe("settings repository (1.2.6)", () => {
-  it("reads a setting as its JSON value", async () => {
-    expect(await createRepos(t.db, receptionist).settings.get("patient_code.prefix")).toBe("P-");
+  it("reads a setting as its JSON value with its version", async () => {
+    expect(await repo(receptionist).get(KEY)).toEqual({ value: "P-", version: 1 });
   });
 
   it("a doctor's update changes the value, bumps the version and writes exactly one audit row", async () => {
-    await createRepos(t.db, doctor).settings.update("patient_code.prefix", "PT-");
-
-    expect(
-      rows(
-        "SELECT value_json, version, updated_by FROM settings WHERE key = 'patient_code.prefix'",
-      ),
-    ).toEqual([{ value_json: '"PT-"', version: 2, updated_by: "user-doctor" }]);
+    expect(await repo(doctor).update(KEY, "PT-", 1)).toEqual({ value: "PT-", version: 2 });
+    expect(stored()).toEqual({ value_json: '"PT-"', version: 2 });
     const audit = rows(
       "SELECT action, table_name, before_json, after_json, created_by FROM audit_log",
     );
@@ -41,18 +40,41 @@ describe("settings repository (1.2.6)", () => {
   });
 
   it("a receptionist cannot change settings, and nothing is written", async () => {
-    await expect(
-      createRepos(t.db, receptionist).settings.update("patient_code.prefix", "X-"),
-    ).rejects.toBeInstanceOf(ForbiddenError);
-    expect(rows("SELECT value_json FROM settings WHERE key = 'patient_code.prefix'")).toEqual([
-      { value_json: '"P-"' },
-    ]);
+    await expect(repo(receptionist).update(KEY, "X-", 1)).rejects.toBeInstanceOf(ForbiddenError);
+    expect(stored()).toEqual({ value_json: '"P-"', version: 1 });
     expect(rows("SELECT * FROM audit_log")).toHaveLength(0);
   });
 
   it("an unknown key is a plain not-found error", async () => {
-    await expect(createRepos(t.db, doctor).settings.get("nope")).rejects.toBeInstanceOf(
-      NotFoundError,
+    await expect(repo(doctor).get("nope")).rejects.toBeInstanceOf(NotFoundError);
+  });
+});
+
+describe("two tabs editing the same setting (1.2.7)", () => {
+  it("the second save with an old version gets a conflict and changes nothing", async () => {
+    const tabA = await repo(doctor).get(KEY);
+    const tabB = await repo(developer).get(KEY);
+    await repo(doctor).update(KEY, "A-", tabA.version);
+    await expect(repo(developer).update(KEY, "B-", tabB.version)).rejects.toBeInstanceOf(
+      ConflictError,
     );
+    expect(stored()).toEqual({ value_json: '"A-"', version: 2 });
+    expect(rows("SELECT * FROM audit_log")).toHaveLength(1);
+  });
+
+  it("two saves racing at the same moment: one wins, one conflicts, one audit row", async () => {
+    const results = await Promise.allSettled([
+      repo(doctor).update(KEY, "A-", 1),
+      repo(developer).update(KEY, "B-", 1),
+    ]);
+    expect(results.map((r) => r.status).sort()).toEqual(["fulfilled", "rejected"]);
+    const lost = results.find((r) => r.status === "rejected") as PromiseRejectedResult;
+    expect(lost.reason).toBeInstanceOf(ConflictError);
+    expect(stored()?.version).toBe(2);
+    expect(rows("SELECT * FROM audit_log")).toHaveLength(1);
+  });
+
+  it("the conflict message is a plain sentence that says to reload", () => {
+    expect(new ConflictError().message).toMatch(/Reload/);
   });
 });

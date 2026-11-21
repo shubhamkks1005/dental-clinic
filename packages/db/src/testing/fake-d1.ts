@@ -30,7 +30,9 @@ class FakeStatement {
   }
 
   allNow() {
-    return { success: true, results: this.sqlite.prepare(this.sql).all(...this.params), meta: {} };
+    const results = this.sqlite.prepare(this.sql).all(...this.params);
+    const changes = Number(this.sqlite.prepare("SELECT changes() AS n").get()?.n ?? 0);
+    return { success: true, results, meta: { changes } };
   }
 
   runNow() {

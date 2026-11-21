@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
-import { accessInsert, auditInsert } from "./audit";
+import { accessInsert, auditInsert, auditInsertIfChanged } from "./audit";
 import type { Db } from "./client";
 import type { Ctx } from "./context";
 import { settings } from "./schema";
@@ -59,6 +59,31 @@ describe("audit log (1.2.5)", () => {
       ]),
     ).rejects.toThrow();
     expect(rows("SELECT * FROM audit_log")).toHaveLength(0);
+  });
+
+  it("auditInsertIfChanged writes only when the UPDATE before it changed a row (1.2.7)", async () => {
+    const row = await prefixRow();
+    const updateAt = (version: number) =>
+      db
+        .update(settings)
+        .set({ version: version + 1 })
+        .where(sql`${settings.id} = ${row.id} AND ${settings.version} = ${version}`);
+    const audit = auditInsertIfChanged(db, ctx, {
+      action: "update",
+      table: "settings",
+      rowId: row.id,
+    });
+
+    await db.batch([updateAt(99), audit]);
+    expect(rows("SELECT * FROM audit_log")).toHaveLength(0);
+
+    await db.batch([
+      updateAt(1),
+      auditInsertIfChanged(db, ctx, { action: "update", table: "settings", rowId: row.id }),
+    ]);
+    expect(rows("SELECT action, created_by, created_at FROM audit_log")).toEqual([
+      { action: "update", created_by: "user-doctor", created_at: expect.stringMatching(/Z$/) },
+    ]);
   });
 
   it("records a view in access_log", async () => {

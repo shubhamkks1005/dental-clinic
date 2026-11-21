@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { areaOf, fail, isWorkerArea } from "@clinic/shared";
+import { errorReply } from "./errors";
 import { hooks } from "./routes/hooks";
 import { portal } from "./routes/portal";
 import { staff } from "./routes/staff";
@@ -19,15 +20,10 @@ app.notFound((c) => {
 });
 
 app.onError((err, c) => {
+  const { status, body } = errorReply(err);
   // Error messages can contain request data, so log only the error type.
-  console.error("unhandled error:", err.name);
-  return c.json(
-    fail(
-      "server_error",
-      "Something went wrong. Please try again. If it keeps happening, tell the developer.",
-    ),
-    500,
-  );
+  if (status === 500) console.error("unhandled error:", err.name);
+  return c.json(body, status);
 });
 
 export default app;

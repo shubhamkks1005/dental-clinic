@@ -4,6 +4,6 @@
 - Keep indexes few: each index adds rows written on every insert (check the numbers in spike 0.6.2 before adding more).
 - No triggers unless spike 3.2.6 passed. No FTS5.
 - Numbering uses the counters table inside the same db.batch() as the insert (takeNumber()).
-- All SQL lives in src/repos/*. Every repository function takes ctx, calls assertAllowed() first (src/permissions.ts is the only permission table), and writes the change and its auditInsert() in one db.batch().
+- All SQL lives in src/repos/*. Every repository function takes ctx, calls assertAllowed() first (src/permissions.ts is the only permission table), and writes the change and its auditInsert() in one db.batch(). Updates take the version the user saw: UPDATE ... WHERE version = expected, then auditInsertIfChanged(); no row changed means ConflictError (409).
 - Seeds and fixtures contain fake data only.
 - packages/shared holds zod schemas, enums, money helpers and the one mobile-number normaliser. It must not import Worker or DOM APIs.
