@@ -22,10 +22,11 @@ resources are created in Cloudflare.
 | Environment | Worker name              | D1 (`DB`)                | R2 (`FILES`)                   | Vars                     | Secrets |
 | ----------- | ------------------------ | ------------------------ | ------------------------------ | ------------------------ | ------- |
 | local       | dental-clinic-local      | dental-clinic-local      | dental-clinic-local-files      | MESSAGING_MODE=dry_run   | none yet (`.dev.vars`, gitignored) |
-| staging     | dental-clinic-staging    | dental-clinic-staging    | dental-clinic-staging-files    | MESSAGING_MODE=dry_run   | none yet (`wrangler secret put --env staging`) |
+| staging     | dental-clinic-staging    | dental-clinic-staging    | none until task 3.7 (R2 may need a card) | MESSAGING_MODE=dry_run   | none yet (`wrangler secret put --env staging`) |
 | production  | dental-clinic-production | dental-clinic-production | dental-clinic-production-files | MESSAGING_MODE=dry_run   | none yet (`wrangler secret put --env production`) |
 
-All environments also bind `ASSETS` (the built web app from `apps/web/dist`).
+All environments also bind `ASSETS` (the built web app from `apps/web/dist`). `FILES` exists locally
+and in production config; staging has none until task 3.7.
 
 - Local: `pnpm dev`, `pnpm db:migrate` (local D1).
 - Staging: `pnpm deploy:staging` (one command; needs the first-time setup below).
@@ -52,7 +53,8 @@ a file, a commit or a command line argument.
 
 ### First-time setup (once per Cloudflare account)
 
-1. Dashboard (personal device): create the account, the API token and the R2 buckets (see `docs/ACCOUNTS.md`).
+1. Dashboard (personal device): create the account and the API token (see `docs/ACCOUNTS.md`).
+   No R2 yet (decide about the card before task 3.7). If Zero Trust or anything else asks for a card, stop and ask the owner first.
 2. This Mac, in a session as above: create the databases (location hint apac, decision T2):
    - `pnpm wr d1 create dental-clinic-staging --location apac`
    - `pnpm wr d1 create dental-clinic-production --location apac`
@@ -60,6 +62,8 @@ a file, a commit or a command line argument.
    (`env.staging` and `env.production`), replacing the `00000000-...` placeholders.
    IDs are not secrets; commit them.
 4. `pnpm --filter @clinic/worker types` (refreshes `worker-configuration.d.ts`), then `pnpm check`.
+5. After the staging deploy and the Access test: delete the setup API token in the Cloudflare dashboard
+   (My Profile > API Tokens), not only `unset` it. Create a new short-lived token when one is needed again.
 
 ### Staging deploy (routine)
 

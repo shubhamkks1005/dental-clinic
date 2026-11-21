@@ -35,7 +35,8 @@
           "migrations_dir": "../../packages/db/migrations",
         },
       ],
-      "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-staging-files" }],
+      // No FILES (R2) binding on staging until task 3.7: R2 may need a card (see DECISIONS.md).
+      "r2_buckets": [],
       "vars": { "MESSAGING_MODE": "dry_run" },
     },
     "production": {

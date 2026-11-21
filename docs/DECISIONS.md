@@ -50,4 +50,9 @@
 - 2026-11-22 - No Cloudflare browser login on the dev Mac. The account is created and configured from the owner's personal device; the Mac uses a 30-day API token (D1 Edit + Workers Scripts Edit, this account only) typed with `read -s` per terminal session, never in chat, files or the repo - owner - owner
 - 2026-11-22 - Spike 0.6.3 runs the real repository code from the Mac via `wrangler dev` with a remote binding to a throwaway D1 ("dental-clinic-spike"), nothing deployed; the database is deleted afterwards - safest real-D1 test - agent
 - 2026-11-22 - preview_urls off for all environments, so Access always guards the only staging/production address - security - agent
+- 2026-11-22 - No card added to Cloudflare now; staging has no FILES (R2) binding until task 3.7 (nothing uses it yet) - owner - owner
+- OPEN 2026-11-22 - R2 may need a card even on the free tier: decide before 3.7 - owner
+- OPEN 2026-11-22 - Production needs a custom domain (8.1.3) so /my stays outside staff login - owner
+- 2026-11-22 - The Mac setup API token is deleted in the dashboard after the staging deploy and the Access test (not only unset) - owner - owner
+- 2026-11-22 - If Zero Trust (or anything else) asks for a card, stop and ask the owner before entering anything - owner - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

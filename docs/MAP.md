@@ -35,7 +35,7 @@
 - docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
 
 ## apps/worker
-- wrangler.jsonc - Worker config: top level = local, env.staging, env.production; placeholder IDs; bindings DB, FILES, ASSETS, MESSAGING_MODE; preview_urls off (no unguarded second URL)
+- wrangler.jsonc - Worker config: top level = local, env.staging, env.production; placeholder IDs; bindings DB, FILES (local and production only; staging none until 3.7), ASSETS, MESSAGING_MODE; preview_urls off (no unguarded second URL)
 - wrangler.spike.jsonc - spike 0.6.3 only: local `wrangler dev` with the REAL throwaway D1 "dental-clinic-spike" (remote binding); never deployed
 - spike/d1-spike.ts - spike checks on real D1: batch rollback, changes() audit guard, edit conflict (two tabs + race), gap-free 50 parallel, patient code
 - spike/run.mjs - `pnpm spike:d1`: applies migrations to the spike D1, runs wrangler dev, prints PASS/FAIL (needs the token in the terminal)
