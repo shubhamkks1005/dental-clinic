@@ -70,13 +70,19 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
 - scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
 - src/migrations.test.ts - 1.2.2: every migration locked, none edited
-- src/index.ts - package entry (createDb, Db, takeNumber, patientCodeSql, NEVER_RESETS)
+- src/index.ts - package entry (createDb, Db, Ctx, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert)
 - src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
+- src/context.ts - Ctx { userId, role, requestId } passed to every repository function
+- src/audit.ts - auditInsert() (put in the same db.batch as the change) and accessInsert() (views, exports, logins)
+- src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
+- src/append-only.test.ts - 1.2.5 guard: no app code updates or deletes audit_log / access_log (no triggers allowed yet)
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
 - src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
 - src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format
 - src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction)
 - src/testing/test-db.ts - migratedSqlite() and testDb() (real drizzle D1 client over a migrated in-memory DB)
+- src/testing/paths.ts - REPO_ROOT and DB_MIGRATIONS absolute paths for tests
+- src/testing/repo-files.ts - sourceFiles(dir): app source files (no tests) for guard tests
 - src/testing/index.ts - test helpers entry, imported as @clinic/db/testing (never from Worker/web code)
 - src/schema/index.ts - schema entry (exports every table)
 - src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs

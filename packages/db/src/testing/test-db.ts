@@ -2,10 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { createDb, type D1Binding, type Db } from "../client";
 import { FakeD1 } from "./fake-d1";
-
-// Absolute path so tests in any package (db, worker) find the same migrations.
-const HERE = decodeURIComponent(import.meta.url.replace(/^file:\/\//, "").replace(/[^/]*$/, ""));
-const MIGRATIONS = `${HERE}../../migrations/`;
+import { DB_MIGRATIONS as MIGRATIONS } from "./paths";
 
 // A fresh in-memory SQLite with every migration applied, exactly as wrangler applies them.
 export function migratedSqlite(): DatabaseSync {
