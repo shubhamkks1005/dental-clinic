@@ -2,6 +2,7 @@
 
 ## docs
 - docs/DESIGN.md - design rules and mockup links; every screen follows it (owner adds the file)
+- docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 
 ## Commands (run from repo root, Node 22+ and pnpm)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
@@ -12,7 +13,7 @@
 - pnpm format - prettier --write (never touches *.md or .cursor)
 
 ## CI (.github)
-- .github/workflows/ci.yml - on every push: pnpm install --frozen-lockfile, pnpm check. No deploy yet. Actions pinned by commit SHA
+- .github/workflows/ci.yml - on every push: job "check" (pnpm install --frozen-lockfile, pnpm check) and job "secret-scan" (gitleaks over full history). No deploy yet. Actions pinned by commit SHA
 
 ## Root
 - package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0
