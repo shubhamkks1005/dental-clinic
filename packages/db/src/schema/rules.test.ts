@@ -61,6 +61,8 @@ describe("table rules (1.2.1)", () => {
       "medical_history",
       "patient_search",
       "patients",
+      "plan_item_versions",
+      "plan_items",
       "settings",
       "staff_sessions",
       "tooth_events",

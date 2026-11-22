@@ -16,3 +16,4 @@ export { visitDiagnoses } from "./visit-diagnoses";
 export { visitProcedures } from "./visit-procedures";
 export { medicalHistory } from "./medical-history";
 export { alerts } from "./alerts";
+export { planItems, planItemVersions } from "./plan-items";

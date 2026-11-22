@@ -14,11 +14,12 @@ Written: 2026-11-22 (Phase 3 start). Read STATE.md and MAP.md. Fake data only. N
 | 3.2.1 visits | `ca8fb2a` |
 | 3.2.2 tooth_events | `524d717` |
 | 3.2.3 clinical lists | `66cf4a3` |
-| 3.2.4 medical history | (pending) |
+| 3.2.4 medical history | `4695ec8` |
+| 3.2.5 plan items | (pending) |
 
 ## New migrations (owner applies; agent did not touch staging)
-- **0018–0022** (visits, tooth_events, visit children, clinical seeds, medical_history/alerts).
-- Staging apply if not done: **0006–0022**, then `pnpm deploy:staging`.
+- **0018–0023** (visits through plan_items).
+- Staging apply if not done: **0006–0023**, then `pnpm deploy:staging`.
 
 ## Commands
 ```

@@ -280,6 +280,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/medical-history.ts / alerts.ts - 3.2.4 versioned history + alerts
 - src/repos/medical-history.ts (+ test) - save new version; alertFlags for receptionist
 - migrations/0022_medical_history_alerts.sql - 3.2.4 (owner applies)
+- src/schema/plan-items.ts - 3.2.5 plan_items + plan_item_versions
+- src/repos/plan-items.ts (+ test) - create; changeEstimate requires reason on increase
+- migrations/0023_plan_items.sql - 3.2.5 (owner applies)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

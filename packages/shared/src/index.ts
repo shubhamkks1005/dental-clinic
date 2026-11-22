@@ -35,3 +35,4 @@ export * from "./ulid";
 export * from "./visits";
 export * from "./teeth";
 export * from "./medical-history";
+export * from "./plan-items";

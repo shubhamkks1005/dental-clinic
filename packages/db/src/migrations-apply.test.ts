@@ -40,6 +40,8 @@ describe("migrations on an empty database (1.2.3)", () => {
       "medical_history",
       "patient_search",
       "patients",
+      "plan_item_versions",
+      "plan_items",
       "settings",
       "staff_sessions",
       "tooth_events",

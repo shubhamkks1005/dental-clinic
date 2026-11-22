@@ -162,6 +162,13 @@
       "when": 1795372435454,
       "tag": "0022_medical_history_alerts",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "6",
+      "when": 1795372527420,
+      "tag": "0023_plan_items",
+      "breakpoints": true
     }
   ]
 }
