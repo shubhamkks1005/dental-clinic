@@ -1,6 +1,5 @@
 // Spike 0.6.3 only. Runs on this Mac with `wrangler dev`, using the REAL throwaway D1 database
 // "dental-clinic-spike" through a remote binding. Never deployed. Delete the database after the spike.
-// database_id: replace the placeholder with the id printed by `wrangler d1 create dental-clinic-spike`.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dental-clinic-spike",
@@ -12,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "dental-clinic-spike",
-      "database_id": "00000000-0000-0000-0000-000000000009",
+      "database_id": "b32c779e-f344-47c3-b16e-feab2f6cb082",
       "migrations_dir": "../../packages/db/migrations",
       "remote": true,
     },
