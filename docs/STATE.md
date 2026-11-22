@@ -1,7 +1,9 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). Current task: after 4.2.1.
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). Current task: after 4.2.8.
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.2.8 DONE locally (prescriptions in History; doctor sees medicines; receptionist rx_no only + print href).
+4.2.2–4.2.7 DONE locally (Medicines tab S05; issue/revise/copy; safety warnings; tablet count; API + matrix).
 4.2.1 DONE locally (prescriptions + prescription_items; create/get; snapshot lock test; receptionist draft 403). **New migration `0033_prescriptions.sql` — owner applies.**
 4.1.5 DONE locally (medicine_sets seed + parseMedicineSetItems; apply-to-Rx UI in 4.2.2).
 4.1.4 DONE locally (allergen tag ↔ medicine tags; medicineMatchesAllergen test).

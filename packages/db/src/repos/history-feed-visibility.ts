@@ -13,15 +13,26 @@ export const HISTORY_CLINICAL_ENTRY_TYPES: readonly HistoryEntryType[] = [
 ];
 
 /**
- * Which history entry types a role may receive from the feed API (3.5.14).
- * Bills/prescriptions land in later stages; not listed until those modules exist.
+ * Which history entry types a role may receive from the feed API (3.5.14 / 4.2.8).
+ * Prescription rows: doctor gets medicine names; receptionist gets rx number only (print).
  */
 export function historyTypesForRole(role: Role): readonly HistoryEntryType[] {
   if (isAllowed(role, "clinical.view")) {
-    return ["appointment", "visit", "treatment", "file", "medical_change", "consent", "amendment"];
+    return [
+      "appointment",
+      "visit",
+      "treatment",
+      "prescription",
+      "file",
+      "medical_change",
+      "consent",
+      "amendment",
+    ];
   }
-  // Receptionist (and any non-clinical role with patients.view): no clinical types.
-  return ["appointment", "consent", "file"];
+  // Receptionist: no clinical notes/dx; issued Rx listed for print only.
+  const base: HistoryEntryType[] = ["appointment", "consent", "file"];
+  if (isAllowed(role, "prescriptions.print")) base.push("prescription");
+  return base;
 }
 
 export function historyFileKindsForRole(role: Role): readonly FileKind[] | null {

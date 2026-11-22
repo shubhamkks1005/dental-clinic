@@ -13,6 +13,7 @@ const TYPE_LABEL: Record<HistoryFeedEntry["type"], string> = {
   appointment: "Appointment",
   visit: "Visit",
   treatment: "Treatment",
+  prescription: "Prescription",
   file: "File",
   medical_change: "Medical",
   consent: "Consent",

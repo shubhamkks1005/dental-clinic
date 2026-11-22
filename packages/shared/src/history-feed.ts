@@ -1,10 +1,11 @@
 import { z } from "zod";
 
-/** Stage-1 history entry kinds (3.5.12 / 3.5.13). Later stages add Rx / bills. */
+/** History entry kinds (3.5.12+; Stage 2 adds prescription in 4.2.8). */
 export const HISTORY_ENTRY_TYPES = [
   "appointment",
   "visit",
   "treatment",
+  "prescription",
   "file",
   "medical_change",
   "consent",
