@@ -1,4 +1,10 @@
-import { FDI_PERMANENT, FDI_PRIMARY, type FdiTooth, type ToothSurface } from "@clinic/shared";
+import {
+  FDI_PERMANENT,
+  FDI_PRIMARY,
+  type ChartFacing,
+  type FdiTooth,
+  type ToothSurface,
+} from "@clinic/shared";
 
 /** Dentist view: patient's right on the left (3.4.3). Upper then lower. */
 export const PERMANENT_ROWS: FdiTooth[][] = [
@@ -13,19 +19,27 @@ export const PRIMARY_ROWS: FdiTooth[][] = [
 
 export type ChartDentition = "permanent" | "primary" | "mixed";
 
-export function rowsForDentition(dentition: ChartDentition): FdiTooth[][] {
-  if (dentition === "primary") return PRIMARY_ROWS;
-  if (dentition === "mixed") {
-    return [
+function reverseRows(rows: FdiTooth[][]): FdiTooth[][] {
+  return rows.map((row) => [...row].reverse());
+}
+
+export function rowsForDentition(
+  dentition: ChartDentition,
+  facing: ChartFacing = "dentist",
+): FdiTooth[][] {
+  let rows: FdiTooth[][];
+  if (dentition === "primary") rows = PRIMARY_ROWS;
+  else if (dentition === "mixed") {
+    rows = [
       [...PRIMARY_ROWS[0]!, ...PERMANENT_ROWS[0]!],
       [...PRIMARY_ROWS[1]!, ...PERMANENT_ROWS[1]!],
     ];
-  }
-  return PERMANENT_ROWS;
+  } else rows = PERMANENT_ROWS;
+  return facing === "patient" ? reverseRows(rows) : rows;
 }
 
-export function flatTeeth(dentition: ChartDentition): FdiTooth[] {
-  return rowsForDentition(dentition).flat();
+export function flatTeeth(dentition: ChartDentition, facing: ChartFacing = "dentist"): FdiTooth[] {
+  return rowsForDentition(dentition, facing).flat();
 }
 
 /** Surface order for keyboard within one tooth (5 surfaces + whole). */

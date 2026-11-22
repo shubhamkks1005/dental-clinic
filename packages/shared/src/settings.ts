@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { chartViewSchema } from "./chart-view";
 import type { Parsed } from "./staff";
 import { holidaysSchema, timingsSchema } from "./timings";
 
@@ -47,6 +48,8 @@ export const SETTING_SCHEMAS = {
     .int("Use a whole number.")
     .min(1, "Use at least 1 month.")
     .max(36, "Use at most 36 months."),
+  // 3.4.3: facing + display notation in one setting (storage always FDI).
+  "chart.view": chartViewSchema,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

@@ -150,7 +150,7 @@
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
-- src/features/chart/ - 3.4.2 ToothChart SVG (FDI dentist view, surfaces, keyboard); ChartPlayground on /app/style-guide
+- src/features/chart/ - 3.4.2–3.4.3 ToothChart SVG (chart.view facing+notation; FDI store; surfaces, keyboard); ChartPlayground on /app/style-guide
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -301,6 +301,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/visits.ts (+ test) - 3.2.1 VISIT_STATUSES, openVisitBody, vitals schema
 - src/teeth.ts (+ test) - 3.2.2 FDI lists, surfaces m/d/o/b/l/whole, chartFromEvents
+- src/chart-view.ts (+ test) - 3.4.3 chart.view facing+notation; toothDisplayLabel (FDI/Universal/Palmer)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
 - src/appointment-display.ts (+ test) - 2.4.1 APPOINTMENT_STATUS_LABEL + appointmentStatusTone
 - src/day-view.ts (+ test) - 2.4.1 dayWindow / snapToSlot / emptySlotStarts
@@ -317,7 +318,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, toMinutes/toHhmm, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
-- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ 2.2.7 privacy_notice.version / privacy_notice.body); isSettingKey, parseSettingValue
+- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ privacy_notice, book_ahead, stale_months, chart.view); isSettingKey, parseSettingValue
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes+colour, referral_sources); listItemSchema(key); roundUpToSlot / visitTypeSnapshot (2.3.2); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)

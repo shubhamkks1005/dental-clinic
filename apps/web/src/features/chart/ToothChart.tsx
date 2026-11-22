@@ -1,4 +1,11 @@
-import type { ChartCell, FdiTooth, ToothSurface } from "@clinic/shared";
+import {
+  CHART_NOTATION_LABEL,
+  DEFAULT_CHART_VIEW,
+  type ChartCell,
+  type ChartView,
+  type FdiTooth,
+  type ToothSurface,
+} from "@clinic/shared";
 import { useEffect, useId, useState } from "react";
 import { initialFocus, moveFocus, type ChartFocus } from "./chart-keyboard";
 import { rowsForDentition, type ChartDentition } from "./chart-layout";
@@ -7,6 +14,8 @@ import "./chart.css";
 
 export type ToothChartProps = {
   dentition?: ChartDentition;
+  /** Facing + display notation; storage remains FDI (3.4.3). */
+  view?: ChartView;
   cells?: ChartCell[];
   /** Condition applied when the doctor presses Enter on a focused surface (3.4.2). */
   applyCondition?: string;
@@ -16,17 +25,23 @@ export type ToothChartProps = {
 
 export function ToothChart({
   dentition = "permanent",
+  view = DEFAULT_CHART_VIEW,
   cells = [],
   applyCondition = "filling",
   onApply,
   legend = [{ code: "filling", label: "Filling" }],
 }: ToothChartProps) {
   const labelId = useId();
-  const [focus, setFocus] = useState<ChartFocus>(() => initialFocus(dentition));
+  const [focus, setFocus] = useState<ChartFocus>(() => initialFocus(dentition, view.facing));
+  const notationName = CHART_NOTATION_LABEL[view.notation];
+  const leftSide = view.facing === "dentist" ? "R" : "L";
+  const rightSide = view.facing === "dentist" ? "L" : "R";
+  const facingHint =
+    view.facing === "dentist" ? "R (patient's right)" : "L (patient's left on left)";
 
   useEffect(() => {
-    setFocus(initialFocus(dentition));
-  }, [dentition]);
+    setFocus(initialFocus(dentition, view.facing));
+  }, [dentition, view.facing]);
 
   function handleKeyDown(e: React.KeyboardEvent) {
     const arrow = e.key;
@@ -37,7 +52,7 @@ export function ToothChart({
       arrow === "ArrowDown"
     ) {
       e.preventDefault();
-      setFocus((f) => moveFocus(f, dentition, arrow));
+      setFocus((f) => moveFocus(f, dentition, arrow, view.facing));
       return;
     }
     if (e.key === "Enter" && onApply) {
@@ -46,25 +61,25 @@ export function ToothChart({
     }
   }
 
-  const rows = rowsForDentition(dentition);
+  const rows = rowsForDentition(dentition, view.facing);
 
   return (
     <div className="tooth-chart" aria-labelledby={labelId}>
       <div className="tooth-chart-head">
         <h2 id={labelId}>Tooth chart</h2>
         <p className="muted small">
-          R (patient&apos;s right) · FDI · Arrows move · Enter applies {applyCondition}
+          {facingHint} · {notationName} · Arrows move · Enter applies {applyCondition}
         </p>
       </div>
       <div
         className="tooth-chart-board"
         tabIndex={0}
         role="application"
-        aria-label="Tooth chart. Use arrow keys and Enter."
+        aria-label={`Tooth chart, ${notationName}. Use arrow keys and Enter.`}
         onKeyDown={handleKeyDown}
       >
         <span className="tooth-chart-side" aria-hidden>
-          R
+          {leftSide}
         </span>
         <div className="tooth-chart-arches">
           {rows.map((row, i) => (
@@ -73,6 +88,7 @@ export function ToothChart({
                 <ToothGlyph
                   key={fdi}
                   fdi={fdi}
+                  notation={view.notation}
                   cells={cells}
                   focused={focus.tooth === fdi}
                   focusSurface={focus.surface}
@@ -83,7 +99,7 @@ export function ToothChart({
           ))}
         </div>
         <span className="tooth-chart-side" aria-hidden>
-          L
+          {rightSide}
         </span>
       </div>
       {legend.length > 0 && (

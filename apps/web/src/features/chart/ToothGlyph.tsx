@@ -1,6 +1,8 @@
 import {
   TOOTH_SURFACE_LABEL,
+  toothDisplayLabel,
   type ChartCell,
+  type ChartNotation,
   type FdiTooth,
   type ToothSurface,
 } from "@clinic/shared";
@@ -8,6 +10,7 @@ import { SURFACE_ORDER, surfaceAriaLabel } from "./chart-layout";
 
 type Props = {
   fdi: FdiTooth;
+  notation?: ChartNotation;
   cells: ChartCell[];
   focused: boolean;
   focusSurface: ToothSurface;
@@ -23,12 +26,20 @@ const PATH: Record<Exclude<ToothSurface, "whole">, string> = {
   o: "M 12 12 L 28 12 L 28 28 L 12 28 Z",
 };
 
-export function ToothGlyph({ fdi, cells, focused, focusSurface, onSelect }: Props) {
+export function ToothGlyph({
+  fdi,
+  notation = "fdi",
+  cells,
+  focused,
+  focusSurface,
+  onSelect,
+}: Props) {
   const bySurface = new Map(cells.filter((c) => c.toothFdi === fdi).map((c) => [c.surface, c]));
+  const label = toothDisplayLabel(fdi, notation);
 
   return (
     <div className={`tooth-glyph${focused ? " tooth-glyph-focus" : ""}`}>
-      <svg viewBox="0 0 40 48" width="40" height="48" role="img" aria-label={`Tooth ${fdi}`}>
+      <svg viewBox="0 0 40 48" width="40" height="48" role="img" aria-label={`Tooth ${label}`}>
         {(Object.keys(PATH) as Exclude<ToothSurface, "whole">[]).map((surface) => {
           const cell = bySurface.get(surface);
           const isFocus = focused && focusSurface === surface;
@@ -52,7 +63,7 @@ export function ToothGlyph({ fdi, cells, focused, focusSurface, onSelect }: Prop
           );
         })}
         <text x="20" y="46" textAnchor="middle" className="tooth-fdi">
-          {fdi}
+          {label}
         </text>
       </svg>
       <button
