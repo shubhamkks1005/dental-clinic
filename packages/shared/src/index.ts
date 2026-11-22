@@ -1,6 +1,7 @@
 export * from "./api";
 export * from "./appointment-book";
 export * from "./appointment-cancel";
+export * from "./appointment-display";
 export * from "./appointment-queue";
 export * from "./appointment-reschedule";
 export * from "./appointment-status";
@@ -18,6 +19,7 @@ export * from "./paging";
 export * from "./patient-age";
 export * from "./patient-fields";
 export * from "./consents";
+export * from "./day-view";
 export * from "./patient-contact";
 export * from "./patient-create";
 export * from "./patient-duplicates";

@@ -5,6 +5,7 @@ import {
   bookAppointment,
   cancelAppointment,
   changeAppointmentStatus,
+  listDayAppointments,
   rescheduleAppointment,
   walkInAppointment,
 } from "../domain/appointments";
@@ -12,6 +13,19 @@ import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
 export const staffAppointments = new Hono<AppEnv>();
+
+staffAppointments.get("/appointments", async (c) => {
+  const result = await listDayAppointments(signedIn(c).repos, c.req.query("date"));
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(
+    ok({
+      dateLocal: result.dateLocal,
+      serverNow: result.serverNow,
+      window: result.window,
+      appointments: result.appointments,
+    }),
+  );
+});
 
 staffAppointments.post("/appointments", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);

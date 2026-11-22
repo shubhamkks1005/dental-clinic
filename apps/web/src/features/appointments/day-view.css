@@ -1,0 +1,254 @@
+/* Day view (2.4.1 / S08 day). Mobile-first; timeline scrolls inside its box. */
+.appointments-page {
+  display: grid;
+  gap: var(--s4);
+  padding: 0 var(--s4) var(--s6);
+}
+
+.appointments-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.appointments-head h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.appointments-date-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: center;
+}
+
+.appointments-date input {
+  min-height: 44px;
+  min-width: 9.5rem;
+}
+
+.day-view {
+  display: grid;
+  gap: var(--s4);
+}
+
+.day-timeline {
+  max-height: min(70vh, 720px);
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--card);
+}
+
+.day-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  min-width: 0;
+}
+
+.day-hours {
+  position: relative;
+}
+
+.day-hour {
+  position: absolute;
+  left: 8px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.day-track {
+  position: relative;
+  border-left: 1px solid var(--border);
+  margin-right: 8px;
+}
+
+.day-empty {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.day-empty:hover,
+.day-empty:focus-visible {
+  background: var(--soft-blue, #e6eefa);
+  outline: none;
+}
+
+.day-now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--brand-red, #c8202a);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.day-now::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--brand-red, #c8202a);
+}
+
+.day-card {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "time name badge"
+    "time visit badge";
+  gap: 2px 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  text-align: left;
+  cursor: grab;
+  overflow: hidden;
+  min-height: 44px;
+}
+
+.day-card-time {
+  grid-area: time;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.day-card-name {
+  grid-area: name;
+  font-weight: 600;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day-card-visit {
+  grid-area: visit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day-card .badge {
+  grid-area: badge;
+}
+
+.day-card-selected {
+  outline: 2px solid var(--brand, #1e4fa3);
+  outline-offset: 1px;
+}
+
+.day-card-muted {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.day-card-emergency {
+  border-color: #fdba74;
+  background: #fff7ed;
+}
+
+.day-card-waiting {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.day-card-in-room {
+  border-color: #a5b4fc;
+  background: #eef2ff;
+}
+
+.day-card-done {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.day-details {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--card);
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s3);
+}
+
+.day-details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.day-details-head h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.day-details-dl {
+  margin: 0;
+  display: grid;
+  gap: var(--s2);
+}
+
+.day-details-dl div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: var(--s2);
+}
+
+.day-details-dl dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.day-details-dl dd {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .appointments-head {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .day-view {
+    grid-template-columns: 1fr minmax(220px, 280px);
+    align-items: start;
+  }
+
+  .day-timeline {
+    max-height: min(78vh, 860px);
+  }
+}
+
+@media (min-width: 1366px) {
+  .appointments-page {
+    padding-inline: var(--s5);
+  }
+
+  .appointments-head h1 {
+    font-size: 26px;
+  }
+}

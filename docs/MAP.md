@@ -88,7 +88,7 @@
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments; deny by default applies)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
-- src/routes/staff-appointments.ts (+ staff-appointments.test, domain/appointments.ts) - 2.3.4 POST /appointments (overlap race → 409)
+- src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1 day list + window + serverNow); POST book/walk-in; cancel/reschedule/status/chain
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
@@ -143,7 +143,8 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; other nav NotBuiltYet
+- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
+- src/features/appointments/ - 2.4.1 day view (S08 day): AppointmentsScreen, DayView, DayCard, DayDetails, api.ts, day-view.css, index.ts
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
@@ -262,7 +263,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/appointments-walk-in.ts (+ test) - 2.3.7 walkIn(); arrived walk-ins; emergency overbook; queue order test
 - src/repos/appointments-cancel.ts - 2.3.8 cancel() with reason codes; notifyPatient on audit
 - src/repos/appointments-reschedule.ts (+ test) - 2.3.8 reschedule(); chain; listForPatient
-- src/repos/appointments-list.ts - listForPatient + rescheduleChain
+- src/repos/appointments-list.ts (+ test) - listForDay (2.4.1, join patient), listForPatient + rescheduleChain
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 
 ## packages/shared
@@ -272,6 +273,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
+- src/appointment-display.ts (+ test) - 2.4.1 APPOINTMENT_STATUS_LABEL + appointmentStatusTone
+- src/day-view.ts (+ test) - 2.4.1 dayWindow / snapToSlot / emptySlotStarts
 - src/appointment-book.ts (+ test) - 2.3.4/2.3.5 parseBookAppointment (optional overrideReason)
 - src/appointment-status.ts (+ test) - 2.3.6 status wheel, statusActionTargets, no_show + undo gates
 - src/appointment-status-change.ts - parseChangeAppointmentStatus body
@@ -284,7 +287,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
-- src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
+- src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, toMinutes/toHhmm, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ 2.2.7 privacy_notice.version / privacy_notice.body); isSettingKey, parseSettingValue
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes+colour, referral_sources); listItemSchema(key); roundUpToSlot / visitTypeSnapshot (2.3.2); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it

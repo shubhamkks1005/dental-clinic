@@ -21,7 +21,8 @@ const time = z
   .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Use the time as HH:MM, for example 09:30.");
 
 export const toMinutes = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
-const toHhmm = (minutes: number) =>
+/** Minutes from midnight → "HH:MM" (appointment start_min / end_min). */
+export const toHhmm = (minutes: number) =>
   `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
 
 const dayHours = z

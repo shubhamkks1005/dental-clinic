@@ -11,13 +11,14 @@ import {
 import { PrintRoutes } from "../features/print";
 import { SettingsScreen } from "../features/settings";
 import { StyleGuideScreen } from "../features/style-guide";
+import { AppointmentsScreen } from "../features/appointments";
 import { TodayScreen } from "../features/today";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
 import { StaffShell } from "../ui/shell/StaffShell";
 
 // Screens behind the nav items that later tasks will build.
-const NOT_BUILT = ["appointments", "billing", "messages", "reports"];
+const NOT_BUILT = ["billing", "messages", "reports"];
 
 // Print screens open without the app frame; every other staff screen sits inside it.
 export function StaffRoutes() {
@@ -48,6 +49,7 @@ function ShellRoutes() {
     >
       <Routes>
         <Route index element={home} />
+        <Route path="appointments" element={<AppointmentsScreen />} />
         <Route path="patients" element={<PatientsScreen />} />
         <Route path="patients/new" element={<NewPatientScreen />} />
         <Route path="patients/:id/consents" element={<PatientConsentsScreen />} />

@@ -1,5 +1,7 @@
 import type { Repos } from "@clinic/db";
 import {
+  dayWindow,
+  istDate,
   parseBookAppointment,
   parseCancelAppointment,
   parseChangeAppointmentStatus,
@@ -78,6 +80,31 @@ export async function rescheduleAppointment(
 export async function listPatientAppointments(repos: Repos, patientId: string) {
   const appointments = await repos.appointments.listForPatient(patientId);
   return { ok: true as const, appointments };
+}
+
+const DATE_LOCAL = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Day view payload (2.4.1): appointments + clinic window + server clock. */
+export async function listDayAppointments(
+  repos: Repos,
+  dateRaw: string | undefined,
+  now: Date = new Date(),
+) {
+  const dateLocal = dateRaw && dateRaw.length > 0 ? dateRaw : istDate(now);
+  if (!DATE_LOCAL.test(dateLocal)) {
+    return { ok: false as const, message: "Pick a date as YYYY-MM-DD." };
+  }
+  // listForDay asserts appointments.manage first so denied roles get 403.
+  const appointments = await repos.appointments.listForDay(dateLocal);
+  const { timings, holidays } = await clinicClock(repos);
+  const window = dayWindow(dateLocal, timings, holidays);
+  return {
+    ok: true as const,
+    dateLocal,
+    serverNow: now.toISOString(),
+    window,
+    appointments,
+  };
 }
 
 export async function appointmentRescheduleChain(repos: Repos, id: string) {

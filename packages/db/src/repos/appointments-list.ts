@@ -1,5 +1,5 @@
-import type { AppointmentStatus } from "@clinic/shared";
-import { and, desc, eq, isNull } from "drizzle-orm";
+import type { AppointmentPriority, AppointmentStatus } from "@clinic/shared";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -65,8 +65,72 @@ export async function loadRescheduleChain(db: Db, tipId: string): Promise<Patien
   return ordered.reverse();
 }
 
+export type DayAppointmentRow = {
+  id: string;
+  patientId: string;
+  patientCode: string;
+  patientName: string;
+  patientMobile: string | null;
+  chairId: string;
+  visitTypeId: string;
+  visitTypeLabel: string;
+  startAt: string;
+  dateLocal: string;
+  startMin: number;
+  endMin: number;
+  status: AppointmentStatus;
+  source: string;
+  priority: AppointmentPriority;
+  overbook: boolean;
+  complaint: string | null;
+  arrivedAt: string | null;
+  startedAt: string | null;
+  endedAt: string | null;
+  updatedAt: string;
+  version: number;
+};
+
 export function appointmentsListRepo(db: Db, ctx: Ctx) {
   return {
+    async listForDay(dateLocal: string): Promise<DayAppointmentRow[]> {
+      assertAllowed(ctx, "appointments.manage");
+      const rows = await db
+        .select({
+          id: appointments.id,
+          patientId: appointments.patientId,
+          patientCode: patients.code,
+          patientName: patients.fullName,
+          patientMobile: patients.mobile,
+          chairId: appointments.chairId,
+          visitTypeId: appointments.visitTypeId,
+          visitTypeLabel: appointments.visitTypeLabel,
+          startAt: appointments.startAt,
+          dateLocal: appointments.dateLocal,
+          startMin: appointments.startMin,
+          endMin: appointments.endMin,
+          status: appointments.status,
+          source: appointments.source,
+          priority: appointments.priority,
+          overbook: appointments.overbook,
+          complaint: appointments.complaint,
+          arrivedAt: appointments.arrivedAt,
+          startedAt: appointments.startedAt,
+          endedAt: appointments.endedAt,
+          updatedAt: appointments.updatedAt,
+          version: appointments.version,
+        })
+        .from(appointments)
+        .innerJoin(patients, eq(appointments.patientId, patients.id))
+        .where(and(eq(appointments.dateLocal, dateLocal), isNull(appointments.deletedAt)))
+        .orderBy(asc(appointments.startMin), asc(appointments.createdAt))
+        .all();
+      return rows.map((r) => ({
+        ...r,
+        status: r.status as AppointmentStatus,
+        priority: r.priority as AppointmentPriority,
+      }));
+    },
+
     async listForPatient(patientId: string): Promise<PatientAppointmentRow[]> {
       assertAllowed(ctx, "appointments.manage");
       const patient = await db
