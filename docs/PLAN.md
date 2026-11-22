@@ -635,10 +635,10 @@ ka test pass hai.
 1.2.8 Query-plan guard (S). Ek test helper hot queries par EXPLAIN QUERY PLAN
 chalata hai aur badi table ke full SCAN par fail hota hai. Kyun: D1 free me roz 5 million
 rows read ki limit hai. Done jab: patient search index use karta dikhta hai.
-1.3.1 Access app (S). Staff hostname ke aage Cloudflare Access, policy: sirf teen
+1.3.1 Access app (S). Staff hostname ke aage Cloudflare Access, policy: sirf teen [note: optional outer layer, WAITING on a Cloudflare card (Zero Trust asks for one); the main staff login is 1.3.8 Google sign-in, see docs/AUTH_PLAN.md. When added, Access covers /app and /api/staff only]
 emails (doctor, receptionist, developer), one-time PIN. Done jab: galat email ko PIN hi
 nahi aata.
-1.3.2 JWT verify (M). Worker har staff request par Cf-Access-Jwt-Assertion  check
+1.3.2 JWT verify (M). Worker har staff request par Cf-Access-Jwt-Assertion  check [note: build as a generic RS256/JWKS verifier: used now for Google ID tokens (1.3.8); the Access JWT check switches on by config when 1.3.1 is added]
 karta hai: signature (Access ke certs endpoint se), aud  aur issuer. Cookie par nahi,
 header par bharosa karo, jaisa Cloudflare ke docs kehte hain. Done jab: galat aud,
 expired aur bina token ke tests 403 dete hain.
@@ -646,7 +646,7 @@ Dental clinic software: ultra detail build plan
 Page 15 of 150
 
 Kaun kya kar sakta hai (default, sister confirm karegi)
-1.3.3 Users aur roles (M). Email se users  row, roles: doctor, receptionist, developer.
+1.3.3 Users aur roles (M). Email se users  row, roles: doctor, receptionist, developer. [note: with 1.3.8 the user is found by the Google email and bound to the Google "sub"; unknown email = "Access not available" page; first doctor via developer command; see docs/AUTH_PLAN.md]
 Email Access me hai par users  me nahi to saaf "aapko access nahi hai" page. Har login
 access_log  me, kyunki Access ke free plan me login logs sirf 24 ghante rehte hain.
 Done jab: login ka record 24 ghante baad bhi hamari table me dikhta hai.
@@ -655,12 +655,18 @@ test. Done jab: receptionist se clinical notes ka koi endpoint nahi khulta.
 1.3.5 CSRF aur headers (M). Badlav wali requests par custom header aur Origin check.
 Security headers: CSP, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-
 Policy. Done jab: securityheaders.com par A grade ya har kami ki likhi hui wajah.
-1.3.6 User admin screen (M, baad me). Doctor receptionist ko add ya band kar sake.
+1.3.6 User admin screen (M, baad me). Doctor receptionist ko add ya band kar sake. [note: now needed before go-live as Settings > Staff (doctor only): add Gmail + role, deactivate, reactivate, change role; guards in docs/AUTH_PLAN.md 4]
 Access policy me email abhi haath se jodni padegi, isliye screen par photo ke saath
 steps. Pilot me developer khud add karega. Done jab: naya receptionist 10 minute me
 add ho jaata hai.
 1.3.7 Login ka anubhav (S). Upar naam aur role, logout, aur session khatam hone par
 saaf message. Done jab: receptionist bina madad ke login kar leti hai.
+1.3.8 Staff Google sign-in (L). [added by owner 2026-11-22; plan: docs/AUTH_PLAN.md] OIDC code flow
+with state, nonce and PKCE in the Worker; ID token fully verified; sessions in D1 (hash only, 12 h
+absolute + idle timeout); deny-by-default on /api with a short public list; dev-only login stub that is
+not in staging/production bundles; public landing page at / and an "Access not available" page.
+Done jab: an unknown Gmail lands on "Access not available" and is logged, the route-walk test passes,
+and the seeded doctor signs in on staging.
 Kaam Doctor Receptionist Developer (support)
 Patient dekhna Haan Haan Nahi
 Patient naya, basic

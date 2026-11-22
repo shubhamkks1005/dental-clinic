@@ -4,6 +4,7 @@
 - docs/DESIGN.md - look and feel, Screen map (S01-S19), patient number, colours, type, layout, words, print; every screen follows it
 - docs/design/align-dentistry-screens.pdf - mockups: p1 note, p2-3 DESIGN.md copy, then one screen per page with caption S01-S19 (screen N is on page N+3). Reference only; a newer PDF from the owner replaces it and becomes the source of truth
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
+- docs/AUTH_PLAN.md - staff "Sign in with Google" plan (task 1.3.8): flow, sessions, deny-by-default, staff rules, permission table, dev stub, landing page, owner's Google setup, risks
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
