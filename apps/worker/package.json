@@ -11,7 +11,9 @@
     "test": "vitest run",
     "db:migrate": "pnpm wr d1 migrations apply DB --local --env=''",
     "deploy:staging": "pnpm wr deploy --env staging",
-    "spike:d1": "node spike/run.mjs"
+    "spike:d1": "node spike/run.mjs",
+    "staff:seed-doctor": "node scripts/staff-admin.mjs seed-doctor",
+    "staff:recover-doctor": "node scripts/staff-admin.mjs recover-doctor"
   },
   "devDependencies": {
     "drizzle-orm": "^0.45.4",
