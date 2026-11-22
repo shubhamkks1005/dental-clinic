@@ -65,4 +65,11 @@
 - 2026-11-22 - No real patient data goes live until staff login (1.3.8 + 1.3.3-1.3.6) is done; staging holds fake data only - owner - owner
 - 2026-11-22 - "/" becomes a public landing page (Clinic staff: Sign in with Google; Patients: disabled, "Coming soon") in 1.3.8, replacing the "/ -> /app" redirect. "/my" stays a static placeholder with no API. The patient portal stays as planned in Phase 8 (8.1.2 login design, 8.2 SMS OTP + password); nothing patient-facing goes live before that phase and the staff Google login does not change it - owner - owner
 - 2026-11-22 - First doctor is added once by a developer command (email typed in the terminal), never by a migration or the UI; real staff emails never go in the repo - privacy rule - owner
+- 2026-11-22 - AUTH_PLAN approved. Order: 1.3.2, 1.3.8, then 1.3.3-1.3.7 - owner - owner
+- 2026-11-22 - Public API list is exactly: auth/start, auth/callback, auth/branding (clinic name and logo from settings, nothing else), health; the deny-by-default test checks it - owner - owner
+- 2026-11-22 - Staff session: 12 h absolute, 60 min idle; last_seen written at most once per 5 minutes - owner - owner
+- 2026-11-22 - Nobody can deactivate themselves or change their own role; never zero active doctors - owner - owner
+- 2026-11-22 - Google sign-in always uses prompt=select_account - owner - owner
+- 2026-11-22 - Permission table in docs/AUTH_PLAN.md 4f: TO BE CONFIRMED BY THE DOCTOR before task 1.3.4 is closed - owner - owner
+- 2026-11-22 - The agent never touches the Cloudflare API token; the owner deletes it after the Google secrets are set - owner - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

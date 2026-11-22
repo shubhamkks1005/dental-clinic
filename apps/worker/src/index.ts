@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { areaOf, fail, isWorkerArea } from "@clinic/shared";
 import { errorReply } from "./errors";
+import { accessJwt } from "./middleware/access-jwt";
 import { hooks } from "./routes/hooks";
 import { portal } from "./routes/portal";
 import { staff } from "./routes/staff";
@@ -8,6 +9,7 @@ import type { AppEnv } from "./types";
 
 const app = new Hono<AppEnv>();
 
+app.use("/api/staff/*", accessJwt());
 app.route("/api/staff", staff);
 app.route("/api/portal", portal);
 app.route("/hooks", hooks);

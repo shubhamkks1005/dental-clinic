@@ -6,7 +6,7 @@
     "wr": "XDG_CONFIG_HOME=.wrangler/config WRANGLER_LOG_PATH=.wrangler/logs WRANGLER_SEND_METRICS=false wrangler",
     "dev": "pnpm wr dev --env=''",
     "build": "pnpm wr deploy --dry-run --outdir dist --env=''",
-    "types": "pnpm wr types",
+    "types": "pnpm wr types --strict-vars=false",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:migrate": "pnpm wr d1 migrations apply DB --local --env=''",
