@@ -1,9 +1,21 @@
 import { PatientNoChip } from "../../ui/PatientNoChip";
-import type { sampleNextPatient } from "./sample-data";
+import type { TodayModel } from "./buildTodayModel";
 
-type NextPatient = typeof sampleNextPatient;
+type Props = {
+  patient: TodayModel["next"];
+  busy: boolean;
+  onSendIn: () => void;
+};
 
-export function NextPatientCard({ patient }: { patient: NextPatient }) {
+export function NextPatientCard({ patient, busy, onSendIn }: Props) {
+  if (!patient) {
+    return (
+      <section className="next-patient" aria-label="Next patient">
+        <p className="next-label small">Next patient</p>
+        <p className="muted">Nobody waiting yet.</p>
+      </section>
+    );
+  }
   return (
     <section className="next-patient" aria-label="Next patient">
       <p className="next-label small">Next patient</p>
@@ -14,7 +26,12 @@ export function NextPatientCard({ patient }: { patient: NextPatient }) {
           {patient.visit} · {patient.mobile}
         </span>
       </p>
-      <button type="button" className="btn next-send">
+      <button
+        type="button"
+        className="btn next-send"
+        disabled={busy || patient.status !== "arrived"}
+        onClick={onSendIn}
+      >
         Send in
       </button>
     </section>

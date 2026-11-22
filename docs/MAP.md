@@ -171,7 +171,7 @@
 - src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
 - src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
-- src/features/today/ - Today screen (S01 laptop, S14 phone) with FAKE sample data: TodayScreen, TodayList, NextPatientCard, CallList, sample-data.ts, statusActions.ts (+ test, 2.3.6 button filter), today.css (layout), today-cards.css (cards), index.ts
+- src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).

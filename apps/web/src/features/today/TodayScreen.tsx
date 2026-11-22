@@ -1,13 +1,18 @@
-import { formatRupees, istHour, istLongDate } from "@clinic/shared";
+import { istDate, istHour, istLongDate } from "@clinic/shared";
+import { useCallback, useEffect, useState } from "react";
+import { ApiError } from "../../api/client";
 import { icons } from "../../ui/icons";
 import { Logo } from "../../ui/Logo";
 import { shortName } from "../../ui/names";
-import { useMe } from "../auth";
 import { StatCard } from "../../ui/StatCard";
+import { useMe } from "../auth";
+import { changeAppointmentStatus, listDayAppointments } from "./api";
+import { buildTodayModel, type TodayModel } from "./buildTodayModel";
 import { CallList } from "./CallList";
+import { DoctorToday } from "./DoctorToday";
 import { NextPatientCard } from "./NextPatientCard";
-import { sampleCallList, sampleNextPatient, sampleRows, sampleStats as s } from "./sample-data";
 import { TodayList } from "./TodayList";
+import { WalkInDialog } from "./WalkInDialog";
 import "./today.css";
 import "./today-cards.css";
 
@@ -17,10 +22,60 @@ function greeting(now: Date): string {
   return hour < 17 ? "Good afternoon" : "Good evening";
 }
 
-// S01 (laptop) and S14 (phone), with fake sample data until the appointments API exists.
+// S01 (laptop) / S14 (phone). Real appointments API (2.4.3).
 export function TodayScreen() {
-  const now = new Date();
-  const firstName = shortName(useMe().name);
+  const me = useMe();
+  const firstName = shortName(me.name);
+  const isDoctor = me.role === "doctor";
+  const [model, setModel] = useState<TodayModel | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [walkInOpen, setWalkInOpen] = useState(false);
+  const [serverNow, setServerNow] = useState(() => new Date());
+
+  const load = useCallback(() => {
+    const dateLocal = istDate(new Date());
+    listDayAppointments(dateLocal)
+      .then((data) => {
+        setServerNow(new Date(data.serverNow));
+        setModel(buildTodayModel(data.appointments, data.window, data.serverNow));
+        setError(null);
+      })
+      .catch((e) => {
+        setModel(null);
+        setError(
+          e instanceof ApiError
+            ? e.message
+            : "Could not load today. Check the connection, then try again.",
+        );
+      });
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function onStatus(
+    id: string,
+    status: Parameters<typeof changeAppointmentStatus>[1]["status"],
+    version: number,
+  ) {
+    setBusyId(id);
+    setError(null);
+    try {
+      await changeAppointmentStatus(id, { status, version });
+      load();
+    } catch (e) {
+      setError(
+        e instanceof ApiError
+          ? e.message
+          : "Could not update status. Check the connection, then try again.",
+      );
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="today">
       <header className="today-hero">
@@ -29,10 +84,11 @@ export function TodayScreen() {
         </span>
         <span className="hero-text">
           <h1>
-            {greeting(now)}, {firstName}
+            {greeting(serverNow)}, {firstName}
           </h1>
           <span className="hero-date">
-            {istLongDate(now)}. {s.appointments} appointments today.
+            {istLongDate(serverNow)}.
+            {model ? ` ${model.appointmentsCount} appointments today.` : ""}
           </span>
         </span>
         <button type="button" className="hero-search hero-phone-only" aria-label="Search patients">
@@ -40,44 +96,67 @@ export function TodayScreen() {
         </button>
       </header>
 
-      <div className="today-stats">
-        <StatCard
-          label="Today's appointments"
-          value={String(s.appointments)}
-          note={`${s.openSlots} open slots`}
-          good
-        />
-        <StatCard
-          label="Arrived"
-          value={String(s.arrived)}
-          note="on time"
-          good
-          className="wide-only"
-        />
-        <StatCard
-          label="Waiting"
-          value={String(s.waiting)}
-          note={`longest ${s.longestWaitMin} min`}
-        />
-        <StatCard
-          label="Today's collection"
-          value={formatRupees(s.collectionPaise)}
-          note={`${s.bills} bills`}
-          className="wide-only"
-        />
-      </div>
+      {error ? <p className="field-error">{error}</p> : null}
 
-      <div className="today-body">
-        <div className="today-next">
-          <NextPatientCard patient={sampleNextPatient} />
+      {!isDoctor && model ? (
+        <div className="today-stats">
+          <StatCard
+            label="Today's appointments"
+            value={String(model.appointmentsCount)}
+            note={`${model.openSlots} open slots`}
+            good
+          />
+          <StatCard
+            label="Arrived"
+            value={String(model.arrivedCount)}
+            note="checked in"
+            good
+            className="wide-only"
+          />
+          <StatCard
+            label="Waiting"
+            value={String(model.waitingCount)}
+            note={
+              model.longestWaitMin === null ? "none waiting" : `longest ${model.longestWaitMin} min`
+            }
+          />
         </div>
-        <div className="today-main">
-          <TodayList rows={sampleRows} />
+      ) : null}
+
+      {!isDoctor ? (
+        <div className="today-toolbar">
+          <button type="button" className="btn btn-primary" onClick={() => setWalkInOpen(true)}>
+            Walk-in
+          </button>
         </div>
-        <div className="today-calls">
-          <CallList items={sampleCallList} />
+      ) : null}
+
+      {!model && !error ? <p className="muted">Loading…</p> : null}
+
+      {model && isDoctor ? <DoctorToday model={model} busyId={busyId} onStatus={onStatus} /> : null}
+
+      {model && !isDoctor ? (
+        <div className="today-body">
+          <div className="today-next">
+            <NextPatientCard
+              patient={model.next}
+              busy={busyId === model.next?.id}
+              onSendIn={() => {
+                if (!model.next) return;
+                void onStatus(model.next.id, "in_chair", model.next.version);
+              }}
+            />
+          </div>
+          <div className="today-main">
+            <TodayList rows={model.rows} busyId={busyId} onStatus={onStatus} />
+          </div>
+          <div className="today-calls">
+            <CallList items={model.callList} />
+          </div>
         </div>
-      </div>
+      ) : null}
+
+      <WalkInDialog open={walkInOpen} onClose={() => setWalkInOpen(false)} onDone={load} />
     </div>
   );
 }

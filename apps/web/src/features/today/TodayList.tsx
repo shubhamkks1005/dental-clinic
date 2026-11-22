@@ -1,9 +1,15 @@
+import type { AppointmentStatus } from "@clinic/shared";
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
-import type { TodayRow } from "./sample-data";
+import type { TodayListRow } from "./buildTodayModel";
 
-// Phone: each row is its own card (S14). Tablet and laptop: one card with rows (S01).
-export function TodayList({ rows }: { rows: TodayRow[] }) {
+type Props = {
+  rows: TodayListRow[];
+  busyId: string | null;
+  onStatus: (id: string, status: AppointmentStatus, version: number) => void;
+};
+
+export function TodayList({ rows, busyId, onStatus }: Props) {
   return (
     <section className="today-list" aria-labelledby="today-list-title">
       <div className="today-list-head">
@@ -12,21 +18,44 @@ export function TodayList({ rows }: { rows: TodayRow[] }) {
           Open calendar
         </Link>
       </div>
-      <ul>
-        {rows.map((row) => (
-          <li key={row.time + row.name} className="today-row">
-            <span className="today-time">{row.time}</span>
-            <span className="today-who">
-              <span className="today-name">{row.name}</span>
-              <span className="small muted">{row.visit}</span>
-            </span>
-            <StatusBadge tone={row.tone} label={row.status} />
-            <button type="button" className="btn btn-compact today-action">
-              {row.action}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {rows.length === 0 ? (
+        <p className="muted">No appointments today. Use Walk-in or Book on the calendar.</p>
+      ) : (
+        <ul>
+          {rows.map((row) => (
+            <li key={row.id} className={`today-row${row.highlighted ? " today-row-next" : ""}`}>
+              <span className="today-time">{row.time}</span>
+              <span className="today-who">
+                <span className="today-name">
+                  {row.name}
+                  {row.noMobile ? <span className="today-no-mobile"> No mobile</span> : null}
+                  {row.priority === "emergency" ? (
+                    <span className="today-emergency"> Emergency</span>
+                  ) : null}
+                </span>
+                <span className="small muted">{row.visit}</span>
+              </span>
+              <StatusBadge tone={row.tone} label={row.statusLabel} />
+              <span className="today-actions">
+                {row.actions
+                  .filter((a) => a.status !== "rescheduled")
+                  .slice(0, 2)
+                  .map((a) => (
+                    <button
+                      key={a.status}
+                      type="button"
+                      className="btn btn-compact today-action"
+                      disabled={busyId === row.id}
+                      onClick={() => onStatus(row.id, a.status, row.version)}
+                    >
+                      {a.label}
+                    </button>
+                  ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

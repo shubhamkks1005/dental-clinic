@@ -58,9 +58,68 @@
 
 .today-stats .wide-only,
 .today-calls,
-.today-link,
-.today-action {
+.today-link {
   display: none;
+}
+
+.today-toolbar {
+  display: flex;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+
+.today-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.today-row-next {
+  border-color: var(--brand, #1e4fa3);
+  box-shadow: inset 3px 0 0 var(--brand, #1e4fa3);
+}
+
+.today-no-mobile,
+.today-emergency {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.today-emergency {
+  color: #9a3412;
+}
+
+.today-check {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+}
+
+.doctor-today {
+  display: grid;
+  gap: var(--s4);
+}
+
+.doctor-today-card {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s4);
+}
+
+.doctor-next-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s3);
+}
+
+.doctor-next-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
 }
 
 .today-body {
@@ -119,8 +178,7 @@
     display: block;
   }
 
-  .today-link,
-  .today-action {
+  .today-link {
     display: inline-flex;
   }
 
