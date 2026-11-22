@@ -2,7 +2,8 @@ import { istDateTime, isStaffRole, type StaffMember } from "@clinic/shared";
 import { useState } from "react";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { changeRole, deactivate, reactivate, resetGoogleLink } from "./api";
-import { ROLE_LABEL } from "./RolePicker";
+import { shortName } from "../../ui/names";
+import { ROLE_LABEL } from "../../ui/role-label";
 import { DeactivatePanel, GooglePanel, RolePanel } from "./StaffPanels";
 
 // Runs one change and shows the result; true when it was saved.
@@ -19,7 +20,7 @@ function signInText(member: StaffMember): string {
 export function StaffRow({ member, run }: { member: StaffMember; run: RunChange }) {
   const [panel, setPanel] = useState<PanelName>(null);
   const [busy, setBusy] = useState(false);
-  const name = member.name.split(" ")[0] ?? member.name;
+  const name = shortName(member.name);
   const active = member.status === "active";
 
   async function act(work: () => Promise<StaffMember[]>, done: string) {

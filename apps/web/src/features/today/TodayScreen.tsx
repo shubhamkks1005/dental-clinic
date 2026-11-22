@@ -1,7 +1,8 @@
 import { formatRupees, istHour, istLongDate } from "@clinic/shared";
 import { icons } from "../../ui/icons";
 import { Logo } from "../../ui/Logo";
-import { sampleUser } from "../../ui/shell/sample-session";
+import { shortName } from "../../ui/names";
+import { useMe } from "../auth";
 import { StatCard } from "../../ui/StatCard";
 import { CallList } from "./CallList";
 import { NextPatientCard } from "./NextPatientCard";
@@ -19,6 +20,7 @@ function greeting(now: Date): string {
 // S01 (laptop) and S14 (phone), with fake sample data until the appointments API exists.
 export function TodayScreen() {
   const now = new Date();
+  const firstName = shortName(useMe().name);
   return (
     <div className="today">
       <header className="today-hero">
@@ -27,7 +29,7 @@ export function TodayScreen() {
         </span>
         <span className="hero-text">
           <h1>
-            {greeting(now)}, {sampleUser.name.split(" ")[0]}
+            {greeting(now)}, {firstName}
           </h1>
           <span className="hero-date">
             {istLongDate(now)}. {s.appointments} appointments today.

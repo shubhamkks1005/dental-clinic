@@ -1,18 +1,28 @@
 import type { ReactNode } from "react";
 import { BottomTabs } from "./BottomTabs";
 import { MainNav } from "./MainNav";
+import type { NavItem } from "./nav-items";
 import { TopBar } from "./TopBar";
 import "./nav.css";
 import "./shell.css";
 
+type Props = {
+  children: ReactNode;
+  mainNav: NavItem[];
+  phoneTabs: NavItem[];
+  canAddPatient: boolean;
+  user: ReactNode;
+};
+
 // Staff app frame (S01 laptop, S14 phone). Which parts show is decided by CSS breakpoints.
-export function StaffShell({ children }: { children: ReactNode }) {
+// The caller passes only the menu items the signed-in role may use, and the user card.
+export function StaffShell({ children, mainNav, phoneTabs, canAddPatient, user }: Props) {
   return (
     <div className="shell">
-      <MainNav />
-      <TopBar />
+      <MainNav items={mainNav} user={user} />
+      <TopBar canAddPatient={canAddPatient} user={user} />
       <main className="shell-main">{children}</main>
-      <BottomTabs />
+      <BottomTabs items={phoneTabs} canAddPatient={canAddPatient} />
     </div>
   );
 }

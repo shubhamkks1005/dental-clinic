@@ -65,6 +65,11 @@
 .top-search {
   position: relative;
   flex: 1;
+  min-width: 0;
+}
+
+.top-user {
+  display: none;
 }
 
 .top-search .input {
@@ -98,6 +103,17 @@
     gap: var(--s3);
     padding: var(--s4) var(--s6);
   }
+
+  /* Tablet only; on laptop the user card is at the bottom of the sidebar. */
+  .top-user {
+    display: block;
+    flex: none;
+    max-width: 16rem;
+  }
+
+  .top-user .user-card {
+    flex-wrap: nowrap;
+  }
 }
 
 /* Laptop: 232px navy sidebar on the left (S01). */
@@ -110,5 +126,9 @@
 
   .shell-top {
     padding: var(--s5) var(--s6);
+  }
+
+  .top-user {
+    display: none;
   }
 }

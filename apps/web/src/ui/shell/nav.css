@@ -9,8 +9,7 @@
   gap: var(--s3);
 }
 
-.nav-brand > span:last-child,
-.nav-user > span:last-child {
+.nav-brand > span:last-child {
   display: flex;
   flex-direction: column;
   line-height: 1.25;
@@ -119,9 +118,7 @@
   }
 
   .nav-user {
-    display: flex;
-    align-items: center;
-    gap: var(--s3);
+    display: block;
     margin-top: auto;
     padding: var(--s3);
     border-radius: var(--radius-control);
@@ -129,21 +126,23 @@
     color: #dbe4f3;
   }
 
-  .nav-user-name {
+  .nav-user .user-name {
     color: #fff;
-    font-weight: 600;
   }
 
-  .nav-avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 999px;
+  .nav-user .user-avatar {
     background: #fff;
-    color: var(--navy);
-    font-size: 12px;
-    font-weight: 700;
+  }
+
+  /* The sidebar is narrow: Sign out gets its own full-width row. */
+  .nav-user .user-sign-out {
+    flex-basis: 100%;
+    border-color: rgb(255 255 255 / 30%);
+    background: transparent;
+    color: #fff;
+  }
+
+  .nav-user .user-problem {
+    color: #ffe4d6;
   }
 }

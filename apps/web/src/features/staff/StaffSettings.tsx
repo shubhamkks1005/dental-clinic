@@ -1,6 +1,7 @@
 import type { NewStaff, StaffMember } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { shortName } from "../../ui/names";
 import { AddStaffForm } from "./AddStaffForm";
 import { addStaff, getStaff } from "./api";
 import { StaffRow, type RunChange } from "./StaffRow";
@@ -38,7 +39,7 @@ export function StaffSettings() {
   };
 
   async function add(input: NewStaff) {
-    const first = input.name.split(" ")[0] ?? input.name;
+    const first = shortName(input.name);
     const saved = await run(
       () => addStaff(input),
       `${input.name} is added. Ask ${first} to open the clinic app, press "Sign in with Google" and choose ${input.email}.`,

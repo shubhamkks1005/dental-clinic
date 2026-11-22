@@ -14,15 +14,15 @@ export function useMe(): Me {
 
 type State = { status: "loading" } | { status: "ready"; me: Me } | { status: "offline" };
 
-// Staff screens render only after /me succeeds. No session: full page load to the start page.
+// Staff screens render only after /me succeeds. No session: the API client has already sent
+// the browser to the start page (api/session-end.ts), so stay blank.
 export function RequireStaff({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>({ status: "loading" });
   useEffect(() => {
     getMe()
       .then((me) => setState({ status: "ready", me }))
       .catch((error: unknown) => {
-        if (error instanceof ApiError && error.status === 401) window.location.replace("/");
-        else setState({ status: "offline" });
+        if (!(error instanceof ApiError && error.status === 401)) setState({ status: "offline" });
       });
   }, []);
 

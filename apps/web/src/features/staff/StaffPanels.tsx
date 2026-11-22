@@ -1,10 +1,11 @@
 import type { StaffMember, StaffRole } from "@clinic/shared";
 import { useState, type ReactNode } from "react";
+import { shortName } from "../../ui/names";
 import { RolePicker } from "./RolePicker";
 
 type PanelProps = { member: StaffMember; busy: boolean; onCancel: () => void };
 
-const firstName = (member: StaffMember) => member.name.split(" ")[0] ?? member.name;
+const firstName = (member: StaffMember) => shortName(member.name);
 
 function Panel({
   label,

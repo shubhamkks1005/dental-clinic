@@ -54,7 +54,7 @@
 - src/types.ts - Bindings (Env + secrets) and Variables (db, requestId, session, ctx, repos)
 - src/http.ts - COOKIE_BASE (__Host-, HttpOnly, Secure, SameSite=Lax, Path=/), signedIn(c)
 - src/auth-deps.ts - authConfig(env) (null if Google not set up) and loginDeps (Google client + db)
-- src/middleware/session.ts - requireStaff: 401 unless public path or valid session; sets ctx + repos
+- src/middleware/session.ts - requireStaff: 401 unless public path or valid session (code session_timed_out after the idle or 12 h limit, else not_signed_in); sets ctx + repos
 - src/middleware/csrf.ts - non-GET /api calls need Origin = APP_ORIGIN and header x-clinic-request: 1
 - src/middleware/headers.ts - apiHeaders(): security headers (CSP default-src 'none', HSTS, nosniff, DENY framing, referrer) + Cache-Control no-store on /api and /hooks
 - src/headers.test.ts - 1.3.5: API reply headers and the web _headers rules
@@ -88,11 +88,15 @@
 - public/_headers - security headers for every web page and asset (strict CSP: own scripts, styles, fonts, images only; no inline code; no framing; HSTS; Permissions-Policy). Static assets skip the Worker, so this file is the only place these are set
 - public/fonts/InterVariable.woff2 - Inter 4.1 variable font (full character set incl. ₹), from the official rsms/inter v4.1 release zip; sha256 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
-- src/api/client.ts - the one typed API client (ApiError; adds x-clinic-request on non-GET; same-origin cookies)
-- src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me; 401 -> full load of /), api.ts, auth.css
+- src/api/client.ts - the one typed API client (ApiError; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
+- src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
+- src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; "signed out after a period of inactivity" notice; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me), UserCard ("Name · Role" + Sign out, 1.3.7) + user-card.css, api.ts, auth.css
+- src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
+- src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)
+- src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
 - src/App.tsx - top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/routes/StaffRoutes.tsx - staff route tree in StaffShell: index = Today; settings/* = SettingsScreen; other nav targets show "Not ready yet"
+- src/routes/StaffRoutes.tsx - staff route tree: builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
 - src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
@@ -104,13 +108,13 @@
 - src/ui/PatientNoChip.tsx - soft-blue patient number chip (DESIGN.md "Patient number")
 - src/ui/StatCard.tsx - label / big value / note card
 - src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
-- src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width)
-- src/ui/shell/MainNav.tsx - brand, 7 nav items (active also on sub-pages, except Today), user card: laptop navy sidebar 232px, tablet tabs row, phone hidden
-- src/ui/shell/TopBar.tsx - tablet/laptop: search, Walk-in, + New patient (not wired yet)
-- src/ui/shell/BottomTabs.tsx - phone: 5 bottom tabs + round "+" new patient button
+- src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width); gets menu items, user card and canAddPatient as props (no feature imports)
+- src/ui/shell/MainNav.tsx - brand, the role's nav items (active also on sub-pages, except Today), user card at the bottom: laptop navy sidebar 232px, tablet tabs row, phone hidden
+- src/ui/shell/TopBar.tsx - tablet/laptop: search, Walk-in, + New patient (not wired yet; hidden without patients.edit); tablet also shows the user card
+- src/ui/shell/BottomTabs.tsx - phone: the role's bottom tabs + round "+" new patient button (hidden without patients.edit)
 - src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name
-- src/ui/shell/nav-items.ts - MAIN_NAV (7), PHONE_TABS (5), NEW_PATIENT_PATH
-- src/ui/shell/sample-session.ts - FAKE clinic/user values until Settings (1.5.2) and login (1.3.3)
+- src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
+- src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
 - src/features/today/ - Today screen (S01 laptop, S14 phone) with FAKE sample data: TodayScreen, TodayList, NextPatientCard, CallList, sample-data.ts, today.css (layout), today-cards.css (cards), index.ts
 
@@ -168,7 +172,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
 
 ## packages/shared
-- src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint)
+- src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
 - src/api.test.ts - reply shape tests
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)

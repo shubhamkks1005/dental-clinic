@@ -1,0 +1,29 @@
+import { Link } from "react-router";
+import { icons } from "../../ui/icons";
+import { moreItems } from "../../ui/shell/nav-items";
+import { useMe, UserCard } from "../auth";
+import "./more.css";
+
+// Phone "More" tab (no mockup; built from the S14 cards): who is signed in, Sign out, and the
+// screens that have no bottom tab, filtered by role.
+export function MoreScreen() {
+  const items = moreItems(useMe().permissions);
+  return (
+    <div className="more">
+      <h1>More</h1>
+      <section className="card more-card" aria-label="Signed in">
+        <UserCard />
+      </section>
+      {items.length > 0 && (
+        <nav className="card more-list" aria-label="More screens">
+          {items.map((item) => (
+            <Link key={item.to} to={item.to}>
+              {icons[item.icon]}
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      )}
+    </div>
+  );
+}

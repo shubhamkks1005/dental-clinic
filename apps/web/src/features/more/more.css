@@ -1,0 +1,38 @@
+/* Phone More screen. Also works on wider screens if opened there. */
+.more {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s5) var(--s4) var(--s6);
+}
+
+.more-card {
+  padding: var(--s4);
+}
+
+.more-list {
+  display: grid;
+  padding: var(--s2);
+}
+
+.more-list a {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--control-h);
+  padding: 0 var(--s3);
+  border-radius: var(--radius-control);
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.more-list a:hover {
+  background: var(--blue-soft);
+}
+
+@media (min-width: 768px) {
+  .more {
+    max-width: 36rem;
+    padding: var(--s5) var(--s6) var(--s6);
+  }
+}

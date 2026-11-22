@@ -1,10 +1,5 @@
-import { STAFF_ROLES, type Role, type StaffRole } from "@clinic/shared";
-
-export const ROLE_LABEL: Record<Role, string> = {
-  doctor: "Doctor",
-  receptionist: "Receptionist",
-  developer: "Developer (support)",
-};
+import { STAFF_ROLES, type StaffRole } from "@clinic/shared";
+import { ROLE_LABEL } from "../../ui/role-label";
 
 // Two large radio buttons; the doctor can give only these two roles.
 export function RolePicker({

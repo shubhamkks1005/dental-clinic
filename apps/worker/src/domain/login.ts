@@ -115,16 +115,21 @@ export async function openSession(
   return sessionToken;
 }
 
+// timedOut: the session ended by the idle or 12 h limit, so the screen can say why.
+export type CurrentSession = { ok: true; session: SessionRow } | { ok: false; timedOut: boolean };
+
 export async function currentSession(
   db: Db,
   token: string,
   nowMs: number,
-): Promise<SessionRow | null> {
+): Promise<CurrentSession> {
   const repo = authRepo(db);
   const session = await repo.findSession(await sha256(token));
-  if (!session || checkSession(session, nowMs) !== "valid") return null;
+  if (!session) return { ok: false, timedOut: false };
+  const check = checkSession(session, nowMs);
+  if (check !== "valid") return { ok: false, timedOut: check === "idle" || check === "expired" };
   if (needsTouch(session.lastSeenAt, nowMs)) await repo.touchSession(session.sessionId);
-  return session;
+  return { ok: true, session };
 }
 
 export async function logout(

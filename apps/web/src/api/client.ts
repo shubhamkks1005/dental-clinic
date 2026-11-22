@@ -1,4 +1,5 @@
 import type { ApiReply } from "@clinic/shared";
+import { startPageAfter401 } from "./session-end";
 
 // The one typed API client. Feature folders wrap it in small functions; components never fetch.
 export class ApiError extends Error {
@@ -38,6 +39,12 @@ export async function api<T>(
       "The clinic server sent an unexpected reply. Please try again.",
     );
   }
-  if (!reply.ok) throw new ApiError(response.status, reply.error.code, reply.error.message);
+  if (!reply.ok) {
+    if (response.status === 401) {
+      const target = startPageAfter401(window.location.pathname, reply.error.code);
+      if (target) window.location.replace(target);
+    }
+    throw new ApiError(response.status, reply.error.code, reply.error.message);
+  }
   return reply.data;
 }

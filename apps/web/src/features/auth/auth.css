@@ -33,6 +33,16 @@
   text-transform: uppercase;
 }
 
+.start-notice {
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius-control);
+  background: #fef3c7;
+  color: #78350f;
+  font-weight: 600;
+  text-align: center;
+}
+
 .start-cards {
   display: grid;
   gap: var(--s4);

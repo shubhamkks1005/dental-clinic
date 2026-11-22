@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { TIMED_OUT_QUERY } from "../../api/session-end";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { devSignInUrl, getMe, SIGN_IN_URL } from "./api";
 import { ClinicBrand } from "./ClinicBrand";
@@ -8,6 +10,7 @@ import "./auth.css";
 // from the staff list. The patient card stays disabled until Phase 8.
 export function LandingPage() {
   const [signedIn, setSignedIn] = useState(false);
+  const timedOut = useLocation().search.includes(TIMED_OUT_QUERY);
   useEffect(() => {
     getMe()
       .then(() => setSignedIn(true))
@@ -17,6 +20,11 @@ export function LandingPage() {
   return (
     <main className="start">
       <ClinicBrand />
+      {timedOut && !signedIn && (
+        <p className="start-notice" role="status">
+          You were signed out after a period of inactivity. Sign in again.
+        </p>
+      )}
       <div className="start-cards">
         <section className="card start-card" aria-labelledby="staff-title">
           <h1 id="staff-title">Clinic staff</h1>

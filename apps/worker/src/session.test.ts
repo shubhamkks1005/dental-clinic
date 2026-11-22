@@ -47,6 +47,31 @@ describe("staff session (1.3.8)", () => {
     expect((await get("/api/staff/me", cookie)).status).toBe(401);
   });
 
+  it("1.3.7: idle and 12 h endings say 'session_timed_out'; revoked or deactivated stay 'not_signed_in'", async () => {
+    const cookie = await sessionCookie(t.env, "doc@example.com");
+    const code = async () =>
+      ((await (await get("/api/staff/me", cookie)).json()) as { error: { code: string } }).error
+        .code;
+    setSession(`last_seen_at = '${new Date(Date.now() - 61 * 60_000).toISOString()}'`);
+    expect(await code()).toBe("session_timed_out");
+    setSession(
+      `last_seen_at = '${new Date().toISOString()}', expires_at = '2020-01-01T00:00:00.000Z'`,
+    );
+    expect(await code()).toBe("session_timed_out");
+    setSession("expires_at = '2099-01-01T00:00:00.000Z', revoked_at = '2026-01-01T00:00:00.000Z'");
+    expect(await code()).toBe("not_signed_in");
+    setSession("revoked_at = NULL");
+    t.sqlite.exec("UPDATE users SET status = 'disabled'");
+    expect(await code()).toBe("not_signed_in");
+    expect(
+      (
+        (await (await get("/api/staff/me", "__Host-staff_session=unknown")).json()) as {
+          error: { code: string };
+        }
+      ).error.code,
+    ).toBe("not_signed_in");
+  });
+
   it("writes last_seen only when it is 5 minutes old or more", async () => {
     const cookie = await sessionCookie(t.env, "doc@example.com");
     const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
