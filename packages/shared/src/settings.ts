@@ -35,6 +35,12 @@ export const SETTING_SCHEMAS = {
     .trim()
     .min(1, "Enter the notice text.")
     .max(20000, "The notice is too long."),
+  // 2.3.5: how far ahead a normal booking may go (override with reason still allowed).
+  "appointments.book_ahead_days": z
+    .number({ error: "Enter a whole number." })
+    .int("Use a whole number.")
+    .min(1, "Use at least 1 day.")
+    .max(365, "Use at most 365 days."),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

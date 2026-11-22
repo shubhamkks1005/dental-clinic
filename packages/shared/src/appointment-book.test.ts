@@ -21,6 +21,7 @@ describe("book appointment body (2.3.4)", () => {
         source: "phone",
         priority: "normal",
         complaint: null,
+        overrideReason: null,
       },
     });
   });

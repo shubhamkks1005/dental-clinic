@@ -1,6 +1,7 @@
 import { appointmentHoldsChair, type AppointmentStatus, DEFAULT_CHAIR_ID } from "./appointments";
+import { clinicWorkingIntervals } from "./booking-rules";
 import { addIstDays, istDate, istLocalToUtc, istMinutes } from "./time";
-import { dayKeyOf, toMinutes, type Holiday, type Timings } from "./timings";
+import type { Holiday, Timings } from "./timings";
 
 export type BusyBlock = {
   dateLocal: string;
@@ -23,27 +24,6 @@ const TODAY_LEAD_MINUTES = 15;
 // Earliest time to offer when booking "from now" (PLAN 2.3.3: today = now + 15 minutes).
 export function slotSearchEarliest(now: Date): Date {
   return new Date(now.getTime() + TODAY_LEAD_MINUTES * 60 * 1000);
-}
-
-function workingIntervals(
-  isoDay: string,
-  timings: Timings,
-  holidays: Holiday[],
-): [number, number][] {
-  if (holidays.some((h) => h.date === isoDay)) return [];
-  const day = timings.week[dayKeyOf(isoDay)];
-  if (!day.open) return [];
-  const open = toMinutes(day.start);
-  const close = toMinutes(day.end);
-  if (day.lunchStart && day.lunchEnd) {
-    const lunchStart = toMinutes(day.lunchStart);
-    const lunchEnd = toMinutes(day.lunchEnd);
-    return [
-      [open, lunchStart],
-      [lunchEnd, close],
-    ];
-  }
-  return [[open, close]];
 }
 
 function overlaps(a0: number, a1: number, b0: number, b1: number): boolean {
@@ -86,7 +66,7 @@ export function findFreeSlots(input: {
 
   for (let i = 0; i < searchDays && out.length < limit; i++) {
     const dateLocal = addIstDays(startDay, i);
-    const intervals = workingIntervals(dateLocal, input.timings, input.holidays);
+    const intervals = clinicWorkingIntervals(dateLocal, input.timings, input.holidays);
     if (intervals.length === 0) continue;
 
     const dayBusy = busy.filter((b) => b.dateLocal === dateLocal);

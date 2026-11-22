@@ -2,6 +2,7 @@ import { z } from "zod";
 import { APPOINTMENT_PRIORITIES, APPOINTMENT_SOURCES } from "./appointments";
 
 // 2.3.4 book body. Duration comes from the visit type on the server (snapshotted).
+// 2.3.5: optional overrideReason bypasses soft rules (past/closed/lunch/ahead) and sets overbook.
 export const bookAppointmentSchema = z.object({
   patientId: z.string().trim().min(1, "Choose a patient.").max(40),
   visitTypeId: z.string().trim().min(1, "Choose a visit type.").max(40),
@@ -20,6 +21,12 @@ export const bookAppointmentSchema = z.object({
     .string()
     .trim()
     .max(500, "Keep the note under 500 letters.")
+    .optional()
+    .transform((v) => v || null),
+  overrideReason: z
+    .string()
+    .trim()
+    .max(200, "Keep the override reason under 200 letters.")
     .optional()
     .transform((v) => v || null),
 });

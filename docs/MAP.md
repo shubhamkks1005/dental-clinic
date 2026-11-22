@@ -257,7 +257,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/patient-update.ts (+ test) - 2.2.4 update with version check, mobile audit, search rebuild
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 - src/repos/appointment-insert.ts - INSERT…SELECT WHERE NOT EXISTS (busy overlap) for booking
-- src/repos/appointments-book.ts (+ test) - 2.3.4 book(); 50 parallel same-slot → one win, no loser audit
+- src/repos/appointments-book.ts (+ test) - 2.3.4/2.3.5 book(); soft rules + override→overbook; 50 parallel same-slot → one win, no loser audit
+- migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
@@ -266,8 +267,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
-- src/appointment-book.ts (+ test) - 2.3.4 parseBookAppointment / bookAppointmentSchema
-- src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (working hours − lunch − holidays − busy; next 5 in 14 days)
+- src/appointment-book.ts (+ test) - 2.3.4/2.3.5 parseBookAppointment (optional overrideReason)
+- src/booking-rules.ts (+ test) - 2.3.5 bookingRuleViolations + clinicWorkingIntervals (past/closed/lunch/ahead)
+- src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (uses clinicWorkingIntervals; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)

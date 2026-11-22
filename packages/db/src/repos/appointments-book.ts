@@ -1,10 +1,13 @@
 import {
+  bookingRuleViolations,
   DEFAULT_CHAIR_ID,
   istLocalToUtc,
   newUlid,
   visitTypeSnapshot,
   type BookAppointmentInput,
+  type Holiday,
   type ListItem,
+  type Timings,
 } from "@clinic/shared";
 import { and, eq, isNull } from "drizzle-orm";
 import { auditInsertIfChanged } from "../audit";
@@ -24,7 +27,15 @@ export type BookedAppointment = {
   endMin: number;
   startAt: string;
   status: "scheduled";
+  overbook: boolean;
   version: number;
+};
+
+export type BookAppointmentOptions = {
+  timings: Timings;
+  holidays: Holiday[];
+  bookAheadDays: number;
+  now: Date;
 };
 
 async function loadVisitType(db: Db, id: string): Promise<ListItem> {
@@ -58,18 +69,35 @@ async function requirePatient(db: Db, id: string) {
   }
 }
 
-// 2.3.4: book one slot. Losers of the overlap race get 409 and write no audit row.
+// 2.3.4 overlap race + 2.3.5 soft rules (past/closed/lunch/ahead) with override → overbook.
 export function appointmentsBookRepo(db: Db, ctx: Ctx) {
   return {
-    async book(input: BookAppointmentInput, slotMinutes: number): Promise<BookedAppointment> {
+    async book(
+      input: BookAppointmentInput,
+      opts: BookAppointmentOptions,
+    ): Promise<BookedAppointment> {
       assertAllowed(ctx, "appointments.manage");
       await requirePatient(db, input.patientId);
       const visit = await loadVisitType(db, input.visitTypeId);
-      const snap = visitTypeSnapshot(visit, slotMinutes);
+      const snap = visitTypeSnapshot(visit, opts.timings.slotMinutes);
       const endMin = input.startMin + snap.durationMin;
       if (endMin > 1440) {
         throw new InvalidError("That visit does not fit on this day. Pick an earlier time.");
       }
+
+      const violations = bookingRuleViolations({
+        slot: { dateLocal: input.dateLocal, startMin: input.startMin, endMin },
+        timings: opts.timings,
+        holidays: opts.holidays,
+        bookAheadDays: opts.bookAheadDays,
+        now: opts.now,
+      });
+      const overrideReason = input.overrideReason ?? null;
+      if (violations.length > 0 && !overrideReason) {
+        throw new InvalidError(violations[0]!.message);
+      }
+      const overbook = violations.length > 0;
+
       const id = newUlid();
       const values: AppointmentInsertValues = {
         id,
@@ -84,11 +112,25 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
         status: "scheduled",
         source: input.source,
         priority: input.priority ?? "normal",
-        overbook: false,
+        overbook,
         complaint: input.complaint ?? null,
         createdBy: ctx.userId,
         updatedBy: ctx.userId,
       };
+
+      const after: Record<string, unknown> = {
+        patientId: values.patientId,
+        dateLocal: values.dateLocal,
+        startMin: values.startMin,
+        endMin: values.endMin,
+        visitTypeLabel: values.visitTypeLabel,
+        source: values.source,
+        overbook: values.overbook,
+      };
+      if (overbook && overrideReason) {
+        after.overrideReason = overrideReason;
+        after.overrodeRules = violations.map((v) => v.code);
+      }
 
       await db.batch([
         insertAppointmentIfFree(db, values),
@@ -96,14 +138,7 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
           action: "create",
           table: "appointments",
           rowId: id,
-          after: {
-            patientId: values.patientId,
-            dateLocal: values.dateLocal,
-            startMin: values.startMin,
-            endMin: values.endMin,
-            visitTypeLabel: values.visitTypeLabel,
-            source: values.source,
-          },
+          after,
         }),
       ]);
 
@@ -117,6 +152,7 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
           endMin: appointments.endMin,
           startAt: appointments.startAt,
           status: appointments.status,
+          overbook: appointments.overbook,
           version: appointments.version,
         })
         .from(appointments)
@@ -134,6 +170,7 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
         endMin: row.endMin,
         startAt: row.startAt,
         status: "scheduled",
+        overbook: row.overbook,
         version: row.version,
       };
     },

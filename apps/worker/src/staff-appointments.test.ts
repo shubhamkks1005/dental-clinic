@@ -35,7 +35,7 @@ async function book(email: string, body: unknown) {
   );
 }
 
-describe("POST /api/staff/appointments (2.3.4)", () => {
+describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
   it("receptionist books; second overlap is 409 with one audit row", async () => {
     const body = {
       patientId: "p1",
@@ -65,5 +65,26 @@ describe("POST /api/staff/appointments (2.3.4)", () => {
       ).status,
     ).toBe(403);
     expect((await book("rec@example.test", { patientId: "p1" })).status).toBe(400);
+  });
+
+  it("closed day without override is 400; with reason is 201 and overbook", async () => {
+    const closed = await book("rec@example.test", {
+      patientId: "p1",
+      visitTypeId: VISIT_ID,
+      dateLocal: "2026-11-22",
+      startMin: 600,
+      source: "phone",
+    });
+    expect(closed.status).toBe(400);
+    const forced = await book("rec@example.test", {
+      patientId: "p1",
+      visitTypeId: VISIT_ID,
+      dateLocal: "2026-11-22",
+      startMin: 600,
+      source: "phone",
+      overrideReason: "Doctor asked for Sunday slot",
+    });
+    expect(forced.status).toBe(201);
+    expect(sqlite.prepare("SELECT overbook FROM appointments").get()).toEqual({ overbook: 1 });
   });
 });

@@ -12,6 +12,7 @@ describe("setting rules (1.5.1)", () => {
       "clinic.holidays",
       "privacy_notice.version",
       "privacy_notice.body",
+      "appointments.book_ahead_days",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

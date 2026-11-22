@@ -1,6 +1,7 @@
 export * from "./api";
 export * from "./appointment-book";
 export * from "./appointments";
+export * from "./booking-rules";
 export * from "./enums";
 export * from "./fields";
 export * from "./free-slots";

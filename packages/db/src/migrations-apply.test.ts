@@ -53,6 +53,7 @@ describe("migrations on an empty database (1.2.3)", () => {
   it("seed the default settings", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
     expect(rows.map((r) => r.key)).toEqual([
+      "appointments.book_ahead_days",
       "clinic.holidays",
       "clinic.logo",
       "clinic.name",
@@ -62,7 +63,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "privacy_notice.body",
       "privacy_notice.version",
     ]);
-    expect(rows.slice(1, 3)).toEqual([
+    expect(rows.slice(2, 4)).toEqual([
       { key: "clinic.logo", value_json: "null" },
       { key: "clinic.name", value_json: '"Align Dentistry"' },
     ]);
