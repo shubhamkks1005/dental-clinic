@@ -1,70 +1,61 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
-Current task: none in progress; Phase 1 code round complete except owner-blocked / deferred / baad me / new-dep asks (see Waiting on me and below).
+Phase: 1 gate **passed with exceptions** (owner approved starting Phase 2). Current task: start **2.1.1**.
+1.7.3 DONE locally (Playwright Chromium smoke: landing, doctor opens Staff, receptionist denied; CI installs Chromium and runs `pnpm test:e2e` after check). Staging Google e2e stays manual.
+1.7.2 DONE locally (`@cloudflare/vitest-plugin` successor to approved vitest-pool-workers; Workers-runtime tests with applyD1Migrations; health + settings on real schema). Node FakeD1 suite unchanged.
 1.7.5 DONE locally (fakePatient, fakeMobile, fakePersonName, fakeHistory factories; fake-only; tests).
 1.7.4 DONE locally (STAFF_ROUTE_MATRIX + walk: every /api/staff route must be listed; denied roles 403; allowed not 403; /me and logout covered).
-1.7.1 DONE (Vitest already covered money, dates/time, numbering, validation, ulid, mobile; pnpm test green). Full monorepo suite is longer than 10 s by design (worker+web+db); pure shared/db unit files stay fast.
-1.7.2 / 1.7.3 SKIPPED pending owner OK for new deps (@cloudflare/vitest-pool-workers, Playwright).
-1.6.3 code DONE locally (GitHub Action Backup: schedule 21:00 UTC + manual; scripts/backup export→integrity→age→B2→Healthchecks; integrity tests). Done-when (7 nights + restore) waits on owner accounts/secrets in ACCOUNTS.md. If B2 asks for a card: stop.
-1.6.2 DONE locally (GET /api/staff/health: DB ping via pingDb SELECT 1, build version from CF_VERSION_METADATA tag/id else "dev"; 200 {status,version} or 503 unhealthy; path kept under /api/staff per AUTH_PLAN/public list — not /api/health). Staging alert when broken waits on UptimeRobot (1.6.4) + deploy.
-1.6.1 DONE locally (structured JSON logs: one "request" line per /api and /hooks call with requestId/method/path/status/ms; "unhandled" error line on 500 with error name only; sanitize drops name/mobile/diagnosis; pathname only so search queries never log; tests: Error ID finds both lines of a crash trail). Real change history stays in audit_log.
-1.5.4 DONE locally (generic list editor from LIST_DEFS: visit_types + referral_sources; list_items table migration 0008; add/edit/hide/show/move; Settings sections generated from LIST_KEYS so a new list needs no new screen; checked add/edit/hide/move in the browser at 360/768/1366). Seed of real visit types is 2.3.2 / 1.5.6.
-1.4.7 DONE locally (X-Request-Id on every Worker reply, "Error ID" in server-error messages, crash page with its own ID, offline banner; checked with the browser switched offline at 360/768/1366). The owner's real check: turn the wifi off on the clinic PC and see the banner.
-1.5.3 DONE locally (clinic.timings + clinic.holidays settings with rules, PLACEHOLDER seed in migration 0007, workingSlots() base slot list with tests for the Phase 2 calendar, Settings > Timings screen: doctor edits with inline errors, toasts, confirm on holiday removal; receptionist sees it read-only (her "view timings only"); checked in the browser at 360/768/1366, zero CSP violations). The real clinic hours are not in the docs: the doctor sets them (Waiting on me).
-1.5.1 DONE (settings store: one zod rule per known key in packages/shared/src/settings.ts; repo refuses unknown keys and invalid values before writing (400, plain sentence), saves the cleaned value, keeps the version check + audit; GET/PUT /api/staff/settings; tests show an invalid value saves nothing and leaves no audit row). History of versions = audit_log before/after (screen in 6.5.2).
-1.4.8 code DONE (PrintLayout A5/A4 with named @page and margin 0, header band per S13 or blank space for letterhead paper, printer-check page /app/print/sample with the S13 prescription in FAKE data; checked: sheet exactly 148x210 mm (A4 210x297), one page, print mode hides toolbar/banner/toasts, both header modes place the body at the same spot, 360/768/1366). Clinic details are props until Settings > Clinic details (1.5.2). The agent's browser cannot print or make PDFs: the test print on the clinic printer is the owner's (Waiting on me).
-1.4.6 DONE (Radix toasts, ConfirmDialog on native <dialog>, UnsavedChangesGuard for in-app navigation + tab close, double-click guard; main.tsx now uses a data router so useBlocker works). Checked in the browser: toasts ok/error, 3 fast clicks = 1 request, confirm focus on Cancel, "Leave without saving?" Stay/Leave, routing and Back unchanged, toast above the phone tabs, zero CSP violations. Web bundle 184 KB gzip. Its "a bill saved twice creates one" check and the server-side idempotency key MOVE TO PHASE 5 (bills).
-1.4.5 DONE (data table kit: shared paging contract + DataTable with sort, search, paging, loading/error/empty, cards on phones; demo over 5,000 fake rows in the style guide; checked at 360/768/1366). Real 5,000-patient speed is the server's job: each list endpoint uses pageWindow + an index (the query-plan guard checks it).
-1.4.4 DONE (react-hook-form + zod with our own resolver; Field with inline errors; MobileInput +91 / number pad; DateInput DD/MM/YYYY; the one mobile normaliser and the one DD/MM/YYYY rule now live in packages/shared (plan 2.1.2 reuses it); demo form checked in the browser: errors inline, focus on first wrong field, "Saving..." guard, values normalised, no CSP violations, 360/768/1366). Bundles: web 125 -> 162 KB gzip, Worker 60 -> 185 KB gzip (zod; limits 300 KB / 3 MB). Keyboard-only fill (Tab, Enter to save) is in the owner's keyboard check.
-1.4.2 DONE (Dialog on native <dialog>, Tabs, Radix Tooltip and non-modal Menu, native select styling; button/input/badge/card already existed; toast comes with 1.4.6 as planned there). Checked in the browser: dialog modal + focus trapped + page inert + focus returns; menu opens, moves and chooses by keyboard; tabs by arrows/End; tooltip on focus; zero CSP violations; 360/768/1366. JS bundle 93 -> 125 KB gzip (budget 300). Native key behaviour (Enter on buttons, Esc on the dialog, Tab order) cannot be simulated by the agent's browser tool: owner's 1-minute keyboard check below.
-1.4.3 code DONE (left nav, "+ New patient" and role menu existed from 1.4.11/1.3.7; added the "/" shortcut to the patient search with the hint from S01; checked at 360/768/1366). Done-when "tested on the receptionist's real PC screen" is the owner's check.
-1.4.1 DONE (status/feedback colour tokens in base.css, no raw hex in feature CSS, WCAG AA contrast test for 20 pairs, style guide at /app/style-guide checked at 360/768/1366).
-1.2.8 DONE (guard + test; it found a full scan of staff_sessions when ending a person's sessions, fixed by migration 0006 index). Its plan line "patient search uses an index" is checked automatically once the patients repository exists (Phase 2): new tables count as big by default.
-Staff login (1.3) on staging, checked live by the owner 2026-11-22: 1.3.8 the seeded doctor signed in with Google and reached /app, an unlisted Gmail got "Access not available"; 1.3.6 a receptionist was added from Settings > Staff; 1.3.7 the receptionist signed in, saw only her menu, could not open Staff, and was signed out at once when deactivated. 1.3.2, 1.3.3, 1.3.6, 1.3.7, 1.3.8 DONE.
-Open, not blocking: 1.3.4 (code done; the doctor confirms the permission table before it closes), 1.3.5 (code done and deployed; the owner sends the securityheaders.com grade).
-1.3.1 Access: optional outer layer, WAITING on a Cloudflare card (Zero Trust asks for one); not blocking. Staging: D1 54a33625-..., migrations 0000-0005 applied, Google client + both secrets set, deployed at https://dental-clinic-staging.shubhamkks1005.workers.dev (fake data only). Spike DB deleted.
-Status: spike 0.6.3 PASSED on real D1 (2026-11-22, dental-clinic-spike, APAC): batch rollback, changes() audit guard, edit conflict (two tabs + race, 2 audit rows = 1 + 1), gap-free 50 parallel (1..51, no gaps, ~1 s), patient code P-000001. Spike DB deleted (the optional audit-row query was skipped; code path and unit tests confirm 1 + 1).
-Done tasks: 1.1.1 (monorepo, no apps/site), 1.1.2 (three environments, placeholder IDs, README table), 1.1.3 (CI runs pnpm check on every push; deploy step left out by owner's choice), 1.1.4 (gitleaks job in CI, docs/ACCOUNTS.md register; real tokens wait for the Cloudflare account), 1.1.5 (dependabot.yml, Node 26 pinned; "weekly PRs arrive" can only be confirmed on GitHub), 1.1.6 (path routing only, per plan note: /app, /my, /api/*, /hooks/*; no hostname routing), 1.1.8 (README deploy steps, T1-T10 in DECISIONS.md), 1.2.1 (table rules: standardColumns, oneOf, newUlid, rules test), 1.2.2 (db:generate, db:lock checksums + test, README migration rules; "applied on staging" waits for Cloudflare), 1.2.3 (6 base tables + default settings seed; migrations apply clean on empty SQLite and local D1), 1.2.4 (takeNumber + patientCodeSql; confirmed on real D1 by spike 0.6.3), 1.2.5 (auditInsert/accessInsert + append-only guard test; "every write endpoint makes one audit row" is enforced per endpoint as endpoints arrive), 1.2.6 (repositories + permission table + settings repo; worker architecture guard; per-request repos middleware comes with 1.3 when ctx has a real user), 1.2.7 (version-checked updates, auditInsertIfChanged, ConflictError -> 409 "Reload" message; the UI side comes with the first edit screen), 1.4.11 (shell restyle to DESIGN.md, S01/S14, Inter self-hosted, checked at 360/768/1366, ₹ renders in Inter), 1.3.2 (generic RS256/JWKS verifier; optional Access check off by config), 1.3.3 (Google email + sub binding, seed/recover developer commands, sign-ins in access_log), 1.3.6 (Settings > Staff), 1.3.7 (name · role, Sign out, menu per role, timeout message), 1.3.8 (Google sign-in, sessions, deny-by-default, CSRF, S20/S21)
-Moved: rest of 1.1.7 (`pnpm db:seed` insert into local D1, "developer sees data in the app") is scheduled right after 2.1.1 (owner decision, noted in PLAN.md at 1.1.7 and 2.1.1). Generator + tests are done.
-Next: Phase 1 gate is NOT fully closed (owner items below). Do not start Phase 2 until the owner says the gate is passed. Open Phase 1 leftovers: 1.6.4, 1.5.2, 1.5.6, 1.7.2, 1.7.3, baad me 1.5.5/1.6.5.
+1.7.1 DONE (Vitest money/dates/numbering/validation). Full monorepo suite longer than 10 s by design.
+1.6.3 code DONE locally (Backup Action + integrity). Done-when (7 nights + restore) waits on owner accounts.
+1.6.2 DONE locally (`GET /api/staff/health` DB ping + version). Path is `/api/staff/health` not `/api/health`.
+1.6.1 DONE locally (structured JSON logs).
+1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
+1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
+Moved: rest of 1.1.7 (`pnpm db:seed`) right after 2.1.1.
+Next: **2.1.1** patient fields + migration (then remaining 1.1.7 seed).
+
+## Phase 1 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| CI green; push from main deploys staging | **waiting** — CI exists; deploy step omitted by owner; owner must push |
+| Access: doctor/receptionist pages differ; bad email blocked; JWT negatives | **passed with exception** — Google staff login live (1.3.8); Access outer layer optional (card). JWT verifier + tests done (1.3.2) |
+| Role × endpoint matrix | **passed** (1.7.4) |
+| 50 parallel numbering no dup/gap | **passed** (spike 0.6.3) |
+| Backup 7 nights + restore | **waiting** (1.6.3 accounts + run) |
+| Clinic profile + timings → print preview name | **waiting** — timings done (1.5.3); clinic profile/logo deferred (1.5.2 / R2) |
+| Phase 0/1 hours vs plan updated | **waiting** (owner process) |
+
+## Before Phase 2 (hard blockers to *start* Phase 2 code)
+
+None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may implement Phase 2 with fake data.
+
+Exceptions that are *not* hard blockers but still open: staging migrations 0006–0008 not applied yet; CI not pushed; Access card optional; doctor permission confirm (1.3.4); 1.5.2 clinic profile; backup accounts.
+
+## Before real patients (go-live blockers — do not put real PHI live until these)
+
+- Staging migrations 0006–0008 applied + `pnpm deploy:staging`; health OK
+- 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
+- 1.6.4 alarms (Healthchecks + UptimeRobot) tested
+- 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
+- 1.5.3 doctor sets real clinic hours (not PLACEHOLDER seed)
+- 1.5.6 / Phase 0 sheets: real visit types, medicines, diagnoses, referrals (or explicit defer)
+- 1.3.4 doctor confirms permission table
+- 1.3.1 Access (or explicit accept Google-only without Access)
+- 1.3.5 securityheaders.com grade noted
+- 1.4.8 clinic printer check; 1.4.3 receptionist PC; 1.4.7 offline banner on clinic PC; keyboard checks
+- Owner push + green CI on main; production env + domain when going live
+- Phase 0 clinic-visit leftovers the doctor still owes
+- No real patient data on staging or in repo ever before go-live rules say so
+
 Waiting on me (owner):
-- Staging: apply migrations 0006, 0007 and 0008 BEFORE the next deploy (0007 = timings settings; 0008 = list_items for Visit types): from apps/worker, `pnpm wr d1 migrations apply DB --remote --env staging` (token with read -rs), then `pnpm deploy:staging` from the repo root. After deploy, curl https://dental-clinic-staging.shubhamkks1005.workers.dev/api/staff/health should return 200 with status and version.
-- 1.6.3: create B2 + Healthchecks + age key + Cloudflare backup token; fill GitHub secrets/vars per docs/ACCOUNTS.md "1.6.3 owner setup"; run Actions → Backup once; leave 7 nights; one restore test. If B2 asks for a card: stop and tell me.
-- 1.6.4: Healthchecks email if no backup ping in 26 h; UptimeRobot on /api/staff/health every 5 min; test both alarms (needs 0.3.5 accounts).
-- 1.6.2 / 1.6.4: point UptimeRobot at /api/staff/health (every 5 min); break it once on staging and confirm the alert (needs UptimeRobot account from 0.3.5).
-- 1.5.2 deferred (R2 / card); 1.5.6 waits on Phase 0 procedure/medicine/diagnosis/referral sheets.
-- 1.7.2: OK to add `@cloudflare/vitest-pool-workers`? 1.7.3: OK to add Playwright?
-- Phase 1 gate (owner): CI green after push; backup 7 nights + restore; clinic profile/print (1.5.2); Access optional; hours reconciliation.
-- 1.5.3: the doctor sets the real clinic hours, lunch, slot length, chairs and holidays in Settings > Timings (the seeded values are placeholders; SPEC.md still says "timings: (fill)").
-- 1.4.8 test print (clinic PC + clinic printer): open /app/style-guide, "Open the printer check", press Print. In the print window choose the A5 paper the clinic uses, Margins "None" or "Default", Scale 100%. Check: one page, nothing cut at the edges, header and signature in place. If the clinic uses pre-printed letterhead paper, choose "Leave space (letterhead paper)", print on it, and measure the letterhead height in mm (it becomes a setting).
-- 1.3.4: the doctor confirms the permission table (docs/AUTH_PLAN.md 4f).
-- 1.4.2 keyboard check (1 minute, /app/style-guide, keyboard only): Tab to "Open a dialog", press Enter (dialog opens), Tab stays inside, Esc closes and focus is back on the button; Tab to "..." and press Enter, arrows, Enter picks; Tab to the tabs and use the arrows. 1.4.4: in the Form card, fill all fields with Tab only and press Enter in the last field: it saves; leave one wrong and press Enter: the error shows and focus jumps there.
-- 1.4.7: on the clinic PC, turn the wifi off while the app is open: the yellow "No internet connection" bar must appear, and go away when the wifi is back.
-- 1.4.3: open the staff app on the receptionist's real PC (her screen size and browser) and confirm it fits; press "/" to jump to search.
-- 1.3.5: securityheaders.com grade for the staging URL.
-- 1.3.1: a working card for Cloudflare Zero Trust (optional outer layer).
-Owner checklist (accounts): GitHub settings (Dependabot alerts + security updates on, optional branch protection); add tokens to docs/ACCOUNTS.md when created.
-Cloudflare checklist (1.3.1, agreed 2026-11-22):
-  A. Dashboard on the owner's personal device: account + 2FA; note Account ID; custom API token "dental-clinic-mac-setup" with Account D1 Edit + Account Workers Scripts Edit, this account only, 30-day TTL. No R2, no card.
-  B. This Mac, Cursor terminal: `read -rs` the token (account id is in wrangler.jsonc, not exported), `pnpm wr d1 list`; create dental-clinic-spike -> owner says "spike db created" -> agent sets the id -> `pnpm spike:d1` -> agent reports -> delete the spike DB; create dental-clinic-staging -> agent sets the id -> migrations --remote --env staging -> `pnpm deploy:staging`.
-  NOTE: staging is PUBLIC until Access is on (fake data only; never put real patient data on staging). Redeploy once (`pnpm deploy:staging`) so "/" redirects to "/app" on the server before turning Access on.
-  C. WAITING (Zero Trust asked for a card; no working card). Kept for later: Dashboard: Zero Trust Free plan (if it asks for a card: STOP and tell the owner before entering anything); One-time PIN; self-hosted app, hostname dental-clinic-staging.shubhamkks1005.workers.dev, paths app and api/staff, Allow 3 emails (if a workers.dev path is rejected: use the staging Worker's Cloudflare Access toggle); send team domain + AUD tag; phone test: unlisted email gets no PIN.
-  D. The owner deletes the setup API token in the dashboard now that the Google secrets are set (owner's own step; agents never touch the token).
-Google sign-in checklist (1.3.8): done on staging (docs/AUTH_PLAN.md section 14). Production gets its own Google client later (8.1.3).
-Owner to-do from 1.1.3: push, check the Actions tab shows a green "CI" run; optional branch protection on main requiring the "check" job.
-Phase 0 still open: 0.1.1, 0.1.2, 0.1.3 and the rest (clinic-visit tasks for the owner)
-Open questions for owner:
-- 8.10.1-8.10.4, 8.11.1, 8.11.3, the Phase 8 gate site lines, "form" in 8.2.13, plan lines 357-361 still mention the public site (see DECISIONS.md for what was already changed).
-- 9.2.5 refers to the cancelled 8.8.5 uptime monitor. Keep a monitor for the portal only?
-- SMS sender: clinic's own number or a separate SIM (DECISIONS.md says "to confirm").
-- Patient SMS language: English or Hinglish (OPEN in DECISIONS.md).
-- Rate list language (11.9.2): waits for the state law in 11.9.1 (OPEN in DECISIONS.md).
-Rule: UI and printed documents are English only (AGENTS.md); PLAN edited to match.
-Known issues:
-- Agents never push; the owner pushes. Leave git config and credentials alone.
-- Code structure: apps/web now uses src/ui (shared), src/features/today, src/routes (old src/layout, src/staff, src/portal removed in 1.4.11).
-- The PDF in docs/design/ is reference only and will be revised later. When the owner replaces it, the new PDF is the source of truth. If a screen was already built from the older PDF, tell me what differs and ask before changing it.
-- Web shell restyled to DESIGN.md in 1.4.11 (S01 laptop, S14 phone). Today shows FAKE sample data (features/today/sample-data.ts, ui/shell/sample-session.ts) until the real APIs exist. Buttons (Walk-in, Send in, row actions, search) are not wired yet.
-- Staging D1 id is real (54a33625-...); production D1 id is still a placeholder. Staging has no R2 binding until task 3.7 (card decision).
+- Staging: apply migrations 0006–0008, then `pnpm deploy:staging`; curl `/api/staff/health`
+- 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
+- 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist
+- 1.5.3 real clinic hours; 1.4.8 printer; 1.3.4 permissions; 1.4.2/1.4.4 keyboard; 1.4.7 wifi-off; 1.4.3 receptionist PC; 1.3.5 securityheaders; 1.3.1 Zero Trust card
+- Push for green CI; optional branch protection
+Owner checklist / Cloudflare / Google: unchanged (see prior notes).
+Phase 0 still open: clinic-visit tasks for the owner.
+Open questions: SMS language, rate list language, portal monitor, public-site plan lines (DECISIONS).
+Known issues: agents never push; Today uses FAKE sample data until Phase 2 APIs; staging no R2 until 3.7.
 Owner's real hours (owner fills): Phase 0: -

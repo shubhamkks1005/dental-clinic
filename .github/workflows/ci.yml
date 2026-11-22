@@ -30,6 +30,13 @@ jobs:
 
       - run: pnpm check
 
+      # 1.7.3: Chromium only, three smoke tests against local wrangler (dev-login stub).
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End-to-end smoke
+        run: pnpm test:e2e
+
   secret-scan:
     runs-on: ubuntu-latest
     timeout-minutes: 10

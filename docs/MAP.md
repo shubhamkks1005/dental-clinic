@@ -22,11 +22,13 @@
 - pnpm format - prettier --write (never touches *.md or .cursor)
 
 ## CI (.github)
-- .github/workflows/ci.yml - on every push: job "check" (pnpm install --frozen-lockfile, pnpm check) and job "secret-scan" (gitleaks over full history). No deploy yet. Actions pinned by commit SHA
+- .github/workflows/ci.yml - on every push: job "check" (pnpm check) then Playwright Chromium smoke (`pnpm test:e2e`); job "secret-scan" (gitleaks). No deploy yet. Actions pinned by commit SHA
 - .github/workflows/backup.yml - 1.6.3 nightly D1 backup (21:00 UTC ≈ 02:30 IST) + workflow_dispatch: export staging D1, integrity check, age encrypt, B2 upload, Healthchecks ping (secrets/vars in ACCOUNTS.md)
 - .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown
 - scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
 - scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
+- playwright.config.ts - 1.7.3 Chromium smoke; webServer builds web + local wrangler on 8787
+- e2e/staff-smoke.spec.ts - landing, doctor Staff settings, receptionist denied Staff (dev-login stub)
 
 ## Root
 - package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0
@@ -42,6 +44,10 @@
 
 ## apps/worker
 - wrangler.jsonc - Worker config: top level = local (main src/dev/dev-entry.ts), env.staging / env.production (main src/index.ts); bindings DB, FILES (local and production only; staging none until 3.7), ASSETS, CF_VERSION_METADATA (version_metadata for health); vars MESSAGING_MODE, ACCESS_*, APP_ORIGIN, GOOGLE_CLIENT_ID, AUTH_MODE; preview_urls off
+- wrangler.vitest.jsonc - 1.7.2 minimal Worker for vitest-plugin (DB + vars, no assets)
+- vitest.config.ts - node FakeD1 suite; excludes workers-int/
+- vitest.workers.config.ts - 1.7.2 @cloudflare/vitest-plugin + D1 migrations; include src/workers-int/**
+- src/workers-int/ - Workers-runtime tests: apply-migrations.ts, api.workers.test.ts (health + settings on real schema)
 - wrangler.spike.jsonc - spike 0.6.3 only: local `wrangler dev` with the REAL throwaway D1 "dental-clinic-spike" (remote binding); never deployed
 - spike/d1-spike.ts - spike checks on real D1: batch rollback, changes() audit guard, edit conflict (two tabs + race), gap-free 50 parallel, patient code
 - scripts/staff-sql.ts - SQL builders for the developer-only staff commands (strict email/name/id validation + quoting; first doctor only if none active; recovery clears Google link, ends sessions; audit + access rows via changes())
