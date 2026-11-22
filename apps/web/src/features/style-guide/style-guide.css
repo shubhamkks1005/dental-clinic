@@ -74,6 +74,19 @@
   gap: var(--s2);
 }
 
+.guide-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+}
+
+.guide-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--blue);
+}
+
 .guide-field {
   display: grid;
   gap: var(--s1);

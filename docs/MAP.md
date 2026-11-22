@@ -103,7 +103,8 @@
 - src/styles/base.css - DESIGN.md tokens (brand, neutrals, teal, on-navy text, success/info/warning/danger/neutral text+bg pairs, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn (+ disabled), .input, .card. Feature CSS uses these variables, never raw hex
 - src/styles/contrast.test.ts - 1.4.1: reads base.css and checks every text/background pair the screens use is at least 4.5:1 (WCAG AA)
 - src/ui/ui.css - status badges (5 tones), notices (ok, warning, error), patient number chip, stat card, logo tile, page message
-- src/features/style-guide/ - 1.4.1 style guide at /app/style-guide (not in the menu, no data): colour swatches read live from base.css, type scale, buttons, badges, chip, input, notices
+- src/features/style-guide/ - 1.4.1 style guide at /app/style-guide (not in the menu, no real data): colour swatches read live from base.css, type scale, buttons, badges, chip, input, notices; 1.4.5 data table demo (SampleTable over 5,000 FAKE rows from sample-table.ts, which mimics a list endpoint; pretend-failure checkbox)
+- src/ui/table/ - 1.4.5 data table kit: DataTable (filter, loading/error/empty states, pager), TableFilter (search after 300 ms pause; phone "Sort by" list), TableViews (table on tablet/laptop in its own scroll box, cards on phones, pager), table-query.ts (+ test: toggleSort, ariaSort, rangeText with Indian grouping), data-table.css
 - src/ui/icons.tsx - small inline stroke icons (no icon library)
 - src/ui/Logo.tsx - placeholder tooth mark until the owner uploads a logo
 - src/ui/StatusBadge.tsx - status word + DESIGN.md colours (never colour alone)
@@ -186,6 +187,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), financialYearOf() ("2026-27", April-March by IST date)
+- src/paging.ts (+ test) - server-side list contract: PageQuery/Page, parsePageQuery (safe: unknown sort ignored, size capped at 100, search 100 chars), pageQueryParams, pageWindow (LIMIT/OFFSET), lastPage, firstPage
 - src/staff.ts - STAFF_ROLES (doctor, receptionist), StaffMember type, normaliseEmail (the one email normaliser), parseNewStaff / parseRoleChange / parseGoogleReset / parseVersionOnly (plain validation, used by Worker and web)
 - src/staff.test.ts - name/email/role rules, no developer role, version required
 - src/time.test.ts - IST day boundary, 1 April boundary
