@@ -27,6 +27,9 @@ export type PatientFieldKey =
   | "emergency_name"
   | "emergency_relation"
   | "emergency_mobile"
+  | "guardian_name"
+  | "guardian_relation"
+  | "guardian_mobile"
   | "message_language"
   | "legacy_ref"
   | "notes"
@@ -120,7 +123,7 @@ export const PATIENT_FIELDS: readonly PatientFieldDef[] = [
     key: "emergency_name",
     label: "Emergency contact name",
     required: false,
-    purpose: "Who to call in an emergency. Guardian fields for minors come in 2.1.3.",
+    purpose: "Who to call in an emergency (any age). Separate from guardian for minors.",
   },
   {
     key: "emergency_relation",
@@ -133,6 +136,24 @@ export const PATIENT_FIELDS: readonly PatientFieldDef[] = [
     label: "Emergency contact mobile",
     required: false,
     purpose: "Mobile for the emergency contact.",
+  },
+  {
+    key: "guardian_name",
+    label: "Guardian name",
+    required: false,
+    purpose: "Required when the patient is under 18 (2.1.3). Final DPDP wording waits on a lawyer.",
+  },
+  {
+    key: "guardian_relation",
+    label: "Guardian relation",
+    required: false,
+    purpose: "How the guardian is related (mother, father, …). Required with guardian name.",
+  },
+  {
+    key: "guardian_mobile",
+    label: "Guardian mobile",
+    required: false,
+    purpose: "Guardian contact number. Required with guardian name; uses the shared mobile rule.",
   },
   {
     key: "message_language",

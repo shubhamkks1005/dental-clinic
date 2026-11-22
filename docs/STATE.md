@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.1.3** (minor/guardian rules).
+Phase: 2. Current task: none; next is **2.1.4** (age display from DOB or age-at-reg).
+2.1.3 DONE locally (guardian_name/relation/mobile columns; `guardianSaveError` blocks under-18 without guardian; age helpers for minor check). **New migration `0010_patient_guardian.sql` — owner must apply to staging (with 0006–0009); agent did not apply it.** Final DPDP lawyer wording still open.
 1.1.7 DONE locally (`pnpm db:seed` loads 5,000 fake patients into local D1 only; GET `/api/staff/patients` + Patients screen S02/S15 so a developer can see them). Never seed staging/production.
 2.1.2 DONE locally (20 good + 20 bad unit tests for `normaliseMobile` in packages/shared; displayMobile covered).
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
@@ -15,7 +16,7 @@ version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so
 1.6.1 DONE locally (structured JSON logs).
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **2.1.3**+.
+Next: **2.1.4**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -52,7 +53,8 @@ Exceptions that are *not* hard blockers but still open: staging migrations 0006�
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- Staging: apply migrations **0006–0009**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0010**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist
 - 1.5.3 real clinic hours; 1.4.8 printer; 1.3.4 permissions; 1.4.2/1.4.4 keyboard; 1.4.7 wifi-off; 1.4.3 receptionist PC; 1.3.5 securityheaders; 1.3.1 Zero Trust card

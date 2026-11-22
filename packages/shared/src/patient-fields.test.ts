@@ -22,5 +22,7 @@ describe("patient fields (2.1.1)", () => {
     expect([...PATIENT_MESSAGE_LANGUAGES]).toEqual(["english", "hinglish"]);
     expect(PATIENT_FIELDS.find((f) => f.key === "full_name")?.required).toBe(true);
     expect(PATIENT_FIELDS.find((f) => f.key === "notes")?.required).toBe(false);
+    expect(PATIENT_FIELDS.some((f) => f.key === "guardian_name")).toBe(true);
+    expect(PATIENT_FIELDS.some((f) => f.key === "guardian_mobile")).toBe(true);
   });
 });

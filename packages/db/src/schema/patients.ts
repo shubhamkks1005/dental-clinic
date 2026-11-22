@@ -3,7 +3,7 @@ import { sql } from "drizzle-orm";
 import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { oneOf, standardColumns } from "./columns";
 
-// 2.1.1 patient row. Search tokens (2.1.6), numbering on insert (2.1.5), guardian (2.1.3) follow.
+// 2.1.1 patient row. Guardian required under 18 (2.1.3). Search tokens (2.1.6), numbering (2.1.5).
 // Soft delete via deleted_at; archive via status (2.1.8). Fake data only in seeds/tests.
 export const patients = sqliteTable(
   "patients",
@@ -24,6 +24,10 @@ export const patients = sqliteTable(
     emergencyName: text("emergency_name"),
     emergencyRelation: text("emergency_relation"),
     emergencyMobile: text("emergency_mobile"),
+    // 2.1.3: required by app rule when age on save day is under 18 (not a DB CHECK — DOB path).
+    guardianName: text("guardian_name"),
+    guardianRelation: text("guardian_relation"),
+    guardianMobile: text("guardian_mobile"),
     messageLanguage: text("message_language", { enum: PATIENT_MESSAGE_LANGUAGES }),
     legacyRef: text("legacy_ref"),
     notes: text("notes"),
