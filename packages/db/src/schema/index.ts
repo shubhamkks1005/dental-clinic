@@ -11,3 +11,4 @@ export { settings } from "./settings";
 export { staffSessions } from "./staff-sessions";
 export { users } from "./users";
 export { visits } from "./visits";
+export { toothEvents } from "./tooth-events";

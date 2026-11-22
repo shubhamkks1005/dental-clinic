@@ -40,6 +40,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "patients",
       "settings",
       "staff_sessions",
+      "tooth_events",
       "users",
       "visits",
     ]);

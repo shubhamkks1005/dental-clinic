@@ -271,6 +271,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/visits-open.ts (+ test) - open draft (return existing or insert); receptionist forbidden
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 - migrations/0018_visits.sql - 3.2.1 visits table + indexes (owner applies; agent did not apply to staging)
+- src/schema/tooth-events.ts - 3.2.2 append-only tooth_events (FDI + surface)
+- src/repos/tooth-events.ts (+ test) - add event + chartForPatient (<400 rows)
+- migrations/0019_tooth_events.sql - 3.2.2 tooth_events (owner applies)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
@@ -279,6 +282,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/visits.ts (+ test) - 3.2.1 VISIT_STATUSES, openVisitBody, vitals schema
+- src/teeth.ts (+ test) - 3.2.2 FDI lists, surfaces m/d/o/b/l/whole, chartFromEvents
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
 - src/appointment-display.ts (+ test) - 2.4.1 APPOINTMENT_STATUS_LABEL + appointmentStatusTone
 - src/day-view.ts (+ test) - 2.4.1 dayWindow / snapToSlot / emptySlotStarts

@@ -11,11 +11,12 @@ Written: 2026-11-22 (Phase 3 start). Read STATE.md and MAP.md. Fake data only. N
 | Task | Commit |
 |------|--------|
 | 3.1.2 (+ Phase 3 start / skip 3.1.1) | `11b15fe` |
-| 3.2.1 visits | (pending this commit) |
+| 3.2.1 visits | `ca8fb2a` |
+| 3.2.2 tooth_events | (pending) |
 
 ## New migrations (owner applies; agent did not touch staging)
-- **`0018_visits.sql`** (3.2.1) — new this phase.
-- Staging apply if not done: **0006–0018**, then `pnpm deploy:staging`.
+- **`0018_visits.sql`** (3.2.1), **`0019_tooth_events.sql`** (3.2.2).
+- Staging apply if not done: **0006–0019**, then `pnpm deploy:staging`.
 
 ## Commands
 ```

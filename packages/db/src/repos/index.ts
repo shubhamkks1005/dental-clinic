@@ -17,6 +17,7 @@ import { patientsRepo } from "./patients";
 import { patientUpdateRepo } from "./patient-update";
 import { settingsRepo } from "./settings";
 import { staffRepo } from "./staff";
+import { toothEventsRepo } from "./tooth-events";
 import { visitsOpenRepo } from "./visits-open";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
@@ -47,6 +48,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     visits: {
       ...visitsOpenRepo(db, ctx),
     },
+    toothEvents: toothEventsRepo(db, ctx),
   };
 }
 

@@ -61,6 +61,7 @@ describe("table rules (1.2.1)", () => {
       "patients",
       "settings",
       "staff_sessions",
+      "tooth_events",
       "users",
       "visits",
     ]);

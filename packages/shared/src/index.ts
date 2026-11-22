@@ -33,3 +33,4 @@ export * from "./time";
 export * from "./timings";
 export * from "./ulid";
 export * from "./visits";
+export * from "./teeth";
