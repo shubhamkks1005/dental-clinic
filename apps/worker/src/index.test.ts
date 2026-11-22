@@ -1,32 +1,38 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import app from "./index";
+import { addStaff, makeEnv, ORIGIN, sessionCookie } from "./testing/app-env";
 
-function fakeEnv() {
-  const assetsFetch = vi.fn(async () => new Response("asset"));
-  const env = { ASSETS: { fetch: assetsFetch } } as unknown as Env;
-  return { env, assetsFetch };
-}
+const notFound = {
+  ok: false,
+  error: { code: "not_found", message: "This address does not exist." },
+};
 
 describe("route groups", () => {
-  it.each(["/api/staff/anything", "/api/portal/anything", "/hooks/anything", "/api/other/x"])(
-    "%s answers with the JSON error shape, not the web app",
+  it.each(["/api/staff/anything", "/api/portal/anything", "/api/other/x"])(
+    "%s for a signed-in user is the JSON 404 shape, not the web app",
     async (path) => {
-      const { env, assetsFetch } = fakeEnv();
-      const res = await app.request(path, {}, env);
+      const { env, sqlite, assetsFetch } = makeEnv();
+      addStaff(sqlite, { id: "u1", email: "doc@example.com" });
+      const cookie = await sessionCookie(env, "doc@example.com");
+      const res = await app.request(`${ORIGIN}${path}`, { headers: { cookie } }, env);
       expect(res.status).toBe(404);
-      expect(await res.json()).toEqual({
-        ok: false,
-        error: { code: "not_found", message: "This address does not exist." },
-      });
+      expect(await res.json()).toEqual(notFound);
       expect(assetsFetch).not.toHaveBeenCalled();
     },
   );
 
+  it("/hooks/* needs no staff session (webhooks are signed) and unknown hooks are 404", async () => {
+    const { env } = makeEnv();
+    const res = await app.request(`${ORIGIN}/hooks/anything`, {}, env);
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual(notFound);
+  });
+
   it.each(["/app", "/app/patients/1", "/my", "/my/bills", "/", "/application"])(
     "%s is handed to the static assets",
     async (path) => {
-      const { env, assetsFetch } = fakeEnv();
-      const res = await app.request(path, {}, env);
+      const { env, assetsFetch } = makeEnv();
+      const res = await app.request(`${ORIGIN}${path}`, {}, env);
       expect(await res.text()).toBe("asset");
       expect(assetsFetch).toHaveBeenCalledOnce();
     },

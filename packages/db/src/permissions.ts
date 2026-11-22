@@ -15,6 +15,10 @@ export function isAllowed(role: Role, action: Action): boolean {
   return (PERMISSIONS[action] as readonly Role[]).includes(role);
 }
 
+export function permissionsFor(role: Role): Action[] {
+  return (Object.keys(PERMISSIONS) as Action[]).filter((action) => isAllowed(role, action));
+}
+
 export function assertAllowed(ctx: Ctx, action: Action): void {
   if (!isAllowed(ctx.role, action)) throw new ForbiddenError();
 }
