@@ -1,7 +1,10 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). Current task: after 4.1.2.
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). Current task: after 4.1.5.
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.1.5 DONE locally (medicine_sets seed + parseMedicineSetItems; apply-to-Rx UI in 4.2.2).
+4.1.4 DONE locally (allergen tag ↔ medicine tags; medicineMatchesAllergen test).
+4.1.3 DONE locally (Settings ListEditor already covers medicines; medicineSnapshot freezes name/dose for issued Rx).
 4.1.2 DONE locally (45 DRAFT medicines + 3 sets + allergen tags). **New migration `0032_medicines_seed.sql` — owner applies.** Sister sign-off Waiting.
 4.1.1 DONE locally (medicines + medicine_sets LIST_DEFS; allergen optional tag; no DDL — seed 4.1.2 / 0032).
 3.10.5 DONE locally (fake clinical seed SQL + `pnpm db:seed:clinical` for 200 local-only patients; chart <400 rows test). No migration.

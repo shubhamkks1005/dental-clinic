@@ -13,6 +13,7 @@ export * from "./enums";
 export * from "./fields";
 export * from "./free-slots";
 export * from "./lists";
+export * from "./medicines";
 export * from "./mobile";
 export * from "./money";
 export * from "./paging";
