@@ -1,7 +1,7 @@
 # STATE
 Last updated: 2026-11-22
 Phase: 1 (owner chose to start 1.1 while Phase 0 clinic tasks are still open)
-Current task: next open Phase 1 tasks in order; see "Next" below.
+Current task: none in progress; next is 1.6.2 (see docs/HANDOFF.md for the full handoff to the next AI session).
 1.6.1 DONE locally (structured JSON logs: one "request" line per /api and /hooks call with requestId/method/path/status/ms; "unhandled" error line on 500 with error name only; sanitize drops name/mobile/diagnosis; pathname only so search queries never log; tests: Error ID finds both lines of a crash trail). Real change history stays in audit_log.
 1.5.4 DONE locally (generic list editor from LIST_DEFS: visit_types + referral_sources; list_items table migration 0008; add/edit/hide/show/move; Settings sections generated from LIST_KEYS so a new list needs no new screen; checked add/edit/hide/move in the browser at 360/768/1366). Seed of real visit types is 2.3.2 / 1.5.6.
 1.4.7 DONE locally (X-Request-Id on every Worker reply, "Error ID" in server-error messages, crash page with its own ID, offline banner; checked with the browser switched offline at 360/768/1366). The owner's real check: turn the wifi off on the clinic PC and see the banner.

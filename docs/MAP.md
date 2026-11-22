@@ -1,10 +1,13 @@
 # MAP (one line per file: path - what it does). Keep current. Max ~150 lines.
 
 ## docs
+- docs/STATE.md - where we are, next task, Waiting on me (update after every finished task)
+- docs/HANDOFF.md - session handoff for the next AI (where we are, commands, traps, owner preferences); rewrite when starting a long break
 - docs/DESIGN.md - look and feel, Screen map (S01-S19), patient number, colours, type, layout, words, print; every screen follows it
 - docs/design/align-dentistry-screens.pdf - mockups: p1 note, p2-3 DESIGN.md copy, then one screen per page with caption S01-S19 (screen N is on page N+3). Reference only; a newer PDF from the owner replaces it and becomes the source of truth
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 - docs/AUTH_PLAN.md - staff "Sign in with Google" plan (task 1.3.8): flow, sessions, deny-by-default, staff rules, permission table, dev stub, landing page, owner's Google setup, risks
+- docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
@@ -33,7 +36,6 @@
 - .nvmrc - Node 26 (Homebrew node); `nvm use system` also works; package.json engines = >=26 <27
 - README.md - setup, environments table, first-time Cloudflare setup, staging and production deploy steps, secrets
 - types/node-builtins.d.ts - minimal node:fs / node:sqlite / node:crypto / import.meta.url types for tests (no @types/node); included by db and worker tsconfig
-- docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
 
 ## apps/worker
 - wrangler.jsonc - Worker config: top level = local (main src/dev/dev-entry.ts), env.staging / env.production (main src/index.ts); bindings DB, FILES (local and production only; staging none until 3.7), ASSETS; vars MESSAGING_MODE, ACCESS_*, APP_ORIGIN, GOOGLE_CLIENT_ID, AUTH_MODE; preview_urls off
