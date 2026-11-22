@@ -20,7 +20,15 @@ export type ColourListField = {
   kind: "colour";
 };
 
-export type ListField = NumberListField | ColourListField;
+export type TextListField = {
+  name: string;
+  label: string;
+  kind: "text";
+  max: number;
+  optional?: boolean;
+};
+
+export type ListField = NumberListField | ColourListField | TextListField;
 
 export type ListDef = {
   title: string;
@@ -53,6 +61,48 @@ export const LIST_DEFS = {
     help: "Where new patients heard about the clinic.",
     fields: [],
   },
+  // 3.2.3 clinical lists (DRAFT seeds until 3.1.1 doctor sign-off).
+  diagnoses: {
+    title: "Diagnoses",
+    itemName: "diagnosis",
+    help: "Used on visits. Adding one here shows it in autocomplete at once.",
+    fields: [],
+  },
+  procedures: {
+    title: "Procedures",
+    itemName: "procedure",
+    help: "Name and usual fee (paise). Optional short code for the chart and bills.",
+    fields: [
+      {
+        name: "default_paise",
+        label: "Usual fee",
+        kind: "number",
+        min: 0,
+        max: 10_000_000,
+        step: 100,
+        suffix: "paise",
+      },
+      { name: "code", label: "Code", kind: "text", max: 20, optional: true },
+    ],
+  },
+  conditions: {
+    title: "Tooth conditions",
+    itemName: "condition",
+    help: "Codes used on the tooth chart (caries, filling, RCT…).",
+    fields: [{ name: "color", label: "Colour", kind: "colour" }],
+  },
+  allergens: {
+    title: "Allergens",
+    itemName: "allergen",
+    help: "Common allergies for the medical history checklist.",
+    fields: [],
+  },
+  quick_phrases: {
+    title: "Quick phrases",
+    itemName: "phrase",
+    help: "Short name expands to the full note text on the visit screen.",
+    fields: [{ name: "text", label: "Full text", kind: "text", max: 500 }],
+  },
 } as const satisfies Record<string, ListDef>;
 
 export type ListKey = keyof typeof LIST_DEFS;
@@ -84,7 +134,22 @@ const colourRule = z
   .regex(/^#[0-9A-Fa-f]{6}$/, "Use a colour like #1E4FA3.")
   .transform((v) => v.toUpperCase());
 
-const fieldRule = (f: ListField) => (f.kind === "number" ? numberRule(f) : colourRule);
+const textRule = (f: TextListField) => {
+  const base = z
+    .string({ error: `Enter the ${f.label.toLowerCase()}.` })
+    .trim()
+    .max(f.max, `${f.label}: at most ${f.max} characters.`);
+  if (f.optional) {
+    return z.union([base.min(1), z.literal("")]).transform((v) => v);
+  }
+  return base.min(1, `Enter the ${f.label.toLowerCase()}.`);
+};
+
+const fieldRule = (f: ListField) => {
+  if (f.kind === "number") return numberRule(f);
+  if (f.kind === "colour") return colourRule;
+  return textRule(f);
+};
 
 // The rule for one item of a list: a name plus that list's extra fields.
 export function listItemSchema(key: ListKey) {

@@ -274,6 +274,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/tooth-events.ts - 3.2.2 append-only tooth_events (FDI + surface)
 - src/repos/tooth-events.ts (+ test) - add event + chartForPatient (<400 rows)
 - migrations/0019_tooth_events.sql - 3.2.2 tooth_events (owner applies)
+- src/schema/visit-diagnoses.ts / visit-procedures.ts - 3.2.3 visit child rows
+- src/repos/visit-diagnoses.ts (+ test) - add list/free-text diagnosis to draft visit
+- migrations/0020_visit_clinical_children.sql / 0021_clinical_lists_seed.sql - tables + DRAFT seeds
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

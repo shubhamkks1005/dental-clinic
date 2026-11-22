@@ -42,6 +42,8 @@ describe("migrations on an empty database (1.2.3)", () => {
       "staff_sessions",
       "tooth_events",
       "users",
+      "visit_diagnoses",
+      "visit_procedures",
       "visits",
     ]);
   });

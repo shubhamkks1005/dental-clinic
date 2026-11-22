@@ -36,8 +36,13 @@ export function ItemRow({
   const [editing, setEditing] = useState(false);
   const def: ListDef = LIST_DEFS[listKey];
   const details = def.fields
-    .filter((f) => f.kind === "number")
-    .map((f) => `${item.data[f.name] ?? "-"} ${f.suffix}`)
+    .map((f) => {
+      const v = item.data[f.name];
+      if (f.kind === "number") return `${v ?? "-"} ${f.suffix}`;
+      if (f.kind === "text" && v) return String(v);
+      return null;
+    })
+    .filter(Boolean)
     .join(" · ");
   const colour = def.fields.some((f) => f.kind === "colour") ? String(item.data.color ?? "") : "";
 

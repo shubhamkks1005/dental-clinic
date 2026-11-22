@@ -3,9 +3,33 @@ import { isListKey, LIST_KEYS, listItemSchema, roundUpToSlot, visitTypeSnapshot 
 
 describe("editable lists config (1.5.4 / 2.3.2)", () => {
   it("knows its lists; unknown or prototype keys are not lists", () => {
-    expect(LIST_KEYS).toEqual(["visit_types", "referral_sources"]);
+    expect(LIST_KEYS).toEqual([
+      "visit_types",
+      "referral_sources",
+      "diagnoses",
+      "procedures",
+      "conditions",
+      "allergens",
+      "quick_phrases",
+    ]);
     expect(isListKey("visit_types")).toBe(true);
+    expect(isListKey("diagnoses")).toBe(true);
     expect(isListKey("toString")).toBe(false);
+  });
+
+  it("accepts optional procedure code and quick phrase text (3.2.3)", () => {
+    expect(
+      listItemSchema("procedures").parse({
+        label: "Scaling",
+        data: { default_paise: 150000, code: "" },
+      }),
+    ).toEqual({ label: "Scaling", data: { default_paise: 150000, code: "" } });
+    expect(
+      listItemSchema("quick_phrases").parse({
+        label: "scal",
+        data: { text: "Scaling and polishing done." },
+      }).data.text,
+    ).toBe("Scaling and polishing done.");
   });
 
   it("an item is a trimmed name plus the list's own fields", () => {

@@ -11,7 +11,11 @@ import { Field, zodResolver } from "../../ui/form";
 
 function blankData(fields: readonly ListField[]): ListItemInput["data"] {
   return Object.fromEntries(
-    fields.map((f) => [f.name, f.kind === "colour" ? "#1E4FA3" : (undefined as unknown as number)]),
+    fields.map((f) => {
+      if (f.kind === "colour") return [f.name, "#1E4FA3"];
+      if (f.kind === "text") return [f.name, ""];
+      return [f.name, undefined as unknown as number];
+    }),
   );
 }
 
@@ -31,6 +35,22 @@ function ExtraField({
           <input
             className="input input-colour"
             type="color"
+            {...p}
+            {...register(`data.${field.name}`)}
+          />
+        )}
+      </Field>
+    );
+  }
+  if (field.kind === "text") {
+    return (
+      <Field label={field.label} error={error}>
+        {(p) => (
+          <input
+            className="input"
+            type="text"
+            autoComplete="off"
+            maxLength={field.max}
             {...p}
             {...register(`data.${field.name}`)}
           />

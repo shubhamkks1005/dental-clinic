@@ -141,6 +141,20 @@
       "when": 1795372163842,
       "tag": "0019_tooth_events",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1795372316286,
+      "tag": "0020_visit_clinical_children",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1795373000000,
+      "tag": "0021_clinical_lists_seed",
+      "breakpoints": true
     }
   ]
 }
