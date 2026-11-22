@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **Phase 2 gate**. Skip 2.2.6 / 2.3.9–2.3.11 / 2.4.5–2.4.6 (baad me). Phase 2 gate not yet reached.
+Phase: 2. Current task: none; **Phase 2 gate: passed with exceptions**. Do not start Phase 3 until owner says so. Skip 2.2.6 / 2.3.9–2.3.11 / 2.4.5–2.4.6 (baad me). Phase 2 gate not yet reached.
 PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.5.15 (P3 +19h), 4.2.8 (P4 +3h), 5.3.16 (P5 +3h), 6.7.1–6.7.3 (P6 +9h) = **+34 core h**. Totals: core **1,063 → 1,097**; tasks 477 → 487; Kul 1,182 → 1,216. **Cut A (raasta 2) pre-pilot: 738 → 772 (yes, changes).** Full pre-pilot 981 → 1,015. No History feature code yet.
 2.4.7 DONE locally (Today + Appointments auto-refresh every 60s via useVisibleInterval; pauses when tab hidden). No new migration.
 2.4.4 DONE locally (A4 day list at /app/print/day?date=; Print today/tomorrow from Today; browser print). Printer test on clinic printer waiting on owner. No new migration.
@@ -34,7 +34,31 @@ PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: Phase 2 gate, then stop (do not start Phase 3).
+Next: owner clears Phase 2 gate exceptions / Waiting on me; then Phase 3 when owner says. Agent stop.
+
+
+## Phase 2 gate (from PLAN.md + owner checklist)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green (typecheck + lint + tests) | **passed** |
+| Role × endpoint matrix (includes new appointment GETs) | **passed** |
+| 50 parallel same-slot booking: one win, no loser audit | **passed** (2.3.4 test) |
+| Search budget &lt;100 rows on token index (5k local seed path) | **passed** (2.1.6 scale test) |
+| No real patient PHI in repo/tests (fake data only) | **passed** |
+| Consent optional; SMS/marketing only when checked | **passed** (2.2.7) |
+| Today/day/quick-book/print/auto-refresh code in place | **passed** (2.4.1–2.4.4, 2.4.7) |
+| Receptionist 10 fake cards &lt;90s each (usability) | **waiting** (needs sister / 2.7.3) |
+| Half-name + last-4 search smoke by receptionist | **waiting** (owner/usability) |
+| Full fake day on Today (10 appts, walk-in, emergency, cancel, no-show) | **waiting** (owner manual) |
+| Aaj list on sister's clinic printer | **waiting** (2.4.4) |
+| Responsive check at 360 / 768 / 1366 (owner eyes) | **waiting** (CSS mobile-first; visual not run this round) |
+| Keyboard-first checks | **waiting** (prior 1.4.x) |
+| 2.5.1 domain events | **skipped this round** (not in HANDOFF path; before formal PLAN gate) |
+| 2.6 paper import | **skipped** (needs owner scope A/B/C) |
+| 2.7.1–2.7.4 formal gate tasks | **partial** — automated pieces covered by existing tests; usability session waiting |
+
+**Phase 2 gate: passed with exceptions** (owner may treat as ready to start Phase 3 only after clearing Waiting items that block real patients).
 
 ## Phase 1 gate (from PLAN.md)
 
