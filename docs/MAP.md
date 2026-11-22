@@ -139,6 +139,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - Your terminal's default Node is nvm v16; use `nvm use system` (Homebrew Node 26) or `nvm install` before pnpm.
 - TypeScript is pinned to 6.0 because typescript-eslint 8.x does not support TypeScript 7 yet.
 - pnpm blocks dependency build scripts; only esbuild and workerd are allowed (pnpm-workspace.yaml).
+- Remote D1 in `wrangler dev` (spike) needs a workers.dev subdomain registered on the account first.
 - All wrangler commands run via the `wr` script so config and logs stay in apps/worker/.wrangler. No `wrangler login` on the dev Mac: CLOUDFLARE_API_TOKEN is typed with `read -s` per terminal session.
 - pnpm 12 writes its own version into pnpm-lock.yaml (packageManager field). After changing packageManager, run `pnpm install` and commit the lockfile, or CI's frozen install fails.
 - CSS order matters: main.tsx must import base.css/ui.css before App, or base rules (like .btn display) override screen rules. A component's visibility rule lives in one CSS file only (e.g. .shell-nav in nav.css).

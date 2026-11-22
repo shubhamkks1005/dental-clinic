@@ -46,11 +46,28 @@ function startDev() {
   });
 }
 
+// The remote connection can still be starting after "Ready on"; then wrangler answers with an
+// HTML page. Every check measures its own before/after, so running the spike again is safe.
+async function getReport() {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const response = await fetch(`http://localhost:${PORT}/`);
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      console.error(
+        `Attempt ${attempt}: HTTP ${response.status}, not a report:\n${text.slice(0, 400)}`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+  }
+  throw new Error("The spike did not return a report after 3 attempts.");
+}
+
 await migrate();
 const dev = await startDev();
 try {
-  const response = await fetch(`http://localhost:${PORT}/`);
-  const report = await response.json();
+  const report = await getReport();
   console.log(JSON.stringify(report, null, 2));
   for (const [name, result] of Object.entries(report))
     console.log(`${result.pass ? "PASS" : "FAIL"}  ${name}`);

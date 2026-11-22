@@ -28,7 +28,7 @@ The Cloudflare account was created with the owner's personal Gmail via Google lo
 
 | Name | Purpose | Stored in | Permissions | Created | Expires | Last rotated |
 | --- | --- | --- | --- | --- | --- | --- |
-| CLOUDFLARE_API_TOKEN (Mac setup) | wrangler on the dev Mac: create/migrate/delete D1, staging deploy, spike 0.6.3 | nowhere: typed with `read -s` for one terminal session | Account: D1 Edit, Workers Scripts Edit; Account resources: this account only | (owner fills) | 30 days after creation; DELETE in the dashboard after the staging deploy and Access test | - |
+| CLOUDFLARE_API_TOKEN (Mac setup) | wrangler on the dev Mac: create/migrate/delete D1, staging deploy, spike 0.6.3 | nowhere: typed with `read -s` for one terminal session | Account: D1 Edit, Workers Scripts Edit; Account resources: this account only (confirmed enough for d1 create/migrate and remote dev in spike 0.6.3) | 2026-11-22 | 30 days after creation; DELETE in the dashboard after the staging deploy and Access test | - |
 | CLOUDFLARE_API_TOKEN (deploy) | CI deploy + D1 migrations (added with the deploy step) | GitHub secret | Account: Workers Scripts Edit, D1 Edit; only this account (confirm the minimum when creating) | - | - | - |
 | CLOUDFLARE_API_TOKEN (backup) | nightly D1 export (task 0.6.8 / 9.1) | GitHub secret, separate name | Account: D1 only, smallest level that export accepts (test in 0.6.8) | - | - | - |
 | CLOUDFLARE_ACCOUNT_ID | tells wrangler which account | GitHub variable (not a secret) | - | - | - | - |

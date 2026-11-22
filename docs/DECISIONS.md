@@ -55,4 +55,6 @@
 - OPEN 2026-11-22 - Production needs a custom domain (8.1.3) so /my stays outside staff login - owner
 - 2026-11-22 - The Mac setup API token is deleted in the dashboard after the staging deploy and the Access test (not only unset) - owner - owner
 - 2026-11-22 - If Zero Trust (or anything else) asks for a card, stop and ask the owner before entering anything - owner - owner
+- 2026-11-22 - Spike 0.6.3 passed on real D1 (dental-clinic-spike, APAC): a failed batch rolls back the counter bump; changes() inside one batch writes the audit row only when the UPDATE changed a row (0 vs 1); edit conflict: second tab gets ConflictError, a two-save race gives one success and one ConflictError, 2 audit rows (1 two-tab + 1 race); 50 parallel numbers 1..50, failed insert rejected, next 51, no gaps (~1 s from this Mac); patient code P-000001. The 1.2.4/1.2.7 design stands - spike result - agent
+- 2026-11-22 - Remote D1 from `wrangler dev` needs a registered workers.dev subdomain on the account (done by the owner); token permissions D1 Edit + Workers Scripts Edit were enough - spike finding - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
