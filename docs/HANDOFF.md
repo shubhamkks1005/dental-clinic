@@ -13,7 +13,7 @@ Written: 2026-11-22 (late). Read STATE.md and MAP.md. Fake data only. Never push
 |------|--------|
 | 1.7.2 | `4bf3078` |
 | 1.7.3 | `38259fa` |
-| 2.1.1 | (pending if not yet committed — check `git log`) |
+| 2.1.1 | `e8ab1b2` |
 
 Earlier: 1.6.2–1.6.3, 1.7.4–1.7.5, prior Phase 1 — see STATE.
 
