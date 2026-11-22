@@ -167,6 +167,8 @@
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
+- patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, message_language, legacy_ref, notes, status (active|archived)
+- migrations/0009_patients.sql - creates patients
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -240,6 +242,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo, clinic.timings, clinic.holidays); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes, referral_sources); listItemSchema(key); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule: normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"). Plan 2.1.2 / 7.7.2 reuse it
+- src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)
 - src/paging.ts (+ test) - server-side list contract: PageQuery/Page, parsePageQuery (safe: unknown sort ignored, size capped at 100, search 100 chars), pageQueryParams, pageWindow (LIMIT/OFFSET), lastPage, firstPage

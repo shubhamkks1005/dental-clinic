@@ -5,6 +5,7 @@ export * from "./lists";
 export * from "./mobile";
 export * from "./money";
 export * from "./paging";
+export * from "./patient-fields";
 export * from "./request-id";
 export * from "./routing";
 export * from "./settings";

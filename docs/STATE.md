@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 1 gate **passed with exceptions** (owner approved starting Phase 2). Current task: start **2.1.1**.
+Phase: 2. Current task: none; next after 2.1.1 is **2.1.2** (mobile rule already exists — confirm/extend) then 2.1.3…; also finish rest of **1.1.7** seed after 2.1.1.
+2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 1.7.3 DONE locally (Playwright Chromium smoke: landing, doctor opens Staff, receptionist denied; CI installs Chromium and runs `pnpm test:e2e` after check). Staging Google e2e stays manual.
 1.7.2 DONE locally (`@cloudflare/vitest-plugin` successor to approved vitest-pool-workers; Workers-runtime tests with applyD1Migrations; health + settings on real schema). Node FakeD1 suite unchanged.
 1.7.5 DONE locally (fakePatient, fakeMobile, fakePersonName, fakeHistory factories; fake-only; tests).
@@ -12,7 +13,7 @@ Phase: 1 gate **passed with exceptions** (owner approved starting Phase 2). Curr
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
 Moved: rest of 1.1.7 (`pnpm db:seed`) right after 2.1.1.
-Next: **2.1.1** patient fields + migration (then remaining 1.1.7 seed).
+Next: **2.1.2** (shared mobile already in packages/shared — tighten tests if needed), then 2.1.3+; schedule rest of **1.1.7** seed insert after 2.1.1 (now).
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -49,7 +50,7 @@ Exceptions that are *not* hard blockers but still open: staging migrations 0006�
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- Staging: apply migrations 0006–0008, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0009**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist
 - 1.5.3 real clinic hours; 1.4.8 printer; 1.3.4 permissions; 1.4.2/1.4.4 keyboard; 1.4.7 wifi-off; 1.4.3 receptionist PC; 1.3.5 securityheaders; 1.3.1 Zero Trust card

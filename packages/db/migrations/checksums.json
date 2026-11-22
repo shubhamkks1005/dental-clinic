@@ -7,5 +7,6 @@
   "0005_clinic_branding_settings.sql": "e3f34fa3ca8cff1ca389ffef60947793027133c39d243d525f5fda5b6f9d79a8",
   "0006_staff_sessions_user_index.sql": "c14f7f54b207424fe717e5d7fa51f69a65b0d0f1989582cb4d80f5f6001d9fa7",
   "0007_clinic_timings_settings.sql": "120d03792a78daf5011ee02ff1431253e13e5ce863b7fb3eb090dd6310adee9c",
-  "0008_list_items.sql": "6857f73747e53eeafe46b27328520ad3f71ed5c550c662d463e0cf13a38daf5d"
+  "0008_list_items.sql": "6857f73747e53eeafe46b27328520ad3f71ed5c550c662d463e0cf13a38daf5d",
+  "0009_patients.sql": "c6dffe9b2ecdb97bb2b60fde7ac055254d369c5cd96ccb54ffdfb3b3b6dee9f0"
 }
