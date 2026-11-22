@@ -62,8 +62,15 @@ export type DuplicateWarning = {
   reason: "mobile_name" | "name_age" | "secondary_mobile";
 };
 
-export function listPatients(query: PageQuery): Promise<Page<PatientListRow>> {
+export type PatientListFilter = "new_month" | "inactive_6m";
+
+export function listPatients(
+  query: PageQuery,
+  options: { status?: "active" | "archived" | "all"; filter?: PatientListFilter | null } = {},
+): Promise<Page<PatientListRow>> {
   const params = new URLSearchParams(pageQueryParams(query));
+  if (options.status && options.status !== "active") params.set("status", options.status);
+  if (options.filter) params.set("filter", options.filter);
   return api<{ page: Page<PatientListRow> }>(`/api/staff/patients?${params}`).then((r) => r.page);
 }
 

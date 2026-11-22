@@ -11,10 +11,12 @@ import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { DataTable, type Column, type TableStatus } from "../../ui/table";
-import { listPatients, type PatientListRow } from "./api";
+import { listPatients, type PatientListFilter, type PatientListRow } from "./api";
 import "./patients.css";
 
 const GENDER_LABEL = { female: "Female", male: "Male", other: "Other" } as const;
+
+type ListView = "all_active" | "new_month" | "inactive_6m" | "archived";
 
 function ageLabel(r: PatientListRow, today: string): string {
   const age = displayAge(
@@ -59,9 +61,20 @@ const COLUMNS: Column<PatientListRow>[] = [
   },
 ];
 
-// S02 (laptop) / S15 (phone): patient list. Filters (new this month, archived) arrive in 2.2.5.
+function viewOptions(view: ListView): {
+  status: "active" | "archived" | "all";
+  filter: PatientListFilter | null;
+} {
+  if (view === "archived") return { status: "archived", filter: null };
+  if (view === "new_month") return { status: "active", filter: "new_month" };
+  if (view === "inactive_6m") return { status: "active", filter: "inactive_6m" };
+  return { status: "active", filter: null };
+}
+
+// S02 (laptop) / S15 (phone): patient list with 2.2.5 filters; default sort recently registered.
 export function PatientsScreen() {
-  const [query, setQuery] = useState<PageQuery>(firstPage("full_name"));
+  const [query, setQuery] = useState<PageQuery>({ ...firstPage("created_at"), dir: "desc" });
+  const [view, setView] = useState<ListView>("all_active");
   const [page, setPage] = useState<Page<PatientListRow> | null>(null);
   const [status, setStatus] = useState<TableStatus>({ state: "loading" });
   const [attempt, setAttempt] = useState(0);
@@ -69,7 +82,7 @@ export function PatientsScreen() {
   useEffect(() => {
     let cancelled = false;
     setStatus({ state: "loading" });
-    listPatients(query)
+    listPatients(query, viewOptions(view))
       .then((next) => {
         if (cancelled) return;
         setPage(next);
@@ -88,7 +101,7 @@ export function PatientsScreen() {
     return () => {
       cancelled = true;
     };
-  }, [query, attempt]);
+  }, [query, view, attempt]);
 
   const total = page?.total;
   return (
@@ -101,6 +114,29 @@ export function PatientsScreen() {
             : `${total.toLocaleString("en-IN")} patients. Use the arrow keys and Enter to open one without a mouse.`}
         </p>
       </header>
+      <div className="patients-filters" role="toolbar" aria-label="Patient filters">
+        {(
+          [
+            ["all_active", "All active"],
+            ["new_month", "New this month"],
+            ["inactive_6m", "Not seen in 6 months"],
+            ["archived", "Archived"],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={`btn patients-filter${view === id ? " is-active" : ""}`}
+            aria-pressed={view === id}
+            onClick={() => {
+              setView(id);
+              setQuery((q) => ({ ...q, page: 1 }));
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       <DataTable
         caption="Patients"
         filterLabel="Search by name, mobile or patient code"

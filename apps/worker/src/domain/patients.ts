@@ -3,6 +3,7 @@ import {
   type CreatedPatient,
   type DuplicateHit,
   type PatientDetail,
+  type PatientListFilter,
   type PatientListRow,
   type PatientListStatus,
   type Repos,
@@ -18,11 +19,17 @@ import {
   type ParamReader,
 } from "@clinic/shared";
 
-// Patients list (1.1.7 / 2.1.6 / 2.1.8).
+// Patients list (1.1.7 / 2.1.6 / 2.1.8 / 2.2.5 filters).
 export function listPatients(repos: Repos, params: ParamReader): Promise<Page<PatientListRow>> {
   const query = parsePageQuery(params, PATIENT_LIST_SORTABLE);
   const status = parseListStatus(params.get("status"));
-  return repos.patients.list(query, { status });
+  const filter = parseListFilter(params.get("filter"));
+  return repos.patients.list(query, { status, filter });
+}
+
+function parseListFilter(raw: string | null): PatientListFilter | null {
+  if (raw === "new_month" || raw === "inactive_6m") return raw;
+  return null;
 }
 
 // 2.2.2 profile.

@@ -63,6 +63,31 @@ describe("patientsRepo.list (1.1.7 / 2.1.6)", () => {
     const byLast4 = await patientsRepo(db, doctor).list({ ...firstPage(), q: "0002" });
     expect(byLast4.rows.some((r) => r.fullName === "Neha Gupta")).toBe(true);
   });
+
+  it("filters new this month and inactive 6 months (2.2.5)", async () => {
+    const now = new Date("2026-11-22T12:00:00.000Z");
+    sqlite.exec("DELETE FROM patient_search; DELETE FROM patients;");
+    await db.insert(patients).values([
+      {
+        ...row("new", "P-000010", "Fake New", "female", 20, "+919000000010"),
+        createdAt: "2026-11-10T10:00:00.000Z",
+      },
+      {
+        ...row("old", "P-000011", "Fake Old", "male", 40, "+919000000011"),
+        createdAt: "2025-01-01T10:00:00.000Z",
+      },
+    ]);
+    const fresh = await patientsRepo(db, doctor).list(firstPage(), {
+      filter: "new_month",
+      now,
+    });
+    expect(fresh.rows.map((r) => r.code)).toEqual(["P-000010"]);
+    const quiet = await patientsRepo(db, doctor).list(firstPage(), {
+      filter: "inactive_6m",
+      now,
+    });
+    expect(quiet.rows.map((r) => r.code)).toEqual(["P-000011"]);
+  });
 });
 
 function row(

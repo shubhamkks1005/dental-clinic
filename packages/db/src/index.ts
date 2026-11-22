@@ -31,6 +31,7 @@ export {
 export {
   PATIENT_LIST_SORTABLE,
   patientsRepo,
+  type PatientListFilter,
   type PatientListOptions,
   type PatientListRow,
   type PatientListStatus,

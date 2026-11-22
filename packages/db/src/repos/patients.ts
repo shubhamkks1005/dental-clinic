@@ -1,4 +1,5 @@
 import {
+  istDate,
   pageWindow,
   searchWords,
   tokenRangeEnd,
@@ -31,9 +32,15 @@ const SEARCH_ID_CAP = 100;
 
 export type PatientListStatus = "active" | "archived" | "all";
 
+/** 2.2.5: quick filters. inactive_6m uses registration day until appointments exist (2.3). */
+export type PatientListFilter = "new_month" | "inactive_6m";
+
 export type PatientListOptions = {
   /** Default active (2.1.8): archived hidden unless asked for. */
   status?: PatientListStatus;
+  filter?: PatientListFilter | null;
+  /** Clock for month / 6-month bounds (tests inject a fixed instant). */
+  now?: Date;
 };
 
 // 2.1.6: list uses patient_search range on the first word; extra words filter in memory.
@@ -49,12 +56,14 @@ export function patientsRepo(db: Db, ctx: Ctx) {
         return { rows: [], total: 0, page: query.page, pageSize: query.pageSize };
       }
 
+      const now = options.now ?? new Date();
       const where = and(
         isNull(patients.deletedAt),
         status === "all"
           ? undefined
           : eq(patients.status, status === "archived" ? "archived" : "active"),
         idFilter ? inArray(patients.id, idFilter) : undefined,
+        filterClause(options.filter ?? null, now),
       );
       const { limit, offset } = pageWindow(query);
       const order = orderClause(query);
@@ -157,6 +166,30 @@ function orderClause(query: PageQuery): SQL[] {
   if (query.sort === "created_at") return [dir(patients.createdAt)];
   if (query.sort === "full_name") return [dir(patients.fullName), asc(patients.code)];
   return [desc(patients.createdAt), asc(patients.code)];
+}
+
+function filterClause(filter: PatientListFilter | null, now: Date): SQL | undefined {
+  if (filter === "new_month") {
+    return gte(patients.createdAt, istMonthStartUtcIso(now));
+  }
+  if (filter === "inactive_6m") {
+    // Until 2.3 appointments: treat "not visited" as registered more than 6 months ago.
+    return lt(patients.createdAt, monthsAgoUtcIso(now, 6));
+  }
+  return undefined;
+}
+
+/** UTC ISO of IST calendar month start (00:00 IST on the 1st). */
+export function istMonthStartUtcIso(now: Date): string {
+  const [y, m] = istDate(now).split("-").map(Number) as [number, number];
+  const istMidnightMs = Date.UTC(y, m - 1, 1, 0, 0, 0) - (5 * 60 + 30) * 60 * 1000;
+  return new Date(istMidnightMs).toISOString();
+}
+
+export function monthsAgoUtcIso(now: Date, months: number): string {
+  const d = new Date(now.getTime());
+  d.setUTCMonth(d.getUTCMonth() - months);
+  return d.toISOString();
 }
 
 export const PATIENT_LIST_SORTABLE = SORTABLE;

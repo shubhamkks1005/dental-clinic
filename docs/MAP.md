@@ -142,7 +142,7 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; other nav NotBuiltYet
-- src/features/patients/ - list, new form, profile + PatientEditForm (2.2.4 mobile confirm), PatientSearch (2.2.3), consents, duplicate warnings, api, CSS; filters still 2.2.5
+- src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -241,7 +241,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/seed/factories.ts (+ test) - 1.7.5 fakePatient / fakeMobile / fakePersonName / fakeHistory (made-up only; clinical strings say "fake")
 - src/search/patient-tokens.ts (+ test) - rebuildPatientSearchStatements (same batch as patient write)
 - src/search/search-scale.test.ts - 2.1.6: 5,000 fake patients, EXPLAIN uses token index, <100 rows
-- src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; 2.1.6 token range search, last-4 via mobile_rev)
+- src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; 2.1.6 search; 2.2.5 filter new_month / inactive_6m)
 - src/repos/patient-duplicates.ts (+ test) - 2.1.7 findWarnings (top 3 soft hits: mobile_name, name_age, secondary_mobile)
 - src/repos/patient-archive.ts (+ test) - 2.1.8 archive(reason)/restore with version check + audit
 - src/repos/patient-create.ts (+ test) - 2.2.1 create (takePatientCode + insert + audit, then search tokens)

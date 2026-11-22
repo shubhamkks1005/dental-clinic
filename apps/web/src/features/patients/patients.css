@@ -30,3 +30,16 @@
 .patients-name-meta {
   font-size: 12px;
 }
+
+.patients-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.patients-filter.is-active {
+  background: var(--soft-blue, #e6eefa);
+  border-color: var(--brand, #1e4fa3);
+  color: var(--navy, #0f2a5c);
+  font-weight: 600;
+}
