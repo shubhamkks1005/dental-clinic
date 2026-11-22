@@ -99,6 +99,7 @@
 - src/errors.ts - errorReply(err): RepoError -> 400/403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
 - src/errors.test.ts - 409 conflict reply, 403/404, 500 hides details
 - src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
+- src/route-matrix.ts (+ test) - 1.7.4 STAFF_ROUTE_MATRIX: every /api/staff route must be listed; denied roles get 403, allowed roles do not; new route without an entry fails CI
 
 ## apps/web
 - index.html - SPA entry with viewport meta; preloads the Inter font
@@ -218,6 +219,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/ - SQL migrations (never edit a committed one)
 - src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. (dry_run only)
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
+- src/seed/factories.ts (+ test) - 1.7.5 fakePatient / fakeMobile / fakePersonName / fakeHistory (made-up only; clinical strings say "fake")
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
