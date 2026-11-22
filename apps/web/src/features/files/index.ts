@@ -7,3 +7,5 @@ export {
   fitWithin,
   shouldRecompressOriginal,
 } from "./prepare-size";
+export { PatientFilesTab } from "./PatientFilesTab";
+export { fileContentUrl, listPatientFiles, uploadPatientFile } from "./api";

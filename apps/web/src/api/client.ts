@@ -53,3 +53,36 @@ export async function api<T>(
   }
   return reply.data;
 }
+
+/** Multipart upload (do not set content-type — browser sets the boundary). */
+export async function apiForm<T>(path: string, form: FormData): Promise<T> {
+  const headers: Record<string, string> = {
+    accept: "application/json",
+    "x-clinic-request": "1",
+  };
+  const response = await fetch(path, {
+    method: "POST",
+    headers,
+    credentials: "same-origin",
+    body: form,
+  });
+  const requestId = response.headers.get(REQUEST_ID_HEADER);
+  const errorId = requestId ? shortRequestId(requestId) : null;
+  const reply = (await response.json().catch(() => null)) as ApiReply<T> | null;
+  if (!reply) {
+    throw new ApiError(
+      response.status,
+      "bad_reply",
+      "The clinic server sent an unexpected reply. Please try again.",
+      errorId,
+    );
+  }
+  if (!reply.ok) {
+    if (response.status === 401) {
+      const target = startPageAfter401(window.location.pathname, reply.error.code);
+      if (target) window.location.replace(target);
+    }
+    throw new ApiError(response.status, reply.error.code, reply.error.message, errorId);
+  }
+  return reply.data;
+}

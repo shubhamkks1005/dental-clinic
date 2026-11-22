@@ -15,6 +15,8 @@ export type UploadFileInput = FileUploadMeta & {
   bytes: Uint8Array;
   mime: string;
   originalFilename: string;
+  thumbBytes?: Uint8Array | null;
+  thumbMime?: string | null;
 };
 
 /** Put object then insert metadata. Object key is random (no patient name). */
@@ -31,8 +33,12 @@ export async function uploadPatientFile(
     throw new InvalidError("File must be 15 MB or smaller.");
   }
   const objectKey = `f/${newUlid()}`;
+  const thumbKey = input.thumbBytes && input.thumbBytes.byteLength > 0 ? `f/${newUlid()}` : null;
   const sha256 = await sha256Bytes(input.bytes);
   await storage.put(objectKey, input.bytes, input.mime);
+  if (thumbKey && input.thumbBytes) {
+    await storage.put(thumbKey, input.thumbBytes, input.thumbMime ?? "image/jpeg");
+  }
   try {
     return await repos.files.insert({
       patientId: input.patientId,
@@ -45,10 +51,12 @@ export async function uploadPatientFile(
       caption: input.caption ?? null,
       toothFdi: input.toothFdi ?? null,
       takenOn: input.takenOn ?? null,
+      thumbKey,
     });
   } catch (err) {
     try {
       await storage.delete(objectKey);
+      if (thumbKey) await storage.delete(thumbKey);
     } catch {
       // best-effort cleanup
     }

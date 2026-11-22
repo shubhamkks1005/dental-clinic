@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
+import { PatientFilesTab } from "../files";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitPlanPanel } from "../plan";
@@ -116,7 +117,7 @@ export function VisitScreen() {
           note="Full patient history opens on the patient profile History tab (3.5.11)."
         />
       ) : (
-        <VisitStubPanel title="Files" note="X-rays and photos will open here (Phase 3.7)." />
+        <PatientFilesTab patientId={patient.id} />
       ),
   }));
 

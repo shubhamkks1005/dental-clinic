@@ -5,6 +5,7 @@ import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
 import { VisitChartPanel } from "../chart";
+import { PatientFilesTab } from "../files";
 import { PatientHistoryTab, getHistorySummary } from "../history";
 import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
@@ -21,6 +22,8 @@ export function PatientProfileScreen() {
   const canViewClinical = permissions.includes("clinical.view");
   const canEditClinical = permissions.includes("clinical.edit");
   const canSeeFlags = permissions.includes("clinical.alert_flag");
+  const canSeeFiles =
+    permissions.includes("files.clinical") || permissions.includes("files.documents");
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
@@ -81,7 +84,11 @@ export function PatientProfileScreen() {
   }
 
   const tabs = readyPatientTabs()
-    .filter((t) => (t.id !== "chart" && t.id !== "visits") || canViewClinical)
+    .filter(
+      (t) =>
+        ((t.id !== "chart" && t.id !== "visits") || canViewClinical) &&
+        (t.id !== "files" || canSeeFiles),
+    )
     .map((t) => ({
       id: t.id,
       label: t.label,
@@ -106,6 +113,8 @@ export function PatientProfileScreen() {
           />
         ) : t.id === "visits" ? (
           <PatientVisitsTab patientId={patient.id} />
+        ) : t.id === "files" ? (
+          <PatientFilesTab patientId={patient.id} />
         ) : (
           <PatientAppointmentsTab patientId={patient.id} />
         ),

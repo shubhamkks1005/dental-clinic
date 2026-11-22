@@ -28,9 +28,15 @@ export async function readFileBytes(
   repos: Repos,
   storage: StorageAdapter,
   id: string,
+  opts?: { thumb?: boolean },
 ): Promise<{ row: FileRecord; body: ReadableStream | ArrayBuffer; contentType: string }> {
   const row = await repos.files.recordView(id);
-  const obj = await storage.get(row.objectKey);
+  const key = opts?.thumb && row.thumbKey ? row.thumbKey : row.objectKey;
+  const obj = await storage.get(key);
   if (!obj) throw new NotFoundError("File");
-  return { row, body: obj.body, contentType: obj.contentType || row.mime };
+  return {
+    row,
+    body: obj.body,
+    contentType: opts?.thumb ? "image/jpeg" : obj.contentType || row.mime,
+  };
 }

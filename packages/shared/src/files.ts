@@ -31,6 +31,7 @@ export type FileRow = {
   caption: string | null;
   toothFdi: number | null;
   takenOn: string | null;
+  hasThumb: boolean;
   createdAt: string;
   createdBy: string;
 };

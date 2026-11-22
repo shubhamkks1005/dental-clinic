@@ -46,6 +46,7 @@ function toRow(r: {
   caption: string | null;
   toothFdi: number | null;
   takenOn: string | null;
+  thumbKey?: string | null;
   createdAt: string;
   createdBy: string;
 }): FileRow {
@@ -60,6 +61,7 @@ function toRow(r: {
     caption: r.caption,
     toothFdi: r.toothFdi,
     takenOn: r.takenOn,
+    hasThumb: Boolean(r.thumbKey),
     createdAt: r.createdAt,
     createdBy: r.createdBy,
   };
@@ -100,6 +102,7 @@ export function filesRepo(db: Db, ctx: Ctx) {
           caption: files.caption,
           toothFdi: files.toothFdi,
           takenOn: files.takenOn,
+          thumbKey: files.thumbKey,
           createdAt: files.createdAt,
           createdBy: files.createdBy,
         })
@@ -108,10 +111,12 @@ export function filesRepo(db: Db, ctx: Ctx) {
         .orderBy(desc(files.createdAt), desc(files.id))
         .all();
 
-      return rows.map(toRow).filter((r) => {
-        const action = actionForFileKind(r.kind);
-        return action ? isAllowed(ctx.role, action) : false;
-      });
+      return rows
+        .map((r) => toRow(r))
+        .filter((r) => {
+          const action = actionForFileKind(r.kind);
+          return action ? isAllowed(ctx.role, action) : false;
+        });
     },
 
     async getById(id: string): Promise<FileRecord> {
@@ -134,6 +139,7 @@ export function filesRepo(db: Db, ctx: Ctx) {
           caption: row.caption,
           toothFdi: row.toothFdi,
           takenOn: row.takenOn,
+          thumbKey: row.thumbKey,
           createdAt: row.createdAt,
           createdBy: row.createdBy,
         }),
@@ -194,6 +200,7 @@ export function filesRepo(db: Db, ctx: Ctx) {
         caption: saved.caption,
         toothFdi: saved.toothFdi,
         takenOn: saved.takenOn,
+        thumbKey: saved.thumbKey,
         createdAt: saved.createdAt,
         createdBy: saved.createdBy,
       });

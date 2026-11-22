@@ -6,7 +6,7 @@ export const PATIENT_PROFILE_TABS = [
   { id: "chart", label: "Chart", ready: true }, // 3.4.5 (full visit screen still 3.5.x)
   { id: "visits", label: "Visits", ready: true }, // 3.5.9 timeline
   { id: "billing", label: "Billing", ready: false }, // Phase 5
-  { id: "files", label: "Files", ready: false }, // Phase 3
+  { id: "files", label: "Files", ready: true }, // 3.7.4
   { id: "messages", label: "Messages", ready: false }, // Phase 7
 ] as const;
 

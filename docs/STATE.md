@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.7.4** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.7.5** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.7.4 DONE locally (Files tab S04/S17 grid+viewer+upload; visit Files tab). No migration.
 3.7.3 DONE locally (browser prepare: photo→2000px JPEG 85%, X-ray untouched, thumb 300px). No migration.
 3.7.2 DONE locally (StorageAdapter local/S3/memory; upload+list+content API; aws4fetch; check-storage script). **New migration `0030_files_upload_meta.sql` — owner applies; agent did not apply to staging.**
 3.7.1 DONE locally (DECISIONS: JPEG/PNG upload path until sister confirms RVG; B2 S3 driver for staging/prod, local R2/memory for dev). No migration.

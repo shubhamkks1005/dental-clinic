@@ -56,11 +56,20 @@ staffFiles.post("/patients/:id/files", async (c) => {
 
   const bytes = new Uint8Array(await filePart.arrayBuffer());
   const mime = filePart.type || "application/octet-stream";
+  const thumbPart = body.thumb;
+  let thumbBytes: Uint8Array | null = null;
+  let thumbMime: string | null = null;
+  if (thumbPart instanceof File) {
+    thumbBytes = new Uint8Array(await thumbPart.arrayBuffer());
+    thumbMime = thumbPart.type || "image/jpeg";
+  }
   const row = await uploadFile(repos, storage, {
     patientId: c.req.param("id"),
     bytes,
     mime,
     originalFilename: filePart.name || "upload",
+    thumbBytes,
+    thumbMime,
     ...meta.value,
   });
   return c.json(ok({ file: row }), 201);
@@ -86,7 +95,10 @@ staffFiles.get("/files/:id/content", async (c) => {
     }
     throw err;
   }
-  const { row, body, contentType } = await readFileBytes(repos, storage, c.req.param("id"));
+  const wantThumb = c.req.query("thumb") === "1";
+  const { row, body, contentType } = await readFileBytes(repos, storage, c.req.param("id"), {
+    thumb: wantThumb,
+  });
   const headers = new Headers({
     "content-type": contentType,
     "content-disposition": `inline; filename="${safeFilename(row.originalFilename)}"`,
