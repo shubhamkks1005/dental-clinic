@@ -42,6 +42,23 @@ export function istDateTime(instant: Date): string {
   return `${part("day")} ${part("month")} ${part("year")}, ${part("hour")}:${part("minute")} ${part("dayPeriod").toLowerCase()}`;
 }
 
+// THE date entry and display format (DD/MM/YYYY). Stored dates are YYYY-MM-DD (*_on columns).
+// Accepts / - or . between parts and 1-digit day or month; rejects dates that do not exist.
+export function parseDisplayDate(raw: string): string | null {
+  const m = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(raw.trim());
+  if (!m) return null;
+  const [day, month, year] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const date = new Date(Date.UTC(year, month - 1, day));
+  const real =
+    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+  return real ? date.toISOString().slice(0, 10) : null;
+}
+
+export function formatDisplayDate(stored: string): string {
+  const [year, month, day] = stored.split("-");
+  return `${day}/${month}/${year}`;
+}
+
 // Financial year April-March by the IST date, e.g. "2026-27". Used as the counters period.
 export function financialYearOf(instant: Date): string {
   const ist = inIst(instant);

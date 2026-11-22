@@ -1,0 +1,51 @@
+/* Form kit (1.4.4): one column, labels above inputs, errors under the input. */
+.form {
+  display: grid;
+  gap: var(--s4);
+  max-width: 32rem;
+}
+
+.field-row {
+  display: grid;
+  gap: var(--s1);
+}
+
+.field-row > label {
+  font-weight: 600;
+}
+
+.field-error {
+  color: var(--danger-text);
+  font-weight: 600;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger-text);
+}
+
+.mobile-input {
+  display: flex;
+}
+
+.mobile-prefix {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  padding: 0 var(--s3);
+  border: 1px solid var(--border);
+  border-right: 0;
+  border-radius: var(--radius-control) 0 0 var(--radius-control);
+  background: var(--bg);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.mobile-input .input {
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}

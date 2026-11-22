@@ -2,6 +2,7 @@ import { formatRupees } from "@clinic/shared";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { ComponentDemos } from "./ComponentDemos";
+import { SampleForm } from "./SampleForm";
 import { SampleTable } from "./SampleTable";
 import { BRAND, NEUTRALS, StatusPairs, SwatchList } from "./Swatches";
 import "./style-guide.css";
@@ -69,6 +70,11 @@ export function StyleGuideScreen() {
       <section className="card guide-card" aria-labelledby="g-components">
         <h2 id="g-components">Components</h2>
         <ComponentDemos />
+      </section>
+
+      <section className="card guide-card" aria-labelledby="g-form">
+        <h2 id="g-form">Form</h2>
+        <SampleForm />
       </section>
 
       <section className="card guide-card" aria-labelledby="g-table">

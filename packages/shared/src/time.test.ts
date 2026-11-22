@@ -1,5 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { financialYearOf, istDate, istDateTime, istHour, istLongDate } from "./time";
+import {
+  financialYearOf,
+  formatDisplayDate,
+  istDate,
+  istDateTime,
+  istHour,
+  istLongDate,
+  parseDisplayDate,
+} from "./time";
+
+describe("DD/MM/YYYY dates (1.4.4)", () => {
+  it("reads DD/MM/YYYY (also - or . and single digits) into YYYY-MM-DD", () => {
+    expect(parseDisplayDate("22/11/2026")).toBe("2026-11-22");
+    expect(parseDisplayDate(" 2-3-2026 ")).toBe("2026-03-02");
+    expect(parseDisplayDate("29.02.2028")).toBe("2028-02-29");
+  });
+
+  it("refuses dates that do not exist and other shapes", () => {
+    for (const raw of ["31/04/2026", "29/02/2027", "2026-11-22", "22/11/26", "", "aa/bb/cccc"]) {
+      expect(parseDisplayDate(raw)).toBeNull();
+    }
+  });
+
+  it("shows a stored date as DD/MM/YYYY", () => {
+    expect(formatDisplayDate("2026-03-02")).toBe("02/03/2026");
+  });
+});
 
 describe("istLongDate and istHour", () => {
   it("formats the IST day for headers", () => {

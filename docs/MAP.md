@@ -92,6 +92,8 @@
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
 - src/api/client.ts - the one typed API client (ApiError with status, code, message and the short errorId from X-Request-Id; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
 - src/api/problem-text.ts (+ test) - problemText(err): the one failure sentence for staff; adds "Error ID: XXXXXXXX" for server faults (5xx, bad reply); no reply = "Cannot reach the clinic server..."
+- src/ui/form/ - 1.4.4 form kit (react-hook-form + zod): zod-resolver.ts (+ test; our own adapter, nested errors), Field.tsx (label, hint, inline error linked by aria-describedby, aria-invalid), inputs.tsx (MobileInput with +91 prefix and number pad, DateInput DD/MM/YYYY), form.css
+- src/features/style-guide/SampleForm.tsx - 1.4.4 demo form with FAKE data (name, mobile, date of birth, visit type): inline errors, focus on first error, "Saving..." guard, normalised result
 - src/ui/Dialog.tsx + dialog.css - 1.4.2 modal dialog on native <dialog> (focus inside, page inert, Esc closes, click outside closes unless role alertdialog, focus back to the opener; scroll lock via body:has(dialog[open])). Not Radix: CSP (DECISIONS.md)
 - src/ui/Tabs.tsx + tabs.css + tabs-keys.ts (+ test) - 1.4.2 tabs in the S11 look; arrows/Home/End move and select, only the selected tab is in the Tab order
 - src/ui/Tooltip.tsx + tooltip.css - 1.4.2 Radix tooltip (TooltipProvider mounted in App.tsx); hint only, never the only label
@@ -195,7 +197,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
-- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), financialYearOf() ("2026-27", April-March by IST date)
+- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
+- src/mobile.ts (+ test) - THE mobile rule: normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"). Plan 2.1.2 / 7.7.2 reuse it
+- src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)
 - src/paging.ts (+ test) - server-side list contract: PageQuery/Page, parsePageQuery (safe: unknown sort ignored, size capped at 100, search 100 chars), pageQueryParams, pageWindow (LIMIT/OFFSET), lastPage, firstPage
 - src/staff.ts - STAFF_ROLES (doctor, receptionist), StaffMember type, normaliseEmail (the one email normaliser), parseNewStaff / parseRoleChange / parseGoogleReset / parseVersionOnly (plain validation, used by Worker and web)
