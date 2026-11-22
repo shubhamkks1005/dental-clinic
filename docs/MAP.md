@@ -91,6 +91,7 @@
 - src/routes/staff-history.ts (+ domain/history.ts, staff-history.test.ts) - 3.5.11 summary; 3.5.12 merged feed + cursor
 - src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
+- src/routes/staff-files.ts (+ domain/files*.ts, adapters/storage*.ts) - 3.7.2 patient file upload/list/content via StorageAdapter (local R2 / S3 B2 / memory)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1); GET /appointments/slots (2.4.2); POST book/walk-in; cancel/reschedule/status/chain
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
@@ -156,6 +157,8 @@
 - src/repos/history-feed*.ts (+ test) - 3.5.12–14 merge feed; role sources (receptionist: appointments/consents/scan+consent files only); cursor
 - packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
+- migrations/0030_files_upload_meta.sql - 3.7.2 original_filename, caption, tooth_fdi, taken_on, thumb_key
+- src/repos/files.ts - 3.7.2 file metadata insert/list/get/soft-delete/usage; kind permissions
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
 - src/features/chart/ - 3.4.2–3.4.6 ToothChart + VisitChartPanel (dentition by age; chart events; as-of history); ChartPlayground on /app/style-guide
 - src/features/visits/ - 3.5.1–3.5.9 VisitScreen (S05) + PatientVisitsTab timeline (S04/S17); notes autosave, diagnoses, Chart+procedures, finalise, VisitAddenda; drafts API; route /app/visits/:id; Plan tab hosts VisitPlanPanel

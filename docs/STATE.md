@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.7.2** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped**; 3.5.11–3.5.15 DONE; **3.6.1–3.6.2, 3.6.4–3.6.5 DONE; 3.6.3 skipped (baad me)**; **3.7.1 DONE**. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.7.3** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.7.2 DONE locally (StorageAdapter local/S3/memory; upload+list+content API; aws4fetch; check-storage script). **New migration `0030_files_upload_meta.sql` — owner applies; agent did not apply to staging.**
 3.7.1 DONE locally (DECISIONS: JPEG/PNG upload path until sister confirms RVG; B2 S3 driver for staging/prod, local R2/memory for dev). No migration.
 3.6.5 DONE locally (estimate change reason required; PATCH `/plan-items/:id/estimate` + Plan tab UI). No migration.
 3.6.4 DONE locally (visit finalise matches/creates plan items → completed). No migration.
@@ -133,7 +134,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0029 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0030 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -154,7 +155,7 @@ Waiting on me (owner):
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
-- Staging: apply migrations **0006–0029**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0030**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - **3.4.3**: sister confirm chart facing/notation habit ("haan"); default remains dentist+FDI until then
 - 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)

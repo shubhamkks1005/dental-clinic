@@ -10,6 +10,7 @@ import { staffSettings } from "./staff-settings";
 import { staffUsers } from "./staff-users";
 import { staffChart } from "./staff-chart";
 import { staffHistory } from "./staff-history";
+import { staffFiles } from "./staff-files";
 import { staffPlan } from "./staff-plan";
 import { staffVisits } from "./staff-visits";
 
@@ -29,3 +30,4 @@ staff.route("/", staffVisits);
 staff.route("/", staffChart);
 staff.route("/", staffHistory);
 staff.route("/", staffPlan);
+staff.route("/", staffFiles);

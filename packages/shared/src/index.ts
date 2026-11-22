@@ -42,3 +42,4 @@ export * from "./dentition";
 export * from "./medical-history";
 export * from "./plan-items";
 export * from "./history-feed";
+export * from "./files";

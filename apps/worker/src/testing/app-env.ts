@@ -1,6 +1,7 @@
 import { authRepo, createDb } from "@clinic/db";
 import { FakeD1, migratedSqlite } from "@clinic/db/testing";
 import { vi } from "vitest";
+import { memoryStorage } from "../adapters/storage-memory";
 import { openSession } from "../domain/login";
 import type { Bindings } from "../types";
 
@@ -22,6 +23,8 @@ export function makeEnv(overrides: Partial<Record<string, unknown>> = {}) {
     AUTH_MODE: "google",
     GOOGLE_CLIENT_SECRET: "google-secret",
     AUTH_COOKIE_SECRET: "cookie-secret",
+    STORAGE_DRIVER: "memory",
+    __testStorage: memoryStorage(),
     ...overrides,
   } as unknown as Bindings;
   return { env, sqlite, assetsFetch };

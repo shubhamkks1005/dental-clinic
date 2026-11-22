@@ -28,5 +28,6 @@
   "0026_medical_history_stale_months.sql": "956e423840bf36abb5f97f9726395f0593d529e4b0f0551ba0f4d9117b31c601",
   "0027_chart_view_setting.sql": "1eb8ae6748b35c522e06857021e0f0be6c288a09749821b2a469c82b55f34606",
   "0028_conditions_chart_fields.sql": "66f81c5ee868c4bfabe0f64197043b2dca5f4232e83b7f556927eff528e54b5e",
-  "0029_files_patient_history_idx.sql": "a730ad4f2967df12ea1ddc2d0d31cfa9301a9701e636c4b624663e7f2e6881af"
+  "0029_files_patient_history_idx.sql": "a730ad4f2967df12ea1ddc2d0d31cfa9301a9701e636c4b624663e7f2e6881af",
+  "0030_files_upload_meta.sql": "3c72255a4959587ffd0300a6084ff57aac447e9367010766983a86cd373f51fb"
 }

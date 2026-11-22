@@ -279,6 +279,36 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/plan-items/:id/decision",
     access: { kind: "permission", action: "clinical.edit" },
   },
+  {
+    method: "GET",
+    path: "/api/staff/storage/usage",
+    access: { kind: "permission", action: "settings.read" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/patients/:id/files",
+    access: { kind: "permission", action: "files.documents" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/patients/:id/files",
+    access: { kind: "permission", action: "files.documents" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/files/:id",
+    access: { kind: "permission", action: "files.documents" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/files/:id/content",
+    access: { kind: "permission", action: "files.documents" },
+  },
+  {
+    method: "DELETE",
+    path: "/api/staff/files/:id",
+    access: { kind: "permission", action: "files.documents" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

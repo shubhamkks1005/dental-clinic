@@ -47,4 +47,5 @@ export {
   type DuplicateReason,
 } from "./repos/patient-duplicates";
 export { consentsRepo, type NewConsent } from "./repos/consents";
+export { filesRepo, type FileRecord, type InsertFileInput } from "./repos/files";
 export type { SettingRow, SettingValue } from "./repos/settings";
