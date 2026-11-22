@@ -1,3 +1,4 @@
+import { isSettingKey, parseSettingValue, SETTING_KEYS } from "@clinic/shared";
 import { afterAll, describe, expect, it } from "vitest";
 import { STANDARD_COLUMNS } from "./schema/columns";
 import { migratedSqlite } from "./testing";
@@ -46,12 +47,30 @@ describe("migrations on an empty database (1.2.3)", () => {
 
   it("seed the default settings", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
-    expect(rows).toEqual([
+    expect(rows.map((r) => r.key)).toEqual([
+      "clinic.holidays",
+      "clinic.logo",
+      "clinic.name",
+      "clinic.timings",
+      "patient_code.digits",
+      "patient_code.prefix",
+    ]);
+    expect(rows.slice(1, 3)).toEqual([
       { key: "clinic.logo", value_json: "null" },
       { key: "clinic.name", value_json: '"Align Dentistry"' },
-      { key: "patient_code.digits", value_json: "6" },
-      { key: "patient_code.prefix", value_json: '"P-"' },
     ]);
+  });
+
+  it("every seeded setting is a known key whose value passes its own rule (1.5.1)", () => {
+    const rows = db.prepare("SELECT key, value_json FROM settings").all();
+    for (const { key, value_json } of rows) {
+      const name = String(key);
+      expect(isSettingKey(name), name).toBe(true);
+      if (isSettingKey(name)) {
+        expect(parseSettingValue(name, JSON.parse(String(value_json))).ok, name).toBe(true);
+      }
+    }
+    expect(rows).toHaveLength(SETTING_KEYS.length);
   });
 
   it("fill created_at as UTC ISO text", () => {

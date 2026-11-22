@@ -118,7 +118,8 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
-- src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
+- src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
+- src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
 - src/styles/base.css - DESIGN.md tokens (brand, neutrals, teal, on-navy text, success/info/warning/danger/neutral text+bg pairs, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn (+ disabled), .input (+ native select arrow), .card. Feature CSS uses these variables, never raw hex
@@ -158,13 +159,14 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0003_staff_sessions.sql - staff_sessions table
 - migrations/0004_access_log_auth_events.sql - access_log: new actions + detail column (table rebuild; drizzle's copy step fixed by hand before locking: it selected a column the old table did not have)
 - migrations/0005_clinic_branding_settings.sql - seeds clinic.name "Align Dentistry" and clinic.logo null
+- migrations/0007_clinic_timings_settings.sql - seeds clinic.timings (PLACEHOLDER: Mon-Sat 10:00-19:00, lunch 13:30-14:30, Sunday closed, 15 min slots, 1 chair) and clinic.holidays []
 - migrations/0006_staff_sessions_user_index.sql - index staff_sessions(user_id) (ending one person's sessions; found by the query-plan guard)
 - src/query-plan.test.ts - 1.2.8: runs every repository call on a recording DB and fails on a full SCAN of a growing table; self-test with a bad query
 - src/testing/query-plan.ts - recordingDb() (logs every statement), queryPlan(), fullScans(), scansIn(); SMALL_TABLES = users, settings, counters (every other table, new ones included, must use an index)
 - src/repos/auth.ts - authRepo(db): findStaffByEmail, completeLogin (bind sub + session + access_log in one batch), findSession, touchSession, logout, recordLoginProblem, branding. Only repo without assertAllowed (runs before sign-in)
 - src/repos/auth.test.ts - bind once, never overwrite sub, session + logout logged, anonymous failures, branding
 - src/dev.ts - LOCAL ONLY ensureDevUser (exported as @clinic/db/dev; imported only by apps/worker/src/dev/)
-- src/migrations-apply.test.ts - 1.2.3: applies all migrations to an empty SQLite DB (node:sqlite), checks tables, standard columns, seeds, CHECKs
+- src/migrations-apply.test.ts - 1.2.3: applies all migrations to an empty SQLite DB (node:sqlite), checks tables, standard columns, seeds, CHECKs; every seeded setting must pass its own rule (1.5.1)
 - drizzle.config.ts - drizzle-kit generates SQL into migrations/ (applied by wrangler)
 - migrations/checksums.json - sha256 of every committed migration (written by `pnpm db:lock`)
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
@@ -208,7 +210,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
-- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
+- src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
+- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo, clinic.timings, clinic.holidays); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
 - src/mobile.ts (+ test) - THE mobile rule: normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"). Plan 2.1.2 / 7.7.2 reuse it
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)

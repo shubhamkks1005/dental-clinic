@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Parsed } from "./staff";
+import { holidaysSchema, timingsSchema } from "./timings";
 
 // 1.5.1: every setting the app knows, with its rule. A value that breaks the rule is never
 // saved. New settings (timings 1.5.3, lists 1.5.4, clinic details 1.5.2) add a line here and a
@@ -21,6 +22,9 @@ export const SETTING_SCHEMAS = {
     .max(80, "The clinic name is too long."),
   // Storage key of the uploaded logo (1.5.2); null = the placeholder tooth mark.
   "clinic.logo": z.string({ error: "The logo value is not valid." }).max(300).nullable(),
+  // 1.5.3: weekly hours, slot length, chairs; and the list of holidays.
+  "clinic.timings": timingsSchema,
+  "clinic.holidays": holidaysSchema,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

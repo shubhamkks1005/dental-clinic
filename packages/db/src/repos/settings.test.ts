@@ -81,6 +81,8 @@ describe("settings store rules (1.5.1)", () => {
       ["patient_code.digits", 6, 1],
       ["clinic.name", "Align Dentistry", 1],
       ["clinic.logo", null, 1],
+      ["clinic.timings", expect.objectContaining({ slotMinutes: 15, chairs: 1 }), 1],
+      ["clinic.holidays", [], 1],
     ]);
   });
 });

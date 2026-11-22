@@ -1,12 +1,19 @@
+import type { ReactNode } from "react";
 import { Navigate, NavLink, Route, Routes } from "react-router";
 import { useMe } from "../auth";
 import { StaffSettings } from "../staff";
+import { TimingsSettings } from "../timings";
 import { NotBuiltYet, NotFound } from "../../ui/PageMessage";
 import "./settings.css";
 
+type Section = { path: string; label: string; permission: string; screen: ReactNode };
+
 // S12 Settings: a list of sections beside the open one. Each section shows only for the roles
 // whose permission it needs; later tasks add clinic details, doctor, medicines and more.
-const SECTIONS = [{ path: "staff", label: "Staff", permission: "staff.manage" }] as const;
+const SECTIONS: Section[] = [
+  { path: "timings", label: "Timings", permission: "settings.read", screen: <TimingsSettings /> },
+  { path: "staff", label: "Staff", permission: "staff.manage", screen: <StaffSettings /> },
+];
 // Absolute: inside a splat route a relative link would resolve against the current sub-path.
 const BASE = "/app/settings";
 
@@ -34,9 +41,9 @@ export function SettingsScreen() {
           </nav>
           <Routes>
             <Route index element={<Navigate to={`${BASE}/${first.path}`} replace />} />
-            {sections.some((s) => s.path === "staff") && (
-              <Route path="staff" element={<StaffSettings />} />
-            )}
+            {sections.map((s) => (
+              <Route key={s.path} path={s.path} element={s.screen} />
+            ))}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

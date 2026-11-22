@@ -8,6 +8,8 @@ describe("setting rules (1.5.1)", () => {
       "patient_code.digits",
       "clinic.name",
       "clinic.logo",
+      "clinic.timings",
+      "clinic.holidays",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

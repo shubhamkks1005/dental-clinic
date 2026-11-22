@@ -1,0 +1,5 @@
+-- Clinic timings and holidays (1.5.3). PLACEHOLDER defaults so the calendar has something to work
+-- with; the doctor sets the real hours in Settings > Timings (the clinic's hours are not in the docs).
+INSERT INTO `settings` (`id`, `key`, `value_json`, `created_by`, `updated_by`) VALUES
+	('01M81TJ73D2RWR42K9247WFEB7', 'clinic.timings', '{"week":{"mon":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"tue":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"wed":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"thu":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"fri":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"sat":{"open":true,"start":"10:00","end":"19:00","lunchStart":"13:30","lunchEnd":"14:30"},"sun":{"open":false,"start":"10:00","end":"19:00","lunchStart":null,"lunchEnd":null}},"slotMinutes":15,"chairs":1}', 'system', 'system'),
+	('01M81TJ73KF6MFDHV0F2JYPFSH', 'clinic.holidays', '[]', 'system', 'system');

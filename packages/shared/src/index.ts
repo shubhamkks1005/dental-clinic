@@ -9,4 +9,5 @@ export * from "./routing";
 export * from "./settings";
 export * from "./staff";
 export * from "./time";
+export * from "./timings";
 export * from "./ulid";
