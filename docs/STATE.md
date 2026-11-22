@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.1.5** (patient code from counters).
+Phase: 2. Current task: none; next is **2.1.6** (search tokens).
+2.1.5 DONE locally (`takePatientCode`: counters `patient_code` / period `all` + settings prefix/digits → P-000123; batch with patient INSERT; same takeNumber path for later bill/prescription/portal numbers).
 2.1.4 DONE locally (`displayAge` / `ageYearsOn`: DOB preferred; else age-at-reg + years since registration; Patients list shows computed age, never a stored current-age column).
 2.1.3 DONE locally (guardian_name/relation/mobile columns; `guardianSaveError` blocks under-18 without guardian; age helpers for minor check). **New migration `0010_patient_guardian.sql` — owner must apply to staging (with 0006–0009); agent did not apply it.** Final DPDP lawyer wording still open.
 1.1.7 DONE locally (`pnpm db:seed` loads 5,000 fake patients into local D1 only; GET `/api/staff/patients` + Patients screen S02/S15 so a developer can see them). Never seed staging/production.
@@ -17,7 +18,7 @@ version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so
 1.6.1 DONE locally (structured JSON logs).
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **2.1.5**+.
+Next: **2.1.6**+.
 
 ## Phase 1 gate (from PLAN.md)
 

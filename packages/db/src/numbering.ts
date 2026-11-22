@@ -33,3 +33,10 @@ export function patientCodeSql(value: SQL<number>): SQL<string> {
     sql`(SELECT json_extract(${settings.valueJson}, '$') FROM ${settings} WHERE ${settings.key} = ${key})`;
   return sql<string>`printf('%s%0*d', ${setting("patient_code.prefix")}, ${setting("patient_code.digits")}, ${value})`;
 }
+
+// 2.1.5: the one way to mint a patient code. Same takeNumber path bills/receipts/portal will use
+// later (Phase 4, 5, 8) with their own counter names. Always batch `bump` with the patient INSERT.
+export function takePatientCode(db: Db, actor: string) {
+  const { bump, value } = takeNumber(db, "patient_code", NEVER_RESETS, actor);
+  return { bump, code: patientCodeSql(value) };
+}

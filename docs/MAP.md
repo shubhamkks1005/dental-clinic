@@ -219,7 +219,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/settings.ts - settings.list() (known keys, fixed order), get(key) -> { value, version }; update(key, value, expectedVersion): permission, unknown key = not found, value checked by the shared rule (InvalidError 400, nothing written), cleaned value saved, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
 - src/repos/settings.test.ts - 1.2.6 + 1.2.7: doctor update = one audit row; receptionist refused; not-found; two tabs and a parallel race -> one wins, one conflict, one audit row
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
-- src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
+- src/numbering.ts (+ test) - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql; takePatientCode (2.1.5: patient_code / period all → P-000123)
 - src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format
 - src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction; optional statement log)
 - src/testing/test-db.ts - migratedSqlite() and testDb() (real drizzle D1 client over a migrated in-memory DB)

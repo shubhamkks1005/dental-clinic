@@ -2,7 +2,8 @@ import { newUlid } from "@clinic/shared";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Db } from "./client";
-import { NEVER_RESETS, patientCodeSql, takeNumber } from "./numbering";
+import { NEVER_RESETS, patientCodeSql, takeNumber, takePatientCode } from "./numbering";
+import { patients } from "./schema";
 import { testDb } from "./testing";
 
 // A throwaway document table, standing in for patients, receipts or bills.
@@ -79,5 +80,30 @@ describe("gap-free numbering (1.2.4)", () => {
     ]);
     const [row] = await db.select({ code: docs.code }).from(docs);
     expect(row?.code).toBe("P-000001");
+  });
+});
+
+describe("patient code (2.1.5)", () => {
+  it("mints sequential P- codes on the real patients table and never resets the period", async () => {
+    const names = ["Fake One", "Fake Two", "Fake Three"] as const;
+    for (let i = 0; i < names.length; i++) {
+      const { bump, code } = takePatientCode(db, "system");
+      await db.batch([
+        bump,
+        db.insert(patients).values({
+          id: newUlid(),
+          code,
+          fullName: names[i]!,
+          gender: "female",
+          ageYearsAtReg: 30,
+          mobile: `+91910000000${i}`,
+          createdBy: "system",
+          updatedBy: "system",
+        }),
+      ]);
+    }
+    const codes = (await db.select({ code: patients.code }).from(patients)).map((r) => r.code);
+    expect(codes.sort()).toEqual(["P-000001", "P-000002", "P-000003"]);
+    expect(counterValue("patient_code", NEVER_RESETS)).toBe(3);
   });
 });
