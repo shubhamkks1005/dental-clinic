@@ -1,6 +1,8 @@
+import { LIST_DEFS, LIST_KEYS } from "@clinic/shared";
 import type { ReactNode } from "react";
 import { Navigate, NavLink, Route, Routes } from "react-router";
 import { useMe } from "../auth";
+import { ListEditor } from "../lists";
 import { StaffSettings } from "../staff";
 import { TimingsSettings } from "../timings";
 import { NotBuiltYet, NotFound } from "../../ui/PageMessage";
@@ -12,6 +14,13 @@ type Section = { path: string; label: string; permission: string; screen: ReactN
 // whose permission it needs; later tasks add clinic details, doctor, medicines and more.
 const SECTIONS: Section[] = [
   { path: "timings", label: "Timings", permission: "settings.read", screen: <TimingsSettings /> },
+  // One section per editable list in packages/shared/src/lists.ts (1.5.4): config only.
+  ...LIST_KEYS.map((key) => ({
+    path: key,
+    label: LIST_DEFS[key].title,
+    permission: "settings.read",
+    screen: <ListEditor key={key} listKey={key} />,
+  })),
   { path: "staff", label: "Staff", permission: "staff.manage", screen: <StaffSettings /> },
 ];
 // Absolute: inside a splat route a relative link would resolve against the current sub-path.

@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { staffAuth } from "./staff-auth";
+import { staffLists } from "./staff-lists";
 import { staffSettings } from "./staff-settings";
 import { staffUsers } from "./staff-users";
 
@@ -11,3 +12,4 @@ export const staff = new Hono<AppEnv>();
 staff.route("/", staffAuth);
 staff.route("/", staffUsers);
 staff.route("/", staffSettings);
+staff.route("/", staffLists);

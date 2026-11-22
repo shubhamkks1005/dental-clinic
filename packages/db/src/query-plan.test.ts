@@ -80,6 +80,14 @@ describe("query-plan guard (1.2.8)", () => {
     await repos.staff.resetGoogleLink("rec-1", "rec-new@example.test", 3);
     const setting = await repos.settings.get("patient_code.prefix");
     await repos.settings.update("patient_code.prefix", "P-", setting.version);
+    await repos.settings.list();
+    await repos.lists.add("referral_sources", { label: "A", data: {} });
+    const [b] = await repos.lists
+      .add("referral_sources", { label: "B", data: {} })
+      .then((l) => l.slice(1));
+    if (!b) throw new Error("no item");
+    await repos.lists.move("referral_sources", b.id, "up", b.version);
+    await repos.lists.update("referral_sources", b.id, { label: "B2", data: {} }, b.version + 1);
     expect(t.ran.length).toBeGreaterThan(10);
     expect(scansIn(t.sqlite, t.ran)).toEqual([]);
   });

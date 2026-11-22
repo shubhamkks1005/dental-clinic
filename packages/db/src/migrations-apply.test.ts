@@ -33,6 +33,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "audit_log",
       "counters",
       "files",
+      "list_items",
       "settings",
       "staff_sessions",
       "users",

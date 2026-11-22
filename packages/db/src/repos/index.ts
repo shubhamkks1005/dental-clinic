@@ -1,5 +1,6 @@
 import type { Db } from "../client";
 import type { Ctx } from "../context";
+import { listsRepo } from "./lists";
 import { settingsRepo } from "./settings";
 import { staffRepo } from "./staff";
 
@@ -9,6 +10,7 @@ export function createRepos(db: Db, ctx: Ctx) {
   return {
     settings: settingsRepo(db, ctx),
     staff: staffRepo(db, ctx),
+    lists: listsRepo(db, ctx),
   };
 }
 

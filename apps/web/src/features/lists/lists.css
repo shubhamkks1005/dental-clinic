@@ -1,0 +1,68 @@
+/* 1.5.4 list editor. Phone: each item is a card with its buttons below. From 768px: one line. */
+.item-list {
+  display: grid;
+  gap: var(--s2);
+  margin: var(--s4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item-row {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.item-row-hidden .item-label {
+  color: var(--muted);
+}
+
+.item-text {
+  display: grid;
+  min-width: 0;
+}
+
+.item-label {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.item-actions,
+.item-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.item-form {
+  display: grid;
+  gap: var(--s3);
+  max-width: 28rem;
+}
+
+.list-empty,
+.list-note {
+  margin-top: var(--s4);
+}
+
+.list-add {
+  display: grid;
+  gap: var(--s3);
+  margin-top: var(--s5);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--border);
+}
+
+.list-add h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  .item-row:not(.item-row-editing) {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+  }
+}

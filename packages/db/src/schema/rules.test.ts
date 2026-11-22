@@ -54,6 +54,7 @@ describe("table rules (1.2.1)", () => {
       "audit_log",
       "counters",
       "files",
+      "list_items",
       "settings",
       "staff_sessions",
       "users",
