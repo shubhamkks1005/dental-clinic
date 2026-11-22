@@ -250,7 +250,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes, referral_sources); listItemSchema(key); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)
-- src/patient-age.ts (+ test) - ageYearsFromDob, ageYearsOn, isMinor (under 18); used by guardian rule and 2.1.4 display
+- src/patient-age.ts (+ test) - ageYearsFromDob, ageYearsOn, displayAge/formatAgeYears, isMinor (under 18); never store current age
 - src/patient-guardian.ts (+ test) - 2.1.3 guardianSaveError (10yo without guardian cannot save), normalisedGuardian
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)

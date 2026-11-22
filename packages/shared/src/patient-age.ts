@@ -39,3 +39,14 @@ export function isMinor(source: AgeSource, onDate: string): boolean {
   const age = ageYearsOn(source, onDate);
   return age != null && age < MINOR_UNDER_YEARS;
 }
+
+/** Screen text, e.g. "34 yrs". Empty string when age is unknown. */
+export function formatAgeYears(years: number | null): string {
+  if (years == null || years < 0) return "";
+  return `${years} yrs`;
+}
+
+/** Always compute; never show a stored "current age" (2.1.4). */
+export function displayAge(source: AgeSource, onDate: string): string {
+  return formatAgeYears(ageYearsOn(source, onDate));
+}

@@ -1,4 +1,11 @@
-import { displayMobile, firstPage, type Page, type PageQuery } from "@clinic/shared";
+import {
+  displayAge,
+  displayMobile,
+  firstPage,
+  istDate,
+  type Page,
+  type PageQuery,
+} from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { PatientNoChip } from "../../ui/PatientNoChip";
@@ -7,6 +14,18 @@ import { listPatients, type PatientListRow } from "./api";
 import "./patients.css";
 
 const GENDER_LABEL = { female: "Female", male: "Male", other: "Other" } as const;
+
+function ageLabel(r: PatientListRow, today: string): string {
+  const age = displayAge(
+    {
+      dateOfBirth: r.dateOfBirth,
+      ageYearsAtReg: r.ageYearsAtReg,
+      registeredOn: istDate(new Date(r.createdAt)),
+    },
+    today,
+  );
+  return age ? `${age}, ` : "";
+}
 
 const COLUMNS: Column<PatientListRow>[] = [
   {
@@ -17,7 +36,7 @@ const COLUMNS: Column<PatientListRow>[] = [
       <span className="patients-name">
         <span className="patients-name-main">{r.fullName}</span>
         <span className="muted patients-name-meta">
-          {r.ageYearsAtReg != null ? `${r.ageYearsAtReg} yrs, ` : ""}
+          {ageLabel(r, istDate(new Date()))}
           {GENDER_LABEL[r.gender]}
         </span>
       </span>

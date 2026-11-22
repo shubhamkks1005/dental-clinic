@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { ageYearsFromDob, ageYearsOn, fullYearsBetween, isMinor } from "./patient-age";
+import {
+  ageYearsFromDob,
+  ageYearsOn,
+  displayAge,
+  formatAgeYears,
+  fullYearsBetween,
+  isMinor,
+} from "./patient-age";
 
 describe("patient age (2.1.3 / 2.1.4)", () => {
   it("counts full years from DOB", () => {
@@ -7,10 +14,11 @@ describe("patient age (2.1.3 / 2.1.4)", () => {
     expect(ageYearsFromDob("2016-11-23", "2026-11-22")).toBe(9);
   });
 
-  it("grows age-at-registration by years since registration day", () => {
-    expect(
-      ageYearsOn({ dateOfBirth: null, ageYearsAtReg: 5, registeredOn: "2021-11-22" }, "2026-11-22"),
-    ).toBe(10);
+  it("a five-year-old registration still shows the correct age today (2.1.4)", () => {
+    // Recorded as age 5 on 2021-11-22 → must show 10 yrs on 2026-11-22, not "5 yrs".
+    const source = { dateOfBirth: null, ageYearsAtReg: 5, registeredOn: "2021-11-22" };
+    expect(ageYearsOn(source, "2026-11-22")).toBe(10);
+    expect(displayAge(source, "2026-11-22")).toBe("10 yrs");
   });
 
   it("prefers DOB over age-at-reg", () => {
@@ -31,7 +39,9 @@ describe("patient age (2.1.3 / 2.1.4)", () => {
     ).toBe(false);
   });
 
-  it("fullYearsBetween is zero for the same day", () => {
+  it("formats age for screens", () => {
+    expect(formatAgeYears(34)).toBe("34 yrs");
+    expect(formatAgeYears(null)).toBe("");
     expect(fullYearsBetween("2026-11-22", "2026-11-22")).toBe(0);
   });
 });

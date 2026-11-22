@@ -9,6 +9,7 @@ export type PatientListRow = {
   gender: "female" | "male" | "other";
   ageYearsAtReg: number | null;
   dateOfBirth: string | null;
+  createdAt: string;
   mobile: string | null;
   status: "active" | "archived";
 };

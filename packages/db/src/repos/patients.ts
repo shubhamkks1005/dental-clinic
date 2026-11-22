@@ -12,6 +12,8 @@ export type PatientListRow = {
   gender: PatientGender;
   ageYearsAtReg: number | null;
   dateOfBirth: string | null;
+  /** UTC ISO created_at; UI derives registeredOn via istDate for age display (2.1.4). */
+  createdAt: string;
   mobile: string | null;
   status: "active" | "archived";
 };
@@ -42,6 +44,7 @@ export function patientsRepo(db: Db, ctx: Ctx) {
             gender: patients.gender,
             ageYearsAtReg: patients.ageYearsAtReg,
             dateOfBirth: patients.dateOfBirth,
+            createdAt: patients.createdAt,
             mobile: patients.mobile,
             status: patients.status,
           })
