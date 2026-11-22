@@ -43,6 +43,13 @@
       "when": 1795348799484,
       "tag": "0005_clinic_branding_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795354841029,
+      "tag": "0006_staff_sessions_user_index",
+      "breakpoints": true
     }
   ]
 }

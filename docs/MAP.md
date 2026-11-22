@@ -121,7 +121,7 @@
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
-- staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
+- staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
@@ -133,6 +133,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0003_staff_sessions.sql - staff_sessions table
 - migrations/0004_access_log_auth_events.sql - access_log: new actions + detail column (table rebuild; drizzle's copy step fixed by hand before locking: it selected a column the old table did not have)
 - migrations/0005_clinic_branding_settings.sql - seeds clinic.name "Align Dentistry" and clinic.logo null
+- migrations/0006_staff_sessions_user_index.sql - index staff_sessions(user_id) (ending one person's sessions; found by the query-plan guard)
+- src/query-plan.test.ts - 1.2.8: runs every repository call on a recording DB and fails on a full SCAN of a growing table; self-test with a bad query
+- src/testing/query-plan.ts - recordingDb() (logs every statement), queryPlan(), fullScans(), scansIn(); SMALL_TABLES = users, settings, counters (every other table, new ones included, must use an index)
 - src/repos/auth.ts - authRepo(db): findStaffByEmail, completeLogin (bind sub + session + access_log in one batch), findSession, touchSession, logout, recordLoginProblem, branding. Only repo without assertAllowed (runs before sign-in)
 - src/repos/auth.test.ts - bind once, never overwrite sub, session + logout logged, anonymous failures, branding
 - src/dev.ts - LOCAL ONLY ensureDevUser (exported as @clinic/db/dev; imported only by apps/worker/src/dev/)
@@ -159,7 +162,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
 - src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
 - src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format
-- src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction)
+- src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction; optional statement log)
 - src/testing/test-db.ts - migratedSqlite() and testDb() (real drizzle D1 client over a migrated in-memory DB)
 - src/testing/paths.ts - REPO_ROOT and DB_MIGRATIONS absolute paths for tests
 - src/testing/repo-files.ts - sourceFiles(dir): app source files (no tests) for guard tests
