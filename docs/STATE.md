@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.1** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.4.6 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.5.2** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.1 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.5.1 DONE locally (Open visit from Today Now + profile New visit; idempotent draft reuse; `/app/visits/:id` shell S05). No migration.
 3.4.6 DONE locally (dentitionFromAgeYears: &lt;6 primary, 6–12 mixed, 13+ permanent; Dentition override on Chart tab; primary/permanent are separate FDI events). No migration.
 3.4.5 DONE locally (chart API GET/POST; as-of finalised visit; today highlight; VisitChartPanel on patient Chart tab S04/S17; receptionist 403). No new migration.
 3.4.4 DONE locally (conditions list: code/colour/icon/applies_to; DRAFT full starter set; chart legend + surface colours from list). **New migration `0028_conditions_chart_fields.sql` — owner applies; agent did not apply to staging.**
@@ -52,7 +53,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.5.1 open visit from Today/profile → 3.5.x → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.5.2 visit layout (alerts strip, tabs) → 3.5.3–3.5.10 → History 3.5.11–15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.4.3)
 1. Open /app/style-guide as doctor; chart shows "R (patient's right) · FDI".

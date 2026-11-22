@@ -118,12 +118,23 @@ describe("visits open (3.2.1)", () => {
     expect(lost).toBeUndefined();
   });
 
-  it("allows a visit without an appointment", async () => {
+  it("allows a visit without an appointment and reuses that draft (3.5.1)", async () => {
     const visit = await repos().visits.open({
       patientId: PATIENT_ID,
       visitDateLocal: "2026-11-22",
     });
     expect(visit.appointmentId).toBeNull();
+    const again = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-22",
+    });
+    expect(again.id).toBe(visit.id);
+    const count = t.sqlite
+      .prepare(
+        `SELECT COUNT(*) AS n FROM visits WHERE patient_id = ? AND visit_date_local = ? AND deleted_at IS NULL`,
+      )
+      .get(PATIENT_ID, "2026-11-22") as { n: number };
+    expect(count.n).toBe(1);
   });
 
   it("rejects receptionist", async () => {

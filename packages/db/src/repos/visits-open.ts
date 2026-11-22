@@ -61,6 +61,21 @@ export function visitsOpenRepo(db: Db, ctx: Ctx) {
           .where(and(eq(visits.appointmentId, appointmentId), isNull(visits.deletedAt)))
           .get();
         if (existing) return existing;
+      } else {
+        // 3.5.1: profile / walk-in "New visit" reuses today's draft for this patient.
+        const existingDraft = await db
+          .select(visitCols)
+          .from(visits)
+          .where(
+            and(
+              eq(visits.patientId, input.patientId),
+              eq(visits.visitDateLocal, input.visitDateLocal),
+              eq(visits.status, "draft"),
+              isNull(visits.deletedAt),
+            ),
+          )
+          .get();
+        if (existingDraft) return existingDraft;
       }
 
       const id = newUlid();

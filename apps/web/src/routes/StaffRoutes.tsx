@@ -13,6 +13,7 @@ import { SettingsScreen } from "../features/settings";
 import { StyleGuideScreen } from "../features/style-guide";
 import { AppointmentsScreen } from "../features/appointments";
 import { TodayScreen } from "../features/today";
+import { VisitScreen } from "../features/visits";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
 import { StaffShell } from "../ui/shell/StaffShell";
@@ -54,6 +55,7 @@ function ShellRoutes() {
         <Route path="patients/new" element={<NewPatientScreen />} />
         <Route path="patients/:id/consents" element={<PatientConsentsScreen />} />
         <Route path="patients/:id" element={<PatientProfileScreen />} />
+        <Route path="visits/:id" element={<VisitScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
         <Route path="style-guide" element={<StyleGuideScreen />} />

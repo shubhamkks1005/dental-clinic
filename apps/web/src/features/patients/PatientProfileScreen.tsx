@@ -99,6 +99,7 @@ export function PatientProfileScreen() {
         patient={patient}
         canViewClinical={canViewClinical}
         canSeeFlags={canSeeFlags}
+        canEditClinical={canEditClinical}
       />
       <Tabs label="Patient sections" tabs={tabs} value={tab} onChange={setTab} />
     </div>

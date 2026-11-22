@@ -1,0 +1,24 @@
+.visit-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 960px;
+}
+
+.visit-back {
+  margin: 0;
+  font-size: 14px;
+}
+
+.visit-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.visit-head h1 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--navy, #0f2a5c);
+}

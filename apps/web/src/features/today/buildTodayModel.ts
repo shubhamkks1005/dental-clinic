@@ -14,6 +14,7 @@ import { statusActionButtons } from "./statusActions";
 
 export type TodayListRow = {
   id: string;
+  patientId: string;
   time: string;
   name: string;
   patientCode: string;
@@ -67,6 +68,7 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
   const waiting = a.status === "arrived" ? formatWaiting(a.arrivedAt, now) : null;
   return {
     id: a.id,
+    patientId: a.patientId,
     time: toHhmm(a.startMin),
     name: a.patientName,
     patientCode: a.patientCode,
