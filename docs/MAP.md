@@ -49,6 +49,7 @@
 - src/index.test.ts - route-group tests (JSON 404 shape, static fallthrough)
 - src/errors.ts - errorReply(err): RepoError -> 403/404/409 with its plain message; anything else -> generic 500 (used by app.onError)
 - src/errors.test.ts - 409 conflict reply, 403/404, 500 hides details
+- src/access.test.ts - 1.3.1 guard: apps/web/public/_redirects keeps "/ /app 302"
 - src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
 
 ## apps/web
@@ -56,6 +57,7 @@
 - vite.config.ts - dev server 5173, proxy /api and /hooks to 8787, build to dist
 - public/fonts/InterVariable.woff2 - Inter 4.1 variable font (full character set incl. ₹), from the official rsms/inter v4.1 release zip; sha256 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
+- public/_redirects - "/ /app 302": server-side redirect so the staff entry always passes Cloudflare Access (a React-only redirect would skip it)
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
 - src/App.tsx - top routes: / -> /app, /app/* StaffRoutes, /my/* PortalRoutes, else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree in StaffShell: index = Today; nav targets show "Not ready yet"
