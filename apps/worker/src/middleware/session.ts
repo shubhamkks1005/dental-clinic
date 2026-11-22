@@ -10,9 +10,8 @@ import type { AppEnv } from "../types";
 export function requireStaff(publicPaths: ReadonlySet<string>): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const db = createDb(c.env.DB);
-    const requestId = c.req.header("cf-ray") ?? crypto.randomUUID();
+    const { requestId } = c.var;
     c.set("db", db);
-    c.set("requestId", requestId);
     if (publicPaths.has(c.req.path)) return next();
 
     const token = getCookie(c, SESSION_COOKIE, "host");

@@ -96,6 +96,22 @@
   color: var(--navy);
 }
 
+.offline-banner {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--s3) var(--s4);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  font-weight: 600;
+  text-align: center;
+}
+
+.page-message .btn {
+  margin-top: var(--s4);
+}
+
 .page-message {
   margin: var(--s6);
   padding: var(--s6);

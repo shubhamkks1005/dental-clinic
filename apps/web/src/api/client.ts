@@ -1,12 +1,14 @@
-import type { ApiReply } from "@clinic/shared";
+import { REQUEST_ID_HEADER, shortRequestId, type ApiReply } from "@clinic/shared";
 import { startPageAfter401 } from "./session-end";
 
 // The one typed API client. Feature folders wrap it in small functions; components never fetch.
+// errorId: the short "Error ID" of the request (from the X-Request-Id reply header), if any.
 export class ApiError extends Error {
   constructor(
     readonly status: number,
     readonly code: string,
     message: string,
+    readonly errorId: string | null = null,
   ) {
     super(message);
     this.name = "ApiError";
@@ -31,12 +33,15 @@ export async function api<T>(
     credentials: "same-origin",
     body: init.body === undefined ? undefined : JSON.stringify(init.body),
   });
+  const requestId = response.headers.get(REQUEST_ID_HEADER);
+  const errorId = requestId ? shortRequestId(requestId) : null;
   const reply = (await response.json().catch(() => null)) as ApiReply<T> | null;
   if (!reply) {
     throw new ApiError(
       response.status,
       "bad_reply",
       "The clinic server sent an unexpected reply. Please try again.",
+      errorId,
     );
   }
   if (!reply.ok) {
@@ -44,7 +49,7 @@ export async function api<T>(
       const target = startPageAfter401(window.location.pathname, reply.error.code);
       if (target) window.location.replace(target);
     }
-    throw new ApiError(response.status, reply.error.code, reply.error.message);
+    throw new ApiError(response.status, reply.error.code, reply.error.message, errorId);
   }
   return reply.data;
 }

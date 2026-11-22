@@ -1,6 +1,7 @@
 import type { NewStaff, StaffMember } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { problemText } from "../../api/problem-text";
 import { shortName } from "../../ui/names";
 import { AddStaffForm } from "./AddStaffForm";
 import { addStaff, getStaff } from "./api";
@@ -8,9 +9,6 @@ import { StaffRow, type RunChange } from "./StaffRow";
 import "./staff.css";
 
 type Notice = { tone: "ok" | "error"; text: string };
-
-const OFFLINE = "Cannot reach the clinic server. Check the internet connection, then try again.";
-const problemText = (err: unknown) => (err instanceof ApiError ? err.message : OFFLINE);
 
 // Settings > Staff (1.3.6, doctor only): who can sign in with Google, and with which role.
 export function StaffSettings() {

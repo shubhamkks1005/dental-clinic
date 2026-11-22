@@ -54,6 +54,8 @@
 - src/types.ts - Bindings (Env + secrets) and Variables (db, requestId, session, ctx, repos)
 - src/http.ts - COOKIE_BASE (__Host-, HttpOnly, Secure, SameSite=Lax, Path=/), signedIn(c)
 - src/auth-deps.ts - authConfig(env) (null if Google not set up) and loginDeps (Google client + db)
+- src/middleware/request-id.ts - first middleware on /api and /hooks: request id (cf-ray or UUID) into c.var.requestId and the X-Request-Id reply header (1.4.7 "Error ID")
+- src/request-id.test.ts - 1.4.7: header on 401/403/404/500 replies; a crash logs only the error type and the id
 - src/middleware/session.ts - requireStaff: 401 unless public path or valid session (code session_timed_out after the idle or 12 h limit, else not_signed_in); sets ctx + repos
 - src/middleware/csrf.ts - non-GET /api calls need Origin = APP_ORIGIN and header x-clinic-request: 1
 - src/middleware/headers.ts - apiHeaders(): security headers (CSP default-src 'none', HSTS, nosniff, DENY framing, referrer) + Cache-Control no-store on /api and /hooks
@@ -88,14 +90,17 @@
 - public/_headers - security headers for every web page and asset (strict CSP: own scripts, styles, fonts, images only; no inline code; no framing; HSTS; Permissions-Policy). Static assets skip the Worker, so this file is the only place these are set
 - public/fonts/InterVariable.woff2 - Inter 4.1 variable font (full character set incl. ₹), from the official rsms/inter v4.1 release zip; sha256 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
-- src/api/client.ts - the one typed API client (ApiError; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
+- src/api/client.ts - the one typed API client (ApiError with status, code, message and the short errorId from X-Request-Id; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
+- src/api/problem-text.ts (+ test) - problemText(err): the one failure sentence for staff; adds "Error ID: XXXXXXXX" for server faults (5xx, bad reply); no reply = "Cannot reach the clinic server..."
+- src/ui/ErrorBoundary.tsx (+ test) - crash page with a fresh Error ID and a Reload button (console only, no tracker)
+- src/ui/OfflineBanner.tsx + src/ui/use-online.ts - "No internet connection. Don't close this page..." bar on every page while offline
 - src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
 - src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; "signed out after a period of inactivity" notice; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me), UserCard ("Name · Role" + Sign out, 1.3.7) + user-card.css, api.ts, auth.css
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
-- src/App.tsx - top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
+- src/App.tsx - OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
 - src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
@@ -187,6 +192,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), financialYearOf() ("2026-27", April-March by IST date)
+- src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)
 - src/paging.ts (+ test) - server-side list contract: PageQuery/Page, parsePageQuery (safe: unknown sort ignored, size capped at 100, search 100 chars), pageQueryParams, pageWindow (LIMIT/OFFSET), lastPage, firstPage
 - src/staff.ts - STAFF_ROLES (doctor, receptionist), StaffMember type, normaliseEmail (the one email normaliser), parseNewStaff / parseRoleChange / parseGoogleReset / parseVersionOnly (plain validation, used by Worker and web)
 - src/staff.test.ts - name/email/role rules, no developer role, version required

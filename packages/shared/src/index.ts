@@ -2,6 +2,7 @@ export * from "./api";
 export * from "./enums";
 export * from "./money";
 export * from "./paging";
+export * from "./request-id";
 export * from "./routing";
 export * from "./staff";
 export * from "./time";

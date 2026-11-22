@@ -4,6 +4,7 @@ import { errorReply } from "./errors";
 import { accessJwt } from "./middleware/access-jwt";
 import { csrfGuard } from "./middleware/csrf";
 import { apiHeaders } from "./middleware/headers";
+import { requestId } from "./middleware/request-id";
 import { requireStaff } from "./middleware/session";
 import { PUBLIC_API } from "./public-routes";
 import { hooks } from "./routes/hooks";
@@ -22,6 +23,8 @@ export function createApp(options: AppOptions = {}) {
   const app = new Hono<AppEnv>();
   const publicPaths = new Set<string>([...PUBLIC_API, ...(options.extraPublic ?? [])]);
 
+  app.use("/api/*", requestId());
+  app.use("/hooks/*", requestId());
   app.use("/api/*", apiHeaders());
   app.use("/hooks/*", apiHeaders());
   app.use("/api/*", csrfGuard());
@@ -42,8 +45,8 @@ export function createApp(options: AppOptions = {}) {
 
   app.onError((err, c) => {
     const { status, body } = errorReply(err);
-    // Error messages can contain request data, so log only the error type.
-    if (status === 500) console.error("unhandled error:", err.name);
+    // Error messages can contain request data, so log only the error type and the request id.
+    if (status === 500) console.error("unhandled error:", err.name, c.var.requestId);
     return c.json(body, status);
   });
 
