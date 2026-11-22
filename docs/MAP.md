@@ -137,8 +137,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
 - src/append-only.test.ts - 1.2.5 guard: no app code updates or deletes audit_log / access_log (no triggers allowed yet)
 - src/errors.ts - RepoError (code forbidden|not_found|conflict) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError
-- src/permissions.ts - PERMISSIONS: the one role table (settings.read, settings.write so far; 1.3.4 completes it); assertAllowed()
-- src/permissions.test.ts - table uses known roles; only doctor and developer write settings
+- src/permissions.ts - PERMISSIONS: the one role table (AUTH_PLAN 4f, 19 actions: patients, clinical, prescriptions, appointments, bills, files, reports, settings, staff, audit; TO BE CONFIRMED BY THE DOCTOR); isAllowed, permissionsFor, assertAllowed
+- src/permissions.test.ts - exact actions per role (doctor all; receptionist 9; developer settings only)
 - src/repos/index.ts - createRepos(db, ctx) -> { settings }; Repos type (built once per request by the Worker)
 - src/repos/settings.ts - settings.get(key) -> { value, version }; settings.update(key, value, expectedVersion): permission check, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
 - src/repos/settings.test.ts - 1.2.6 + 1.2.7: doctor update = one audit row; receptionist refused; not-found; two tabs and a parallel race -> one wins, one conflict, one audit row
