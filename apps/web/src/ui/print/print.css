@@ -1,0 +1,137 @@
+/* 1.4.8 print framework. Named pages pick the paper per sheet with static CSS (no injected
+   styles, so the strict CSP holds). Page margin 0: the browser then prints no URL/date lines,
+   and our own padding places the content. On screen the sheet is shown at real size. */
+@page a5 {
+  size: A5 portrait;
+  margin: 0;
+}
+
+@page a4 {
+  size: A4 portrait;
+  margin: 0;
+}
+
+.print-page {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  background: #fff;
+  color: var(--text);
+  font-size: 10pt;
+  line-height: 1.4;
+  print-color-adjust: exact;
+}
+
+.print-a5 {
+  page: a5;
+  width: 148mm;
+  min-height: 210mm;
+  padding: 8mm 9mm;
+}
+
+.print-a4 {
+  page: a4;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 12mm 14mm;
+}
+
+.print-page p {
+  margin: 0;
+}
+
+.print-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2mm 6mm;
+}
+
+/* Same height as the printed header band, so the body lands in the same place either way.
+   The real pre-printed letterhead height becomes a setting (1.5.2) once measured. */
+.print-letterhead {
+  height: 27mm;
+}
+
+.print-brand {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+}
+
+.print-logo {
+  max-width: 24mm;
+  max-height: 16mm;
+}
+
+.print-clinic {
+  color: var(--red);
+  font-size: 17pt;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.print-tagline {
+  color: var(--blue);
+  font-size: 8pt;
+  font-weight: 600;
+}
+
+.print-doctor {
+  text-align: right;
+  font-size: 8pt;
+  color: var(--muted);
+}
+
+.print-doctor-name {
+  color: var(--navy);
+  font-size: 10pt;
+  font-weight: 700;
+}
+
+.print-address {
+  grid-column: 1 / -1;
+  padding: 1.5mm 2mm;
+  border-top: 0.8mm solid var(--navy);
+  background: var(--blue-soft);
+  font-size: 8pt;
+}
+
+.print-body {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  gap: 4mm;
+  padding-top: 3mm;
+}
+
+.print-footer {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 6mm;
+  padding-top: 3mm;
+  border-top: 0.2mm solid var(--border);
+  font-size: 8pt;
+  color: var(--muted);
+}
+
+/* Screen: the sheet sits on the page background like paper. */
+@media screen {
+  .print-page {
+    box-shadow: 0 4px 24px rgb(15 42 92 / 12%);
+  }
+}
+
+/* Print: only the sheet. App chrome, banners and toasts never print. */
+@media print {
+  .print-toolbar,
+  .offline-banner,
+  .toast-viewport {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+}

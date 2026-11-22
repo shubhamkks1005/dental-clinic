@@ -1,0 +1,93 @@
+/* S13 prescription body, in print units (mm, pt). */
+.rx-patient {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2mm 4mm;
+  margin: 0;
+  padding: 2.5mm 3mm;
+  background: var(--bg);
+}
+
+.rx-patient dt {
+  color: var(--muted);
+  font-size: 7.5pt;
+}
+
+.rx-patient dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.rx-strong {
+  color: var(--blue);
+  font-size: 11pt;
+}
+
+.rx-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+}
+
+.rx-label {
+  margin: 0 0 1mm;
+  color: var(--blue);
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rx-mark {
+  color: var(--blue);
+  font-size: 20pt;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rx-table {
+  width: 100%;
+  margin-top: 2mm;
+  border-collapse: collapse;
+}
+
+.rx-table th {
+  padding: 1.5mm 1mm;
+  border-bottom: 0.4mm solid var(--navy);
+  color: var(--muted);
+  font-size: 7.5pt;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.rx-table td {
+  padding: 2mm 1mm;
+  border-bottom: 0.2mm solid var(--border);
+  vertical-align: top;
+}
+
+.rx-note {
+  display: block;
+  color: var(--muted);
+  font-size: 8pt;
+}
+
+.rx-advice {
+  padding: 2.5mm 3mm;
+  border-radius: 2mm;
+  background: var(--blue-soft);
+}
+
+.rx-advice ul {
+  margin: 0;
+  padding-left: 5mm;
+}
+
+.rx-sign {
+  min-width: 40mm;
+  padding-top: 1.5mm;
+  border-top: 0.3mm solid var(--text);
+  color: var(--text);
+  font-weight: 700;
+  text-align: center;
+}

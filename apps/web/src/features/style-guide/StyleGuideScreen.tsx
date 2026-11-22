@@ -1,4 +1,5 @@
 import { formatRupees } from "@clinic/shared";
+import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { ComponentDemos } from "./ComponentDemos";
@@ -15,7 +16,10 @@ export function StyleGuideScreen() {
     <div className="guide">
       <header>
         <h1>Style guide</h1>
-        <p className="muted">Colours, type and building blocks from DESIGN.md.</p>
+        <p className="muted">
+          Colours, type and building blocks from DESIGN.md.{" "}
+          <Link to="/app/print/sample">Open the printer check</Link>
+        </p>
       </header>
 
       <section className="card guide-card" aria-labelledby="g-colours">

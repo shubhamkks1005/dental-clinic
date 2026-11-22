@@ -1,0 +1,60 @@
+/* Printer check screen (1.4.8). The real-size sheet scrolls inside its own box on phones. */
+.print-screen {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s4);
+}
+
+.print-toolbar {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4);
+}
+
+.print-toolbar p {
+  margin-top: var(--s1);
+}
+
+.print-option {
+  display: grid;
+  gap: var(--s1);
+  font-weight: 600;
+}
+
+.print-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.print-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--s4);
+}
+
+@media (min-width: 768px) {
+  .print-screen {
+    padding: var(--s6);
+  }
+
+  .print-toolbar {
+    grid-template-columns: minmax(0, 1fr) 10rem 16rem;
+    align-items: end;
+  }
+
+  .print-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media print {
+  .print-screen {
+    display: block;
+    padding: 0;
+  }
+
+  .print-scroll {
+    overflow: visible;
+    padding: 0;
+  }
+}

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 import { useMe, UserCard } from "../features/auth";
 import { MoreScreen } from "../features/more";
+import { PrintRoutes } from "../features/print";
 import { SettingsScreen } from "../features/settings";
 import { StyleGuideScreen } from "../features/style-guide";
 import { TodayScreen } from "../features/today";
@@ -11,7 +12,17 @@ import { StaffShell } from "../ui/shell/StaffShell";
 // Screens behind the nav items that later tasks will build.
 const NOT_BUILT = ["patients", "patients/new", "appointments", "billing", "messages", "reports"];
 
+// Print screens open without the app frame; every other staff screen sits inside it.
 export function StaffRoutes() {
+  return (
+    <Routes>
+      <Route path="print/*" element={<PrintRoutes />} />
+      <Route path="*" element={<ShellRoutes />} />
+    </Routes>
+  );
+}
+
+function ShellRoutes() {
   const { permissions } = useMe();
   // Developer (support) has no patient screens: start in Settings instead of Today.
   const home = permissions.includes("appointments.manage") ? (
