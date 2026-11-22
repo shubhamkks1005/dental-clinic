@@ -54,4 +54,24 @@ describe("visit finalise (3.2.6)", () => {
     // portable and we avoid trigger + soft-delete complexity. See DECISIONS.md.
     expect(true).toBe(true);
   });
+
+  it("entered-in-error voids the visit and lists the addendum (3.5.7)", async () => {
+    const visit = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-24",
+    });
+    const final = await repos().visits.finalise(visit.id, { version: visit.version });
+    const note = await repos().visits.addAddendum(visit.id, {
+      body: "Wrong patient chart opened.",
+      reason: "Opened sibling with same name",
+      kind: "entered_in_error",
+    });
+    expect(note.kind).toBe("entered_in_error");
+    const got = await repos().visits.getById(visit.id);
+    expect(got.status).toBe("void");
+    expect(got.version).toBe(final.version + 1);
+    const list = await repos().visits.listAddenda(visit.id);
+    expect(list).toHaveLength(1);
+    expect(list[0]?.body).toContain("Wrong patient");
+  });
 });

@@ -32,6 +32,16 @@ export type VisitProcedure = {
   sortOrder: number;
 };
 
+export type VisitAddendum = {
+  id: string;
+  visitId: string;
+  kind: "note" | "entered_in_error";
+  body: string;
+  reason: string;
+  recordedAt: string;
+  recordedBy: string;
+};
+
 export type VisitSummary = VisitOpened & {
   chiefComplaint: string | null;
   historyNote: string | null;
@@ -47,6 +57,7 @@ export type VisitSummary = VisitOpened & {
   snapshotHash: string | null;
   diagnoses: VisitDiagnosis[];
   procedures: VisitProcedure[];
+  addenda: VisitAddendum[];
 };
 
 export type VisitRecent = {
@@ -125,6 +136,16 @@ export function finaliseVisit(id: string, version: number) {
     method: "POST",
     body: JSON.stringify({ version }),
   }).then((r) => r.visit);
+}
+
+export function addVisitAddendum(
+  visitId: string,
+  body: { body: string; reason: string; kind?: "note" | "entered_in_error" },
+) {
+  return api<{ addendum: VisitAddendum }>(
+    `/api/staff/visits/${encodeURIComponent(visitId)}/addenda`,
+    { method: "POST", body: JSON.stringify(body) },
+  ).then((r) => r.addendum);
 }
 
 export function listRecentVisits(patientId: string, limit = 3) {

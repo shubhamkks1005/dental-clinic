@@ -125,11 +125,12 @@ export function VisitScreen() {
         canSeeFlags={canSeeFlags}
       />
 
-      <header className="visit-head">
+      <header className={`visit-head${visit.status === "void" ? " is-void" : ""}`}>
         <div className="visit-head-text">
           <h1>{patient.fullName}</h1>
           <p className="muted small">
             Visit · {visit.visitDateLocal} · {patient.code}
+            {visit.status === "void" ? " · Entered in error" : ""}
           </p>
         </div>
         <StatusBadge

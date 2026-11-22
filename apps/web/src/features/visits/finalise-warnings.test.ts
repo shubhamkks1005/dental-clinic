@@ -24,6 +24,7 @@ const base: VisitSummary = {
   version: 1,
   diagnoses: [],
   procedures: [],
+  addenda: [],
 };
 
 describe("finaliseWarnings (3.5.6)", () => {

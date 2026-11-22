@@ -17,11 +17,12 @@ export async function openVisit(repos: Repos, body: unknown) {
 
 export async function getVisit(repos: Repos, id: string) {
   const visit = await repos.visits.getById(id);
-  const [diagnoses, procedures] = await Promise.all([
+  const [diagnoses, procedures, addenda] = await Promise.all([
     repos.visitDiagnoses.listForVisit(id),
     repos.visitProcedures.listForVisit(id),
+    repos.visits.listAddenda(id),
   ]);
-  return { ok: true as const, visit: { ...visit, diagnoses, procedures } };
+  return { ok: true as const, visit: { ...visit, diagnoses, procedures, addenda } };
 }
 
 export async function listRecentVisits(repos: Repos, patientId: string, limit: number | undefined) {
@@ -34,11 +35,12 @@ export async function patchVisit(repos: Repos, id: string, body: unknown) {
   if (!parsed.ok) return parsed;
   const { version, ...fields } = parsed.value;
   const visit = await repos.visits.updateDraftFields(id, version, fields);
-  const [diagnoses, procedures] = await Promise.all([
+  const [diagnoses, procedures, addenda] = await Promise.all([
     repos.visitDiagnoses.listForVisit(id),
     repos.visitProcedures.listForVisit(id),
+    repos.visits.listAddenda(id),
   ]);
-  return { ok: true as const, visit: { ...visit, diagnoses, procedures } };
+  return { ok: true as const, visit: { ...visit, diagnoses, procedures, addenda } };
 }
 
 export async function addVisitDiagnosis(repos: Repos, visitId: string, body: unknown) {

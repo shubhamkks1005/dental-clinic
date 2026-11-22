@@ -1,5 +1,5 @@
 import { newUlid } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import { auditInsert, auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
@@ -104,6 +104,24 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
       }
     },
 
+    async listAddenda(visitId: string) {
+      assertAllowed(ctx, "clinical.view");
+      const rows = await db
+        .select({
+          id: visitAddenda.id,
+          visitId: visitAddenda.visitId,
+          kind: visitAddenda.kind,
+          body: visitAddenda.body,
+          reason: visitAddenda.reason,
+          recordedAt: visitAddenda.recordedAt,
+          recordedBy: visitAddenda.recordedBy,
+        })
+        .from(visitAddenda)
+        .where(and(eq(visitAddenda.visitId, visitId), isNull(visitAddenda.deletedAt)))
+        .orderBy(asc(visitAddenda.recordedAt));
+      return rows;
+    },
+
     async addAddendum(visitId: string, input: AddendumInput) {
       assertAllowed(ctx, "clinical.edit");
       const visit = await loadVisit(db, visitId);
@@ -118,25 +136,65 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
       const id = newUlid();
       const recordedAt = new Date().toISOString();
       const kind = input.kind ?? "note";
-      await db.batch([
-        db.insert(visitAddenda).values({
-          id,
-          visitId,
-          kind,
-          body,
-          reason,
-          recordedAt,
-          recordedBy: ctx.userId,
-          createdBy: ctx.userId,
-          updatedBy: ctx.userId,
-        }),
-        auditInsert(db, ctx, {
-          action: "create",
-          table: "visit_addenda",
-          rowId: id,
-          after: { visitId, kind, reason },
-        }),
-      ]);
+      // 3.5.7: entered-in-error marks the visit void (strikethrough); never hard-delete.
+      const markVoid = kind === "entered_in_error" && visit.status === "final";
+      if (markVoid) {
+        await db.batch([
+          db.insert(visitAddenda).values({
+            id,
+            visitId,
+            kind,
+            body,
+            reason,
+            recordedAt,
+            recordedBy: ctx.userId,
+            createdBy: ctx.userId,
+            updatedBy: ctx.userId,
+          }),
+          db
+            .update(visits)
+            .set({
+              status: "void",
+              version: visit.version + 1,
+              updatedAt: nowUtcSql,
+              updatedBy: ctx.userId,
+            })
+            .where(and(eq(visits.id, visitId), eq(visits.status, "final"))),
+          auditInsert(db, ctx, {
+            action: "create",
+            table: "visit_addenda",
+            rowId: id,
+            after: { visitId, kind, reason },
+          }),
+          auditInsertIfChanged(db, ctx, {
+            action: "update",
+            table: "visits",
+            rowId: visitId,
+            before: { status: "final", version: visit.version },
+            after: { status: "void", version: visit.version + 1, reason },
+          }),
+        ]);
+      } else {
+        await db.batch([
+          db.insert(visitAddenda).values({
+            id,
+            visitId,
+            kind,
+            body,
+            reason,
+            recordedAt,
+            recordedBy: ctx.userId,
+            createdBy: ctx.userId,
+            updatedBy: ctx.userId,
+          }),
+          auditInsert(db, ctx, {
+            action: "create",
+            table: "visit_addenda",
+            rowId: id,
+            after: { visitId, kind, reason },
+          }),
+        ]);
+      }
       return { id, visitId, kind, body, reason, recordedAt, recordedBy: ctx.userId };
     },
   };

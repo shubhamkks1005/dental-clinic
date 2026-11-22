@@ -2,6 +2,7 @@ import type { ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { getList } from "../lists";
 import type { VisitDiagnosis, VisitSummary } from "./api";
+import { VisitAddenda } from "./VisitAddenda";
 import { VisitDiagnoses } from "./VisitDiagnoses";
 import { VisitNotesForm } from "./VisitNotesForm";
 
@@ -60,6 +61,7 @@ export function VisitTodayPanel({ visit, canEdit, onVisitChange }: Props) {
         readOnly={readOnly}
         onAdded={onDiagnosisAdded}
       />
+      <VisitAddenda visit={visit} canEdit={canEdit} onChanged={onVisitChange} />
     </div>
   );
 }
