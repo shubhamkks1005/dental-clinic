@@ -1,6 +1,6 @@
 import { newUlid, type MedicalHistoryItem, type SaveMedicalHistoryInput } from "@clinic/shared";
 import { and, desc, eq, inArray, isNull } from "drizzle-orm";
-import { auditInsert } from "../audit";
+import { accessInsert, auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -153,6 +153,15 @@ export function medicalHistoryRepo(db: Db, ctx: Ctx) {
         .where(
           and(eq(alerts.patientId, patientId), eq(alerts.active, true), isNull(alerts.deletedAt)),
         );
+      // 3.3.3: doctor viewing restricted alert detail is recorded in access_log.
+      if (rows.some((r) => r.restricted)) {
+        await accessInsert(db, ctx, {
+          action: "view",
+          resource: "alerts_restricted",
+          resourceId: patientId,
+          detail: "viewed restricted medical alerts",
+        });
+      }
       return rows;
     },
 

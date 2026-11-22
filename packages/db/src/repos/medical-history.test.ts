@@ -100,4 +100,35 @@ describe("medical history (3.2.4)", () => {
     const batch = await repos(receptionist).medicalHistory.alertFlagsForPatients([PATIENT_ID]);
     expect(batch.get(PATIENT_ID)).toEqual({ hasAlert: true, hasRestricted: true });
   });
+
+  it("records access_log when the doctor views restricted alerts (3.3.3)", async () => {
+    await repos().medicalHistory.save({
+      patientId: PATIENT_ID,
+      items: [
+        {
+          code: "hepatitis",
+          label: "Hepatitis",
+          answer: "yes",
+          alertLabel: "Hepatitis detail",
+          restricted: true,
+        },
+      ],
+    });
+    const before = t.sqlite.prepare(`SELECT COUNT(*) AS n FROM access_log`).get() as { n: number };
+    const doctorAlerts = await repos().medicalHistory.listAlerts(PATIENT_ID);
+    expect(doctorAlerts[0]?.label).toBe("Hepatitis detail");
+    const after = t.sqlite
+      .prepare(
+        `SELECT action, resource, resource_id FROM access_log ORDER BY created_at DESC LIMIT 1`,
+      )
+      .get() as { action: string; resource: string; resource_id: string };
+    expect(after).toEqual({
+      action: "view",
+      resource: "alerts_restricted",
+      resource_id: PATIENT_ID,
+    });
+    expect(
+      (t.sqlite.prepare(`SELECT COUNT(*) AS n FROM access_log`).get() as { n: number }).n,
+    ).toBe(before.n + 1);
+  });
 });
