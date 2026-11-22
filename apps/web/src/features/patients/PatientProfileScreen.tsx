@@ -5,6 +5,7 @@ import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
 import { VisitChartPanel } from "../chart";
+import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
 import { PatientOverviewTab } from "./PatientOverviewTab";
 import { PatientProfileHeader } from "./PatientProfileHeader";
@@ -67,7 +68,7 @@ export function PatientProfileScreen() {
   }
 
   const tabs = readyPatientTabs()
-    .filter((t) => t.id !== "chart" || canViewClinical)
+    .filter((t) => (t.id !== "chart" && t.id !== "visits") || canViewClinical)
     .map((t) => ({
       id: t.id,
       label: t.label,
@@ -88,6 +89,8 @@ export function PatientProfileScreen() {
             ageYearsAtReg={patient.ageYearsAtReg}
             registeredOn={patient.createdAt.slice(0, 10)}
           />
+        ) : t.id === "visits" ? (
+          <PatientVisitsTab patientId={patient.id} />
         ) : (
           <PatientAppointmentsTab patientId={patient.id} />
         ),

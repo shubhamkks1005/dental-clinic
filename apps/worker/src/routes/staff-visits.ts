@@ -8,6 +8,7 @@ import {
   getVisit,
   listDraftVisits,
   listRecentVisits,
+  listVisitTimeline,
   openVisit,
   patchVisit,
 } from "../domain/visits";
@@ -27,6 +28,18 @@ staffVisits.post("/visits", async (c) => {
 // 3.5.8: incomplete drafts for Today (before /visits/:id so "drafts" is not an id).
 staffVisits.get("/visits/drafts", async (c) => {
   const result = await listDraftVisits(signedIn(c).repos);
+  return c.json(ok({ visits: result.visits }));
+});
+
+// 3.5.9: full visit timeline with optional filters (before the short recent list path).
+staffVisits.get("/patients/:id/visits/timeline", async (c) => {
+  const rawLimit = c.req.query("limit");
+  const limit = rawLimit ? Number(rawLimit) : undefined;
+  const result = await listVisitTimeline(signedIn(c).repos, c.req.param("id"), {
+    limit: Number.isFinite(limit) ? limit : undefined,
+    diagnosis: c.req.query("diagnosis") || undefined,
+    procedure: c.req.query("procedure") || undefined,
+  });
   return c.json(ok({ visits: result.visits }));
 });
 

@@ -35,6 +35,15 @@ export async function listDraftVisits(repos: Repos) {
   return { ok: true as const, visits };
 }
 
+export async function listVisitTimeline(
+  repos: Repos,
+  patientId: string,
+  opts: { limit?: number; diagnosis?: string; procedure?: string },
+) {
+  const visits = await repos.visits.listTimelineByPatient(patientId, opts);
+  return { ok: true as const, visits };
+}
+
 export async function patchVisit(repos: Repos, id: string, body: unknown) {
   const parsed = parsePatchVisit(body);
   if (!parsed.ok) return parsed;

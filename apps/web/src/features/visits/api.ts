@@ -168,3 +168,26 @@ export function listRecentVisits(patientId: string, limit = 3) {
 export function listDraftVisits() {
   return api<{ visits: VisitDraftReminder[] }>("/api/staff/visits/drafts").then((r) => r.visits);
 }
+
+export type VisitTimelineRow = {
+  id: string;
+  visitDateLocal: string;
+  status: "draft" | "final";
+  chiefComplaint: string | null;
+  diagnoses: string[];
+  procedures: string[];
+};
+
+export function listVisitTimeline(
+  patientId: string,
+  opts?: { limit?: number; diagnosis?: string; procedure?: string },
+) {
+  const q = new URLSearchParams();
+  if (opts?.limit != null) q.set("limit", String(opts.limit));
+  if (opts?.diagnosis?.trim()) q.set("diagnosis", opts.diagnosis.trim());
+  if (opts?.procedure?.trim()) q.set("procedure", opts.procedure.trim());
+  const qs = q.toString();
+  return api<{ visits: VisitTimelineRow[] }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/visits/timeline${qs ? `?${qs}` : ""}`,
+  ).then((r) => r.visits);
+}

@@ -229,6 +229,25 @@ describe("staff visit clinical API (3.2.7)", () => {
     ).toBe(400);
   });
 
+  it("doctor loads visit timeline; receptionist is 403 (3.5.9)", async () => {
+    const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
+      patientId: "p1",
+      visitDateLocal: "2026-11-18",
+    });
+    expect(opened.status).toBe(201);
+    const list = await staffJson(
+      "doc@example.test",
+      "GET",
+      "/api/staff/patients/p1/visits/timeline",
+    );
+    expect(list.status).toBe(200);
+    const body = (await list.json()) as { data: { visits: { id: string }[] } };
+    expect(body.data.visits.length).toBeGreaterThanOrEqual(1);
+    expect(
+      (await staffJson("rec@example.test", "GET", "/api/staff/patients/p1/visits/timeline")).status,
+    ).toBe(403);
+  });
+
   it("doctor lists incomplete drafts; receptionist is 403 (3.5.8)", async () => {
     const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
       patientId: "p1",

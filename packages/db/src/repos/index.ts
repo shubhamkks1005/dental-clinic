@@ -27,6 +27,7 @@ import { visitsFinaliseRepo } from "./visits-finalise";
 import { visitsGetRepo } from "./visits-get";
 import { visitsOpenRepo } from "./visits-open";
 import { visitsPatchRepo } from "./visits-patch";
+import { visitsTimelineRepo } from "./visits-timeline";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -59,6 +60,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...visitsFinaliseRepo(db, ctx),
       ...visitsPatchRepo(db, ctx),
       ...visitsDraftsRepo(db, ctx),
+      ...visitsTimelineRepo(db, ctx),
     },
     toothEvents: toothEventsRepo(db, ctx),
     visitDiagnoses: visitDiagnosesRepo(db, ctx),
