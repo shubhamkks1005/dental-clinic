@@ -23,7 +23,10 @@
 
 ## CI (.github)
 - .github/workflows/ci.yml - on every push: job "check" (pnpm install --frozen-lockfile, pnpm check) and job "secret-scan" (gitleaks over full history). No deploy yet. Actions pinned by commit SHA
+- .github/workflows/backup.yml - 1.6.3 nightly D1 backup (21:00 UTC ≈ 02:30 IST) + workflow_dispatch: export staging D1, integrity check, age encrypt, B2 upload, Healthchecks ping (secrets/vars in ACCOUNTS.md)
 - .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown
+- scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
+- scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
 
 ## Root
 - package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0

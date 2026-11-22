@@ -1,0 +1,65 @@
+# 1.6.3 nightly D1 backup (staging first). ~02:30 IST = 21:00 UTC.
+# Needs owner secrets (see docs/ACCOUNTS.md). workflow_dispatch for a manual test run.
+name: Backup
+
+on:
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup-staging
+  cancel-in-progress: false
+
+jobs:
+  d1-staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Install age and AWS CLI (B2 S3 API)
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/FiloSottile/age/releases/download/v1.2.1/age-v1.2.1-linux-amd64.tar.gz" \
+            | tar -xz -C /tmp
+          sudo mv /tmp/age/age /usr/local/bin/age
+          age --version
+          aws --version
+
+      - name: Run backup pipeline
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_BACKUP }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          D1_DATABASE_NAME: dental-clinic-staging
+          WRANGLER_ENV: staging
+          AGE_RECIPIENT: ${{ vars.AGE_RECIPIENT }}
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          B2_APPLICATION_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+          B2_BUCKET: ${{ vars.B2_BUCKET }}
+          B2_ENDPOINT: ${{ vars.B2_ENDPOINT }}
+          HEALTHCHECKS_BACKUP_URL: ${{ secrets.HEALTHCHECKS_BACKUP_URL }}
+        run: bash scripts/backup/run.sh
+
+      - name: Signal failure to Healthchecks
+        if: failure()
+        env:
+          HEALTHCHECKS_BACKUP_URL: ${{ secrets.HEALTHCHECKS_BACKUP_URL }}
+        run: |
+          if [ -n "${HEALTHCHECKS_BACKUP_URL:-}" ]; then
+            curl -fsS -m 30 "${HEALTHCHECKS_BACKUP_URL}/fail" || true
+          fi

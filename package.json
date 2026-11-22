@@ -13,7 +13,7 @@
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "test": "pnpm -r test",
+    "test": "pnpm -r test && vitest run scripts/backup/integrity.test.mjs",
     "db:generate": "pnpm --filter @clinic/db db:generate",
     "db:lock": "pnpm --filter @clinic/db db:lock",
     "db:migrate": "pnpm --filter @clinic/worker db:migrate",
