@@ -17,6 +17,7 @@ import { patientsRepo } from "./patients";
 import { patientUpdateRepo } from "./patient-update";
 import { settingsRepo } from "./settings";
 import { staffRepo } from "./staff";
+import { visitsOpenRepo } from "./visits-open";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -42,6 +43,9 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...appointmentsRescheduleRepo(db, ctx),
       ...appointmentsListRepo(db, ctx),
       ...appointmentsSlotsRepo(db, ctx),
+    },
+    visits: {
+      ...visitsOpenRepo(db, ctx),
     },
   };
 }

@@ -62,6 +62,7 @@ describe("table rules (1.2.1)", () => {
       "settings",
       "staff_sessions",
       "users",
+      "visits",
     ]);
   });
 

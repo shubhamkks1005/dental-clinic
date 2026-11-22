@@ -8,11 +8,14 @@ Written: 2026-11-22 (Phase 3 start). Read STATE.md and MAP.md. Fake data only. N
 - Permissions: AUTH_PLAN 4f default; all role rules only in `packages/db/src/permissions.ts`. Receptionist must not receive clinical notes/diagnosis/chart/restricted medical/X-rays/clinical photos (API + tests).
 
 ## Commits this round
-(update as each task lands)
+| Task | Commit |
+|------|--------|
+| 3.1.2 (+ Phase 3 start / skip 3.1.1) | `11b15fe` |
+| 3.2.1 visits | (pending this commit) |
 
 ## New migrations (owner applies; agent did not touch staging)
-- Still through **`0017_appointments_book_ahead.sql`** until Phase 3 adds more.
-- Staging apply if not done: **0006–0017**, then `pnpm deploy:staging`.
+- **`0018_visits.sql`** (3.2.1) — new this phase.
+- Staging apply if not done: **0006–0018**, then `pnpm deploy:staging`.
 
 ## Commands
 ```

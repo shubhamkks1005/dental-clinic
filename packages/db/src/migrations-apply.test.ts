@@ -41,6 +41,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "settings",
       "staff_sessions",
       "users",
+      "visits",
     ]);
   });
 

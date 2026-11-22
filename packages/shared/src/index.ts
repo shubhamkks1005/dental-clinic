@@ -32,3 +32,4 @@ export * from "./staff";
 export * from "./time";
 export * from "./timings";
 export * from "./ulid";
+export * from "./visits";
