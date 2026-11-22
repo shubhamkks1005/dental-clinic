@@ -14,7 +14,7 @@ Written: 2026-11-22 (night). Read STATE.md and MAP.md. Fake data only. Never pus
 | 2.2.4 patient edit | `a4d2793` |
 | 2.2.5 list filters | `cfb4547` |
 | 2.2.7 reg consents | `c3a5a44` |
-| 2.2.8 contact mobile | *(pending)* |
+| 2.2.8 contact mobile | `0fa49b8` |
 
 Prior (still local): 2.1.6–2.2.3 see previous HANDOFF / `git log`.
 
