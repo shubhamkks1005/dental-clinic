@@ -118,6 +118,15 @@ export function addVisitProcedure(
   ).then((r) => r.procedure);
 }
 
+export function finaliseVisit(id: string, version: number) {
+  return api<{
+    visit: { id: string; status: string; snapshotHash: string | null; version: number };
+  }>(`/api/staff/visits/${encodeURIComponent(id)}/finalise`, {
+    method: "POST",
+    body: JSON.stringify({ version }),
+  }).then((r) => r.visit);
+}
+
 export function listRecentVisits(patientId: string, limit = 3) {
   const q = new URLSearchParams({ limit: String(limit) });
   return api<{ visits: VisitRecent[] }>(

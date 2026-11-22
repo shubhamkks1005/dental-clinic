@@ -30,6 +30,18 @@
   gap: 16px;
 }
 
+.visit-body.is-void {
+  text-decoration: line-through;
+  opacity: 0.85;
+}
+
+.visit-finalise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 .visit-main {
   min-width: 0;
 }

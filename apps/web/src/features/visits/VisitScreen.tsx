@@ -10,6 +10,7 @@ import { Tabs } from "../../ui/Tabs";
 import { getVisit, listRecentVisits, type VisitRecent, type VisitSummary } from "./api";
 import { RecentVisitsSide } from "./RecentVisitsSide";
 import { VisitChartTab } from "./VisitChartTab";
+import { VisitFinaliseBar } from "./VisitFinaliseBar";
 import { VisitStubPanel } from "./VisitStubPanel";
 import { VISIT_TAB_IDS, VISIT_TAB_LABEL, type VisitTabId } from "./visit-tabs";
 import { VisitTodayPanel } from "./VisitTodayPanel";
@@ -132,10 +133,14 @@ export function VisitScreen() {
           </p>
         </div>
         <StatusBadge
-          tone={visit.status === "draft" ? "upcoming" : "done"}
+          tone={
+            visit.status === "draft" ? "upcoming" : visit.status === "void" ? "emergency" : "done"
+          }
           label={VISIT_STATUS_LABEL[visit.status]}
         />
       </header>
+
+      <VisitFinaliseBar visit={visit} canEdit={canEditClinical} onFinalised={setVisit} />
 
       <div className="visit-body">
         <div className="visit-main">
