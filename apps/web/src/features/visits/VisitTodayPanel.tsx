@@ -1,33 +1,65 @@
-import type { VisitSummary } from "./api";
+import type { ListItem } from "@clinic/shared";
+import { useEffect, useState } from "react";
+import { getList } from "../lists";
+import type { VisitDiagnosis, VisitSummary } from "./api";
+import { VisitDiagnoses } from "./VisitDiagnoses";
+import { VisitNotesForm } from "./VisitNotesForm";
 
 type Props = {
   visit: VisitSummary;
+  canEdit: boolean;
+  onVisitChange: (visit: VisitSummary) => void;
 };
 
-/**
- * 3.5.2 shell for Today's visit. Complaint / exam / diagnosis fields land in 3.5.3.
- * Keep this panel short so the doctor can work without scrolling on a laptop.
- */
-export function VisitTodayPanel({ visit }: Props) {
+/** 3.5.3 Today's visit tab: notes + diagnoses (S05). */
+export function VisitTodayPanel({ visit, canEdit, onVisitChange }: Props) {
+  const readOnly = !canEdit || visit.status !== "draft";
+  const [diagnoses, setDiagnoses] = useState(visit.diagnoses);
+  const [diagnosisList, setDiagnosisList] = useState<ListItem[]>([]);
+  const [phrases, setPhrases] = useState<ListItem[]>([]);
+
+  useEffect(() => {
+    setDiagnoses(visit.diagnoses);
+  }, [visit]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getList("diagnoses"), getList("quick_phrases")])
+      .then(([dx, ph]) => {
+        if (!cancelled) {
+          setDiagnosisList(dx);
+          setPhrases(ph);
+        }
+      })
+      .catch(() => {
+        /* lists optional for reading a final visit */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  function onSaved(next: VisitSummary) {
+    setDiagnoses(next.diagnoses);
+    onVisitChange(next);
+  }
+
+  function onDiagnosisAdded(row: VisitDiagnosis) {
+    const next = [...diagnoses, row];
+    setDiagnoses(next);
+    onVisitChange({ ...visit, diagnoses: next });
+  }
+
   return (
     <div className="visit-today">
-      <p className="muted small">
-        Notes, diagnosis and advice open here next. Chart, plan and files use the tabs above.
-      </p>
-      <dl className="visit-today-meta">
-        <div>
-          <dt>Date</dt>
-          <dd>{visit.visitDateLocal}</dd>
-        </div>
-        <div>
-          <dt>Complaint</dt>
-          <dd>{visit.chiefComplaint?.trim() || "Not filled yet"}</dd>
-        </div>
-        <div>
-          <dt>Advice</dt>
-          <dd>{visit.advice?.trim() || "Not filled yet"}</dd>
-        </div>
-      </dl>
+      <VisitNotesForm visit={visit} phrases={phrases} readOnly={readOnly} onSaved={onSaved} />
+      <VisitDiagnoses
+        visitId={visit.id}
+        diagnoses={diagnoses}
+        diagnosisList={diagnosisList}
+        readOnly={readOnly}
+        onAdded={onDiagnosisAdded}
+      />
     </div>
   );
 }

@@ -83,7 +83,7 @@ export function VisitScreen() {
     label: VISIT_TAB_LABEL[tabId],
     content:
       tabId === "today" ? (
-        <VisitTodayPanel visit={visit} />
+        <VisitTodayPanel visit={visit} canEdit={canEditClinical} onVisitChange={setVisit} />
       ) : tabId === "chart" ? (
         canViewClinical ? (
           <VisitChartPanel

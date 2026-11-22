@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   openVisitBody,
   parseAddVisitAddendum,
+  parseAddVisitDiagnosis,
   parseFinaliseVisit,
   parseOpenVisit,
+  parsePatchVisit,
   VISIT_STATUSES,
   VISIT_STATUS_LABEL,
 } from "./visits";
@@ -45,5 +47,19 @@ describe("visit parse helpers (3.2.7)", () => {
   it("rejects empty addendum text and missing version", () => {
     expect(parseAddVisitAddendum({ body: " ", reason: "x" }).ok).toBe(false);
     expect(parseFinaliseVisit({}).ok).toBe(false);
+  });
+});
+
+describe("visit patch and diagnosis (3.5.3)", () => {
+  it("parses a draft patch and a free-text diagnosis", () => {
+    expect(parsePatchVisit({ version: 1, chiefComplaint: "Pain", advice: "Rinse warm" }).ok).toBe(
+      true,
+    );
+    expect(parseAddVisitDiagnosis({ freeText: "Caries", toothFdi: 46 }).ok).toBe(true);
+  });
+
+  it("rejects patch without version and diagnosis without text", () => {
+    expect(parsePatchVisit({ chiefComplaint: "Pain" }).ok).toBe(false);
+    expect(parseAddVisitDiagnosis({}).ok).toBe(false);
   });
 });

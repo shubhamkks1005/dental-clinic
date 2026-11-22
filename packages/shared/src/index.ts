@@ -33,6 +33,7 @@ export * from "./time";
 export * from "./timings";
 export * from "./ulid";
 export * from "./visits";
+export * from "./quick-phrases";
 export * from "./teeth";
 export * from "./chart-view";
 export * from "./conditions";

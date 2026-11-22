@@ -2,10 +2,12 @@ import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
 import {
   addVisitAddendum,
+  addVisitDiagnosis,
   finaliseVisit,
   getVisit,
   listRecentVisits,
   openVisit,
+  patchVisit,
 } from "../domain/visits";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
@@ -35,6 +37,21 @@ staffVisits.get("/patients/:id/visits", async (c) => {
 staffVisits.get("/visits/:id", async (c) => {
   const result = await getVisit(signedIn(c).repos, c.req.param("id"));
   return c.json(ok({ visit: result.visit }));
+});
+
+// 3.5.3: draft notes / vitals patch (no audit per save — PLAN exception).
+staffVisits.patch("/visits/:id", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await patchVisit(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ visit: result.visit }));
+});
+
+staffVisits.post("/visits/:id/diagnoses", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await addVisitDiagnosis(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ diagnosis: result.diagnosis }), 201);
 });
 
 staffVisits.post("/visits/:id/finalise", async (c) => {

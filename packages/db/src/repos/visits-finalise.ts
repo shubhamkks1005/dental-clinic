@@ -8,6 +8,7 @@ import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { toothEvents, visitAddenda, visitDiagnoses, visitProcedures, visits } from "../schema";
 import { nowUtcSql } from "../sql";
+// Draft field patches live in visits-patch.ts (3.5.3).
 
 export type FinaliseInput = { version: number };
 
@@ -137,41 +138,6 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
         }),
       ]);
       return { id, visitId, kind, body, reason, recordedAt, recordedBy: ctx.userId };
-    },
-
-    /** Repository guard used by draft patch paths (3.5.5). */
-    async updateDraftFields(
-      visitId: string,
-      version: number,
-      fields: { chiefComplaint?: string | null; examNote?: string | null },
-    ) {
-      assertAllowed(ctx, "clinical.edit");
-      const visit = await loadVisit(db, visitId);
-      if (visit.status !== "draft") {
-        throw new InvalidError("This visit is finalised. Add an addendum instead of editing it.");
-      }
-      if (visit.version !== version) throw new ConflictError();
-
-      await db.batch([
-        db
-          .update(visits)
-          .set({
-            ...fields,
-            version: version + 1,
-            updatedAt: nowUtcSql,
-            updatedBy: ctx.userId,
-          })
-          .where(
-            and(eq(visits.id, visitId), eq(visits.version, version), eq(visits.status, "draft")),
-          ),
-        auditInsertIfChanged(db, ctx, {
-          action: "update",
-          table: "visits",
-          rowId: visitId,
-          before: { version },
-          after: { ...fields, version: version + 1 },
-        }),
-      ]);
     },
   };
 }

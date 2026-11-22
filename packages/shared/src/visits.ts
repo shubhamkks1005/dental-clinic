@@ -78,3 +78,52 @@ export function parseAddVisitAddendum(body: unknown) {
   }
   return { ok: true as const, value: parsed.data };
 }
+
+const noteField = z.string().trim().max(4000).nullable().optional();
+
+// 3.5.3 / 3.5.5: patch only changed draft fields. Version is the one the doctor last saw.
+export const patchVisitBody = z
+  .object({
+    version: z.number({ error: "Reload the visit and try again." }).int().positive(),
+    chiefComplaint: noteField,
+    historyNote: noteField,
+    examNote: noteField,
+    gumCondition: z.string().trim().max(200).nullable().optional(),
+    advice: noteField,
+    nextVisitNote: noteField,
+    bpSystolic: z.number().int().min(50).max(300).nullable().optional(),
+    bpDiastolic: z.number().int().min(20).max(200).nullable().optional(),
+    pulse: z.number().int().min(20).max(250).nullable().optional(),
+  })
+  .strict();
+
+export type PatchVisitInput = z.infer<typeof patchVisitBody>;
+
+export function parsePatchVisit(body: unknown) {
+  const parsed = patchVisitBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const addVisitDiagnosisBody = z
+  .object({
+    listItemId: z.string().min(1).nullable().optional(),
+    freeText: z.string().trim().max(500).nullable().optional(),
+    toothFdi: z.number().int().min(11).max(85).nullable().optional(),
+  })
+  .strict()
+  .refine((v) => Boolean(v.listItemId?.trim()) || Boolean(v.freeText?.trim()), {
+    message: "Enter a diagnosis or pick one from the list.",
+  });
+
+export type AddVisitDiagnosisBody = z.infer<typeof addVisitDiagnosisBody>;
+
+export function parseAddVisitDiagnosis(body: unknown) {
+  const parsed = addVisitDiagnosisBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}

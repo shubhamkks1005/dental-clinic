@@ -92,25 +92,79 @@ a.visit-side-link:focus-visible {
   color: var(--muted, #5b6b7b);
 }
 
-.visit-today-meta {
-  display: grid;
+.visit-today {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visit-notes,
+.visit-dx {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  margin: 12px 0 0;
 }
 
-.visit-today-meta div {
-  display: grid;
+.visit-section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.visit-field {
+  display: flex;
+  flex-direction: column;
   gap: 4px;
+  font-size: 14px;
 }
 
-.visit-today-meta dt {
+.visit-field span {
+  color: var(--muted, #5b6b7b);
+  font-size: 12px;
+}
+
+.visit-field-narrow {
+  max-width: 120px;
+}
+
+.visit-vitals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border, #e3e9ee);
+  border-radius: 12px;
+}
+
+.visit-vitals legend {
+  padding: 0 4px;
   font-size: 12px;
   color: var(--muted, #5b6b7b);
 }
 
-.visit-today-meta dd {
+.visit-notes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.visit-dx-list {
   margin: 0;
-  font-size: 14px;
+  padding-left: 18px;
+}
+
+.visit-dx-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.visit-dx-add .visit-field {
+  flex: 1 1 180px;
 }
 
 .visit-stub-title {

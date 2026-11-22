@@ -11,6 +11,15 @@ export type VisitOpened = {
   version: number;
 };
 
+export type VisitDiagnosis = {
+  id: string;
+  visitId: string;
+  listItemId: string | null;
+  label: string;
+  toothFdi: number | null;
+  sortOrder: number;
+};
+
 export type VisitSummary = VisitOpened & {
   chiefComplaint: string | null;
   historyNote: string | null;
@@ -24,6 +33,7 @@ export type VisitSummary = VisitOpened & {
   finalisedAt: string | null;
   finalisedBy: string | null;
   snapshotHash: string | null;
+  diagnoses: VisitDiagnosis[];
 };
 
 export type VisitRecent = {
@@ -31,6 +41,19 @@ export type VisitRecent = {
   visitDateLocal: string;
   status: "draft" | "final";
   chiefComplaint: string | null;
+};
+
+export type VisitPatchBody = {
+  version: number;
+  chiefComplaint?: string | null;
+  historyNote?: string | null;
+  examNote?: string | null;
+  gumCondition?: string | null;
+  advice?: string | null;
+  nextVisitNote?: string | null;
+  bpSystolic?: number | null;
+  bpDiastolic?: number | null;
+  pulse?: number | null;
 };
 
 export function openVisit(body: {
@@ -48,6 +71,23 @@ export function getVisit(id: string) {
   return api<{ visit: VisitSummary }>(`/api/staff/visits/${encodeURIComponent(id)}`).then(
     (r) => r.visit,
   );
+}
+
+export function patchVisit(id: string, body: VisitPatchBody) {
+  return api<{ visit: VisitSummary }>(`/api/staff/visits/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  }).then((r) => r.visit);
+}
+
+export function addVisitDiagnosis(
+  visitId: string,
+  body: { listItemId?: string | null; freeText?: string | null; toothFdi?: number | null },
+) {
+  return api<{ diagnosis: VisitDiagnosis }>(
+    `/api/staff/visits/${encodeURIComponent(visitId)}/diagnoses`,
+    { method: "POST", body: JSON.stringify(body) },
+  ).then((r) => r.diagnosis);
 }
 
 export function listRecentVisits(patientId: string, limit = 3) {

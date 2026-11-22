@@ -117,6 +117,12 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/visits" && method === "POST") {
     return JSON.stringify({ patientId: "p1", visitDateLocal: "2026-11-22" });
   }
+  if (path === "/api/staff/visits/:id" && method === "PATCH") {
+    return JSON.stringify({ version: 1, chiefComplaint: "Matrix complaint" });
+  }
+  if (path === "/api/staff/visits/:id/diagnoses" && method === "POST") {
+    return JSON.stringify({ freeText: "Matrix caries" });
+  }
   if (path === "/api/staff/visits/:id/finalise" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }

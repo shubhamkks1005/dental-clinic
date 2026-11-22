@@ -128,6 +128,59 @@ describe("staff visit clinical API (3.2.7)", () => {
     expect(body.data.visits.length).toBe(1);
   });
 
+  it("doctor patches notes and adds a diagnosis; receptionist cannot (3.5.3)", async () => {
+    const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
+      patientId: "p1",
+      visitDateLocal: "2026-11-23",
+    });
+    const visitId = ((await opened.json()) as { data: { visit: { id: string; version: number } } })
+      .data.visit.id;
+
+    const patched = await staffJson("doc@example.test", "PATCH", `/api/staff/visits/${visitId}`, {
+      version: 1,
+      chiefComplaint: "Follow-up sensitivity",
+      examNote: "36 occlusal",
+      advice: "Desensitising paste",
+      pulse: 70,
+    });
+    expect(patched.status).toBe(200);
+    const patchBody = (await patched.json()) as {
+      data: { visit: { chiefComplaint: string; version: number; diagnoses: unknown[] } };
+    };
+    expect(patchBody.data.visit.chiefComplaint).toBe("Follow-up sensitivity");
+    expect(patchBody.data.visit.version).toBe(2);
+
+    const dx = await staffJson(
+      "doc@example.test",
+      "POST",
+      `/api/staff/visits/${visitId}/diagnoses`,
+      { freeText: "Dentinal hypersensitivity", toothFdi: 36 },
+    );
+    expect(dx.status).toBe(201);
+
+    const got = await staffJson("doc@example.test", "GET", `/api/staff/visits/${visitId}`);
+    const gotBody = (await got.json()) as {
+      data: { visit: { diagnoses: { label: string }[] } };
+    };
+    expect(gotBody.data.visit.diagnoses.map((d) => d.label)).toContain("Dentinal hypersensitivity");
+
+    expect(
+      (
+        await staffJson("rec@example.test", "PATCH", `/api/staff/visits/${visitId}`, {
+          version: 2,
+          advice: "Nope",
+        })
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await staffJson("rec@example.test", "POST", `/api/staff/visits/${visitId}/diagnoses`, {
+          freeText: "Nope",
+        })
+      ).status,
+    ).toBe(403);
+  });
+
   it("bad open body is 400 for the doctor", async () => {
     expect(
       (await staffJson("doc@example.test", "POST", "/api/staff/visits", { patientId: "p1" }))
