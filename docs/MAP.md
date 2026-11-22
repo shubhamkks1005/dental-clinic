@@ -84,8 +84,9 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents; deny by default applies)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
+- src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
@@ -140,8 +141,8 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
-- src/features/patients/ - 1.1.7 / S02+S15 Patients list: PatientsScreen (DataTable, name/code/mobile; age-at-reg until 2.1.4), api.ts, patients.css; filters (new this month, archived) still 2.2.5
+- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/:id/consents = PatientConsentsScreen (2.1.9 temp until 2.2.2); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
+- src/features/patients/ - PatientsScreen (S02/S15 list; name links to consents); ConsentsPanel + PatientConsentsScreen (2.1.9 when/who/notice version); api.ts, patients.css, consents.css; filters (new this month, archived) still 2.2.5
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -173,9 +174,11 @@
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
 - patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, notes, status (active|archived)
 - patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
+- consents - 2.1.9 append-only consent history (src/schema/consents.ts) - patient_id, type, notice_version, given, given_at, recorded_by, method; withdraw = new row with given=0
 - migrations/0009_patients.sql - creates patients
 - migrations/0010_patient_guardian.sql - adds guardian_name, guardian_relation, guardian_mobile
 - migrations/0011_patient_search.sql - creates patient_search + token indexes
+- migrations/0012_consents.sql - creates consents
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -241,6 +244,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; 2.1.6 token range search, last-4 via mobile_rev)
 - src/repos/patient-duplicates.ts (+ test) - 2.1.7 findWarnings (top 3 soft hits: mobile_name, name_age, secondary_mobile)
 - src/repos/patient-archive.ts (+ test) - 2.1.8 archive(reason)/restore with version check + audit
+- src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

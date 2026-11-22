@@ -56,6 +56,14 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path.endsWith("/restore")) {
     return JSON.stringify({ version: 1 });
   }
+  if (path.endsWith("/consents") && method === "POST") {
+    return JSON.stringify({
+      type: "privacy_notice",
+      noticeVersion: 1,
+      given: true,
+      method: "form",
+    });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

@@ -52,6 +52,7 @@ describe("table rules (1.2.1)", () => {
     expect(tables.map((t) => getTableConfig(t).name).sort()).toEqual([
       "access_log",
       "audit_log",
+      "consents",
       "counters",
       "files",
       "list_items",

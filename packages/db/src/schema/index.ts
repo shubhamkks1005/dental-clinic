@@ -1,5 +1,6 @@
 export { accessLog } from "./access-log";
 export { auditLog } from "./audit-log";
+export { consents } from "./consents";
 export { counters } from "./counters";
 export { files } from "./files";
 export { listItems } from "./list-items";

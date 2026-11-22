@@ -85,6 +85,13 @@
       "when": 1795364852540,
       "tag": "0011_patient_search",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1795365450776,
+      "tag": "0012_consents",
+      "breakpoints": true
     }
   ]
 }

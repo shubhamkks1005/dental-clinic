@@ -7,6 +7,7 @@ import {
   type PageQuery,
 } from "@clinic/shared";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { DataTable, type Column, type TableStatus } from "../../ui/table";
@@ -34,7 +35,9 @@ const COLUMNS: Column<PatientListRow>[] = [
     sortable: true,
     render: (r) => (
       <span className="patients-name">
-        <span className="patients-name-main">{r.fullName}</span>
+        <Link className="patients-name-main" to={`/app/patients/${r.id}/consents`}>
+          {r.fullName}
+        </Link>
         <span className="muted patients-name-meta">
           {ageLabel(r, istDate(new Date()))}
           {GENDER_LABEL[r.gender]}

@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { staffAuth } from "./staff-auth";
+import { staffConsents } from "./staff-consents";
 import { staffLists } from "./staff-lists";
 import { staffPatients } from "./staff-patients";
 import { staffSettings } from "./staff-settings";
@@ -15,3 +16,4 @@ staff.route("/", staffUsers);
 staff.route("/", staffSettings);
 staff.route("/", staffLists);
 staff.route("/", staffPatients);
+staff.route("/", staffConsents);

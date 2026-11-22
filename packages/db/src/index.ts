@@ -42,4 +42,5 @@ export {
   type DuplicateProbe,
   type DuplicateReason,
 } from "./repos/patient-duplicates";
+export { consentsRepo, type NewConsent } from "./repos/consents";
 export type { SettingRow, SettingValue } from "./repos/settings";

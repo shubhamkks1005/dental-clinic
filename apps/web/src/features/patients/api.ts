@@ -1,4 +1,4 @@
-import type { Page, PageQuery } from "@clinic/shared";
+import type { ConsentRow, Page, PageQuery } from "@clinic/shared";
 import { pageQueryParams } from "@clinic/shared";
 import { api } from "../../api/client";
 
@@ -17,4 +17,10 @@ export type PatientListRow = {
 export function listPatients(query: PageQuery): Promise<Page<PatientListRow>> {
   const params = new URLSearchParams(pageQueryParams(query));
   return api<{ page: Page<PatientListRow> }>(`/api/staff/patients?${params}`).then((r) => r.page);
+}
+
+export function getPatientConsents(patientId: string): Promise<ConsentRow[]> {
+  return api<{ consents: ConsentRow[] }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/consents`,
+  ).then((r) => r.consents);
 }

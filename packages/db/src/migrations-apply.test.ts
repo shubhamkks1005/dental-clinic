@@ -31,6 +31,7 @@ describe("migrations on an empty database (1.2.3)", () => {
     expect(tableNames()).toEqual([
       "access_log",
       "audit_log",
+      "consents",
       "counters",
       "files",
       "list_items",

@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 import { useMe, UserCard } from "../features/auth";
 import { MoreScreen } from "../features/more";
-import { PatientsScreen } from "../features/patients";
+import { PatientConsentsScreen, PatientsScreen } from "../features/patients";
 import { PrintRoutes } from "../features/print";
 import { SettingsScreen } from "../features/settings";
 import { StyleGuideScreen } from "../features/style-guide";
@@ -42,6 +42,7 @@ function ShellRoutes() {
       <Routes>
         <Route index element={home} />
         <Route path="patients" element={<PatientsScreen />} />
+        <Route path="patients/:id/consents" element={<PatientConsentsScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
         <Route path="style-guide" element={<StyleGuideScreen />} />
