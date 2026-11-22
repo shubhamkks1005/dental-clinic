@@ -36,6 +36,11 @@ function parseConsentBody(body: unknown):
         given: boolean;
         method: ConsentMethod;
         givenAt: string;
+        visitId?: string | null;
+        planItemId?: string | null;
+        templateKey?: string | null;
+        templateVersion?: number | null;
+        explainedBy?: string | null;
       };
     }
   | { ok: false; message: string } {
@@ -58,6 +63,14 @@ function parseConsentBody(body: unknown):
   if (typeof b.given !== "boolean") {
     return { ok: false, message: "Say whether consent was given (true or false)." };
   }
+  const optStr = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : null);
+  const templateVersion =
+    b.templateVersion === undefined || b.templateVersion === null
+      ? null
+      : Number(b.templateVersion);
+  if (templateVersion !== null && (!Number.isInteger(templateVersion) || templateVersion < 1)) {
+    return { ok: false, message: "Template version must be a positive whole number." };
+  }
   return {
     ok: true,
     value: {
@@ -66,6 +79,11 @@ function parseConsentBody(body: unknown):
       noticeVersion,
       given: b.given,
       givenAt: new Date().toISOString(),
+      visitId: optStr(b.visitId),
+      planItemId: optStr(b.planItemId),
+      templateKey: optStr(b.templateKey),
+      templateVersion,
+      explainedBy: optStr(b.explainedBy),
     },
   };
 }

@@ -158,6 +158,7 @@
 - src/repos/history-feed*.ts (+ test) - 3.5.12–14 merge feed; role sources (receptionist: appointments/consents/scan+consent files only); cursor
 - packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
+- migrations/0031_consent_templates.sql - 3.8.1–3.8.2 consent.templates setting + consents visit/plan/template columns
 - migrations/0030_files_upload_meta.sql - 3.7.2 original_filename, caption, tooth_fdi, taken_on, thumb_key
 - src/repos/files.ts - 3.7.2 file metadata insert/list/get/soft-delete/usage; kind permissions
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)

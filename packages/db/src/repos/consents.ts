@@ -21,6 +21,11 @@ export type NewConsent = {
   method: ConsentMethod;
   /** UTC ISO; defaults to now in the Worker. */
   givenAt: string;
+  visitId?: string | null;
+  planItemId?: string | null;
+  templateKey?: string | null;
+  templateVersion?: number | null;
+  explainedBy?: string | null;
 };
 
 // 2.1.9: append-only consent history per patient. Withdraw = new row with given=false.
@@ -41,6 +46,11 @@ export function consentsRepo(db: Db, ctx: Ctx) {
           recordedByName: users.name,
           method: consents.method,
           createdAt: consents.createdAt,
+          visitId: consents.visitId,
+          planItemId: consents.planItemId,
+          templateKey: consents.templateKey,
+          templateVersion: consents.templateVersion,
+          explainedBy: consents.explainedBy,
         })
         .from(consents)
         .leftJoin(users, eq(users.id, consents.recordedBy))
@@ -76,6 +86,11 @@ export function consentsRepo(db: Db, ctx: Ctx) {
           givenAt: input.givenAt,
           recordedBy: ctx.userId,
           method: input.method,
+          visitId: input.visitId ?? null,
+          planItemId: input.planItemId ?? null,
+          templateKey: input.templateKey ?? null,
+          templateVersion: input.templateVersion ?? null,
+          explainedBy: input.explainedBy ?? null,
           createdBy: ctx.userId,
           updatedBy: ctx.userId,
         }),
@@ -89,6 +104,7 @@ export function consentsRepo(db: Db, ctx: Ctx) {
             noticeVersion: input.noticeVersion,
             given: input.given,
             method: input.method,
+            templateKey: input.templateKey ?? null,
           },
         }),
       ]);

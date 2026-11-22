@@ -1,6 +1,7 @@
-import { PATIENT_FILE_KINDS, type PatientFileKind } from "@clinic/shared";
-import { useState } from "react";
+import { hasActiveConsent, PATIENT_FILE_KINDS, type PatientFileKind } from "@clinic/shared";
+import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { getPatientConsents } from "../patients/api";
 import { uploadPatientFile } from "./api";
 import { prepareImageForUpload } from "./prepare-image";
 
@@ -14,15 +15,37 @@ export function FileUploadForm({ patientId, allowedKinds, onUploaded }: Props) {
   const [kind, setKind] = useState<PatientFileKind>(allowedKinds[0] ?? "scan");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [warn, setWarn] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
   const [tooth, setTooth] = useState("");
+  const [hasPhotoConsent, setHasPhotoConsent] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPatientConsents(patientId)
+      .then((rows) => {
+        if (!cancelled) setHasPhotoConsent(hasActiveConsent(rows, "photo"));
+      })
+      .catch(() => {
+        if (!cancelled) setHasPhotoConsent(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [patientId]);
 
   async function onPick(fileList: FileList | null) {
     const raw = fileList?.[0];
     if (!raw) return;
     setBusy(true);
     setError(null);
+    setWarn(null);
     try {
+      if (kind === "photo" && !hasPhotoConsent) {
+        setWarn(
+          "No photo consent on file. You can still upload for clinical records — record photo consent when you can. Marketing use needs a separate consent (lawyer to confirm).",
+        );
+      }
       const prepared = await prepareImageForUpload(raw, kind);
       await uploadPatientFile(patientId, {
         file: prepared.file,
@@ -87,6 +110,11 @@ export function FileUploadForm({ patientId, allowedKinds, onUploaded }: Props) {
         />
       </label>
       {busy ? <p className="muted">Uploading…</p> : null}
+      {warn ? (
+        <p className="notice" role="status">
+          {warn}
+        </p>
+      ) : null}
       {error ? (
         <p className="notice notice-error" role="alert">
           {error}

@@ -88,6 +88,7 @@ describe("settings store rules (1.5.1)", () => {
       ["appointments.book_ahead_days", 90, 1],
       ["medical_history.stale_months", 6, 1],
       ["chart.view", { facing: "dentist", notation: "fdi" }, 1],
+      ["consent.templates", expect.objectContaining({ extraction: expect.any(Object) }), 1],
     ]);
   });
 });

@@ -1,4 +1,5 @@
 // 2.1.9 consent types. Notice body lives in versioned settings (2.2.7); we store notice_version here.
+// 3.8.2: treatment rows may link visit/plan/template.
 
 export const CONSENT_TYPES = [
   "privacy_notice",
@@ -24,4 +25,17 @@ export type ConsentRow = {
   recordedByName: string | null;
   method: ConsentMethod;
   createdAt: string;
+  visitId: string | null;
+  planItemId: string | null;
+  templateKey: string | null;
+  templateVersion: number | null;
+  explainedBy: string | null;
 };
+
+/** Latest given (not withdrawn) of a type wins. */
+export function hasActiveConsent(rows: ConsentRow[], type: ConsentType): boolean {
+  const ofType = rows.filter((r) => r.type === type);
+  if (ofType.length === 0) return false;
+  // list is newest-first from API; first match is latest.
+  return ofType[0]!.given;
+}

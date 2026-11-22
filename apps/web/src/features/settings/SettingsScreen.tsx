@@ -6,6 +6,7 @@ import { ListEditor } from "../lists";
 import { StaffSettings } from "../staff";
 import { TimingsSettings } from "../timings";
 import { NotBuiltYet, NotFound } from "../../ui/PageMessage";
+import { ConsentTemplatesSettings } from "./ConsentTemplatesSettings";
 import "./settings.css";
 
 type Section = { path: string; label: string; permission: string; screen: ReactNode };
@@ -14,6 +15,12 @@ type Section = { path: string; label: string; permission: string; screen: ReactN
 // whose permission it needs; later tasks add clinic details, doctor, medicines and more.
 const SECTIONS: Section[] = [
   { path: "timings", label: "Timings", permission: "settings.read", screen: <TimingsSettings /> },
+  {
+    path: "consent-templates",
+    label: "Consent templates",
+    permission: "settings.write",
+    screen: <ConsentTemplatesSettings />,
+  },
   // One section per editable list in packages/shared/src/lists.ts (1.5.4): config only.
   ...LIST_KEYS.map((key) => ({
     path: key,

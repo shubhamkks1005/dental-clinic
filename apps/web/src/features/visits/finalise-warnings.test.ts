@@ -62,4 +62,37 @@ describe("finaliseWarnings (3.5.6)", () => {
     expect(w.some((s) => s.includes("treatment plan"))).toBe(true);
     expect(w.some((s) => s.includes("diagnosis"))).toBe(false);
   });
+
+  it("soft-warns extraction without treatment consent (3.8.2)", () => {
+    const w = finaliseWarnings(
+      {
+        ...base,
+        diagnoses: [
+          {
+            id: "dx1",
+            visitId: "v1",
+            listItemId: null,
+            label: "Hopeless",
+            toothFdi: 46,
+            sortOrder: 1,
+          },
+        ],
+        procedures: [
+          {
+            id: "pr1",
+            visitId: "v1",
+            listItemId: "l1",
+            label: "Extraction 46",
+            toothFdi: 46,
+            surfaces: ["whole"],
+            note: null,
+            defaultPaise: 100,
+            sortOrder: 1,
+          },
+        ],
+      },
+      { hasTreatmentConsent: false },
+    );
+    expect(w.some((s) => s.toLowerCase().includes("consent"))).toBe(true);
+  });
 });

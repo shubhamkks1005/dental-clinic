@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { chartViewSchema } from "./chart-view";
+import { consentTemplatesSchema } from "./consent-templates";
 import type { Parsed } from "./staff";
 import { holidaysSchema, timingsSchema } from "./timings";
 
@@ -50,6 +51,8 @@ export const SETTING_SCHEMAS = {
     .max(36, "Use at most 36 months."),
   // 3.4.3: facing + display notation in one setting (storage always FDI).
   "chart.view": chartViewSchema,
+  // 3.8.1: treatment consent templates (English; DRAFT until lawyer/sister confirm).
+  "consent.templates": consentTemplatesSchema,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

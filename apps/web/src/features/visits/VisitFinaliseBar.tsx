@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { hasActiveConsent } from "@clinic/shared";
+import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { getPatientConsents } from "../patients/api";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { finaliseVisit, getVisit, type VisitSummary } from "./api";
 import { finaliseWarnings } from "./finalise-warnings";
@@ -10,15 +12,30 @@ type Props = {
   onFinalised: (visit: VisitSummary) => void;
 };
 
-/** 3.5.6: soft warnings then lock the draft (S05). */
+/** 3.5.6 / 3.8.2: soft warnings then lock the draft (S05). */
 export function VisitFinaliseBar({ visit, canEdit, onFinalised }: Props) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasTreatmentConsent, setHasTreatmentConsent] = useState<boolean | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPatientConsents(visit.patientId)
+      .then((rows) => {
+        if (!cancelled) setHasTreatmentConsent(hasActiveConsent(rows, "treatment"));
+      })
+      .catch(() => {
+        if (!cancelled) setHasTreatmentConsent(undefined);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [visit.patientId]);
 
   if (!canEdit || visit.status !== "draft") return null;
 
-  const warnings = finaliseWarnings(visit);
+  const warnings = finaliseWarnings(visit, { hasTreatmentConsent });
 
   async function confirm() {
     setBusy(true);

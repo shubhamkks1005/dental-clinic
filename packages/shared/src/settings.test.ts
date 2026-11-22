@@ -15,6 +15,7 @@ describe("setting rules (1.5.1)", () => {
       "appointments.book_ahead_days",
       "medical_history.stale_months",
       "chart.view",
+      "consent.templates",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

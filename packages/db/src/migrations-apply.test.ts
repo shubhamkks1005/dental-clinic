@@ -68,6 +68,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "clinic.logo",
       "clinic.name",
       "clinic.timings",
+      "consent.templates",
       "medical_history.stale_months",
       "patient_code.digits",
       "patient_code.prefix",

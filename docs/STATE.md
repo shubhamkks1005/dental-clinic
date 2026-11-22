@@ -1,7 +1,10 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.8.1** next (3.7.8 DICOM skipped baad me). 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.9 skip then 3.10** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.8.3 DONE locally (photo upload soft-warns without photo consent). No migration.
+3.8.2 DONE locally (consents visit/plan/template columns; extraction finalise soft warning). Migration 0031.
+3.8.1 DONE locally (DRAFT consent templates setting + Settings editor). **New migration `0031_consent_templates.sql` — owner applies.**
 3.7.8 SKIPPED (baad me DICOM viewer). Listed under Waiting / DECISIONS.
 3.7.7 DONE locally (soft delete + audit; object kept in storage). No migration.
 3.7.6 DONE locally (storage usage panel; warn ≥7GB / crit ≥9GB from files.bytes sum). No migration.
@@ -140,7 +143,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0030 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0031 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -161,7 +164,7 @@ Waiting on me (owner):
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
-- Staging: apply migrations **0006–0030**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0031**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - **3.4.3**: sister confirm chart facing/notation habit ("haan"); default remains dentist+FDI until then
 - 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
