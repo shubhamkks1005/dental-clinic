@@ -6,6 +6,7 @@ import { listPatientFiles, softDeleteFile } from "./api";
 import { FileGrid } from "./FileGrid";
 import { FileUploadForm } from "./FileUploadForm";
 import { FileViewer } from "./FileViewer";
+import { StorageUsagePanel } from "./StorageUsagePanel";
 import "./files.css";
 
 type Props = { patientId: string };
@@ -84,6 +85,7 @@ export function PatientFilesTab({ patientId }: Props) {
 
   return (
     <div className="patient-files">
+      {canClinical ? <StorageUsagePanel /> : null}
       {storageMsg ? (
         <p className="notice" role="status">
           {storageMsg}

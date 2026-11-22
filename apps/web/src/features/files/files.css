@@ -173,3 +173,19 @@
 .file-actions {
   margin: 0;
 }
+
+.storage-panel {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border, #d0d5dd);
+  background: #f8fafc;
+}
+
+.storage-panel.is-warn {
+  background: #fef9c3;
+  border-color: #ca8a04;
+}
+
+.storage-panel.is-crit {
+  background: #fee2e2;
+  border-color: #b91c1c;
+}

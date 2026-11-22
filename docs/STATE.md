@@ -1,7 +1,11 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.7.5** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.8.1** next (3.7.8 DICOM skipped baad me). 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.7.8 SKIPPED (baad me DICOM viewer). Listed under Waiting / DECISIONS.
+3.7.7 DONE locally (soft delete + audit; object kept in storage). No migration.
+3.7.6 DONE locally (storage usage panel; warn ≥7GB / crit ≥9GB from files.bytes sum). No migration.
+3.7.5 DONE locally (receptionist 403 on X-ray content; scan OK; access_log on clinical view). No migration.
 3.7.4 DONE locally (Files tab S04/S17 grid+viewer+upload; visit Files tab). No migration.
 3.7.3 DONE locally (browser prepare: photo→2000px JPEG 85%, X-ray untouched, thumb 300px). No migration.
 3.7.2 DONE locally (StorageAdapter local/S3/memory; upload+list+content API; aws4fetch; check-storage script). **New migration `0030_files_upload_meta.sql` — owner applies; agent did not apply to staging.**
