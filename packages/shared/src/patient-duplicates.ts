@@ -17,7 +17,10 @@ export const duplicateCheckBody = z.object({
 export type DuplicateCheckBody = z.infer<typeof duplicateCheckBody>;
 
 export function parseDuplicateCheck(body: unknown):
-  | { ok: true; value: DuplicateCheckBody & { mobile: string | null; mobileSecondary: string | null } }
+  | {
+      ok: true;
+      value: DuplicateCheckBody & { mobile: string | null; mobileSecondary: string | null };
+    }
   | { ok: false; message: string } {
   const parsed = duplicateCheckBody.safeParse(body);
   if (!parsed.success) {
