@@ -1,5 +1,6 @@
-import { istDate, istHour, istLongDate } from "@clinic/shared";
+import { addIstDays, istDate, istHour, istLongDate } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { icons } from "../../ui/icons";
 import { Logo } from "../../ui/Logo";
@@ -128,6 +129,18 @@ export function TodayScreen() {
           <button type="button" className="btn btn-primary" onClick={() => setWalkInOpen(true)}>
             Walk-in
           </button>
+          <Link
+            className="btn"
+            to={`/app/print/day?date=${encodeURIComponent(istDate(serverNow))}`}
+          >
+            Print today's list
+          </Link>
+          <Link
+            className="btn"
+            to={`/app/print/day?date=${encodeURIComponent(addIstDays(istDate(serverNow), 1))}`}
+          >
+            Print tomorrow
+          </Link>
         </div>
       ) : null}
 
