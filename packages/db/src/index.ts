@@ -29,4 +29,10 @@ export {
   type StaffUser,
 } from "./repos/auth";
 export { PATIENT_LIST_SORTABLE, patientsRepo, type PatientListRow } from "./repos/patients";
+export {
+  patientDuplicatesRepo,
+  type DuplicateHit,
+  type DuplicateProbe,
+  type DuplicateReason,
+} from "./repos/patient-duplicates";
 export type { SettingRow, SettingValue } from "./repos/settings";

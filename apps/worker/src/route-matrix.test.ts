@@ -47,6 +47,9 @@ function bodyFor(method: string, path: string): string | undefined {
       role: "receptionist",
     });
   }
+  if (path === "/api/staff/patients/duplicate-check") {
+    return JSON.stringify({ fullName: "Matrix Fake", mobile: "9000009999", ageYearsAtReg: 30 });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

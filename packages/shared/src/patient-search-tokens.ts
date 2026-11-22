@@ -52,7 +52,7 @@ export function buildSearchTokens(source: PatientTokenSource): SearchToken[] {
     out.push({ token: t, kind });
   };
 
-  for (const word of nameWords(source.fullName)) add(word, "name");
+  for (const word of patientNameWords(source.fullName)) add(word, "name");
 
   const code = source.code.trim().toLowerCase();
   if (code) {
@@ -66,7 +66,7 @@ export function buildSearchTokens(source: PatientTokenSource): SearchToken[] {
   }
 
   for (const mobile of [source.mobile, source.mobileSecondary]) {
-    const ten = tenDigits(mobile);
+    const ten = tenDigitsFromStored(mobile);
     if (!ten) continue;
     add(ten, "mobile");
     add([...ten].reverse().join(""), "mobile_rev");
@@ -78,7 +78,8 @@ export function buildSearchTokens(source: PatientTokenSource): SearchToken[] {
   return out;
 }
 
-function nameWords(fullName: string): string[] {
+/** Name words for search tokens and duplicate checks (2.1.6 / 2.1.7). */
+export function patientNameWords(fullName: string): string[] {
   return fullName
     .toLowerCase()
     .split(/[\s.]+/)
@@ -86,7 +87,8 @@ function nameWords(fullName: string): string[] {
     .filter((w) => w.length > 0 && !HONORIFICS.has(w));
 }
 
-function tenDigits(stored: string | null): string | null {
+/** Ten national digits from a stored +91… mobile (or null). */
+export function tenDigitsFromStored(stored: string | null): string | null {
   if (!stored) return null;
   const digits = stored.replace(/\D/g, "");
   if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);

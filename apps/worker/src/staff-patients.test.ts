@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "./index";
-import { addStaff, makeEnv, ORIGIN, sessionCookie } from "./testing/app-env";
+import { addStaff, makeEnv, ORIGIN, sameOriginPost, sessionCookie } from "./testing/app-env";
 
 let env: ReturnType<typeof makeEnv>["env"];
 let sqlite: ReturnType<typeof makeEnv>["sqlite"];
@@ -43,5 +43,28 @@ describe("GET /api/staff/patients (1.1.7)", () => {
 
   it("refuses developer", async () => {
     expect((await get("dev@example.test")).status).toBe(403);
+  });
+});
+
+describe("POST /api/staff/patients/duplicate-check (2.1.7)", () => {
+  it("returns soft warnings for doctor", async () => {
+    const cookie = await sessionCookie(env, "doc@example.test");
+    const init = sameOriginPost(cookie);
+    const res = await app.request(
+      `${ORIGIN}/api/staff/patients/duplicate-check`,
+      {
+        ...init,
+        method: "POST",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ fullName: "Other Fake", mobile: "9000009999", ageYearsAtReg: 30 }),
+      },
+      env,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: true; data: { warnings: unknown[] } };
+    expect(body.data.warnings).toEqual([]);
   });
 });
