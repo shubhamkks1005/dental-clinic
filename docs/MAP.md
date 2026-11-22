@@ -8,6 +8,7 @@
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 - docs/AUTH_PLAN.md - staff "Sign in with Google" plan (task 1.3.8): flow, sessions, deny-by-default, staff rules, permission table, dev stub, landing page, owner's Google setup, risks
 - docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
+- docs/PATIENT_HISTORY.md - Unified Patient History spec (History tab on S04/S17; staged Phases 3–6; tasks 3.5.11–15, 4.2.8, 5.3.16, 6.7.x)
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together

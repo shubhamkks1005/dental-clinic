@@ -5,17 +5,20 @@ Nov 21, 2026  ·  @Shubham Kumar
 Summary: pehle ye padho
 Seedhi baat. Aapke clinic ka poora software (staff app, patient portal, SMS aur WhatsApp
 ke reminders, public website) free tools par ban sakta hai, aur pehle saal ka tay kharcha
-lagbhag ₹ 730 hoga (sirf domain). Par ye chhota kaam nahi hai: Phase 0 se 10 me 477 tasks
-aur lagbhag 1,063 ghante ka core kaam hai (119 ghante 'baad me' wale alag). 20 ghante per
-hafte par pilot shuru hone tak lagbhag 49 hafte lagte hain, aur go-live lagbhag 29
-November 2027 ko hota hai (kaam 23 November 2026 se shuru maan kar). Ye meri ganit
+lagbhag ₹ 730 hoga (sirf domain). Par ye chhota kaam nahi hai: Phase 0 se 10 me 487 tasks
+aur lagbhag 1,097 ghante ka core kaam hai (119 ghante 'baad me' wale alag; Unified Patient
+History +34 core, docs/PATIENT_HISTORY.md; pehle 477 tasks / 1,063 h). 20 ghante per
+hafte par pilot shuru hone tak lagbhag 51 hafte lagte hain, aur go-live lagbhag 13
+December 2027 ko hota hai (kaam 23 November 2026 se shuru maan kar; pehle 1,063 /
+29 Nov 2027 tha). Ye meri ganit
 hai, kisi data par nahi, aur Phase 1 ke asli ghante milte hi dobara nikalni hai.
 Meri salaah: pehle staff app. Pehle clinic ka andar ka kaam (Phase 0 se 6, Phase 9, privacy
 ke tasks 8.10 aur 8.2.11, aur Phase 10 ka pilot), portal aur messaging baad me. Isse go-live
-lagbhag 12 hafte pehle, 6 September 2027 ko ho jata hai, aur Phase 7 aur 8 ka baaki hissa
+lagbhag 12 hafte pehle, 20 September 2027 ko ho jata hai (pehle 6 Sep 2027; Cut A / raasta 2
+pre-pilot ab 772 ghante), aur Phase 7 aur 8 ka baaki hissa
 (reminders, portal, public website; 243 ghante) pilot ke review ke baad aata hai. Velocity
-1.0 par wo 11 January 2028 tak poora hota hai, yani poora plan lagbhag usi samay poora
-hota hai jab poore plan ka review (10 January 2028) khatam hota hai. Agar public website
+1.0 par wo 25 January 2028 tak poora hota hai, yani poora plan lagbhag usi samay poora
+hota hai jab poore plan ka review khatam hota hai. Agar public website
 pehle chahiye to uska alag chhota raasta lagbhag 95 ghante ka hai (20 ghante per hafte
 par 5 hafte). Dono raaste aur 10 se 30 ghante per hafte ki tareekhein 'Samay aur mehnat'
 section me hain.
@@ -33,7 +36,8 @@ Dental clinic software: ultra detail build plan
 Page 1 of 150
 
 Phase map
-Phase 0 se 10 ka jod 1,063 core ghante hai. Har phase ke end me ek gate hai: jab tak wo
+Phase 0 se 10 ka jod 1,097 core ghante hai (pehle 1,063; +34 Unified Patient History).
+Har phase ke end me ek gate hai: jab tak wo
 pass na ho, agla phase shuru nahi hota.
 Mukhya faisle (kyun, Tech decisions me)
 Ek hi Cloudflare Worker par sab. Staff app aur patient portal (Vite + React), public
@@ -48,11 +52,11 @@ chalte hain ya nahi)
 1 Foundation: repo, database, login, app shell, backup 102
 2 Patient aur appointment, kagaz ka data 107
 3 Clinical record: tooth chart, visit, treatment plan,
-files, sahmati
-147
-4 Parcha, dawai ki list aur print 66
-5 Billing: bill, receipt aur CA ke sawal 65
-6 Dashboard, reports aur settings 64
+files, sahmati, unified History (Stage 1)
+166
+4 Parcha, dawai ki list aur print (+ History Rx Stage 2) 69
+5 Billing: bill, receipt aur CA ke sawal (+ History $ Stage 3) 68
+6 Dashboard, reports aur settings (+ History polish Stage 4) 73
 7 Reminders aur messaging: SMS, WhatsApp, email 97
 8 Patient portal aur public website 155
 9 Hardening: backup, downtime, security, speed,
@@ -871,8 +875,10 @@ block nahi, kyunki parivaar ek number share karta hai aur judwa bhi hote hain. D
 jab: "Rahul Sharma" aur "Rahul Sarma" same mobile par chetavani aati hai, do bhai
 same mobile par chetavani ke saath save ho jaate hain, alag log par kuch nahi aata.
 2.1.8 Archive aur restore (S). Karan zaruri, default search se chhupa, kabhi bhi wapas.
-Hard delete kahin nahi (Phase 1 ka niyam). Done jab: archived patient ke purane
-appointment ya bill pehle jaise dikhte hain.
+Hard delete kahin nahi (Phase 1 ka niyam). Archive sirf default search se chhupata hai;
+full History doctor (aur permitted receptionist view) se dikhti rahe (docs/PATIENT_HISTORY.md;
+test 3.5.15). Done jab: archived patient ke purane appointment ya bill pehle jaise
+dikhte hain, aur History tab archived patient par poori tarah khulti hai.
 2.1.9 Sahmati ki table (M). consents(patient_id, type, notice_version, given,
 given_at, recorded_by, method) . Types: privacy_notice, sms_reminders, marketing
 (default band); aage treatment, photo (Phase 3) aur portal (Phase 8). Notice ka text
@@ -894,7 +900,8 @@ check, "Aur details" neeche fold me. Enter se save. Save ke baad do bade button:
 se 10 baar 60 second se kam me bhara (asli naap Phase 10 me).
 2.2.2 Patient profile (M). Upar naam, umar aur gender, code, poora mobile, aur alerts ki
 jagah (Phase 3). "Agli appointment" bada dikhe, kyunki patient phone par wahi
-poochhta hai. Tabs: Overview aur Appointments. Visits, Billing, Files, Messages tab
+poochhta hai. Tabs: Overview aur Appointments; Phase 3 me History tab (3.5.11,
+docs/PATIENT_HISTORY.md) Overview ke saath. Visits, Billing, Files, Messages tab
 tab tak chhupe jab tak unka phase na bane (feature flag), sister ko adhoore tab nahi
 dikhne chahiye. Done jab: koi dead button nahi.
 2.2.3 Search box (M). Har page ke upar, shortcut / , 250 ms debounce, upar-neeche
@@ -1286,6 +1293,30 @@ ka timeline tez khulta hai.
 3.5.10 Visit templates (M, baad me). "Scaling", "RCT ka agla step", "Review" jaise
 bundle jo procedure aur advice pehle se bhar de. Done jab: ek click me 4 fields bharte
 hain.
+Unified Patient History (docs/PATIENT_HISTORY.md) — Stage 1, Phase 3 (3.5.9 ke paas)
+3.5.11 History tab shell aur summary strip (M). Patient profile (S04/S17) par Overview
+ke saath History tab; returning patient (kam se kam ek past visit) par default.
+Pinned strip: first/last visit, total visits, active allergies/alerts, outstanding due,
+next appointment. Naya patient: empty state "Add first appointment". Filters strip
+ke neeche (chips baad me polish 6.7.1). Done jab: tab 360/768/1366 par; empty aur
+strip dikhte hain; pnpm check.
+3.5.12 Merged history feed API (L). Ek staff endpoint merged, newest-first feed
+(cursor pagination, 30 entries); indexes; har history view audit_log me (kaun, patient,
+kab). 10 saal fake history <1 s clinic PC. Sources jo abhi maujood nahi wo khaali.
+Done jab: seed patient par pehla page <1 s; cursor "load more"; audit row; tests.
+3.5.13 Stage-1 feed sources (L). Appointments (status chain reschedule), visits
+(complaint/diagnosis/notes/doctor/draft|finalised; amendment entries), treatments
+(tooth, procedure, status, cost), files (thumbnail/type; open viewer), medical/allergy
+changes (old→new), consents given/withdrawn. Row tap → asli screen. Done jab: har
+type ka unit/API test; missing module = khaali, crash nahi.
+3.5.14 History permissions (M). Doctor sab; receptionist read-only: basic, appointments,
+bills/payments/dues (jab Stage 3 aaye), scan aur consent files. API se filter: clinical
+notes, diagnosis, tooth chart, restricted medical, X-rays, clinical photos receptionist
+response me nahi. Medical alerts icon only. Done jab: receptionist call tests assert
+hidden types absent.
+3.5.15 Archived patient history (S). 2.1.8: archive sirf default search se chhupata hai;
+History doctor + permitted receptionist view se poori. Done jab: archived patient
+History khulti hai; acceptance test.
 3.6.1 Chart se plan banana (L). Daant par click, "Plan karo": procedure, estimate
 (default daam, badal sakte ho), phase (1 turant, 2 bimari rokna, 3 marammat, 4
 sundarta; naam editable), sittings. Done jab: 4 items 2 minute se kam me jud jaate
@@ -1496,6 +1527,10 @@ Receptionist sirf issue hua parcha print kar sakti hai. Issue hone par patient p
 hai, dono versions dikhte hain.
 4.2.7 Pichla parcha copy (S). Wahi dawai wapas wale marij ke liye ek click. Done jab:
 copy ke baad naya draft banta hai, purana nahi chhua.
+4.2.8 History feed: prescriptions (M). Unified History (docs/PATIENT_HISTORY.md
+Stage 2): medicines list, date, doctor; row opens original; reprint original date.
+Stage 1 feed tootna nahi. Done jab: issued Rx History me; reprint watermark/log
+4.3.5 ke saath; receptionist clinical Rx detail nahi (3.5.14).
 4.3.1 Print layout engine (L). 1.4.8 ka PrintLayout  poora karo: A4 aur A5, header ya [note: Hindi font and Hindi sample removed, print is English only, see docs/DECISIONS.md]
 footer chalu ya band, margins, page-break ke niyam, parche ke liye ek page ka niyam
 (zyada ho to chetavani). Font: Inter ya system font. Done jab: English sample bina kate, bina
@@ -1695,6 +1730,10 @@ ke saath milta hai.
 thermal printer ho. Done jab: ek test print.
 5.3.15 Plan aur bill ka milan (S). Plan screen par har item ka estimate, bill hua aur mila.
 Done jab: ek item par estimate se zyada bill ka fark dikhta hai.
+5.3.16 History feed: bills aur payments (M). Unified History (docs/PATIENT_HISTORY.md
+Stage 3): bill number, amount, discount, payments, refunds, advances, balance due;
+cancelled/voided bills marked cancelled, still listed. Summary strip outstanding due
+live. Done jab: billing entries feed me; row → asli bill/payment screen; tests.
 Dental clinic software: ultra detail build plan
 Page 44 of 150
 
@@ -1912,6 +1951,16 @@ load. Done jab: report CI me.
 dene wali baatein". Asli data se milan (7 din ka paper register ginti vs dashboard)
 Phase 10 me. Done jab: sister ne screens manzoor kiye.
 6.6.3 Sudhar (M). Top 5 issues. Done jab: dobara dekhne par wahi issues nahi.
+6.7 Unified Patient History polish (docs/PATIENT_HISTORY.md Stage 4)
+6.7.1 History filters polish (M). Chips All/Visits/Treatments/Prescriptions/Bills/Files/
+Appointments; date range; tooth filter (e.g. 36); search procedure/diagnosis text.
+Filters kabhi pinned summary nahi chhupate. Done jab: har filter ka test; 10y patient
+tez.
+6.7.2 Print history summary (M). Doctor only: A4 English — patient details, allergies,
+visits aur treatments table. Receptionist raw export nahi. Done jab: print preview;
+role 403 receptionist.
+6.7.3 Add past record (M). Doctor only: date, text, optional scan; label "Added later"
+for old paper history. Done jab: entry History me; audit; receptionist create 403.
 Dental clinic software: ultra detail build plan
 Page 50 of 150
 
@@ -5851,10 +5900,11 @@ Kisi item ko 'kabhi nahi' se 'sharti' me badalna ho to decision register me naya
 sister ki haan chahiye, aur jahan kanoon ya privacy chhoota ho wahan vakeel ya IDA ki raay
 bhi.
 Samay aur mehnat (timeline)
-Seedhi baat pehle: poora plan (Phase 0 se 10, go-live tak) 1,063 core ghante ka hai, aur
-'baad me' wale 119 ghante uske alawa. Hafte me 20 ghante dene par pilot se pehle ke 981
-ghante lagbhag 49 hafte lete hain: pilot Nov 2027 me shuru, go-live 29 Nov 2027 ke aas-
-paas, aur pilot ka review Jan 2028 me khatam. Ye tab hai jab ghante ke mere anuman sahi
+Seedhi baat pehle: poora plan (Phase 0 se 10, go-live tak) 1,097 core ghante ka hai
+(pehle 1,063; +34 Unified Patient History), aur
+'baad me' wale 119 ghante uske alawa. Hafte me 20 ghante dene par pilot se pehle ke 1,015
+ghante lagbhag 51 hafte lete hain: pilot Dec 2027 me shuru, go-live ~13 Dec 2027 ke aas-
+paas, aur pilot ka review Jan/Feb 2028 me khatam. Ye tab hai jab ghante ke mere anuman sahi
 nikle. Pehli baar ke anuman aksar kam padte hain (meri soch, koi data nahi), isliye neeche
 0.7 aur 0.5 ki tareekhein bhi hain. Aapne hafte ke ghante nahi bataye; 20 mera andaaz hai
 aur sab tareekhein isi par tiki hain, isliye tables me 10 se 30 ghante dikhaye hain.
@@ -5884,31 +5934,31 @@ Phase Tasks Kul ghante Core Baad me Kya hai
 accounts, hardware, spike
 1 49 111 102 9 Foundation: repo, database, login, app shell, backup
 2 47 131 107 24 Patient aur appointment, kagaz ka data
-3 52 165 147 18 Clinical record: tooth chart, visit, treatment plan,
-files, sahmati
-4 29 74 66 8 Parcha, dawai ki list aur print
-5 31 69 65 4 Billing
-6 29 72 64 8 Dashboard, reports aur settings
+3 57 184 166 18 Clinical record: tooth chart, visit, treatment plan,
+files, sahmati, History Stage 1 (+5 tasks / +19h)
+4 30 77 69 8 Parcha, dawai ki list aur print (+ History Rx 4.2.8)
+5 32 72 68 4 Billing (+ History bills 5.3.16)
+6 32 81 73 8 Dashboard, reports, settings (+ History polish 6.7)
 7 43 107 97 10 Reminders aur messaging
 8 70 178 155 23 Patient portal aur public website
 9 36 89 83 6 Hardening: backup, downtime, security, speed,
 documents
 10 54 113 104 9 Pilot aur go-live
-0 se 10 jod 477 1,182 1,063 119 go-live tak
+0 se 10 jod 487 1,216 1,097 119 go-live tak
 11 44 88 88 0 Launch ke baad, ek ek feature, trigger par
 Dental clinic software: ultra detail build plan
 Page 136 of 150
 
-Pilot tab shuru hota hai jab Phase 0 se 9 aur 10.1 ke core ghante (981) ho chuke hon,
-agle Monday ko.
+Pilot tab shuru hota hai jab Phase 0 se 9 aur 10.1 ke core ghante (1,015; pehle 981)
+ho chuke hon, agle Monday ko.
 Pilot ka calendar Phase 10 ki stages table se: shadow 2 hafte, software-lead 1 se 2
 hafte (maine 2 liye), cutover 1 din, hypercare 2 hafte, samiksha 4 hafte. Go-live = pilot
 shuru + 4 hafte. Kisi stage ke ghante developer ki capacity se zyada hon (shadow se
 cutover tak 45 ghante, hypercare 21, samiksha 16) to wo stage lamba hota hai.
 Phase 11 aur 'baad me' ghante is ginti me nahi hain.
 Raasta 1: poora plan, go-live kab
-Go-live ki tareekh, hafte ke ghante aur velocity ke hisaab se (pilot se pehle 981 core
-ghante):
+Go-live ki tareekh, hafte ke ghante aur velocity ke hisaab se (pilot se pehle 1,015 core
+ghante; pehle 981):
 20 ghante per hafta par samiksha ka ant go-live ke 6 hafte baad hai: velocity 1.0 par 10 Jan
 2028, 0.7 par 05 Jun 2028, 0.5 par 30 Dec 2028. 10 ghante per hafta par velocity 1.0 me bhi
 go-live Nov 2028 tak jaata hai; wahan raasta 2 lagbhag zaruri ho jaata hai, ya hafte ke
@@ -5919,7 +5969,8 @@ dashboard), 8.10 (privacy notice aur kanooni taiyari), 8.2.11 (patient ke anurod
 portal ka form baad me, tab tak anurodh phone ya kagaz se), Phase 9 poora (backup,
 security, documents) aur Phase 10 ka pilot. Baad me aata hai: Phase 7 (reminders aur
 messaging) aur Phase 8 ka baaki hissa (portal aur public website). Ghante: pilot se pehle
-738, pilot ke 82, aur baad ke 243; teeno milakar wahi 1,063.
+772 (Cut A / raasta 2; pehle 738, +34 History Stages 1–4 in Phases 3–6), pilot ke 82, aur
+baad ke 243; teeno milakar wahi 1,097.
 Hafte ke
 ghante
 Velocity 1.5
