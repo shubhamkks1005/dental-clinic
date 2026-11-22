@@ -15,6 +15,7 @@ export * from "./free-slots";
 export * from "./lists";
 export * from "./medicines";
 export * from "./prescriptions";
+export * from "./print";
 export * from "./mobile";
 export * from "./money";
 export * from "./paging";

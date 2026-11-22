@@ -116,6 +116,18 @@
   color: var(--muted);
 }
 
+/* 4.3.5 reprint mark — plain text, works on a cheap B&W clinic printer. */
+.print-duplicate {
+  margin: 0 0 2mm;
+  padding: 1mm 2mm;
+  border: 0.4mm solid #111;
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 /* Screen: the sheet sits on the page background like paper. */
 @media screen {
   .print-page {

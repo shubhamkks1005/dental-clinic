@@ -89,6 +89,14 @@ describe("settings store rules (1.5.1)", () => {
       ["medical_history.stale_months", 6, 1],
       ["chart.view", { facing: "dentist", notation: "fdi" }, 1],
       ["consent.templates", expect.objectContaining({ extraction: expect.any(Object) }), 1],
+      ["clinic.address", "Sample address — set in Settings", 1],
+      ["clinic.phone", "0000000000", 1],
+      ["clinic.tagline", "Family dental care", 1],
+      ["doctor.name", "Dr Sample", 1],
+      ["doctor.qualifications", "BDS", 1],
+      ["doctor.speciality", "Dental surgeon", 1],
+      ["doctor.registration_no", "", 1],
+      ["medicines.list_reviewed", null, 1],
     ]);
   });
 });

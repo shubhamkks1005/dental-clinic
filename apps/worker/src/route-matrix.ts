@@ -349,6 +349,16 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/prescriptions/copy-previous",
     access: { kind: "permission", action: "prescriptions.write" },
   },
+  {
+    method: "POST",
+    path: "/api/staff/print-log",
+    access: { kind: "permission", action: "patients.view" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/print-log/preview",
+    access: { kind: "permission", action: "patients.view" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

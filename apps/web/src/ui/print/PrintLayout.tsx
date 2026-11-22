@@ -11,15 +11,25 @@ export function PrintLayout({
   clinic,
   children,
   footer,
+  duplicate,
+  duplicateDate,
 }: {
   size: PaperSize;
   header: HeaderMode;
   clinic: ClinicHeader;
   children: ReactNode;
   footer?: ReactNode;
+  /** 4.3.5 reprint watermark */
+  duplicate?: boolean;
+  duplicateDate?: string;
 }) {
   return (
     <article className={`print-page print-${size.toLowerCase()}`}>
+      {duplicate ? (
+        <p className="print-duplicate" aria-label="Duplicate copy">
+          Duplicate copy{duplicateDate ? ` · ${duplicateDate}` : ""}
+        </p>
+      ) : null}
       {header === "print" ? <HeaderBand clinic={clinic} /> : <div className="print-letterhead" />}
       <div className="print-body">{children}</div>
       {footer && <footer className="print-footer">{footer}</footer>}

@@ -239,6 +239,20 @@
       "when": 1795461000000,
       "tag": "0033_prescriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "6",
+      "when": 1795462000000,
+      "tag": "0034_clinic_letterhead_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1795463000000,
+      "tag": "0035_print_log",
+      "breakpoints": true
     }
   ]
 }

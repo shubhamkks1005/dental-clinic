@@ -19,3 +19,4 @@ export { alerts } from "./alerts";
 export { planItems, planItemVersions } from "./plan-items";
 export { visitAddenda } from "./visit-addenda";
 export { prescriptions, prescriptionItems } from "./prescriptions";
+export { printLog } from "./print-log";

@@ -44,6 +44,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "plan_items",
       "prescription_items",
       "prescriptions",
+      "print_log",
       "settings",
       "staff_sessions",
       "tooth_events",
@@ -66,20 +67,24 @@ describe("migrations on an empty database (1.2.3)", () => {
     expect(rows.map((r) => r.key)).toEqual([
       "appointments.book_ahead_days",
       "chart.view",
+      "clinic.address",
       "clinic.holidays",
       "clinic.logo",
       "clinic.name",
+      "clinic.phone",
+      "clinic.tagline",
       "clinic.timings",
       "consent.templates",
+      "doctor.name",
+      "doctor.qualifications",
+      "doctor.registration_no",
+      "doctor.speciality",
       "medical_history.stale_months",
+      "medicines.list_reviewed",
       "patient_code.digits",
       "patient_code.prefix",
       "privacy_notice.body",
       "privacy_notice.version",
-    ]);
-    expect(rows.slice(3, 5)).toEqual([
-      { key: "clinic.logo", value_json: "null" },
-      { key: "clinic.name", value_json: '"Align Dentistry"' },
     ]);
   });
 

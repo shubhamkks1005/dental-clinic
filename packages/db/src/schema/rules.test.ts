@@ -65,6 +65,7 @@ describe("table rules (1.2.1)", () => {
       "plan_items",
       "prescription_items",
       "prescriptions",
+      "print_log",
       "settings",
       "staff_sessions",
       "tooth_events",

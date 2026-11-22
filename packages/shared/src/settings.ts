@@ -53,6 +53,35 @@ export const SETTING_SCHEMAS = {
   "chart.view": chartViewSchema,
   // 3.8.1: treatment consent templates (English; DRAFT until lawyer/sister confirm).
   "consent.templates": consentTemplatesSchema,
+  // 4.3.2 letterhead (clinic profile; 1.5.2 deferred pieces live here for print).
+  "clinic.address": z
+    .string({ error: "Enter the clinic address." })
+    .trim()
+    .min(1, "Enter the clinic address.")
+    .max(200),
+  "clinic.phone": z
+    .string({ error: "Enter the clinic phone." })
+    .trim()
+    .min(1, "Enter the clinic phone.")
+    .max(40),
+  "clinic.tagline": z.string().trim().max(80).optional().default(""),
+  "doctor.name": z
+    .string({ error: "Enter the doctor's name." })
+    .trim()
+    .min(1, "Enter the doctor's name.")
+    .max(80),
+  "doctor.qualifications": z.string().trim().max(120).optional().default(""),
+  "doctor.speciality": z.string().trim().max(80).optional().default(""),
+  "doctor.registration_no": z.string().trim().max(40).optional().default(""),
+  // 4.5.4: doctor acknowledged the medicines list version.
+  "medicines.list_reviewed": z
+    .object({
+      at: z.string().min(1),
+      byUserId: z.string().min(1),
+      byName: z.string().min(1),
+      note: z.string().max(200).optional().default(""),
+    })
+    .nullable(),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

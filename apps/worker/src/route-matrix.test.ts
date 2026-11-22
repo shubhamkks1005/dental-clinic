@@ -19,6 +19,7 @@ function concrete(path: string): string {
     .replace("/lists/:key/:id", "/lists/referral_sources/id-1")
     .replace("/lists/:key", "/lists/referral_sources")
     .replace("/users/:id/", "/users/rec-1/")
+    .replace("/print-log/preview", "/print-log/preview?kind=day_list&id=x")
     .replace(/:[^/]+/g, "x");
 }
 
@@ -175,6 +176,9 @@ function bodyFor(method: string, path: string): string | undefined {
   }
   if (path === "/api/staff/prescriptions/copy-previous" && method === "POST") {
     return JSON.stringify({ patientId: "p1" });
+  }
+  if (path === "/api/staff/print-log" && method === "POST") {
+    return JSON.stringify({ documentKind: "day_list", documentId: "day-2026-11-23" });
   }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
