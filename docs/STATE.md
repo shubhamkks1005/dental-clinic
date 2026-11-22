@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; **Phase 2 gate: passed with exceptions**. Do not start Phase 3 until owner says so. Skip 2.2.6 / 2.3.9–2.3.11 / 2.4.5–2.4.6 (baad me). Phase 2 gate not yet reached.
-PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.5.15 (P3 +19h), 4.2.8 (P4 +3h), 5.3.16 (P5 +3h), 6.7.1–6.7.3 (P6 +9h) = **+34 core h**. Totals: core **1,063 → 1,097**; tasks 477 → 487; Kul 1,182 → 1,216. **Cut A (raasta 2) pre-pilot: 738 → 772 (yes, changes).** Full pre-pilot 981 → 1,015. No History feature code yet.
+Phase: 3. Current task: **3.2.1**. 3.1.1 skipped (Waiting on me). 3.1.2 DONE (DECISIONS paragraph: open-dentist ideas only; custom SVG chart, not react-odontogram). Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.1.2 DONE locally (reference note in DECISIONS.md). No migration.
 2.4.7 DONE locally (Today + Appointments auto-refresh every 60s via useVisibleInterval; pauses when tab hidden). No new migration.
 2.4.4 DONE locally (A4 day list at /app/print/day?date=; Print today/tomorrow from Today; browser print). Printer test on clinic printer waiting on owner. No new migration.
 2.4.3 DONE locally (Today wired to GET day appointments; status one-click; walk-in dialog; next/waiting/call-list no-shows; doctor Now+Next3; collection stat deferred to Phase 5). No new migration. Screens: S01/S14.
@@ -34,7 +35,7 @@ PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: owner clears Phase 2 gate exceptions / Waiting on me; then Phase 3 when owner says. Agent stop.
+Next: 3.2.1 visit schema → rest of Phase 3 in order → Phase 3 gate. Do not start Phase 4.
 
 
 ## Phase 2 gate (from PLAN.md + owner checklist)
@@ -93,9 +94,11 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
 - Staging: apply migrations **0006–0017**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
+- DRAFT lawyer texts: any consent/under-18 wording marked "DRAFT - lawyer to confirm" in app (list when added)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist
 - 1.5.3 real clinic hours; 1.4.8 printer; 1.3.4 permissions; 1.4.2/1.4.4 keyboard; 1.4.7 wifi-off; 1.4.3 receptionist PC; 1.3.5 securityheaders; 1.3.1 Zero Trust card

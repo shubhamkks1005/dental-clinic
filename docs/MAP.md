@@ -7,7 +7,7 @@
 - docs/design/align-dentistry-screens.pdf - mockups: p1 note, p2-3 DESIGN.md copy, then one screen per page with caption S01-S19 (screen N is on page N+3). Reference only; a newer PDF from the owner replaces it and becomes the source of truth
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
 - docs/AUTH_PLAN.md - staff "Sign in with Google" plan (task 1.3.8): flow, sessions, deny-by-default, staff rules, permission table, dev stub, landing page, owner's Google setup, risks
-- docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan
+- docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan; 3.1.2 open-dentist / react-odontogram takeaways
 - docs/PATIENT_HISTORY.md - Unified Patient History spec (History tab on S04/S17; staged Phases 3–6; tasks 3.5.11–15, 4.2.8, 5.3.16, 6.7.x)
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
