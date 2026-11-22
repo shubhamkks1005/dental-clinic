@@ -12,28 +12,50 @@
 }
 
 .badge-done {
-  color: #14532d;
-  background: #dcfce7;
+  color: var(--success-text);
+  background: var(--success-bg);
 }
 
 .badge-in-room {
-  color: #1e3a8a;
-  background: #e0e7ff;
+  color: var(--info-text);
+  background: var(--info-bg);
 }
 
 .badge-waiting {
-  color: #78350f;
-  background: #fef3c7;
+  color: var(--warning-text);
+  background: var(--warning-bg);
 }
 
 .badge-emergency {
-  color: #9a3412;
-  background: #ffe4d6;
+  color: var(--danger-text);
+  background: var(--danger-bg);
 }
 
 .badge-upcoming {
-  color: #334155;
-  background: #edf1f4;
+  color: var(--neutral-text);
+  background: var(--neutral-bg);
+}
+
+/* One-line feedback under a form or at the top of a card. */
+.notice {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius-control);
+  overflow-wrap: anywhere;
+}
+
+.notice-ok {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+
+.notice-warning {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+
+.notice-error {
+  color: var(--danger-text);
+  background: var(--danger-bg);
 }
 
 .patient-no {
@@ -58,7 +80,7 @@
 }
 
 .stat-note-good {
-  color: #14532d;
+  color: var(--success-text);
   font-weight: 600;
 }
 

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 import { useMe, UserCard } from "../features/auth";
 import { MoreScreen } from "../features/more";
 import { SettingsScreen } from "../features/settings";
+import { StyleGuideScreen } from "../features/style-guide";
 import { TodayScreen } from "../features/today";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
@@ -30,6 +31,7 @@ export function StaffRoutes() {
         <Route index element={home} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
+        <Route path="style-guide" element={<StyleGuideScreen />} />
         {NOT_BUILT.map((path) => (
           <Route key={path} path={path} element={<NotBuiltYet />} />
         ))}

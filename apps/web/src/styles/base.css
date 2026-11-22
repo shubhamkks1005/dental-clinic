@@ -23,6 +23,21 @@
   --border: #e3e9ee;
   --text: #0e1b2b;
   --muted: #5b6b7b;
+  --teal: #0b7a75;
+  /* Light text on the navy sidebar and hero. */
+  --on-navy: #dbe4f3;
+  --on-navy-muted: #c7d3e8;
+  /* Status and feedback pairs (text on background), DESIGN.md "Status". Always with a word. */
+  --success-text: #14532d;
+  --success-bg: #dcfce7;
+  --info-text: #1e3a8a;
+  --info-bg: #e0e7ff;
+  --warning-text: #78350f;
+  --warning-bg: #fef3c7;
+  --danger-text: #9a3412;
+  --danger-bg: #ffe4d6;
+  --neutral-text: #334155;
+  --neutral-bg: #edf1f4;
   --radius-card: 16px;
   --radius-control: 12px;
   --control-h: 48px;
@@ -132,6 +147,12 @@ input {
 
 .btn-primary:hover {
   background: var(--blue-hover);
+}
+
+/* Disabled controls are exempt from the contrast rule; the faded look says "wait". */
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .btn-compact {

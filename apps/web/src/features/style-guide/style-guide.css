@@ -1,0 +1,106 @@
+/* Style guide page (1.4.1). Phone first; swatches in columns from 768px. */
+.guide {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s5) var(--s4) var(--s6);
+}
+
+.guide-card {
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+  padding: var(--s4);
+}
+
+.guide-card h3 {
+  margin: var(--s2) 0 0;
+  font-size: 14px;
+}
+
+.swatches {
+  display: grid;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.swatch-chip {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.swatch-text {
+  display: grid;
+  min-width: 0;
+}
+
+.status-pair {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius-control);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.guide-title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.guide-card-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.guide-money {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.guide-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.guide-field {
+  display: grid;
+  gap: var(--s1);
+  max-width: 24rem;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .guide {
+    padding: var(--s5) var(--s6) var(--s6);
+  }
+
+  .guide-card {
+    padding: var(--s5);
+  }
+
+  .swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1366px) {
+  .guide {
+    padding-top: 0;
+  }
+
+  .swatches {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

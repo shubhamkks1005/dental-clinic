@@ -38,5 +38,5 @@
 
 .user-problem {
   flex-basis: 100%;
-  color: #9a3412;
+  color: var(--danger-text);
 }

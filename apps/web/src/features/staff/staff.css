@@ -12,21 +12,8 @@
   margin-top: var(--s1);
 }
 
-.notice {
+.settings-panel > .notice {
   margin-top: var(--s4);
-  padding: var(--s3) var(--s4);
-  border-radius: var(--radius-control);
-  overflow-wrap: anywhere;
-}
-
-.notice-ok {
-  color: #14532d;
-  background: #dcfce7;
-}
-
-.notice-error {
-  color: #9a3412;
-  background: #ffe4d6;
 }
 
 .staff-list {

@@ -95,7 +95,7 @@
   }
 
   .nav-tagline {
-    color: #c7d3e8;
+    color: var(--on-navy-muted);
   }
 
   .nav-list {
@@ -105,7 +105,7 @@
   .nav-list a {
     border: 0;
     border-radius: var(--radius-control);
-    color: #dbe4f3;
+    color: var(--on-navy);
   }
 
   .nav-list a:hover {
@@ -123,7 +123,7 @@
     padding: var(--s3);
     border-radius: var(--radius-control);
     background: rgb(255 255 255 / 8%);
-    color: #dbe4f3;
+    color: var(--on-navy);
   }
 
   .nav-user .user-name {
@@ -143,6 +143,6 @@
   }
 
   .nav-user .user-problem {
-    color: #ffe4d6;
+    color: var(--danger-bg);
   }
 }

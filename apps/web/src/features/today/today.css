@@ -34,7 +34,7 @@
 }
 
 .hero-date {
-  color: #c7d3e8;
+  color: var(--on-navy-muted);
 }
 
 .hero-search {

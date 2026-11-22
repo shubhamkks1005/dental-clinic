@@ -100,8 +100,10 @@
 - src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
-- src/styles/base.css - DESIGN.md tokens (colours, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn, .input, .card
-- src/ui/ui.css - status badges (5 tones), patient number chip, stat card, logo tile, page message
+- src/styles/base.css - DESIGN.md tokens (brand, neutrals, teal, on-navy text, success/info/warning/danger/neutral text+bg pairs, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn (+ disabled), .input, .card. Feature CSS uses these variables, never raw hex
+- src/styles/contrast.test.ts - 1.4.1: reads base.css and checks every text/background pair the screens use is at least 4.5:1 (WCAG AA)
+- src/ui/ui.css - status badges (5 tones), notices (ok, warning, error), patient number chip, stat card, logo tile, page message
+- src/features/style-guide/ - 1.4.1 style guide at /app/style-guide (not in the menu, no data): colour swatches read live from base.css, type scale, buttons, badges, chip, input, notices
 - src/ui/icons.tsx - small inline stroke icons (no icon library)
 - src/ui/Logo.tsx - placeholder tooth mark until the owner uploads a logo
 - src/ui/StatusBadge.tsx - status word + DESIGN.md colours (never colour alone)

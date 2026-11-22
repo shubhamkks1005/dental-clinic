@@ -58,7 +58,7 @@
 }
 
 .next-label {
-  color: #c7d3e8;
+  color: var(--on-navy-muted);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -74,7 +74,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s2);
-  color: #dbe4f3;
+  color: var(--on-navy);
 }
 
 .next-send {
