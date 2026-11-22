@@ -57,3 +57,17 @@ export const MEDICAL_ANSWER_LABEL: Record<MedicalAnswer, string> = {
   no: "No",
   unknown: "Not sure",
 };
+
+/** True when recordedAt is older than staleMonths (calendar months). Null history is stale. */
+export function isMedicalHistoryStale(
+  recordedAt: string | null | undefined,
+  staleMonths: number,
+  now: Date = new Date(),
+): boolean {
+  if (!recordedAt) return true;
+  const recorded = new Date(recordedAt);
+  if (Number.isNaN(recorded.getTime())) return true;
+  const cutoff = new Date(now.getTime());
+  cutoff.setUTCMonth(cutoff.getUTCMonth() - staleMonths);
+  return recorded.getTime() < cutoff.getTime();
+}

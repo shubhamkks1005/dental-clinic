@@ -1,10 +1,12 @@
 import type { Repos } from "@clinic/db";
-import { parseSaveMedicalHistory } from "@clinic/shared";
+import { isMedicalHistoryStale, parseSaveMedicalHistory } from "@clinic/shared";
 
 export async function getMedicalHistory(repos: Repos, patientId: string) {
   const history = await repos.medicalHistory.latest(patientId);
   const alerts = await repos.medicalHistory.listAlerts(patientId);
-  return { ok: true as const, history, alerts };
+  const staleMonths = (await repos.settings.get("medical_history.stale_months")).value as number;
+  const stale = isMedicalHistoryStale(history?.recordedAt, staleMonths);
+  return { ok: true as const, history, alerts, stale, staleMonths };
 }
 
 export async function saveMedicalHistory(repos: Repos, patientId: string, body: unknown) {

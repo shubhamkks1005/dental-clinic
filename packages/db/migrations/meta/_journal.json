@@ -183,6 +183,13 @@
       "when": 1795450000000,
       "tag": "0025_medical_history_checklist_seed",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "6",
+      "when": 1795451000000,
+      "tag": "0026_medical_history_stale_months",
+      "breakpoints": true
     }
   ]
 }

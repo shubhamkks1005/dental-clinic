@@ -86,6 +86,7 @@ describe("settings store rules (1.5.1)", () => {
       ["privacy_notice.version", 1, 1],
       ["privacy_notice.body", expect.stringContaining("PLACEHOLDER privacy notice"), 1],
       ["appointments.book_ahead_days", 90, 1],
+      ["medical_history.stale_months", 6, 1],
     ]);
   });
 });

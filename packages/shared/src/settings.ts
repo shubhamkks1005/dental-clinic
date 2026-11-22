@@ -41,6 +41,12 @@ export const SETTING_SCHEMAS = {
     .int("Use a whole number.")
     .min(1, "Use at least 1 day.")
     .max(365, "Use at most 365 days."),
+  // 3.3.4: ask "Any change in medical history?" when last review is older than this.
+  "medical_history.stale_months": z
+    .number({ error: "Enter a whole number." })
+    .int("Use a whole number.")
+    .min(1, "Use at least 1 month.")
+    .max(36, "Use at most 36 months."),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

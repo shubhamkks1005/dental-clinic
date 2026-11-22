@@ -21,9 +21,12 @@ export type AlertRow = {
 export type AlertFlags = { hasAlert: boolean; hasRestricted: boolean };
 
 export function getMedicalHistory(patientId: string) {
-  return api<{ history: MedicalHistoryVersion | null; alerts: AlertRow[] }>(
-    `/api/staff/patients/${encodeURIComponent(patientId)}/medical-history`,
-  );
+  return api<{
+    history: MedicalHistoryVersion | null;
+    alerts: AlertRow[];
+    stale: boolean;
+    staleMonths: number;
+  }>(`/api/staff/patients/${encodeURIComponent(patientId)}/medical-history`);
 }
 
 export function saveMedicalHistory(patientId: string, items: MedicalHistoryItem[]) {

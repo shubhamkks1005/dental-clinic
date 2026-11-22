@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.3.4** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.3.3 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.4.1** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.3.4 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.3.4 DONE locally (stale_months setting default 6; GET medical-history returns stale; Overview prompt Yes/No; visit-open prompt also wires in 3.5.1). **New migration `0026_medical_history_stale_months.sql` — owner applies; agent did not apply to staging.**
 3.3.3 DONE locally (restricted alerts: receptionist API flags only / 403 on medical-history; doctor listAlerts writes access_log). No new migration.
 3.3.2 DONE locally (AlertsStrip on profile S04/S17 + Today/day appointment cards icon-only; day API adds alertFlags; visit-screen strip waits for 3.5.2 layout). No new migration.
 3.3.1 DONE locally (medical history checklist form on patient Overview S04/S17; list `medical_history_items` + allergens; API GET/POST + alert-flags; receptionist 403 on clinical history). **New migration `0025_medical_history_checklist_seed.sql` — owner applies; agent did not apply to staging.**
@@ -45,7 +46,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.3.4 stale medical-history prompt → chart → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.4.1 chart UI spike decision → 3.4.2+ chart → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
 
 
 ## Phase 2 gate (from PLAN.md + owner checklist)
@@ -89,7 +90,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0025 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0026 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -106,7 +107,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 Waiting on me (owner):
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
-- Staging: apply migrations **0006–0025**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0026**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - DRAFT lawyer texts: any consent/under-18 wording marked "DRAFT - lawyer to confirm" in app (list when added)

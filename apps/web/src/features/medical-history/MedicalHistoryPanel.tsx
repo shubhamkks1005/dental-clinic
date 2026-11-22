@@ -1,7 +1,12 @@
 import { istDateTime } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
-import { getMedicalHistory, type AlertRow, type MedicalHistoryVersion } from "./api";
+import {
+  getMedicalHistory,
+  saveMedicalHistory,
+  type AlertRow,
+  type MedicalHistoryVersion,
+} from "./api";
 import { MedicalHistoryForm } from "./MedicalHistoryForm";
 import "./medical-history.css";
 
@@ -14,8 +19,11 @@ type Props = {
 export function MedicalHistoryPanel({ patientId, gender, canEdit }: Props) {
   const [history, setHistory] = useState<MedicalHistoryVersion | null | undefined>(undefined);
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
+  const [stale, setStale] = useState(false);
+  const [staleMonths, setStaleMonths] = useState(6);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const [confirming, setConfirming] = useState(false);
 
   const load = useCallback(() => {
     setError(null);
@@ -23,6 +31,8 @@ export function MedicalHistoryPanel({ patientId, gender, canEdit }: Props) {
       .then((res) => {
         setHistory(res.history);
         setAlerts(res.alerts);
+        setStale(res.stale);
+        setStaleMonths(res.staleMonths);
       })
       .catch((err: unknown) => {
         setError(
@@ -73,10 +83,46 @@ export function MedicalHistoryPanel({ patientId, gender, canEdit }: Props) {
       )}
       {history === undefined && !error && <p className="muted">Loading…</p>}
       {history === null && !error && <p className="muted">No medical history recorded yet.</p>}
+      {history && stale && canEdit && (
+        <div className="mh-stale" role="status">
+          <p>
+            Medical history is older than {staleMonths} months. Any change since the last review?
+          </p>
+          <div className="mh-actions">
+            <button type="button" className="btn btn-primary" onClick={() => setEditing(true)}>
+              Yes — update
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={confirming}
+              onClick={async () => {
+                setConfirming(true);
+                setError(null);
+                try {
+                  await saveMedicalHistory(patientId, history.items);
+                  load();
+                } catch (err: unknown) {
+                  setError(
+                    err instanceof ApiError
+                      ? err.message
+                      : "Could not confirm. Check the connection, then try again.",
+                  );
+                } finally {
+                  setConfirming(false);
+                }
+              }}
+            >
+              {confirming ? "Saving…" : "No change"}
+            </button>
+          </div>
+        </div>
+      )}
       {history && (
         <>
           <p className="muted mh-meta">
             Version {history.versionNo} · Last review {istDateTime(new Date(history.recordedAt))}
+            {stale ? " · Needs review" : ""}
           </p>
           {alerts.length > 0 && (
             <ul className="mh-alert-list">
