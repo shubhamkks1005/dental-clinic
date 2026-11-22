@@ -1,7 +1,9 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.4.1** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.3.4 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.4.3** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.4.2 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.4.2 DONE locally (custom SVG ToothChart: permanent/primary/mixed rows, 5 surfaces + whole, keyboard arrows+Enter, aria labels; playground on /app/style-guide). No migration.
+3.4.1 DONE locally (chart UI spike → custom SVG; table in DECISIONS.md). No migration. Sister facing/notation still Waiting (3.4.3).
 3.3.4 DONE locally (stale_months setting default 6; GET medical-history returns stale; Overview prompt Yes/No; visit-open prompt also wires in 3.5.1). **New migration `0026_medical_history_stale_months.sql` — owner applies; agent did not apply to staging.**
 3.3.3 DONE locally (restricted alerts: receptionist API flags only / 403 on medical-history; doctor listAlerts writes access_log). No new migration.
 3.3.2 DONE locally (AlertsStrip on profile S04/S17 + Today/day appointment cards icon-only; day API adds alertFlags; visit-screen strip waits for 3.5.2 layout). No new migration.
@@ -46,7 +48,13 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.4.2 build chart component → 3.4.3–3.4.6 → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.4.3 direction/notation (Waiting sister haan — use dentist-view R label already; proceed with FDI display default) → 3.4.4–3.4.6 → visit → History stage 1 → Phase 3 gate. Do not start Phase 4.
+
+## Manual check (3.4.2)
+1. Open /app/style-guide as doctor.
+2. Tab to the tooth chart board.
+3. Arrow to tooth 46 occlusal; Enter — filling marks blue.
+4. Check at 360 / 768 / 1366 (horizontal scroll inside board OK on phone).
 
 
 ## Phase 2 gate (from PLAN.md + owner checklist)

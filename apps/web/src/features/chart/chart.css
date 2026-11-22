@@ -1,0 +1,131 @@
+.tooth-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tooth-chart-head h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.tooth-chart-board {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  padding: 12px;
+  border: 1px solid #e3e9ee;
+  border-radius: 16px;
+  background: #fff;
+  overflow-x: auto;
+  min-height: 44px;
+}
+
+.tooth-chart-board:focus {
+  outline: 2px solid #1e4fa3;
+  outline-offset: 2px;
+}
+
+.tooth-chart-side {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5b6b7b;
+  min-width: 16px;
+}
+
+.tooth-chart-arches {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  min-width: min-content;
+}
+
+.tooth-chart-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.tooth-glyph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.tooth-glyph-focus {
+  outline: 2px solid #1e4fa3;
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+.tooth-surf {
+  fill: #f3f6f7;
+  stroke: #94a3b8;
+  stroke-width: 0.8;
+  cursor: pointer;
+}
+
+.tooth-surf-marked {
+  fill: #1e4fa3;
+  stroke: #0f2a5c;
+}
+
+.tooth-surf-focus {
+  stroke: #c8202a;
+  stroke-width: 1.6;
+}
+
+.tooth-fdi {
+  font-size: 7px;
+  fill: #5b6b7b;
+}
+
+.tooth-whole {
+  min-height: 22px;
+  min-width: 28px;
+  padding: 0 4px;
+  border: 1px solid #e3e9ee;
+  border-radius: 6px;
+  background: #f3f6f7;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.tooth-whole-focus {
+  border-color: #c8202a;
+  box-shadow: 0 0 0 1px #c8202a;
+}
+
+.tooth-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.tooth-chart-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 2px;
+  background: #1e4fa3;
+  vertical-align: -1px;
+}
+
+@media (min-width: 768px) {
+  .tooth-glyph svg {
+    width: 44px;
+    height: 52px;
+  }
+}

@@ -2,6 +2,7 @@ import { formatRupees } from "@clinic/shared";
 import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { ChartPlayground } from "../chart";
 import { ComponentDemos } from "./ComponentDemos";
 import { FeedbackDemos } from "./FeedbackDemos";
 import { SampleForm } from "./SampleForm";
@@ -70,6 +71,15 @@ export function StyleGuideScreen() {
         <p className="notice notice-ok">Saved.</p>
         <p className="notice notice-warning">Check this before you continue.</p>
         <p className="notice notice-error">Could not save. Check the internet connection.</p>
+      </section>
+
+      <section className="card guide-card" aria-labelledby="g-chart">
+        <h2 id="g-chart">Tooth chart (3.4.2)</h2>
+        <p className="muted">
+          Focus the board, use arrows, press Enter to mark a filling (local demo until visit
+          wiring).
+        </p>
+        <ChartPlayground />
       </section>
 
       <section className="card guide-card" aria-labelledby="g-components">
