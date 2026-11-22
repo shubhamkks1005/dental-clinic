@@ -63,7 +63,7 @@
       // Staging uses B2 via S3 API (STORAGE_DRIVER=s3). No R2 binding (card).
       "r2_buckets": [],
       // GOOGLE_CLIENT_ID: the Google Cloud web client for staging + local (not a secret).
-      // Fill S3_ENDPOINT / S3_BUCKET / S3_REGION after B2 bucket exists; put keys as secrets.
+      // S3_* below are not secrets. Put S3_KEY_ID / S3_APP_KEY with `wrangler secret put` only.
       "vars": {
         "MESSAGING_MODE": "dry_run",
         "ACCESS_TEAM_DOMAIN": "",
@@ -72,9 +72,9 @@
         "GOOGLE_CLIENT_ID": "310719770102-o5tts4nmp3715ltiobco5drd11phc9sh.apps.googleusercontent.com",
         "AUTH_MODE": "google",
         "STORAGE_DRIVER": "s3",
-        "S3_ENDPOINT": "",
-        "S3_BUCKET": "",
-        "S3_REGION": "us-west-004",
+        "S3_ENDPOINT": "s3.us-east-005.backblazeb2.com",
+        "S3_BUCKET": "align-dentistry-files-9076",
+        "S3_REGION": "us-east-005",
       },
     },
     "production": {

@@ -190,7 +190,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 Waiting on me (owner):
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
-- **B2 bucket and keys set on staging** (STORAGE_DRIVER=s3 + S3_* vars/secrets; run storage check script after)
+- **B2 keys as Worker secrets on staging** (`S3_KEY_ID` / `S3_APP_KEY` via `wrangler secret put`; endpoint/bucket/region already in wrangler staging vars) — then run `pnpm --filter @clinic/worker storage:check`
 - **3.7.1**: sister confirm which RVG/software and whether it exports JPEG/PNG (or only DICOM)
 - **3.6.3**: multi-sitting step tracker deferred (baad me)
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
