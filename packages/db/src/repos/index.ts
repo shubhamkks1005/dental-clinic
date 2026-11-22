@@ -32,7 +32,9 @@ import { visitsOpenRepo } from "./visits-open";
 import { visitsPatchRepo } from "./visits-patch";
 import { visitsTimelineRepo } from "./visits-timeline";
 import { prescriptionsCreateRepo } from "./prescriptions-create";
+import { prescriptionsDraftRepo } from "./prescriptions-draft";
 import { prescriptionsGetRepo } from "./prescriptions-get";
+import { prescriptionsIssueRepo } from "./prescriptions-issue";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -80,6 +82,8 @@ export function createRepos(db: Db, ctx: Ctx) {
     prescriptions: {
       ...prescriptionsCreateRepo(db, ctx),
       ...prescriptionsGetRepo(db, ctx),
+      ...prescriptionsDraftRepo(db, ctx),
+      ...prescriptionsIssueRepo(db, ctx),
     },
   };
 }

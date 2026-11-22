@@ -83,6 +83,46 @@ describe("prescriptions schema (4.2.1)", () => {
     expect(again.items[0]?.dose).toBe("1 cap");
   });
 
+  it("issues with an rx number, blocks direct edit, and revises into a new draft", async () => {
+    const draft = await repos().prescriptions.create({
+      patientId: PATIENT_ID,
+      advice: "Rest",
+      dentistDispensed: false,
+      dentistDispensedNote: "",
+      items: [
+        {
+          genericName: "Paracetamol",
+          brand: "",
+          form: "Tab",
+          strength: "650 mg",
+          dose: "1",
+          frequency: "1-0-1",
+          days: "3",
+          timing: "after_food",
+          instruction: "",
+          tags: "",
+        },
+      ],
+    });
+    const issued = await repos().prescriptions.issue(draft.id, draft.version);
+    expect(issued.status).toBe("issued");
+    expect(issued.rxNo).toMatch(/^RX-\d{4}-\d{2}-\d{4}$/);
+
+    await expect(repos().prescriptions.replaceItems(issued.id, issued.version, [])).rejects.toThrow(
+      /locked/i,
+    );
+
+    const revised = await repos().prescriptions.revise(issued.id);
+    expect(revised.status).toBe("draft");
+    expect(revised.items[0]?.genericName).toBe("Paracetamol");
+    const reIssued = await repos().prescriptions.issue(revised.id, revised.version);
+    expect(reIssued.status).toBe("revised");
+
+    const copy = await repos().prescriptions.copyPrevious(PATIENT_ID);
+    expect(copy.status).toBe("draft");
+    expect(copy.items[0]?.genericName).toBe("Paracetamol");
+  });
+
   it("forbids receptionist from creating or reading a draft", async () => {
     await expect(
       repos(receptionist).prescriptions.create({

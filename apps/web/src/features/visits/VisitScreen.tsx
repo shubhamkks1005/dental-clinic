@@ -15,6 +15,7 @@ import { VisitChartTab } from "./VisitChartTab";
 import { VisitFinaliseBar } from "./VisitFinaliseBar";
 import { VisitStubPanel } from "./VisitStubPanel";
 import { VISIT_TAB_IDS, VISIT_TAB_LABEL, type VisitTabId } from "./visit-tabs";
+import { VisitMedicinesPanel } from "../prescriptions";
 import { VisitTodayPanel } from "./VisitTodayPanel";
 import "./visit.css";
 
@@ -24,6 +25,7 @@ export function VisitScreen() {
   const { permissions } = useMe();
   const canViewClinical = permissions.includes("clinical.view");
   const canEditClinical = permissions.includes("clinical.edit");
+  const canWriteRx = permissions.includes("prescriptions.write");
   const canSeeFlags = permissions.includes("clinical.alert_flag");
 
   const [visit, setVisit] = useState<VisitSummary | null>(null);
@@ -111,6 +113,8 @@ export function VisitScreen() {
         ) : (
           <p className="muted">Plan is only for the doctor.</p>
         )
+      ) : tabId === "medicines" ? (
+        <VisitMedicinesPanel visitId={visit.id} patientId={patient.id} canWrite={canWriteRx} />
       ) : tabId === "history" ? (
         <VisitStubPanel
           title="History"

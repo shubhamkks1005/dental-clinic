@@ -155,6 +155,27 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/plan-items/:id/decision" && method === "PATCH") {
     return JSON.stringify({ status: "declined", version: 1 });
   }
+  if (path === "/api/staff/prescriptions" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      advice: "",
+      dentistDispensed: false,
+      dentistDispensedNote: "",
+      items: [],
+    });
+  }
+  if (path === "/api/staff/prescriptions/:id/items" && method === "PUT") {
+    return JSON.stringify({ version: 1, items: [] });
+  }
+  if (path === "/api/staff/prescriptions/:id" && method === "PATCH") {
+    return JSON.stringify({ version: 1, advice: "Matrix advice" });
+  }
+  if (path === "/api/staff/prescriptions/:id/issue" && method === "POST") {
+    return JSON.stringify({ version: 1 });
+  }
+  if (path === "/api/staff/prescriptions/copy-previous" && method === "POST") {
+    return JSON.stringify({ patientId: "p1" });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

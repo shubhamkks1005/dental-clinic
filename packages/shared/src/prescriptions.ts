@@ -74,6 +74,8 @@ export function parseCreatePrescription(body: unknown) {
  * 4.2.3: rough pill count from dose × frequency pattern × days.
  * Frequency like 1-0-1 means 2 doses/day; BD/TDS/SOS/HS are fixed. Not clinical advice.
  */
+export const FREQUENCY_PRESETS = ["1-0-1", "1-1-1", "0-0-1", "BD", "TDS", "SOS", "HS"] as const;
+
 export function estimateTabletCount(dose: string, frequency: string, days: string): number | null {
   const dayN = Number.parseInt(days, 10);
   if (!Number.isFinite(dayN) || dayN <= 0) return null;
@@ -92,4 +94,101 @@ export function estimateTabletCount(dose: string, frequency: string, days: strin
   else if (freq === "SOS") perDay = 1;
   if (perDay === null || perDay <= 0) return null;
   return Math.round(unitsPerDose * perDay * dayN);
+}
+
+export const replacePrescriptionItemsBody = z
+  .object({
+    version: z.number().int().positive(),
+    items: z.array(prescriptionItemInput).max(30),
+  })
+  .strict();
+
+export function parseReplacePrescriptionItems(body: unknown) {
+  const parsed = replacePrescriptionItemsBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const patchPrescriptionBody = z
+  .object({
+    version: z.number().int().positive(),
+    weightKg: z.number().int().min(1).max(300).nullable().optional(),
+    advice: z.string().trim().max(2000).optional(),
+    followUpOn: dateOn,
+    dentistDispensed: z.boolean().optional(),
+    dentistDispensedNote: z.string().trim().max(500).optional(),
+  })
+  .strict();
+
+export function parsePatchPrescription(body: unknown) {
+  const parsed = patchPrescriptionBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const issuePrescriptionBody = z
+  .object({
+    version: z.number().int().positive(),
+  })
+  .strict();
+
+export function parseIssuePrescription(body: unknown) {
+  const parsed = issuePrescriptionBody.safeParse(body);
+  if (!parsed.success) {
+    return {
+      ok: false as const,
+      message: parsed.error.issues[0]?.message ?? "Reload and try again.",
+    };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+/** Soft safety checks (4.2.4). Never block issue/print; doctor decides. */
+export function prescriptionSafetyWarnings(
+  items: Array<{
+    genericName: string;
+    dose: string;
+    frequency: string;
+    days: string;
+    tags: string;
+  }>,
+  opts: { allergyTags: Array<{ tag: string; label: string }>; pregnant: boolean },
+): string[] {
+  const warnings: string[] = [];
+  const seen = new Map<string, number>();
+  for (const item of items) {
+    const key = item.genericName.trim().toLowerCase();
+    seen.set(key, (seen.get(key) ?? 0) + 1);
+    if (!item.dose.trim() || !item.frequency.trim() || !item.days.trim()) {
+      warnings.push(
+        `Incomplete row: ${item.genericName || "medicine"} needs dose, frequency and days.`,
+      );
+    }
+    for (const a of opts.allergyTags) {
+      const tags = item.tags
+        .toLowerCase()
+        .split(/[\s,]+/)
+        .filter(Boolean);
+      if (tags.includes(a.tag.toLowerCase())) {
+        warnings.push(`Allergy: ${a.label} (patient history) — ${item.genericName}.`);
+      }
+    }
+    if (
+      opts.pregnant &&
+      item.tags
+        .toLowerCase()
+        .split(/[\s,]+/)
+        .includes("pregnancy")
+    ) {
+      warnings.push(`Pregnancy caution: ${item.genericName}.`);
+    }
+  }
+  for (const [name, count] of seen) {
+    if (count > 1) warnings.push(`Duplicate medicine: ${name}.`);
+  }
+  return warnings;
 }

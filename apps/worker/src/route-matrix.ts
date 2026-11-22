@@ -309,6 +309,46 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/files/:id",
     access: { kind: "permission", action: "files.documents" },
   },
+  {
+    method: "POST",
+    path: "/api/staff/prescriptions",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/prescriptions/:id",
+    access: { kind: "permission", action: "prescriptions.print" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/visits/:id/prescriptions",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "PUT",
+    path: "/api/staff/prescriptions/:id/items",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "PATCH",
+    path: "/api/staff/prescriptions/:id",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/prescriptions/:id/issue",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/prescriptions/:id/revise",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/prescriptions/copy-previous",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;
