@@ -33,6 +33,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "counters",
       "files",
       "settings",
+      "staff_sessions",
       "users",
     ]);
   });
@@ -46,6 +47,8 @@ describe("migrations on an empty database (1.2.3)", () => {
   it("seed the default settings", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
     expect(rows).toEqual([
+      { key: "clinic.logo", value_json: "null" },
+      { key: "clinic.name", value_json: '"Align Dentistry"' },
       { key: "patient_code.digits", value_json: "6" },
       { key: "patient_code.prefix", value_json: '"P-"' },
     ]);

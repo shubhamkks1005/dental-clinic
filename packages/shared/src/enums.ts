@@ -19,7 +19,15 @@ export type CounterName = (typeof COUNTER_NAMES)[number];
 export const AUDIT_ACTIONS = ["create", "update", "delete", "restore"] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
-export const ACCESS_ACTIONS = ["login", "view", "export"] as const;
+export const ACCESS_ACTIONS = [
+  "login",
+  "login_failed",
+  "login_denied",
+  "logout",
+  "staff_change",
+  "view",
+  "export",
+] as const;
 export type AccessAction = (typeof ACCESS_ACTIONS)[number];
 
 export const FILE_KINDS = [

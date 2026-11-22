@@ -11,4 +11,11 @@ export { ConflictError, ForbiddenError, NotFoundError, RepoError } from "./error
 export { NEVER_RESETS, patientCodeSql, takeNumber } from "./numbering";
 export { assertAllowed, isAllowed, PERMISSIONS, type Action } from "./permissions";
 export { createRepos, type Repos } from "./repos";
+export {
+  authRepo,
+  type AuthRepo,
+  type NewSession,
+  type SessionRow,
+  type StaffUser,
+} from "./repos/auth";
 export type { SettingValue } from "./repos/settings";

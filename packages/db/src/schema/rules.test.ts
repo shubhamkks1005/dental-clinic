@@ -55,6 +55,7 @@ describe("table rules (1.2.1)", () => {
       "counters",
       "files",
       "settings",
+      "staff_sessions",
       "users",
     ]);
   });

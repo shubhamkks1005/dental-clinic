@@ -87,14 +87,22 @@
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
-- users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled)
+- users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
+- staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
-- access_log - logins, views, exports (src/schema/access-log.ts) - action (login|view|export), resource, resource_id, request_id; who = created_by
+- access_log - sign-ins, failures, staff changes, views, exports (src/schema/access-log.ts) - action (login|login_failed|login_denied|logout|staff_change|view|export), resource, resource_id, request_id, detail (reason, masked email); who = created_by ('anonymous' for failed sign-ins)
 - files - R2 file metadata (src/schema/files.ts) - patient_id (no FK until patients exist), r2_key (unique), kind, mime, bytes > 0, sha256
 - migrations/0000_base_tables.sql - creates the 6 tables
 - migrations/0001_default_settings.sql - seeds patient_code.prefix "P-" and patient_code.digits 6
+- migrations/0002_users_google_sub.sql - users.google_sub (unique) + last_login_at
+- migrations/0003_staff_sessions.sql - staff_sessions table
+- migrations/0004_access_log_auth_events.sql - access_log: new actions + detail column (table rebuild; drizzle's copy step fixed by hand before locking: it selected a column the old table did not have)
+- migrations/0005_clinic_branding_settings.sql - seeds clinic.name "Align Dentistry" and clinic.logo null
+- src/repos/auth.ts - authRepo(db): findStaffByEmail, completeLogin (bind sub + session + access_log in one batch), findSession, touchSession, logout, recordLoginProblem, branding. Only repo without assertAllowed (runs before sign-in)
+- src/repos/auth.test.ts - bind once, never overwrite sub, session + logout logged, anonymous failures, branding
+- src/dev.ts - LOCAL ONLY ensureDevUser (exported as @clinic/db/dev; imported only by apps/worker/src/dev/)
 - src/migrations-apply.test.ts - 1.2.3: applies all migrations to an empty SQLite DB (node:sqlite), checks tables, standard columns, seeds, CHECKs
 - drizzle.config.ts - drizzle-kit generates SQL into migrations/ (applied by wrangler)
 - migrations/checksums.json - sha256 of every committed migration (written by `pnpm db:lock`)

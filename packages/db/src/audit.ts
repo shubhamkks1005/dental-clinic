@@ -45,17 +45,24 @@ export function auditInsertIfChanged(db: Db, ctx: Ctx, entry: AuditEntry) {
   return db.insert(auditLog).select(sql`SELECT ${sql.join(cells, sql`, `)} WHERE changes() > 0`);
 }
 
-export type AccessEntry = { action: AccessAction; resource: string; resourceId?: string };
+export type AccessEntry = {
+  action: AccessAction;
+  resource: string;
+  resourceId?: string;
+  detail?: string;
+};
 
-// Logins and every view or export of patient data. Also append-only.
-export function accessInsert(db: Db, ctx: Ctx, entry: AccessEntry) {
+// Sign-ins (also failed ones, actor 'anonymous'), staff changes, and every view or export of
+// patient data. Also append-only. Only who and request id are needed from the context.
+export function accessInsert(db: Db, actor: Pick<Ctx, "userId" | "requestId">, entry: AccessEntry) {
   return db.insert(accessLog).values({
     id: newUlid(),
     action: entry.action,
     resource: entry.resource,
     resourceId: entry.resourceId ?? null,
-    requestId: ctx.requestId,
-    createdBy: ctx.userId,
-    updatedBy: ctx.userId,
+    detail: entry.detail ?? null,
+    requestId: actor.requestId,
+    createdBy: actor.userId,
+    updatedBy: actor.userId,
   });
 }

@@ -1,4 +1,8 @@
 {
   "0000_base_tables.sql": "8111449303949b5aeb741d5e566b7c67893e811826dc5db2d3eb6d0578fda885",
-  "0001_default_settings.sql": "248b7f5d2c3c68633b7fcb3d6b19e0cb4e6c40dcb46995554d207abba4c3f43f"
+  "0001_default_settings.sql": "248b7f5d2c3c68633b7fcb3d6b19e0cb4e6c40dcb46995554d207abba4c3f43f",
+  "0002_users_google_sub.sql": "c3843cceff7fb2b8ed78b144bfdb0ec5c6253a6e2f0279cb0001eeff03c7af0f",
+  "0003_staff_sessions.sql": "b78f31c456ee8c14d52493d2bc39d7e1481c49423d1177373c39f213aed85701",
+  "0004_access_log_auth_events.sql": "3462681bf8cb89bf468325a3a460d0f590b0227fda179232a1b23ac2fd67c3d6",
+  "0005_clinic_branding_settings.sql": "e3f34fa3ca8cff1ca389ffef60947793027133c39d243d525f5fda5b6f9d79a8"
 }
