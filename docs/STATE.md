@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. **Phase 3 gate recorded below.** Do not start Phase 4. Current task: none (stop).
-PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). Current task: after 4.1.1.
+PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.1.1 DONE locally (medicines + medicine_sets LIST_DEFS; allergen optional tag; no DDL — seed 4.1.2 / 0032).
 3.10.5 DONE locally (fake clinical seed SQL + `pnpm db:seed:clinical` for 200 local-only patients; chart <400 rows test). No migration.
 3.10.4 SKIPPED (needs 3.10.3 usability issues list — Waiting on doctor).
 3.10.3 SKIPPED / Waiting (doctor usability session).

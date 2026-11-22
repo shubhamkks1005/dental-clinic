@@ -10,12 +10,53 @@ describe("editable lists config (1.5.4 / 2.3.2)", () => {
       "procedures",
       "conditions",
       "allergens",
+      "medicines",
+      "medicine_sets",
       "medical_history_items",
       "quick_phrases",
     ]);
     expect(isListKey("visit_types")).toBe(true);
     expect(isListKey("diagnoses")).toBe(true);
+    expect(isListKey("medicines")).toBe(true);
     expect(isListKey("toString")).toBe(false);
+  });
+
+  it("accepts a medicine row with form, strength and defaults (4.1.1)", () => {
+    expect(
+      listItemSchema("medicines").parse({
+        label: " Amoxicillin ",
+        data: {
+          brand: "SampleMox",
+          form: "Cap",
+          strength: "500 mg",
+          default_dose: "1 cap",
+          default_frequency: "1-0-1",
+          default_days: "5",
+          timing: "after_food",
+          instruction: "Complete the course.",
+          tags: "penicillin",
+          category: "Antibiotic",
+        },
+      }),
+    ).toMatchObject({
+      label: "Amoxicillin",
+      data: { form: "Cap", strength: "500 mg", tags: "penicillin" },
+    });
+  });
+
+  it("accepts allergen match tag and a medicine set pipe list (4.1.1 / 4.1.4 / 4.1.5)", () => {
+    expect(
+      listItemSchema("allergens").parse({
+        label: "Penicillin / antibiotic",
+        data: { tag: "penicillin" },
+      }).data.tag,
+    ).toBe("penicillin");
+    expect(
+      listItemSchema("medicine_sets").parse({
+        label: "After extraction",
+        data: { items: "Amoxicillin|Metronidazole|Ibuprofen" },
+      }).data.items,
+    ).toBe("Amoxicillin|Metronidazole|Ibuprofen");
   });
 
   it("accepts optional procedure code and quick phrase text (3.2.3)", () => {

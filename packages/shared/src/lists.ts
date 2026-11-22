@@ -99,8 +99,41 @@ export const LIST_DEFS = {
   allergens: {
     title: "Allergens",
     itemName: "allergen",
-    help: "Common allergies for the medical history checklist.",
-    fields: [],
+    help: "Common allergies for the medical history checklist. Tag links to medicine tags (4.1.4).",
+    fields: [
+      {
+        name: "tag",
+        label: "Match tag",
+        kind: "text",
+        max: 40,
+        optional: true,
+      },
+    ],
+  },
+  // 4.1.1 medicines (list_items; DRAFT seed in 4.1.2). Label = generic name.
+  medicines: {
+    title: "Medicines",
+    itemName: "medicine",
+    help: "Doctor's own list for prescriptions. Generic name is the row name. Brand is optional. Edits never change already-issued prescriptions.",
+    fields: [
+      { name: "brand", label: "Brand", kind: "text", max: 80, optional: true },
+      { name: "form", label: "Form", kind: "text", max: 20 },
+      { name: "strength", label: "Strength", kind: "text", max: 40 },
+      { name: "default_dose", label: "Default dose", kind: "text", max: 40 },
+      { name: "default_frequency", label: "Default frequency", kind: "text", max: 20 },
+      { name: "default_days", label: "Default days", kind: "text", max: 40 },
+      { name: "timing", label: "With food", kind: "text", max: 20 },
+      { name: "instruction", label: "Instruction", kind: "text", max: 200, optional: true },
+      { name: "tags", label: "Tags", kind: "text", max: 120, optional: true },
+      { name: "category", label: "Category", kind: "text", max: 40, optional: true },
+    ],
+  },
+  // 4.1.5 everyday combos; items = pipe-separated generic names from the medicines list.
+  medicine_sets: {
+    title: "Medicine sets",
+    itemName: "set",
+    help: "One click adds several medicines to a draft prescription. Items are generic names separated by |.",
+    fields: [{ name: "items", label: "Medicines", kind: "text", max: 500 }],
   },
   // 3.3.1 checklist rows (DRAFT seed until 3.1.1). section groups the form.
   medical_history_items: {
