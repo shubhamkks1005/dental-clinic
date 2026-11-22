@@ -123,7 +123,12 @@ describe("CSRF on state-changing calls (1.3.8)", () => {
 
 describe("public sign-in endpoints (1.3.8)", () => {
   it("health and branding answer without a session; branding has only name and logo", async () => {
-    expect((await get("/api/staff/health")).status).toBe(200);
+    const health = await get("/api/staff/health");
+    expect(health.status).toBe(200);
+    expect(await health.json()).toEqual({
+      ok: true,
+      data: { status: "ok", version: "dev" },
+    });
     const branding = await get("/api/staff/auth/branding");
     expect(await branding.json()).toEqual({
       ok: true,

@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { authConfig, loginDeps } from "../auth-deps";
 import { LOGIN_FLOW_MS, SESSION_ABSOLUTE_MS } from "../domain/auth";
+import { buildVersion, checkHealth } from "../domain/health";
 import { clinicBranding, finishLogin, logout, startLogin } from "../domain/login";
 import { meView } from "../domain/me";
 import { COOKIE_BASE, signedIn } from "../http";
@@ -12,7 +13,13 @@ import type { AppEnv } from "../types";
 // Staff sign-in (docs/AUTH_PLAN.md). Public: health, auth/branding, auth/start, auth/callback.
 export const staffAuth = new Hono<AppEnv>();
 
-staffAuth.get("/health", (c) => c.json(ok({ status: "ok" })));
+// 1.6.2: DB ping + build version. Path stays /api/staff/health (public list / AUTH_PLAN).
+staffAuth.get("/health", async (c) => {
+  const version = buildVersion(c.env.CF_VERSION_METADATA);
+  const result = await checkHealth(c.var.db, version);
+  if (!result.ok) return c.json(fail("unhealthy", result.message), 503);
+  return c.json(ok(result.data));
+});
 
 staffAuth.get("/auth/branding", async (c) => c.json(ok(await clinicBranding(c.var.db))));
 

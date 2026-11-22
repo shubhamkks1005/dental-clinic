@@ -1,8 +1,12 @@
 import type { Ctx, Db, Repos, SessionRow } from "@clinic/db";
 
 // Secrets are set with `wrangler secret put` (never in wrangler.jsonc), so wrangler types
-// does not know them.
-export type Bindings = Env & { GOOGLE_CLIENT_SECRET?: string; AUTH_COOKIE_SECRET?: string };
+// does not know them. CF_VERSION_METADATA comes from wrangler version_metadata (1.6.2).
+export type Bindings = Env & {
+  GOOGLE_CLIENT_SECRET?: string;
+  AUTH_COOKIE_SECRET?: string;
+  CF_VERSION_METADATA?: { id: string; tag?: string };
+};
 
 // Set by the session middleware. session/ctx/repos exist only on signed-in routes.
 export type Variables = {

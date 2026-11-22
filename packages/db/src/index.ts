@@ -17,6 +17,7 @@ export {
   RepoError,
 } from "./errors";
 export { NEVER_RESETS, patientCodeSql, takeNumber } from "./numbering";
+export { pingDb } from "./ping";
 export { assertAllowed, isAllowed, PERMISSIONS, permissionsFor, type Action } from "./permissions";
 export { createRepos, type Repos } from "./repos";
 export {

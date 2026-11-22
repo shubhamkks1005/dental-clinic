@@ -38,7 +38,7 @@
 - types/node-builtins.d.ts - minimal node:fs / node:sqlite / node:crypto / import.meta.url types for tests (no @types/node); included by db and worker tsconfig
 
 ## apps/worker
-- wrangler.jsonc - Worker config: top level = local (main src/dev/dev-entry.ts), env.staging / env.production (main src/index.ts); bindings DB, FILES (local and production only; staging none until 3.7), ASSETS; vars MESSAGING_MODE, ACCESS_*, APP_ORIGIN, GOOGLE_CLIENT_ID, AUTH_MODE; preview_urls off
+- wrangler.jsonc - Worker config: top level = local (main src/dev/dev-entry.ts), env.staging / env.production (main src/index.ts); bindings DB, FILES (local and production only; staging none until 3.7), ASSETS, CF_VERSION_METADATA (version_metadata for health); vars MESSAGING_MODE, ACCESS_*, APP_ORIGIN, GOOGLE_CLIENT_ID, AUTH_MODE; preview_urls off
 - wrangler.spike.jsonc - spike 0.6.3 only: local `wrangler dev` with the REAL throwaway D1 "dental-clinic-spike" (remote binding); never deployed
 - spike/d1-spike.ts - spike checks on real D1: batch rollback, changes() audit guard, edit conflict (two tabs + race), gap-free 50 parallel, patient code
 - scripts/staff-sql.ts - SQL builders for the developer-only staff commands (strict email/name/id validation + quoting; first doctor only if none active; recovery clears Google link, ends sessions; audit + access rows via changes())
@@ -62,7 +62,9 @@
 - src/middleware/csrf.ts - non-GET /api calls need Origin = APP_ORIGIN and header x-clinic-request: 1
 - src/middleware/headers.ts - apiHeaders(): security headers (CSP default-src 'none', HSTS, nosniff, DENY framing, referrer) + Cache-Control no-store on /api and /hooks
 - src/headers.test.ts - 1.3.5: API reply headers and the web _headers rules
-- src/routes/staff-auth.ts - health, auth/branding, auth/start, auth/callback, auth/logout, me (thin)
+- src/routes/staff-auth.ts - health (1.6.2 DB ping + version), auth/branding, auth/start, auth/callback, auth/logout, me (thin)
+- src/domain/health.ts (+ test) - 1.6.2 checkHealth / buildVersion: SELECT 1 via pingDb; version from CF_VERSION_METADATA tag or short id, else "dev"
+- src/health.test.ts - 1.6.2 over HTTP: 200 with version tag; 503 when D1 throws
 - src/domain/auth.ts - sign-in rules: authorize URL (openid email, PKCE S256, prompt=select_account), Google claim checks, decideLogin (bind sub / mismatch), session check (12 h, 60 min idle), touch every 5 min, maskEmail
 - src/domain/auth-crypto.ts - randomToken, sha256, safeEqual, seal/unseal (HMAC-signed flow cookie)
 - src/domain/login.ts - startLogin, finishLogin (no writes without a valid flow cookie), openSession, currentSession, logout, clinicBranding
@@ -181,7 +183,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/meta/ - drizzle-kit journal and snapshots (generated; commit with the SQL)
 - scripts/lock-migrations.mjs - adds checksums for new migrations; refuses if an old one was edited
 - src/migrations.test.ts - 1.2.2: every migration locked, none edited
-- src/index.ts - package entry (createDb, Db, Ctx, createRepos, Repos, permissions, errors, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert)
+- src/index.ts - package entry (createDb, Db, Ctx, createRepos, Repos, permissions, errors, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert, pingDb)
+- src/ping.ts (+ test) - 1.6.2 pingDb(db): SELECT 1; throws if D1 is unreachable
 - src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
 - src/context.ts - Ctx { userId, role, requestId } passed to every repository function
 - src/audit.ts - auditInsert() (put in the same db.batch as the change), auditInsertIfChanged() (only if the UPDATE before it changed a row), accessInsert() (views, exports, logins), accessInsertIfChanged() (directly after auditInsertIfChanged)
