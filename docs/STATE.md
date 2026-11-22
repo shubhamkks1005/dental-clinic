@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.1.8** (archive and restore).
+Phase: 2. Current task: none; next is **2.1.9** (consents table).
+2.1.8 DONE locally (archive with reason + restore; default list status=active; `?status=archived|all`; POST archive/restore; audit update/restore).
 2.1.7 DONE locally (soft duplicate warnings: mobile+name word, name+age±1y, secondary mobile; POST `/api/staff/patients/duplicate-check`; never hard-blocks).
 2.1.6 DONE locally (`patient_search` tokens + index; range search; last-4 via mobile_rev; seed writes tokens; EXPLAIN uses index; <100 rows on 5k). **New migration `0011_patient_search.sql` — owner applies (with 0006–0010); agent did not apply to staging.**
 2.1.5 DONE locally (`takePatientCode`: counters `patient_code` / period `all` + settings prefix/digits → P-000123; batch with patient INSERT; same takeNumber path for later bill/prescription/portal numbers).
@@ -20,7 +21,7 @@ version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so
 1.6.1 DONE locally (structured JSON logs).
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **2.1.8**+.
+Next: **2.1.9**+.
 
 ## Phase 1 gate (from PLAN.md)
 

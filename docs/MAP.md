@@ -85,7 +85,7 @@
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients; deny by default applies)
-- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients (paged list); POST /patients/duplicate-check (2.1.7 soft warnings)
+- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
@@ -240,6 +240,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/search/search-scale.test.ts - 2.1.6: 5,000 fake patients, EXPLAIN uses token index, <100 rows
 - src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; 2.1.6 token range search, last-4 via mobile_rev)
 - src/repos/patient-duplicates.ts (+ test) - 2.1.7 findWarnings (top 3 soft hits: mobile_name, name_age, secondary_mobile)
+- src/repos/patient-archive.ts (+ test) - 2.1.8 archive(reason)/restore with version check + audit
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

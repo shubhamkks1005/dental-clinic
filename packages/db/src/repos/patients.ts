@@ -29,12 +29,20 @@ const SORTABLE = ["full_name", "code", "created_at"] as const;
 /** Hard cap on ids from the token index before loading patient rows (plan budget). */
 const SEARCH_ID_CAP = 100;
 
+export type PatientListStatus = "active" | "archived" | "all";
+
+export type PatientListOptions = {
+  /** Default active (2.1.8): archived hidden unless asked for. */
+  status?: PatientListStatus;
+};
+
 // 2.1.6: list uses patient_search range on the first word; extra words filter in memory.
-// Soft-deleted rows are hidden; archived stays visible when q matches.
+// Soft-deleted rows are hidden. Archived hidden by default (2.1.8).
 export function patientsRepo(db: Db, ctx: Ctx) {
   return {
-    async list(query: PageQuery): Promise<Page<PatientListRow>> {
+    async list(query: PageQuery, options: PatientListOptions = {}): Promise<Page<PatientListRow>> {
       assertAllowed(ctx, "patients.view");
+      const status = options.status ?? "active";
       const words = searchWords(query.q);
       const idFilter = words.length > 0 ? await matchPatientIds(db, words) : null;
       if (idFilter !== null && idFilter.length === 0) {
@@ -43,6 +51,9 @@ export function patientsRepo(db: Db, ctx: Ctx) {
 
       const where = and(
         isNull(patients.deletedAt),
+        status === "all"
+          ? undefined
+          : eq(patients.status, status === "archived" ? "archived" : "active"),
         idFilter ? inArray(patients.id, idFilter) : undefined,
       );
       const { limit, offset } = pageWindow(query);

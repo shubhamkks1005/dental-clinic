@@ -2,20 +2,28 @@ import {
   PATIENT_LIST_SORTABLE,
   type DuplicateHit,
   type PatientListRow,
+  type PatientListStatus,
   type Repos,
 } from "@clinic/db";
 import {
   istDate,
   parseDuplicateCheck,
   parsePageQuery,
+  parseVersionOnly,
   type Page,
   type ParamReader,
 } from "@clinic/shared";
 
-// Patients list (1.1.7 seed visibility; filters/polish in 2.2.5).
+// Patients list (1.1.7 / 2.1.6 / 2.1.8).
 export function listPatients(repos: Repos, params: ParamReader): Promise<Page<PatientListRow>> {
   const query = parsePageQuery(params, PATIENT_LIST_SORTABLE);
-  return repos.patients.list(query);
+  const status = parseListStatus(params.get("status"));
+  return repos.patients.list(query, { status });
+}
+
+function parseListStatus(raw: string | null): PatientListStatus {
+  if (raw === "archived" || raw === "all") return raw;
+  return "active";
 }
 
 // 2.1.7: soft duplicate warnings for the new-patient form (never blocks save).
@@ -35,4 +43,31 @@ export async function checkPatientDuplicates(
     onDate: istDate(now),
   });
   return { ok: true, warnings };
+}
+
+// 2.1.8
+export async function archivePatient(
+  repos: Repos,
+  id: string,
+  body: unknown,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const version = parseVersionOnly(body);
+  if (!version.ok) return { ok: false, message: version.message };
+  const reason =
+    typeof body === "object" && body !== null && "reason" in body
+      ? String((body as { reason: unknown }).reason ?? "")
+      : "";
+  await repos.patients.archive(id, reason, version.value.version);
+  return { ok: true };
+}
+
+export async function restorePatient(
+  repos: Repos,
+  id: string,
+  body: unknown,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const version = parseVersionOnly(body);
+  if (!version.ok) return { ok: false, message: version.message };
+  await repos.patients.restore(id, version.value.version);
+  return { ok: true };
 }

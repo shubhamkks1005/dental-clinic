@@ -28,7 +28,14 @@ export {
   type SessionRow,
   type StaffUser,
 } from "./repos/auth";
-export { PATIENT_LIST_SORTABLE, patientsRepo, type PatientListRow } from "./repos/patients";
+export {
+  PATIENT_LIST_SORTABLE,
+  patientsRepo,
+  type PatientListOptions,
+  type PatientListRow,
+  type PatientListStatus,
+} from "./repos/patients";
+export { patientArchiveRepo } from "./repos/patient-archive";
 export {
   patientDuplicatesRepo,
   type DuplicateHit,
