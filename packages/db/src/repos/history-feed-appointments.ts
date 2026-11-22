@@ -22,6 +22,7 @@ export function appointmentHistorySource(db: Db): HistorySource {
           status: appointments.status,
           visitTypeLabel: appointments.visitTypeLabel,
           cancelReason: appointments.cancelReason,
+          rescheduledFrom: appointments.rescheduledFrom,
         })
         .from(appointments)
         .where(
@@ -37,12 +38,16 @@ export function appointmentHistorySource(db: Db): HistorySource {
 
       return rows.map((r) => {
         const reason = r.cancelReason?.trim();
-        const summary =
-          r.status === "rescheduled"
-            ? `${r.visitTypeLabel} · moved`
-            : reason
-              ? `${r.visitTypeLabel} · ${r.status} · ${reason}`
-              : `${r.visitTypeLabel} · ${r.status}`;
+        let summary: string;
+        if (r.status === "rescheduled" || r.rescheduledFrom) {
+          summary = r.rescheduledFrom
+            ? `${r.visitTypeLabel} · moved (from prior booking)`
+            : `${r.visitTypeLabel} · moved`;
+        } else if (reason) {
+          summary = `${r.visitTypeLabel} · ${r.status} · ${reason}`;
+        } else {
+          summary = `${r.visitTypeLabel} · ${r.status}`;
+        }
         return {
           id: r.id,
           type: "appointment" as const,

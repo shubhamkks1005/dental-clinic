@@ -1,8 +1,9 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.13** next (session stopped — context full; see docs/HANDOFF.md). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.12 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.5.14** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.13 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
-3.5.12 DONE locally (GET `/patients/:id/history` merged feed; cursor pagination; appointments+visits sources; access_log; <1s page test). No new migration (existing patient indexes). Treatments/files/medical/consents stubs until 3.5.13.
+3.5.13 DONE locally (stage-1 feed sources: treatments, files, medical_change, consent, amendment; visits enriched with dx; empty sources stay empty). **New migration `0029_files_patient_history_idx.sql` — owner applies; agent did not apply to staging.**
+3.5.12 DONE locally (GET `/patients/:id/history` merged feed; cursor pagination; appointments+visits sources; access_log; <1s page test). No new migration (existing patient indexes).
 3.5.11 DONE locally (History tab + summary strip S04/S17; empty state; filter chip stubs; GET `/history/summary`; access_log on view; returning patient defaults to History). No migration.
 3.5.10 SKIPPED (baad me): visit templates deferred; listed under Waiting / DECISIONS. No migration.
 3.5.9 DONE locally (Visits tab timeline S04/S17; GET `/patients/:id/visits/timeline` with dx/px filters; 30-visit speed test; receptionist 403). No migration.
@@ -64,7 +65,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: History 3.5.13–15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
+Next: History 3.5.14–15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.5.2)
 1. Open a visit as doctor from Today or patient profile.
@@ -124,7 +125,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0028 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0029 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -142,7 +143,7 @@ Waiting on me (owner):
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
-- Staging: apply migrations **0006–0028**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0029**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - **3.4.3**: sister confirm chart facing/notation habit ("haan"); default remains dentist+FDI until then
 - 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)

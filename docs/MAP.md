@@ -153,8 +153,9 @@
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11
 - src/features/history/ - 3.5.11–12 PatientHistoryTab + summary strip + HistoryFeedList + filter stubs (S04/S17)
 - src/repos/history-summary.ts (+ test) - 3.5.11 pinned strip; access_log view; receptionist alert labels empty
-- src/repos/history-feed*.ts (+ test) - 3.5.12 merge + appointments/visits sources; cursor; stubs for 3.5.13
+- src/repos/history-feed*.ts (+ test) - 3.5.12–13 merge feed; appointments/visits/treatments/files/medical/consents/amendments; cursor
 - packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
+- migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
 - src/features/chart/ - 3.4.2–3.4.6 ToothChart + VisitChartPanel (dentition by age; chart events; as-of history); ChartPlayground on /app/style-guide
 - src/features/visits/ - 3.5.1–3.5.9 VisitScreen (S05) + PatientVisitsTab timeline (S04/S17); notes autosave, diagnoses, Chart+procedures, finalise, VisitAddenda; drafts API; route /app/visits/:id
@@ -205,7 +206,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
 - access_log - sign-ins, failures, staff changes, views, exports (src/schema/access-log.ts) - action (login|login_failed|login_denied|logout|staff_change|view|export), resource, resource_id, request_id, detail (reason, masked email); who = created_by ('anonymous' for failed sign-ins)
-- files - R2 file metadata (src/schema/files.ts) - patient_id (no FK until patients exist), r2_key (unique), kind, mime, bytes > 0, sha256
+- files - R2 file metadata (src/schema/files.ts) - patient_id (no FK until patients exist), r2_key (unique), kind, mime, bytes > 0, sha256; index files_patient_created_idx (3.5.13)
 - migrations/0000_base_tables.sql - creates the 6 tables
 - migrations/0001_default_settings.sql - seeds patient_code.prefix "P-" and patient_code.digits 6
 - migrations/0002_users_google_sub.sql - users.google_sub (unique) + last_login_at

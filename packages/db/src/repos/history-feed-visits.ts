@@ -1,6 +1,6 @@
-import { and, desc, eq, isNull, lt, ne, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, lt, ne, or } from "drizzle-orm";
 import type { Db } from "../client";
-import { visits } from "../schema";
+import { users, visitDiagnoses, visits } from "../schema";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterClause(after: HistorySourceQuery["after"]) {
@@ -11,6 +11,7 @@ function afterClause(after: HistorySourceQuery["after"]) {
   );
 }
 
+/** 3.5.12 / 3.5.13: visits with complaint, diagnosis, doctor, draft|finalised. */
 export function visitHistorySource(db: Db): HistorySource {
   return {
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
@@ -21,8 +22,10 @@ export function visitHistorySource(db: Db): HistorySource {
           visitDateLocal: visits.visitDateLocal,
           status: visits.status,
           chiefComplaint: visits.chiefComplaint,
+          doctorName: users.name,
         })
         .from(visits)
+        .leftJoin(users, eq(users.id, visits.doctorId))
         .where(
           and(
             eq(visits.patientId, q.patientId),
@@ -35,15 +38,47 @@ export function visitHistorySource(db: Db): HistorySource {
         .limit(q.take)
         .all();
 
-      return rows.map((r) => ({
-        id: r.id,
-        type: "visit" as const,
-        at: r.createdAt,
-        summary: r.chiefComplaint?.trim() || `Visit · ${r.visitDateLocal}`,
-        actorName: null,
-        status: r.status,
-        href: `/app/visits/${r.id}`,
-      }));
+      const dxByVisit = new Map<string, string>();
+      if (rows.length > 0) {
+        const dxRows = await db
+          .select({
+            visitId: visitDiagnoses.visitId,
+            label: visitDiagnoses.label,
+            sortOrder: visitDiagnoses.sortOrder,
+          })
+          .from(visitDiagnoses)
+          .where(
+            and(
+              inArray(
+                visitDiagnoses.visitId,
+                rows.map((r) => r.id),
+              ),
+              isNull(visitDiagnoses.deletedAt),
+            ),
+          )
+          .orderBy(asc(visitDiagnoses.sortOrder))
+          .all();
+        for (const d of dxRows) {
+          if (!dxByVisit.has(d.visitId)) dxByVisit.set(d.visitId, d.label);
+        }
+      }
+
+      return rows.map((r) => {
+        const complaint = r.chiefComplaint?.trim();
+        const dx = dxByVisit.get(r.id);
+        const parts = [complaint || `Visit · ${r.visitDateLocal}`, dx ? `Dx: ${dx}` : null].filter(
+          Boolean,
+        );
+        return {
+          id: r.id,
+          type: "visit" as const,
+          at: r.createdAt,
+          summary: parts.join(" · "),
+          actorName: r.doctorName ?? null,
+          status: r.status,
+          href: `/app/visits/${r.id}`,
+        };
+      });
     },
   };
 }

@@ -6,28 +6,26 @@ import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { patients } from "../schema";
+import { amendmentHistorySource } from "./history-feed-amendments";
 import { appointmentHistorySource } from "./history-feed-appointments";
+import { consentHistorySource } from "./history-feed-consents";
+import { fileHistorySource } from "./history-feed-files";
 import { mergeHistorySources } from "./history-feed-merge";
-import type { HistoryFeedPage, HistorySource } from "./history-feed-types";
+import { medicalChangeHistorySource } from "./history-feed-medical";
+import type { HistoryFeedPage } from "./history-feed-types";
+import { treatmentHistorySource } from "./history-feed-treatments";
 import { visitHistorySource } from "./history-feed-visits";
 
-function emptySource(): HistorySource {
-  return {
-    async list() {
-      return [];
-    },
-  };
-}
-
-// 3.5.12: merged feed. Stage-1 extras (treatments/files/medical/consents) land in 3.5.13.
+// 3.5.12 / 3.5.13: merged feed. Stage-1 sources; missing data = empty, never crash.
 export function historyFeedRepo(db: Db, ctx: Ctx) {
-  const sources: HistorySource[] = [
+  const sources = [
     appointmentHistorySource(db),
     visitHistorySource(db),
-    emptySource(), // treatment — 3.5.13
-    emptySource(), // file — 3.5.13 / 3.7
-    emptySource(), // medical_change — 3.5.13
-    emptySource(), // consent — 3.5.13
+    treatmentHistorySource(db),
+    fileHistorySource(db),
+    medicalChangeHistorySource(db),
+    consentHistorySource(db),
+    amendmentHistorySource(db),
   ];
 
   return {
