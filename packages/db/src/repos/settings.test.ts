@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
-import { ConflictError, ForbiddenError, NotFoundError } from "../errors";
+import { ConflictError, ForbiddenError, InvalidError, NotFoundError } from "../errors";
 import { testDb } from "../testing";
 import { createRepos } from "./index";
 
@@ -47,6 +47,41 @@ describe("settings repository (1.2.6)", () => {
 
   it("an unknown key is a plain not-found error", async () => {
     await expect(repo(doctor).get("nope")).rejects.toBeInstanceOf(NotFoundError);
+    await expect(repo(doctor).update("nope", 1, 1)).rejects.toBeInstanceOf(NotFoundError);
+  });
+});
+
+describe("settings store rules (1.5.1)", () => {
+  it("an invalid value is not saved: no change, no new version, no audit row", async () => {
+    await expect(repo(doctor).update(KEY, "p-", 1)).rejects.toBeInstanceOf(InvalidError);
+    await expect(repo(doctor).update("patient_code.digits", 99, 1)).rejects.toThrow(
+      "Use at most 8 digits.",
+    );
+    await expect(repo(doctor).update("patient_code.digits", "6", 1)).rejects.toThrow(
+      "Enter a number.",
+    );
+    expect(stored()).toEqual({ value_json: '"P-"', version: 1 });
+    expect(rows("SELECT * FROM audit_log")).toHaveLength(0);
+  });
+
+  it("saves the cleaned value (trimmed text)", async () => {
+    expect(await repo(doctor).update("clinic.name", "  Sample Clinic ", 1)).toEqual({
+      value: "Sample Clinic",
+      version: 2,
+    });
+    expect(rows("SELECT value_json FROM settings WHERE key = 'clinic.name'")[0]).toEqual({
+      value_json: '"Sample Clinic"',
+    });
+  });
+
+  it("lists the known settings in a fixed order with their versions", async () => {
+    const list = await repo(receptionist).list();
+    expect(list.map((s) => [s.key, s.value, s.version])).toEqual([
+      ["patient_code.prefix", "P-", 1],
+      ["patient_code.digits", 6, 1],
+      ["clinic.name", "Align Dentistry", 1],
+      ["clinic.logo", null, 1],
+    ]);
   });
 });
 

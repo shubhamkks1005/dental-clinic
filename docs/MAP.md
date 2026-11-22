@@ -70,6 +70,9 @@
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth and staff-users; deny by default applies)
+- src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
+- src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
+- src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
 - src/routes/staff-users.ts - Settings > Staff API (doctor only via the repo): GET /users, POST /users, POST /users/:id/deactivate | reactivate | role | google-reset; bad input 400, guard refusal 422, stale page 409; replies with the fresh list
 - src/domain/staff.ts - listStaff, addStaff, changeStaff (calls the staff repo, returns the fresh list)
 - src/staff-users.test.ts - 1.3.6 over HTTP: 403 for receptionist, add 201, 400/422/409, deactivate = next request 401, role applies at once, reactivate + reset, CSRF
@@ -80,7 +83,7 @@
 - src/adapters/jwks.ts - fetch + isolate-memory cache of signing keys (Cache-Control max-age, capped 24 h); unknown kid refetches at most once per 5 min; verifyWithJwks()
 - src/middleware/access-jwt.ts - optional Cloudflare Access check on /api/staff/* (off while ACCESS_AUD / ACCESS_TEAM_DOMAIN are empty; health bypassed)
 - src/testing/jwt-fixtures.ts - test-only RSA key + RS256 token signer
-- src/errors.ts - errorReply(err): RepoError -> 403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
+- src/errors.ts - errorReply(err): RepoError -> 400/403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
 - src/errors.test.ts - 409 conflict reply, 403/404, 500 hides details
 - src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
 
@@ -173,13 +176,13 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/audit.ts - auditInsert() (put in the same db.batch as the change), auditInsertIfChanged() (only if the UPDATE before it changed a row), accessInsert() (views, exports, logins), accessInsertIfChanged() (directly after auditInsertIfChanged)
 - src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
 - src/append-only.test.ts - 1.2.5 guard: no app code updates or deletes audit_log / access_log (no triggers allowed yet)
-- src/errors.ts - RepoError (code forbidden|not_found|conflict|not_allowed) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError, NotAllowedError (a business rule refused)
+- src/errors.ts - RepoError (code forbidden|not_found|conflict|not_allowed|invalid) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError, NotAllowedError (a business rule refused), InvalidError (the value breaks its rule)
 - src/permissions.ts - PERMISSIONS: the one role table (AUTH_PLAN 4f, 19 actions: patients, clinical, prescriptions, appointments, bills, files, reports, settings, staff, audit; TO BE CONFIRMED BY THE DOCTOR); isAllowed, permissionsFor, assertAllowed
 - src/permissions.test.ts - exact actions per role (doctor all; receptionist 9; developer settings only)
 - src/repos/index.ts - createRepos(db, ctx) -> { settings, staff }; Repos type (built once per request by the Worker)
 - src/repos/staff.ts - staffRepo (staff.manage): list, add, deactivate (ends sessions in the same batch), reactivate, changeRole, resetGoogleLink. Guards inside the UPDATE (not yourself, never 0 active doctors, version) + audit + staff_change event written only if the UPDATE happened
 - src/repos/staff.test.ts - 1.3.6: 403 for others, list, add, duplicate email, deactivate ends only their sessions, no self, two doctors racing leave one, reactivate, role rules, Google reset, stale version, not found
-- src/repos/settings.ts - settings.get(key) -> { value, version }; settings.update(key, value, expectedVersion): permission check, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
+- src/repos/settings.ts - settings.list() (known keys, fixed order), get(key) -> { value, version }; update(key, value, expectedVersion): permission, unknown key = not found, value checked by the shared rule (InvalidError 400, nothing written), cleaned value saved, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
 - src/repos/settings.test.ts - 1.2.6 + 1.2.7: doctor update = one audit row; receptionist refused; not-found; two tabs and a parallel race -> one wins, one conflict, one audit row
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
 - src/numbering.ts - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql(value) builds P-000412 from settings
@@ -205,6 +208,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
+- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
 - src/mobile.ts (+ test) - THE mobile rule: normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"). Plan 2.1.2 / 7.7.2 reuse it
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)

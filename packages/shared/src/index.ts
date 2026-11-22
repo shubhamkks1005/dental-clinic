@@ -6,6 +6,7 @@ export * from "./money";
 export * from "./paging";
 export * from "./request-id";
 export * from "./routing";
+export * from "./settings";
 export * from "./staff";
 export * from "./time";
 export * from "./ulid";

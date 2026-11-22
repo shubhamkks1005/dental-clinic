@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { staffAuth } from "./staff-auth";
+import { staffSettings } from "./staff-settings";
 import { staffUsers } from "./staff-users";
 
 // /api/staff/*: every route needs a staff session (deny by default in app.ts) except the four
@@ -9,3 +10,4 @@ export const staff = new Hono<AppEnv>();
 
 staff.route("/", staffAuth);
 staff.route("/", staffUsers);
+staff.route("/", staffSettings);

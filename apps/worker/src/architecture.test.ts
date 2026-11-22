@@ -19,6 +19,7 @@ describe("worker architecture (1.2.6)", () => {
       "apps/worker/src/routes/hooks.ts",
       "apps/worker/src/routes/portal.ts",
       "apps/worker/src/routes/staff-auth.ts",
+      "apps/worker/src/routes/staff-settings.ts",
       "apps/worker/src/routes/staff-users.ts",
       "apps/worker/src/routes/staff.ts",
     ]);

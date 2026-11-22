@@ -8,7 +8,14 @@ export {
 } from "./audit";
 export { createDb, type D1Binding, type Db } from "./client";
 export type { Ctx } from "./context";
-export { ConflictError, ForbiddenError, NotAllowedError, NotFoundError, RepoError } from "./errors";
+export {
+  ConflictError,
+  ForbiddenError,
+  InvalidError,
+  NotAllowedError,
+  NotFoundError,
+  RepoError,
+} from "./errors";
 export { NEVER_RESETS, patientCodeSql, takeNumber } from "./numbering";
 export { assertAllowed, isAllowed, PERMISSIONS, permissionsFor, type Action } from "./permissions";
 export { createRepos, type Repos } from "./repos";
@@ -19,4 +26,4 @@ export {
   type SessionRow,
   type StaffUser,
 } from "./repos/auth";
-export type { SettingValue } from "./repos/settings";
+export type { SettingRow, SettingValue } from "./repos/settings";
