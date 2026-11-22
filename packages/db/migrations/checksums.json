@@ -30,5 +30,6 @@
   "0028_conditions_chart_fields.sql": "66f81c5ee868c4bfabe0f64197043b2dca5f4232e83b7f556927eff528e54b5e",
   "0029_files_patient_history_idx.sql": "a730ad4f2967df12ea1ddc2d0d31cfa9301a9701e636c4b624663e7f2e6881af",
   "0030_files_upload_meta.sql": "3c72255a4959587ffd0300a6084ff57aac447e9367010766983a86cd373f51fb",
-  "0031_consent_templates.sql": "2574d64f2752319d438f26d1dadd6d57a7ebae52ae26ecba7314df118a24c55e"
+  "0031_consent_templates.sql": "2574d64f2752319d438f26d1dadd6d57a7ebae52ae26ecba7314df118a24c55e",
+  "0032_medicines_seed.sql": "7584049535269a73f87b234555f75a5f6bdc12cdc275df999afac12bba4fada5"
 }
