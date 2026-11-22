@@ -1,7 +1,10 @@
 import { expandQuickPhrase, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useState } from "react";
-import { ApiError } from "../../api/client";
-import { patchVisit, type VisitSummary } from "./api";
+import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
+import type { VisitSummary } from "./api";
+import { SaveStatusChip } from "./SaveStatusChip";
+import { useVisitAutosave } from "./useVisitAutosave";
+import type { NotesSnapshot } from "./visit-autosave";
 
 type Props = {
   visit: VisitSummary;
@@ -10,19 +13,7 @@ type Props = {
   onSaved: (visit: VisitSummary) => void;
 };
 
-type FormState = {
-  chiefComplaint: string;
-  historyNote: string;
-  examNote: string;
-  gumCondition: string;
-  advice: string;
-  nextVisitNote: string;
-  bpSystolic: string;
-  bpDiastolic: string;
-  pulse: string;
-};
-
-function fromVisit(v: VisitSummary): FormState {
+function fromVisit(v: VisitSummary): NotesSnapshot {
   return {
     chiefComplaint: v.chiefComplaint ?? "",
     historyNote: v.historyNote ?? "",
@@ -36,25 +27,18 @@ function fromVisit(v: VisitSummary): FormState {
   };
 }
 
-function intOrNull(raw: string): number | null {
-  const t = raw.trim();
-  if (!t) return null;
-  const n = Number(t);
-  return Number.isFinite(n) ? n : null;
-}
-
-/** 3.5.3: complaint / exam / advice / vitals with quick-phrase expansion. */
+/** 3.5.3 + 3.5.5: notes form with quick phrases and autosave. */
 export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
   const [form, setForm] = useState(() => fromVisit(visit));
+  const [saved, setSaved] = useState(() => fromVisit(visit));
   const [version, setVersion] = useState(visit.version);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
 
   useEffect(() => {
-    setForm(fromVisit(visit));
+    const snap = fromVisit(visit);
+    setForm(snap);
+    setSaved(snap);
     setVersion(visit.version);
-  }, [visit]);
+  }, [visit.id]);
 
   const phraseMap = useMemo(
     () =>
@@ -68,39 +52,22 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
     [phrases],
   );
 
-  function onPhraseField(key: keyof FormState, raw: string) {
+  const { status, dirty } = useVisitAutosave({
+    visitId: visit.id,
+    version,
+    form,
+    saved,
+    enabled: !readOnly,
+    onVersion: setVersion,
+    onSaved: (next, snapshot) => {
+      setSaved(snapshot);
+      onSaved(next);
+    },
+  });
+
+  function onPhraseField(key: keyof NotesSnapshot, raw: string) {
     const { value } = expandQuickPhrase(raw, phraseMap);
     setForm((f) => ({ ...f, [key]: value }));
-  }
-
-  async function save() {
-    setBusy(true);
-    setError(null);
-    try {
-      const saved = await patchVisit(visit.id, {
-        version,
-        chiefComplaint: form.chiefComplaint.trim() || null,
-        historyNote: form.historyNote.trim() || null,
-        examNote: form.examNote.trim() || null,
-        gumCondition: form.gumCondition.trim() || null,
-        advice: form.advice.trim() || null,
-        nextVisitNote: form.nextVisitNote.trim() || null,
-        bpSystolic: intOrNull(form.bpSystolic),
-        bpDiastolic: intOrNull(form.bpDiastolic),
-        pulse: intOrNull(form.pulse),
-      });
-      setVersion(saved.version);
-      setSavedAt("Saved");
-      onSaved(saved);
-    } catch (err: unknown) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : "Could not save. Check the connection, then try again.",
-      );
-    } finally {
-      setBusy(false);
-    }
   }
 
   return (
@@ -108,9 +75,12 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
       className="visit-notes"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!readOnly) void save();
       }}
     >
+      {!readOnly && <UnsavedChangesGuard dirty={dirty} />}
+      <div className="visit-notes-actions">
+        {!readOnly ? <SaveStatusChip status={status} /> : null}
+      </div>
       <label className="visit-field">
         <span>Chief complaint</span>
         <textarea
@@ -118,7 +88,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           rows={2}
           value={form.chiefComplaint}
           onChange={(e) => onPhraseField("chiefComplaint", e.target.value)}
-          disabled={readOnly || busy}
+          disabled={readOnly}
         />
       </label>
       <label className="visit-field">
@@ -128,7 +98,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           rows={2}
           value={form.historyNote}
           onChange={(e) => onPhraseField("historyNote", e.target.value)}
-          disabled={readOnly || busy}
+          disabled={readOnly}
           placeholder="Type ;scal or ;review for a quick phrase"
         />
       </label>
@@ -139,7 +109,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           rows={2}
           value={form.examNote}
           onChange={(e) => onPhraseField("examNote", e.target.value)}
-          disabled={readOnly || busy}
+          disabled={readOnly}
         />
       </label>
       <label className="visit-field">
@@ -148,7 +118,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           className="input"
           value={form.gumCondition}
           onChange={(e) => setForm((f) => ({ ...f, gumCondition: e.target.value }))}
-          disabled={readOnly || busy}
+          disabled={readOnly}
         />
       </label>
       <label className="visit-field">
@@ -158,7 +128,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           rows={2}
           value={form.advice}
           onChange={(e) => onPhraseField("advice", e.target.value)}
-          disabled={readOnly || busy}
+          disabled={readOnly}
         />
       </label>
       <label className="visit-field">
@@ -167,10 +137,10 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           className="input"
           value={form.nextVisitNote}
           onChange={(e) => onPhraseField("nextVisitNote", e.target.value)}
-          disabled={readOnly || busy}
+          disabled={readOnly}
         />
       </label>
-      <fieldset className="visit-vitals" disabled={readOnly || busy}>
+      <fieldset className="visit-vitals" disabled={readOnly}>
         <legend>Vitals (optional)</legend>
         <label className="visit-field">
           <span>BP systolic</span>
@@ -200,19 +170,6 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
           />
         </label>
       </fieldset>
-      {!readOnly && (
-        <div className="visit-notes-actions">
-          <button type="submit" className="btn btn-primary" disabled={busy}>
-            {busy ? "Saving…" : "Save notes"}
-          </button>
-          {savedAt ? <span className="muted small">{savedAt}</span> : null}
-        </div>
-      )}
-      {error ? (
-        <p className="notice notice-error" role="alert">
-          {error}
-        </p>
-      ) : null}
     </form>
   );
 }

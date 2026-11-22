@@ -151,6 +151,31 @@ a.visit-side-link:focus-visible {
   gap: 12px;
 }
 
+.visit-save-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.visit-save-ok {
+  color: #14532d;
+  background: #dcfce7;
+}
+
+.visit-save-busy {
+  color: #1e3a8a;
+  background: #e0e7ff;
+}
+
+.visit-save-warn {
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
 .visit-dx-list {
   margin: 0;
   padding-left: 18px;
