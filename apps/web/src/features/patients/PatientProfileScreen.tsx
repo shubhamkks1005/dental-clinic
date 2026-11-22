@@ -81,7 +81,13 @@ export function PatientProfileScreen() {
             onPatientChange={setPatient}
           />
         ) : t.id === "chart" ? (
-          <VisitChartPanel patientId={patient.id} canEdit={canEditClinical} />
+          <VisitChartPanel
+            patientId={patient.id}
+            canEdit={canEditClinical}
+            dateOfBirth={patient.dateOfBirth}
+            ageYearsAtReg={patient.ageYearsAtReg}
+            registeredOn={patient.createdAt.slice(0, 10)}
+          />
         ) : (
           <PatientAppointmentsTab patientId={patient.id} />
         ),

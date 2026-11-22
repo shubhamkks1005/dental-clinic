@@ -85,7 +85,8 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-medical-history, staff-appointments, staff-visits; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth… staff-visits, staff-chart; deny by default applies)
+- src/routes/staff-chart.ts (+ domain/chart.ts, staff-chart.test.ts) - 3.4.5 GET/POST patient chart events; as-of finalised visit; clinical.view/edit
 - src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7 POST /visits, GET /visits/:id, POST finalise, POST addenda (clinical.edit/view; receptionist 403)
 - src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
@@ -303,6 +304,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/teeth.ts (+ test) - 3.2.2 FDI lists, surfaces m/d/o/b/l/whole, chartFromEvents
 - src/chart-view.ts (+ test) - 3.4.3 chart.view facing+notation; toothDisplayLabel (FDI/Universal/Palmer)
 - src/conditions.ts (+ test) - 3.4.4 chart conditions from list (code/colour/icon/applies_to)
+- src/dentition.ts (+ test) - 3.4.6 dentitionFromAgeYears (primary/mixed/permanent)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
 - src/appointment-display.ts (+ test) - 2.4.1 APPOINTMENT_STATUS_LABEL + appointmentStatusTone
 - src/day-view.ts (+ test) - 2.4.1 dayWindow / snapToSlot / emptySlotStarts

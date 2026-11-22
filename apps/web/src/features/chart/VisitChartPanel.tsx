@@ -1,15 +1,19 @@
 import {
+  ageYearsOn,
   chartConditionsFromList,
   conditionAllowsSurface,
   conditionColorMap,
   DEFAULT_CHART_VIEW,
+  DENTITION_LABEL,
+  dentitionFromAgeYears,
   istDate,
   type ChartCondition,
   type ChartView,
+  type DentitionView,
   type FdiTooth,
   type ToothSurface,
 } from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../api/client";
 import { getList } from "../lists";
 import {
@@ -24,18 +28,44 @@ import { ToothChart } from "./ToothChart";
 type Props = {
   patientId: string;
   canEdit: boolean;
+  dateOfBirth?: string | null;
+  ageYearsAtReg?: number | null;
+  registeredOn?: string;
 };
 
-/** 3.4.5: live chart + as-of history dropdown. Opens a draft visit when applying (S05 chart). */
-export function VisitChartPanel({ patientId, canEdit }: Props) {
+/** 3.4.5–3.4.6: live chart, as-of history, age-based dentition with manual override (S05). */
+export function VisitChartPanel({
+  patientId,
+  canEdit,
+  dateOfBirth = null,
+  ageYearsAtReg = null,
+  registeredOn,
+}: Props) {
   const [chart, setChart] = useState<PatientChart | null>(null);
   const [conditions, setConditions] = useState<ChartCondition[]>([]);
   const [view, setView] = useState<ChartView>(DEFAULT_CHART_VIEW);
   const [applyCode, setApplyCode] = useState("filling");
   const [asOfVisitId, setAsOfVisitId] = useState("");
   const [draftVisitId, setDraftVisitId] = useState<string | null>(null);
+  const [dentitionOverride, setDentitionOverride] = useState<DentitionView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const todayLocal = istDate(new Date());
+  const ageYears = useMemo(
+    () =>
+      ageYearsOn(
+        {
+          dateOfBirth,
+          ageYearsAtReg,
+          registeredOn: registeredOn ?? todayLocal,
+        },
+        todayLocal,
+      ),
+    [dateOfBirth, ageYearsAtReg, registeredOn, todayLocal],
+  );
+  const defaultDentition = dentitionFromAgeYears(ageYears);
+  const dentition = dentitionOverride ?? defaultDentition;
 
   useEffect(() => {
     let cancelled = false;
@@ -141,6 +171,21 @@ export function VisitChartPanel({ patientId, canEdit }: Props) {
             </select>
           </label>
         )}
+        <label>
+          Dentition
+          <select
+            value={dentition}
+            onChange={(e) => setDentitionOverride(e.target.value as DentitionView)}
+            disabled={busy}
+          >
+            {(Object.keys(DENTITION_LABEL) as DentitionView[]).map((key) => (
+              <option key={key} value={key}>
+                {DENTITION_LABEL[key]}
+                {key === defaultDentition ? " (from age)" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
       {error && (
         <p className="notice notice-error" role="alert">
@@ -154,6 +199,7 @@ export function VisitChartPanel({ patientId, canEdit }: Props) {
       )}
       {chart && (
         <ToothChart
+          dentition={dentition}
           view={view}
           cells={chart.cells}
           colorsByCode={colorsByCode}
