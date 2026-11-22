@@ -1,0 +1,24 @@
+// Minimal Worker for @cloudflare/vitest-plugin (1.7.2). No assets binding — API tests only.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dental-clinic-vitest",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "send_metrics": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dental-clinic-vitest",
+      "database_id": "00000000-0000-0000-0000-000000000099",
+      "migrations_dir": "../../packages/db/migrations",
+    },
+  ],
+  "vars": {
+    "MESSAGING_MODE": "dry_run",
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": "",
+    "APP_ORIGIN": "http://localhost:8787",
+    "GOOGLE_CLIENT_ID": "vitest-client",
+    "AUTH_MODE": "google",
+  },
+}

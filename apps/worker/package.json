@@ -8,7 +8,8 @@
     "build": "pnpm wr deploy --dry-run --outdir dist --env=''",
     "types": "pnpm wr types --strict-vars=false",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run && vitest run --config vitest.workers.config.ts",
+    "test:workers": "vitest run --config vitest.workers.config.ts",
     "db:migrate": "pnpm wr d1 migrations apply DB --local --env=''",
     "deploy:staging": "pnpm wr deploy --env staging",
     "spike:d1": "node spike/run.mjs",
@@ -16,6 +17,7 @@
     "staff:recover-doctor": "node scripts/staff-admin.mjs recover-doctor"
   },
   "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.9.0",
     "drizzle-orm": "^0.45.4",
     "wrangler": "^4.166.0"
   },
