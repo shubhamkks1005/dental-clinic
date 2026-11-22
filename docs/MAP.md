@@ -112,7 +112,8 @@
 - src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
 - src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width); gets menu items, user card and canAddPatient as props (no feature imports)
 - src/ui/shell/MainNav.tsx - brand, the role's nav items (active also on sub-pages, except Today), user card at the bottom: laptop navy sidebar 232px, tablet tabs row, phone hidden
-- src/ui/shell/TopBar.tsx - tablet/laptop: search, Walk-in, + New patient (not wired yet; hidden without patients.edit); tablet also shows the user card
+- src/ui/shell/TopBar.tsx - tablet/laptop: search ("/" focuses it, hint shown in the box), Walk-in, + New patient (not wired yet; hidden without patients.edit); tablet also shows the user card
+- src/ui/shell/search-shortcut.ts (+ test) - isSearchShortcut: "/" without modifiers, not while typing in a field
 - src/ui/shell/BottomTabs.tsx - phone: the role's bottom tabs + round "+" new patient button (hidden without patients.edit)
 - src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name
 - src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION

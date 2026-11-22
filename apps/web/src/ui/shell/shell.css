@@ -73,7 +73,26 @@
 }
 
 .top-search .input {
+  padding-right: 48px;
   padding-left: 44px;
+}
+
+/* The "/" hint inside the search box (S01). */
+.top-search-key {
+  position: absolute;
+  top: 12px;
+  right: var(--s3);
+  min-width: 24px;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--muted);
+  font:
+    600 12px / 20px Inter,
+    system-ui,
+    sans-serif;
+  text-align: center;
 }
 
 .top-search-icon {
