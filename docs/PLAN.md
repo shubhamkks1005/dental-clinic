@@ -711,19 +711,19 @@ Users add ya band karna Haan Nahi Haan
 1.4.1 Brand tokens (S). Logo se do rang, neutral greys, success aur warning aur danger [note: Devanagari print font removed, UI and print are English only, see docs/DECISIONS.md]
 ke rang, font (Inter ya system font).
 Contrast WCAG AA. Done jab: ek style-guide page par sab dikhta hai.
-1.4.2 Component base (M). Tailwind aur shadcn/ui (accessible Radix components):
+1.4.2 Component base (M). [note 2026-11-22: owner decision: plain CSS + tokens, no Tailwind/shadcn; Radix only for toast, tooltip, dropdown menu; dialogs on native <dialog> (CSP), see DECISIONS.md] Tailwind aur shadcn/ui (accessible Radix components):
 button, input, select, dialog, tabs, toast, badge, card. Done jab: har component
 keyboard se chalta hai.
 1.4.3 Layout shell (M). Left nav (Aaj, Patients, Appointments, Billing, Reports,
 Settings), upar global search (shortcut / ), "Naya patient" button, role ke hisaab se
 menu. 1366x768 par theek, tablet par bhi. Done jab: receptionist PC par asli screen size
 par test hua.
-1.4.4 Form kit (M). react-hook-form aur Zod, inline errors, mobile number (+91, 10 digit
+1.4.4 Form kit (M). [note 2026-11-22: owner decision: react-hook-form + zod, own small zod resolver] react-hook-form aur Zod, inline errors, mobile number (+91, 10 digit
 check), tareekh DD/MM/YYYY, Enter se save, Tab ka sahi order. Done jab: ek form sirf
 keyboard se bhara ja sakta hai.
 1.4.5 Data table kit (M). Sort, filter, server-side pagination, khali, loading aur error
 state. Done jab: 5,000 rows par bhi tez chalta hai.
-1.4.6 Feedback patterns (M). Toasts, confirm dialog (browser alert kabhi nahi),
+1.4.6 Feedback patterns (M). [note 2026-11-22: owner decision: the "bill saved twice creates one" done-when and the server-side idempotency key MOVE TO PHASE 5 (bills); 1.4.6 now covers toasts, confirm dialog, unsaved-change warning and the client-side double-click guard] Toasts, confirm dialog (browser alert kabhi nahi),
 unsaved-change chetavani, double-click se duplicate submit ka bachav (idempotency
 key). Done jab: ek bill ko do baar save karne ki koshish par ek hi banta hai.
 1.4.7 Error page aur offline (S). Har error par chhota error ID jo receptionist developer
