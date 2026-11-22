@@ -17,7 +17,7 @@ Written: 2026-11-23 (Phase 3 mid-run; context full — stop). Read STATE.md and 
 | 3.3.3 | `2830713` |
 | 3.3.4 | `6a70b5b` |
 | 3.4.1 | `d12c542` |
-| 3.4.2 | *(commit after this HANDOFF)* |
+| 3.4.2 | `c654360` |
 
 Prior schema block 3.1.2–3.2.6: see git log / prior HANDOFF.
 
