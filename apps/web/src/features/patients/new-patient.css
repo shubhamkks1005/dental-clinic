@@ -1,0 +1,93 @@
+.new-patient {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 36rem;
+}
+
+.new-patient-head h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.new-patient-head p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.new-patient-code {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.new-patient-code-label {
+  font-weight: 600;
+}
+
+.new-patient-code-box {
+  display: block;
+  padding: 12px 14px;
+  border: 1px dashed var(--border, #c5cdd8);
+  border-radius: var(--radius-control, 8px);
+  background: var(--bg, #f5f7fa);
+  color: var(--muted, #5b6b7c);
+  font-size: 14px;
+}
+
+.new-patient-age-row {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .new-patient-age-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.new-patient-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.new-patient-more {
+  justify-self: start;
+  min-height: 44px;
+}
+
+.new-patient-details {
+  display: grid;
+  gap: var(--s4, 16px);
+  padding-top: 4px;
+  border-top: 1px solid var(--border, #c5cdd8);
+}
+
+.new-patient-dupes ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.new-patient-next {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .new-patient-next {
+    flex-direction: row;
+  }
+}
+
+.new-patient-next-btn {
+  min-height: 48px;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+}

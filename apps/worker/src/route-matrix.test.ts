@@ -47,6 +47,14 @@ function bodyFor(method: string, path: string): string | undefined {
       role: "receptionist",
     });
   }
+  if (path === "/api/staff/patients" && method === "POST") {
+    return JSON.stringify({
+      fullName: "Matrix Create Fake",
+      gender: "female",
+      ageYearsAtReg: 30,
+      mobile: "9000008888",
+    });
+  }
   if (path === "/api/staff/patients/duplicate-check") {
     return JSON.stringify({ fullName: "Matrix Fake", mobile: "9000009999", ageYearsAtReg: 30 });
   }

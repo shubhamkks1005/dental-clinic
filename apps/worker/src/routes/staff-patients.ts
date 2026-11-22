@@ -3,18 +3,26 @@ import { Hono } from "hono";
 import {
   archivePatient,
   checkPatientDuplicates,
+  createPatient,
   listPatients,
   restorePatient,
 } from "../domain/patients";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
-// GET /patients — list (S02/S15). POST duplicate-check / archive / restore (2.1.7–2.1.8).
+// GET /patients — list (S02/S15). POST create (2.2.1); duplicate-check / archive / restore.
 export const staffPatients = new Hono<AppEnv>();
 
 staffPatients.get("/patients", async (c) => {
   const page = await listPatients(signedIn(c).repos, new URL(c.req.url).searchParams);
   return c.json(ok({ page }));
+});
+
+staffPatients.post("/patients", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await createPatient(signedIn(c).repos, body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ patient: result.patient }), 201);
 });
 
 staffPatients.post("/patients/duplicate-check", async (c) => {

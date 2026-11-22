@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.2.1** (new patient form). HANDOFF still current for 2.1.6–2.1.8; update after more 2.2 work.
+Phase: 2. Current task: none; next is **2.2.2** (patient profile).
+2.2.1 DONE locally (new patient form S03/S16: four required fields, More details fold, duplicate-check on mobile debounce, POST `/api/staff/patients` mints P- code + search tokens + audit; after save Book appointment / Walk-in now). No new migration.
 2.1.9 DONE locally (consents table append-only; GET/POST `/patients/:id/consents`; ConsentsPanel shows when / who / notice version; withdraw = new row). **New migration `0012_consents.sql` — owner applies (with 0006–0011); agent did not apply to staging.**
 2.1.8 DONE locally (archive with reason + restore; default list status=active; `?status=archived|all`; POST archive/restore; audit update/restore).
 2.1.7 DONE locally (soft duplicate warnings: mobile+name word, name+age±1y, secondary mobile; POST `/api/staff/patients/duplicate-check`; never hard-blocks).
@@ -12,17 +13,8 @@ Phase: 2. Current task: none; next is **2.2.1** (new patient form). HANDOFF stil
 2.1.2 DONE locally (20 good + 20 bad unit tests for `normaliseMobile` in packages/shared; displayMobile covered).
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
-1.7.3 DONE locally (Playwright Chromium smoke: landing, doctor opens Staff, receptionist denied; CI installs Chromium and runs `pnpm test:e2e` after check). Staging Google e2e stays manual.
-1.7.2 DONE locally (`@cloudflare/vitest-plugin` successor to approved vitest-pool-workers; Workers-runtime tests with applyD1Migrations; health + settings on real schema). Node FakeD1 suite unchanged.
-1.7.5 DONE locally (fakePatient, fakeMobile, fakePersonName, fakeHistory factories; fake-only; tests).
-1.7.4 DONE locally (STAFF_ROUTE_MATRIX + walk: every /api/staff route must be listed; denied roles 403; allowed not 403; /me and logout covered).
-1.7.1 DONE (Vitest money/dates/numbering/validation). Full monorepo suite longer than 10 s by design.
-1.6.3 code DONE locally (Backup Action + integrity). Done-when (7 nights + restore) waits on owner accounts.
-1.6.2 DONE locally (`GET /api/staff/health` DB ping + version). Path is `/api/staff/health` not `/api/health`.
-1.6.1 DONE locally (structured JSON logs).
-1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
-1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **2.2.1**+.
+1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
+Next: **2.2.2**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -40,11 +32,9 @@ Next: **2.2.1**+.
 
 None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may implement Phase 2 with fake data.
 
-Exceptions that are *not* hard blockers but still open: staging migrations 0006–0008 not applied yet; CI not pushed; Access card optional; doctor permission confirm (1.3.4); 1.5.2 clinic profile; backup accounts.
-
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0008 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0012 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -68,5 +58,5 @@ Waiting on me (owner):
 Owner checklist / Cloudflare / Google: unchanged (see prior notes).
 Phase 0 still open: clinic-visit tasks for the owner.
 Open questions: SMS language, rate list language, portal monitor, public-site plan lines (DECISIONS).
-Known issues: agents never push; Today uses FAKE sample data until Phase 2 APIs; staging no R2 until 3.7.
+Known issues: agents never push; Today uses FAKE sample data until Phase 2 APIs; staging no R2 until 3.7; Book appointment / Walk-in after new patient land on NotBuiltYet until 2.3.
 Owner's real hours (owner fills): Phase 0: -

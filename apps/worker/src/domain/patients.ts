@@ -1,5 +1,6 @@
 import {
   PATIENT_LIST_SORTABLE,
+  type CreatedPatient,
   type DuplicateHit,
   type PatientListRow,
   type PatientListStatus,
@@ -7,6 +8,7 @@ import {
 } from "@clinic/db";
 import {
   istDate,
+  parseCreatePatient,
   parseDuplicateCheck,
   parsePageQuery,
   parseVersionOnly,
@@ -24,6 +26,18 @@ export function listPatients(repos: Repos, params: ParamReader): Promise<Page<Pa
 function parseListStatus(raw: string | null): PatientListStatus {
   if (raw === "archived" || raw === "all") return raw;
   return "active";
+}
+
+// 2.2.1: create patient (code + tokens + audit).
+export async function createPatient(
+  repos: Repos,
+  body: unknown,
+  now: Date = new Date(),
+): Promise<{ ok: true; patient: CreatedPatient } | { ok: false; message: string }> {
+  const parsed = parseCreatePatient(body, istDate(now));
+  if (!parsed.ok) return parsed;
+  const patient = await repos.patients.create(parsed.value);
+  return { ok: true, patient };
 }
 
 // 2.1.7: soft duplicate warnings for the new-patient form (never blocks save).

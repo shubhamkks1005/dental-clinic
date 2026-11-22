@@ -16,6 +16,14 @@ beforeEach(() => {
        VALUES ('p1', 'system', 'system', 'P-000001', 'Fake One', 'female', 30, '+919000000001', 'active')`,
     )
     .run();
+  // Keep patient_code counter ahead of seeded rows so create (2.2.1) does not collide.
+  sqlite
+    .prepare(
+      `INSERT INTO counters (id, name, period, value, created_by, updated_by)
+       VALUES ('ctr-patient', 'patient_code', 'all', 1, 'system', 'system')
+       ON CONFLICT(name, period) DO UPDATE SET value = excluded.value`,
+    )
+    .run();
 });
 
 async function get(email: string) {
@@ -66,5 +74,61 @@ describe("POST /api/staff/patients/duplicate-check (2.1.7)", () => {
     expect(res.status).toBe(200);
     const body = (await res.json()) as { ok: true; data: { warnings: unknown[] } };
     expect(body.data.warnings).toEqual([]);
+  });
+});
+
+describe("POST /api/staff/patients (2.2.1)", () => {
+  it("creates a patient with a P- code for receptionist", async () => {
+    const cookie = await sessionCookie(env, "rec@example.test");
+    const init = sameOriginPost(cookie);
+    const res = await app.request(
+      `${ORIGIN}/api/staff/patients`,
+      {
+        ...init,
+        method: "POST",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: "Fake Walk In",
+          gender: "male",
+          ageYearsAtReg: 40,
+          mobile: "9111112233",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as {
+      ok: true;
+      data: { patient: { code: string; fullName: string } };
+    };
+    expect(body.data.patient.fullName).toBe("Fake Walk In");
+    expect(body.data.patient.code).toMatch(/^P-\d{6}$/);
+  });
+
+  it("refuses developer", async () => {
+    const cookie = await sessionCookie(env, "dev@example.test");
+    const init = sameOriginPost(cookie);
+    const res = await app.request(
+      `${ORIGIN}/api/staff/patients`,
+      {
+        ...init,
+        method: "POST",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: "Should Fail",
+          gender: "female",
+          ageYearsAtReg: 20,
+          mobile: "9000000002",
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(403);
   });
 });

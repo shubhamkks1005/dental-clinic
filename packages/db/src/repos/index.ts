@@ -3,6 +3,7 @@ import type { Ctx } from "../context";
 import { consentsRepo } from "./consents";
 import { listsRepo } from "./lists";
 import { patientArchiveRepo } from "./patient-archive";
+import { patientCreateRepo } from "./patient-create";
 import { patientDuplicatesRepo } from "./patient-duplicates";
 import { patientsRepo } from "./patients";
 import { settingsRepo } from "./settings";
@@ -15,7 +16,11 @@ export function createRepos(db: Db, ctx: Ctx) {
     settings: settingsRepo(db, ctx),
     staff: staffRepo(db, ctx),
     lists: listsRepo(db, ctx),
-    patients: { ...patientsRepo(db, ctx), ...patientArchiveRepo(db, ctx) },
+    patients: {
+      ...patientsRepo(db, ctx),
+      ...patientArchiveRepo(db, ctx),
+      ...patientCreateRepo(db, ctx),
+    },
     patientDuplicates: patientDuplicatesRepo(db, ctx),
     consents: consentsRepo(db, ctx),
   };

@@ -1,0 +1,206 @@
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ApiError } from "../../api/client";
+import { DateInput, Field, MobileInput, zodResolver } from "../../ui/form";
+import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
+import {
+  checkPatientDuplicates,
+  createPatient,
+  type CreatedPatient,
+  type DuplicateWarning,
+} from "./api";
+import { DuplicateWarnings } from "./DuplicateWarnings";
+import {
+  NEW_PATIENT_DEFAULTS,
+  newPatientSchema,
+  toCreateBody,
+  type NewPatientFormValues,
+  type NewPatientParsed,
+} from "./new-patient-schema";
+
+type Props = { onCreated: (patient: CreatedPatient) => void };
+
+// S03 / S16: four required fields on top; more details fold; Enter saves.
+export function NewPatientForm({ onCreated }: Props) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [warnings, setWarnings] = useState<DuplicateWarning[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting, isDirty },
+  } = useForm<NewPatientFormValues, unknown, NewPatientParsed>({
+    resolver: zodResolver(newPatientSchema),
+    defaultValues: NEW_PATIENT_DEFAULTS,
+  });
+
+  const fullName = watch("fullName");
+  const mobile = watch("mobile");
+  const noMobile = watch("noMobile");
+  const ageYears = watch("ageYears");
+  const birthDate = watch("birthDate");
+
+  useEffect(() => {
+    if (noMobile || !fullName?.trim() || !mobile?.trim()) {
+      setWarnings([]);
+      return;
+    }
+    const t = window.setTimeout(() => {
+      checkPatientDuplicates({
+        fullName: fullName.trim(),
+        mobile: mobile.trim(),
+        ageYearsAtReg: ageYears?.trim() ? Number(ageYears) : null,
+        dateOfBirth: null,
+      })
+        .then(setWarnings)
+        .catch(() => setWarnings([]));
+    }, 250);
+    return () => window.clearTimeout(t);
+  }, [fullName, mobile, noMobile, ageYears, birthDate]);
+
+  return (
+    <form
+      className="form new-patient-form"
+      noValidate
+      onSubmit={handleSubmit(async (values) => {
+        setFormError(null);
+        try {
+          const patient = await createPatient(toCreateBody(values));
+          onCreated(patient);
+        } catch (err) {
+          setFormError(
+            err instanceof ApiError
+              ? err.message
+              : "Could not save. Check the connection, then try again.",
+          );
+        }
+      })}
+    >
+      <UnsavedChangesGuard dirty={isDirty && !isSubmitting} />
+
+      <div className="new-patient-code" aria-live="polite">
+        <span className="new-patient-code-label">Patient no.</span>
+        <span className="new-patient-code-box">Assigned automatically when you save</span>
+      </div>
+
+      <Field label="Full name" error={errors.fullName?.message}>
+        {(p) => (
+          <input className="input" autoComplete="off" autoFocus {...p} {...register("fullName")} />
+        )}
+      </Field>
+
+      <Field label="Gender" error={errors.gender?.message}>
+        {(p) => (
+          <select className="input" {...p} {...register("gender")}>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="other">Other</option>
+          </select>
+        )}
+      </Field>
+
+      <div className="new-patient-age-row">
+        <Field label="Date of birth" hint="DD/MM/YYYY" error={errors.birthDate?.message}>
+          {(p) => <DateInput {...p} {...register("birthDate")} />}
+        </Field>
+        <Field label="Or age (years)" error={errors.ageYears?.message}>
+          {(p) => (
+            <input
+              className="input"
+              inputMode="numeric"
+              autoComplete="off"
+              {...p}
+              {...register("ageYears")}
+            />
+          )}
+        </Field>
+      </div>
+
+      <Field label="Mobile" error={errors.mobile?.message}>
+        {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
+      </Field>
+      <label className="new-patient-check">
+        <input type="checkbox" {...register("noMobile")} />
+        No mobile
+      </label>
+      {noMobile && (
+        <Field label="Why no mobile" error={errors.noMobileReason?.message}>
+          {(p) => (
+            <input className="input" autoComplete="off" {...p} {...register("noMobileReason")} />
+          )}
+        </Field>
+      )}
+
+      <DuplicateWarnings warnings={warnings} />
+
+      <button
+        type="button"
+        className="btn btn-ghost new-patient-more"
+        aria-expanded={detailsOpen}
+        onClick={() => setDetailsOpen((o) => !o)}
+      >
+        {detailsOpen ? "Hide extra details" : "More details"}
+      </button>
+
+      {detailsOpen && (
+        <div className="new-patient-details">
+          <Field label="Other mobile" error={errors.mobileSecondary?.message}>
+            {(p) => <MobileInput {...p} {...register("mobileSecondary")} />}
+          </Field>
+          <Field label="Area or address" error={errors.area?.message}>
+            {(p) => <input className="input" autoComplete="off" {...p} {...register("area")} />}
+          </Field>
+          <Field
+            label="Guardian name"
+            hint="Required under 18"
+            error={errors.guardianName?.message}
+          >
+            {(p) => (
+              <input className="input" autoComplete="off" {...p} {...register("guardianName")} />
+            )}
+          </Field>
+          <Field label="Guardian relation" error={errors.guardianRelation?.message}>
+            {(p) => (
+              <input
+                className="input"
+                autoComplete="off"
+                {...p}
+                {...register("guardianRelation")}
+              />
+            )}
+          </Field>
+          <Field label="Guardian mobile" error={errors.guardianMobile?.message}>
+            {(p) => <MobileInput {...p} {...register("guardianMobile")} />}
+          </Field>
+          <Field label="Emergency contact" error={errors.emergencyName?.message}>
+            {(p) => (
+              <input className="input" autoComplete="off" {...p} {...register("emergencyName")} />
+            )}
+          </Field>
+          <Field label="Old register no." error={errors.legacyRef?.message}>
+            {(p) => (
+              <input className="input" autoComplete="off" {...p} {...register("legacyRef")} />
+            )}
+          </Field>
+          <Field label="Notes" error={errors.notes?.message}>
+            {(p) => <textarea className="input" rows={3} {...p} {...register("notes")} />}
+          </Field>
+        </div>
+      )}
+
+      {formError && (
+        <p className="notice notice-error" role="alert">
+          {formError}
+        </p>
+      )}
+
+      <div className="form-actions">
+        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+          {isSubmitting ? "Saving…" : "Save patient"}
+        </button>
+      </div>
+    </form>
+  );
+}
