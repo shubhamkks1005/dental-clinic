@@ -15,7 +15,7 @@ Written: 2026-11-22 (late). Read STATE.md and MAP.md. Fake data only. Never push
 | 2.3.5 booking rules | `7a0d49f` |
 | 2.3.6 status wheel | `9bba344` |
 | 2.3.7 walk-in/emergency | `0909a40` |
-| 2.3.8 reschedule/cancel | *(commit after this handoff)* |
+| 2.3.8 reschedule/cancel | `6ff0ab5` |
 
 Prior 2.3.1–2.3.4: see previous HANDOFF / `git log`.
 
