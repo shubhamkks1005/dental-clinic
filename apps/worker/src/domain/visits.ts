@@ -13,6 +13,11 @@ export async function getVisit(repos: Repos, id: string) {
   return { ok: true as const, visit };
 }
 
+export async function listRecentVisits(repos: Repos, patientId: string, limit: number | undefined) {
+  const visits = await repos.visits.listRecentByPatient(patientId, { limit });
+  return { ok: true as const, visits };
+}
+
 export async function finaliseVisit(repos: Repos, id: string, body: unknown) {
   const parsed = parseFinaliseVisit(body);
   if (!parsed.ok) return parsed;

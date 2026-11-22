@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 960px;
+  max-width: 1200px;
 }
 
 .visit-back {
@@ -13,12 +13,127 @@
 .visit-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 12px;
 }
 
-.visit-head h1 {
+.visit-head-text h1 {
   margin: 0;
   font-size: 22px;
   color: var(--navy, #0f2a5c);
+}
+
+.visit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.visit-main {
+  min-width: 0;
+}
+
+.visit-side {
+  border: 1px solid var(--border, #e3e9ee);
+  border-radius: 16px;
+  background: var(--card, #fff);
+  padding: 12px 16px;
+}
+
+.visit-side-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.visit-side-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.visit-side-item {
+  margin: 0;
+}
+
+.visit-side-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 44px;
+  padding: 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.visit-side-item.is-current .visit-side-link {
+  background: var(--soft-blue, #e6eefa);
+}
+
+a.visit-side-link:hover,
+a.visit-side-link:focus-visible {
+  background: var(--soft-blue, #e6eefa);
+  outline: none;
+}
+
+.visit-side-date {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.visit-side-summary {
+  font-size: 13px;
+  color: var(--muted, #5b6b7b);
+}
+
+.visit-today-meta {
+  display: grid;
+  gap: 12px;
+  margin: 12px 0 0;
+}
+
+.visit-today-meta div {
+  display: grid;
+  gap: 4px;
+}
+
+.visit-today-meta dt {
+  font-size: 12px;
+  color: var(--muted, #5b6b7b);
+}
+
+.visit-today-meta dd {
+  margin: 0;
+  font-size: 14px;
+}
+
+.visit-stub-title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: var(--navy, #0f2a5c);
+}
+
+@media (min-width: 768px) {
+  .visit-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    align-items: start;
+    gap: 20px;
+  }
+}
+
+@media (min-width: 1366px) {
+  .visit-body {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+
+  .visit-head-text h1 {
+    font-size: 26px;
+  }
 }

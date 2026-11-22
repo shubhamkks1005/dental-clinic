@@ -38,3 +38,32 @@ describe("visits get (3.2.7)", () => {
     await expect(repos().visits.getById("missing")).rejects.toBeInstanceOf(NotFoundError);
   });
 });
+
+describe("visits listRecentByPatient (3.5.2)", () => {
+  it("returns newest first, skips void, forbids receptionist", async () => {
+    const older = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-20",
+    });
+    await repos().visits.finalise(older.id, { version: older.version });
+    const newer = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-22",
+    });
+    await t.sqlite
+      .prepare(`UPDATE visits SET status = 'void', version = version + 1 WHERE id = ?`)
+      .run(newer.id);
+    const third = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-21",
+    });
+
+    const recent = await repos().visits.listRecentByPatient(PATIENT_ID, { limit: 3 });
+    expect(recent.map((r) => r.id)).toEqual([third.id, older.id]);
+    expect(recent.map((r) => r.status)).toEqual(["draft", "final"]);
+
+    await expect(repos(receptionist).visits.listRecentByPatient(PATIENT_ID)).rejects.toBeInstanceOf(
+      ForbiddenError,
+    );
+  });
+});

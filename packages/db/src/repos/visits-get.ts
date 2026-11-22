@@ -1,4 +1,4 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull, ne } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -27,6 +27,14 @@ export type VisitDetail = {
   version: number;
 };
 
+/** Compact row for visit side panel (3.5.2). Void visits are omitted. */
+export type VisitRecent = {
+  id: string;
+  visitDateLocal: string;
+  status: "draft" | "final";
+  chiefComplaint: string | null;
+};
+
 const detailCols = {
   id: visits.id,
   patientId: visits.patientId,
@@ -49,7 +57,17 @@ const detailCols = {
   version: visits.version,
 };
 
-// 3.2.7: doctor-only clinical view. Receptionist has no clinical.view → ForbiddenError.
+const recentCols = {
+  id: visits.id,
+  visitDateLocal: visits.visitDateLocal,
+  status: visits.status,
+  chiefComplaint: visits.chiefComplaint,
+};
+
+const DEFAULT_RECENT = 3;
+const MAX_RECENT = 10;
+
+// 3.2.7 / 3.5.2: doctor-only clinical view. Receptionist has no clinical.view → ForbiddenError.
 export function visitsGetRepo(db: Db, ctx: Ctx) {
   return {
     async getById(visitId: string): Promise<VisitDetail> {
@@ -61,6 +79,29 @@ export function visitsGetRepo(db: Db, ctx: Ctx) {
         .get();
       if (!row) throw new NotFoundError("That visit");
       return row;
+    },
+
+    async listRecentByPatient(
+      patientId: string,
+      opts?: { limit?: number },
+    ): Promise<VisitRecent[]> {
+      assertAllowed(ctx, "clinical.view");
+      const limit = Math.min(Math.max(opts?.limit ?? DEFAULT_RECENT, 1), MAX_RECENT);
+      const rows = await db
+        .select(recentCols)
+        .from(visits)
+        .where(
+          and(eq(visits.patientId, patientId), isNull(visits.deletedAt), ne(visits.status, "void")),
+        )
+        .orderBy(desc(visits.visitDateLocal), desc(visits.createdAt))
+        .limit(limit)
+        .all();
+      return rows.map((r) => ({
+        id: r.id,
+        visitDateLocal: r.visitDateLocal,
+        status: r.status as "draft" | "final",
+        chiefComplaint: r.chiefComplaint,
+      }));
     },
   };
 }

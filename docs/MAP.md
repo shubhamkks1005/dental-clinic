@@ -87,7 +87,7 @@
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth… staff-visits, staff-chart; deny by default applies)
 - src/routes/staff-chart.ts (+ domain/chart.ts, staff-chart.test.ts) - 3.4.5 GET/POST patient chart events; as-of finalised visit; clinical.view/edit
-- src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7 POST /visits, GET /visits/:id, POST finalise, POST addenda (clinical.edit/view; receptionist 403)
+- src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7 POST /visits, GET /visits/:id, POST finalise, POST addenda; 3.5.2 GET /patients/:id/visits (recent; clinical.view; receptionist 403)
 - src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
@@ -152,7 +152,7 @@
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
 - src/features/chart/ - 3.4.2–3.4.6 ToothChart + VisitChartPanel (dentition by age; chart events; as-of history); ChartPlayground on /app/style-guide
-- src/features/visits/ - 3.5.1 VisitScreen shell + openVisit API helper; route /app/visits/:id
+- src/features/visits/ - 3.5.1–3.5.2 VisitScreen (S05): alerts strip, tabs Today/Chart/Plan/History/Files, RecentVisitsSide; openVisit + listRecentVisits; route /app/visits/:id
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -275,7 +275,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/visits.ts - 3.2.1 visits table (draft/final/void; one live visit per appointment)
 - src/repos/visit-insert.ts - INSERT…SELECT WHERE NOT EXISTS live visit for appointment
 - src/repos/visits-open.ts (+ test) - open draft (return existing or insert); receptionist forbidden
-- src/repos/visits-get.ts (+ test) - 3.2.7 getById (clinical.view; no snapshot_json in reply)
+- src/repos/visits-get.ts (+ test) - 3.2.7 getById; 3.5.2 listRecentByPatient (newest first, skip void; clinical.view)
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 - migrations/0018_visits.sql - 3.2.1 visits table + indexes (owner applies; agent did not apply to staging)
 - src/schema/tooth-events.ts - 3.2.2 append-only tooth_events (FDI + surface)

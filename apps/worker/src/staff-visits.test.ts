@@ -93,6 +93,9 @@ describe("staff visit clinical API (3.2.7)", () => {
       (await staffJson("rec@example.test", "GET", `/api/staff/visits/${visitId}`)).status,
     ).toBe(403);
     expect(
+      (await staffJson("rec@example.test", "GET", "/api/staff/patients/p1/visits")).status,
+    ).toBe(403);
+    expect(
       (
         await staffJson("rec@example.test", "POST", `/api/staff/visits/${visitId}/finalise`, {
           version: 1,
@@ -107,6 +110,22 @@ describe("staff visit clinical API (3.2.7)", () => {
         })
       ).status,
     ).toBe(403);
+  });
+
+  it("doctor lists recent visits for the side panel (3.5.2)", async () => {
+    const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
+      patientId: "p1",
+      visitDateLocal: "2026-11-22",
+    });
+    expect(opened.status).toBe(201);
+    const list = await staffJson(
+      "doc@example.test",
+      "GET",
+      "/api/staff/patients/p1/visits?limit=3",
+    );
+    expect(list.status).toBe(200);
+    const body = (await list.json()) as { ok: true; data: { visits: { id: string }[] } };
+    expect(body.data.visits.length).toBe(1);
   });
 
   it("bad open body is 400 for the doctor", async () => {

@@ -1,6 +1,12 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
-import { addVisitAddendum, finaliseVisit, getVisit, openVisit } from "../domain/visits";
+import {
+  addVisitAddendum,
+  finaliseVisit,
+  getVisit,
+  listRecentVisits,
+  openVisit,
+} from "../domain/visits";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -12,6 +18,18 @@ staffVisits.post("/visits", async (c) => {
   const result = await openVisit(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ visit: result.visit }), 201);
+});
+
+// 3.5.2: last N visits for the visit screen side panel (doctor only).
+staffVisits.get("/patients/:id/visits", async (c) => {
+  const raw = c.req.query("limit");
+  const limit = raw ? Number(raw) : undefined;
+  const result = await listRecentVisits(
+    signedIn(c).repos,
+    c.req.param("id"),
+    Number.isFinite(limit) ? limit : undefined,
+  );
+  return c.json(ok({ visits: result.visits }));
 });
 
 staffVisits.get("/visits/:id", async (c) => {

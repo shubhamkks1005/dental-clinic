@@ -1,3 +1,3 @@
 export { VisitScreen } from "./VisitScreen";
-export { openVisit, getVisit } from "./api";
-export type { VisitSummary } from "./api";
+export { openVisit, getVisit, listRecentVisits } from "./api";
+export type { VisitSummary, VisitRecent } from "./api";
