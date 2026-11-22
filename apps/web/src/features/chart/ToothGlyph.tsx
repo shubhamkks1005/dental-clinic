@@ -49,11 +49,12 @@ export function ToothGlyph({
           const cell = bySurface.get(surface);
           const isFocus = focused && focusSurface === surface;
           const fill = cell ? colorsByCode?.get(cell.conditionCode) : undefined;
+          const changed = !!cell?.changedToday;
           return (
             <path
               key={surface}
               d={PATH[surface]}
-              className={`tooth-surf${cell ? " tooth-surf-marked" : ""}${isFocus ? " tooth-surf-focus" : ""}`}
+              className={`tooth-surf${cell ? " tooth-surf-marked" : ""}${isFocus ? " tooth-surf-focus" : ""}${changed ? " tooth-surf-today" : ""}`}
               style={fill ? { fill } : undefined}
               tabIndex={isFocus ? 0 : -1}
               role="button"

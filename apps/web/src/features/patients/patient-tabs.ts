@@ -2,6 +2,7 @@
 export const PATIENT_PROFILE_TABS = [
   { id: "overview", label: "Overview", ready: true },
   { id: "appointments", label: "Appointments", ready: true },
+  { id: "chart", label: "Chart", ready: true }, // 3.4.5 (full visit screen still 3.5.x)
   { id: "visits", label: "Visits", ready: false }, // Phase 3
   { id: "billing", label: "Billing", ready: false }, // Phase 5
   { id: "files", label: "Files", ready: false }, // Phase 3

@@ -44,6 +44,7 @@ export type ToothEventLike = {
   conditionCode: string;
   notedAt: string;
   id: string;
+  visitId?: string | null;
 };
 
 export type ChartCell = {
@@ -52,6 +53,9 @@ export type ChartCell = {
   conditionCode: string;
   notedAt: string;
   eventId: string;
+  visitId?: string | null;
+  /** Highlight for events noted on the clinic's today (IST) or this draft visit (3.4.5). */
+  changedToday?: boolean;
 };
 
 export function chartFromEvents(events: readonly ToothEventLike[]): ChartCell[] {
@@ -70,6 +74,7 @@ export function chartFromEvents(events: readonly ToothEventLike[]): ChartCell[] 
       conditionCode: e.conditionCode,
       notedAt: e.notedAt,
       eventId: e.id,
+      visitId: e.visitId ?? null,
     }))
     .sort((a, b) => a.toothFdi - b.toothFdi || a.surface.localeCompare(b.surface));
 }

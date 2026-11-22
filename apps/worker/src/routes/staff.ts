@@ -8,6 +8,7 @@ import { staffMedicalHistory } from "./staff-medical-history";
 import { staffPatients } from "./staff-patients";
 import { staffSettings } from "./staff-settings";
 import { staffUsers } from "./staff-users";
+import { staffChart } from "./staff-chart";
 import { staffVisits } from "./staff-visits";
 
 // /api/staff/*: every route needs a staff session (deny by default in app.ts) except the four
@@ -23,3 +24,4 @@ staff.route("/", staffConsents);
 staff.route("/", staffMedicalHistory);
 staff.route("/", staffAppointments);
 staff.route("/", staffVisits);
+staff.route("/", staffChart);

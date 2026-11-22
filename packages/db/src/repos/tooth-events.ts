@@ -1,18 +1,12 @@
-import {
-  chartFromEvents,
-  isFdiTooth,
-  isToothSurface,
-  newUlid,
-  type ChartCell,
-  type ToothSurface,
-} from "@clinic/shared";
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { isFdiTooth, isToothSurface, newUlid, type ToothSurface } from "@clinic/shared";
+import { and, eq, isNull } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { patients, toothEvents, visits } from "../schema";
+import { toothEventsChartRepo } from "./tooth-events-chart";
 
 export type AddToothEventInput = {
   patientId: string;
@@ -23,9 +17,12 @@ export type AddToothEventInput = {
   notedAt?: string;
 };
 
-// 3.2.2: append tooth event; chartForPatient reads all live events (budget <400 rows).
+// 3.2.2 / 3.4.5: append tooth event; chart reads live or as-of a finalised visit.
 export function toothEventsRepo(db: Db, ctx: Ctx) {
+  const chart = toothEventsChartRepo(db, ctx);
   return {
+    ...chart,
+
     async add(input: AddToothEventInput): Promise<{ id: string }> {
       assertAllowed(ctx, "clinical.edit");
       if (!isFdiTooth(input.toothFdi)) {
@@ -90,33 +87,6 @@ export function toothEventsRepo(db: Db, ctx: Ctx) {
         }),
       ]);
       return { id };
-    },
-
-    async chartForPatient(patientId: string): Promise<{ cells: ChartCell[]; rowsRead: number }> {
-      assertAllowed(ctx, "clinical.view");
-      const rows = await db
-        .select({
-          id: toothEvents.id,
-          toothFdi: toothEvents.toothFdi,
-          surface: toothEvents.surface,
-          conditionCode: toothEvents.conditionCode,
-          notedAt: toothEvents.notedAt,
-        })
-        .from(toothEvents)
-        .where(and(eq(toothEvents.patientId, patientId), isNull(toothEvents.deletedAt)))
-        .orderBy(asc(toothEvents.notedAt), asc(toothEvents.id));
-      return {
-        rowsRead: rows.length,
-        cells: chartFromEvents(
-          rows.map((r) => ({
-            id: r.id,
-            toothFdi: r.toothFdi,
-            surface: r.surface,
-            conditionCode: r.conditionCode,
-            notedAt: r.notedAt,
-          })),
-        ),
-      };
     },
   };
 }

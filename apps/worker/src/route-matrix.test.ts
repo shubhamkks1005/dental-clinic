@@ -123,6 +123,14 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/visits/:id/addenda" && method === "POST") {
     return JSON.stringify({ body: "Matrix addendum", reason: "Matrix reason" });
   }
+  if (path === "/api/staff/patients/:id/chart/events" && method === "POST") {
+    return JSON.stringify({
+      visitId: "v1",
+      toothFdi: 46,
+      surface: "o",
+      conditionCode: "filling",
+    });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

@@ -82,6 +82,33 @@
   stroke-width: 1.6;
 }
 
+.tooth-surf-today {
+  stroke: #ca8a04;
+  stroke-width: 1.4;
+}
+
+.visit-chart-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.visit-chart-toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: min(100%, 200px);
+}
+
+.visit-chart-toolbar select {
+  min-height: 44px;
+  font: inherit;
+  font-weight: 400;
+}
+
 .tooth-fdi {
   font-size: 7px;
   fill: #5b6b7b;

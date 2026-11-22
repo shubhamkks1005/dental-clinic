@@ -4,6 +4,7 @@ import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
+import { VisitChartPanel } from "../chart";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
 import { PatientOverviewTab } from "./PatientOverviewTab";
 import { PatientProfileHeader } from "./PatientProfileHeader";
@@ -65,22 +66,26 @@ export function PatientProfileScreen() {
     return <p className="muted">Loading…</p>;
   }
 
-  const tabs = readyPatientTabs().map((t) => ({
-    id: t.id,
-    label: t.label,
-    content:
-      t.id === "overview" ? (
-        <PatientOverviewTab
-          patient={patient}
-          canEdit={canEdit}
-          canViewClinical={canViewClinical}
-          canEditClinical={canEditClinical}
-          onPatientChange={setPatient}
-        />
-      ) : (
-        <PatientAppointmentsTab patientId={patient.id} />
-      ),
-  }));
+  const tabs = readyPatientTabs()
+    .filter((t) => t.id !== "chart" || canViewClinical)
+    .map((t) => ({
+      id: t.id,
+      label: t.label,
+      content:
+        t.id === "overview" ? (
+          <PatientOverviewTab
+            patient={patient}
+            canEdit={canEdit}
+            canViewClinical={canViewClinical}
+            canEditClinical={canEditClinical}
+            onPatientChange={setPatient}
+          />
+        ) : t.id === "chart" ? (
+          <VisitChartPanel patientId={patient.id} canEdit={canEditClinical} />
+        ) : (
+          <PatientAppointmentsTab patientId={patient.id} />
+        ),
+    }));
 
   return (
     <div className="patient-profile">

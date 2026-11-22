@@ -51,6 +51,7 @@ describe("teeth FDI (3.2.2)", () => {
         conditionCode: "caries",
         notedAt: "2026-06-01T00:00:00.000Z",
         eventId: "c",
+        visitId: null,
       },
       {
         toothFdi: 46,
@@ -58,6 +59,7 @@ describe("teeth FDI (3.2.2)", () => {
         conditionCode: "filling",
         notedAt: "2026-06-01T00:00:00.000Z",
         eventId: "b",
+        visitId: null,
       },
     ]);
   });

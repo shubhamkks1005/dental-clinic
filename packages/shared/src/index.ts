@@ -36,5 +36,6 @@ export * from "./visits";
 export * from "./teeth";
 export * from "./chart-view";
 export * from "./conditions";
+export * from "./tooth-chart-api";
 export * from "./medical-history";
 export * from "./plan-items";
