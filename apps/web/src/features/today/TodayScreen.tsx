@@ -6,6 +6,8 @@ import { icons } from "../../ui/icons";
 import { Logo } from "../../ui/Logo";
 import { shortName } from "../../ui/names";
 import { StatCard } from "../../ui/StatCard";
+import { useVisibleInterval } from "../../ui/useVisibleInterval";
+import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
 import { useMe } from "../auth";
 import { changeAppointmentStatus, listDayAppointments } from "./api";
 import { buildTodayModel, type TodayModel } from "./buildTodayModel";
@@ -55,6 +57,8 @@ export function TodayScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useVisibleInterval(load, AUTO_REFRESH_MS);
 
   async function onStatus(
     id: string,

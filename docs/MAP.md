@@ -139,6 +139,7 @@
 - src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
 - src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; "signed out after a period of inactivity" notice; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me), UserCard ("Name · Role" + Sign out, 1.3.7) + user-card.css, api.ts, auth.css
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
+- src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible
 - src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)

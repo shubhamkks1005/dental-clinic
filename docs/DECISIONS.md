@@ -89,4 +89,5 @@
 - 2026-11-22 - 2.4.2 quick-book is a dialog on Appointments (S07), not a separate page. After patient pick: visit type → suggested slot → Book (3 clicks). Source always phone. Optional "What they said on the phone" → complaint. Slots from GET /appointments/slots (limit 5, from chosen date) - agent
 - 2026-11-22 - 2.4.3 Today: receptionist sees full list + walk-in + call list (today's no-shows); doctor sees Now + Next 3 only (role from /me). Collection/bills stat cards omitted until Phase 5 billing. Fake sample-data removed - agent
 - 2026-11-22 - 2.4.4 day list print defaults to tomorrow (evening downtime prep); ?date= overrides; uses SAMPLE_CLINIC header until 1.5.2 clinic profile - agent
+- 2026-11-22 - 2.4.7 auto-refresh on Today and Appointments only (60s, visibility pause); not on other staff screens - agent
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan

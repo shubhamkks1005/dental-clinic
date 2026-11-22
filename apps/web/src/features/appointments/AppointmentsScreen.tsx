@@ -2,6 +2,8 @@ import { addIstDays, istDate } from "@clinic/shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
+import { useVisibleInterval } from "../../ui/useVisibleInterval";
+import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
 import { listDayAppointments, type DayAppointmentsReply } from "./api";
 import { DayView } from "./DayView";
 import { QuickBookDialog } from "./QuickBookDialog";
@@ -53,6 +55,8 @@ export function AppointmentsScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useVisibleInterval(load, AUTO_REFRESH_MS);
 
   useEffect(() => {
     if (wantBook) setBookOpen(true);
