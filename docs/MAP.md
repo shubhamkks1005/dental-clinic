@@ -85,6 +85,9 @@
 - src/domain/jwt.ts - pure RS256 JWT checks: decodeJwt, verifyRs256 (kid + alg RS256 required), checkStandardClaims (iss, aud, exp, iat, nbf, 60 s skew)
 - src/adapters/jwks.ts - fetch + isolate-memory cache of signing keys (Cache-Control max-age, capped 24 h); unknown kid refetches at most once per 5 min; verifyWithJwks()
 - src/middleware/access-jwt.ts - optional Cloudflare Access check on /api/staff/* (off while ACCESS_AUD / ACCESS_TEAM_DOMAIN are empty; health bypassed)
+- src/log.ts (+ test) - 1.6.1 writeLog / sanitizeLog / requestPath: one JSON line per event; drops name/mobile/diagnosis/patient keys; pathname only (no query)
+- src/middleware/request-log.ts - 1.6.1 one "request" log line per /api and /hooks call (method, path, status, ms, requestId, role); still written on crash
+- src/request-id.test.ts - 1.4.7 header + 1.6.1: Error ID finds the request and unhandled error lines; query/body never in logs
 - src/testing/jwt-fixtures.ts - test-only RSA key + RS256 token signer
 - src/errors.ts - errorReply(err): RepoError -> 400/403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
 - src/errors.test.ts - 409 conflict reply, 403/404, 500 hides details

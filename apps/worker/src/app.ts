@@ -1,10 +1,12 @@
 import { areaOf, fail, isWorkerArea } from "@clinic/shared";
 import { Hono } from "hono";
 import { errorReply } from "./errors";
+import { writeLog } from "./log";
 import { accessJwt } from "./middleware/access-jwt";
 import { csrfGuard } from "./middleware/csrf";
 import { apiHeaders } from "./middleware/headers";
 import { requestId } from "./middleware/request-id";
+import { requestLog } from "./middleware/request-log";
 import { requireStaff } from "./middleware/session";
 import { PUBLIC_API } from "./public-routes";
 import { hooks } from "./routes/hooks";
@@ -25,6 +27,8 @@ export function createApp(options: AppOptions = {}) {
 
   app.use("/api/*", requestId());
   app.use("/hooks/*", requestId());
+  app.use("/api/*", requestLog());
+  app.use("/hooks/*", requestLog());
   app.use("/api/*", apiHeaders());
   app.use("/hooks/*", apiHeaders());
   app.use("/api/*", csrfGuard());
@@ -45,8 +49,14 @@ export function createApp(options: AppOptions = {}) {
 
   app.onError((err, c) => {
     const { status, body } = errorReply(err);
-    // Error messages can contain request data, so log only the error type and the request id.
-    if (status === 500) console.error("unhandled error:", err.name, c.var.requestId);
+    // Never log the error message: it may hold request or patient data. Name + request id only.
+    if (status === 500) {
+      writeLog("error", {
+        msg: "unhandled",
+        requestId: c.var.requestId,
+        err: err instanceof Error ? err.name : "unknown",
+      });
+    }
     return c.json(body, status);
   });
 
