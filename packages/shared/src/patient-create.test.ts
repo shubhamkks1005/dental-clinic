@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseCreatePatient } from "./patient-create";
+import { parseCreatePatient, parseUpdatePatient } from "./patient-create";
 
 const day = "2026-11-22";
 
@@ -62,5 +62,19 @@ describe("parseCreatePatient (2.2.1)", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.value.guardianMobile).toBe("+919000000099");
+  });
+});
+
+describe("parseUpdatePatient (2.2.4)", () => {
+  it("requires a positive version", () => {
+    const r = parseUpdatePatient(base(), day, day);
+    expect(r.ok).toBe(false);
+  });
+
+  it("accepts fields with version", () => {
+    const r = parseUpdatePatient(base({ version: 3 }), day, day);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.value.version).toBe(3);
   });
 });

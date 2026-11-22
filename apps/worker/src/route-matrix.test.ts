@@ -55,6 +55,15 @@ function bodyFor(method: string, path: string): string | undefined {
       mobile: "9000008888",
     });
   }
+  if (path === "/api/staff/patients/:id" && method === "PUT") {
+    return JSON.stringify({
+      fullName: "Matrix Edit Fake",
+      gender: "female",
+      ageYearsAtReg: 30,
+      mobile: "9000007777",
+      version: 1,
+    });
+  }
   if (path === "/api/staff/patients/duplicate-check") {
     return JSON.stringify({ fullName: "Matrix Fake", mobile: "9000009999", ageYearsAtReg: 30 });
   }

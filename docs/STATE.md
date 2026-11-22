@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.2.4** (patient edit).
+Phase: 2. Current task: none; next is **2.2.5** (patient list filters).
+2.2.4 DONE locally (PUT `/patients/:id` version-checked edit; audit old/new mobile; ConfirmDialog on mobile change; 409 stale version). No new migration.
 2.2.3 DONE locally (top-bar PatientSearch: `/` focus, 250 ms debounce, arrows+Enter → profile; empty → New patient: query; last visit placeholder until 2.3). No new migration.
 2.2.2 DONE locally (GET `/patients/:id`; S04/S17 profile header + Overview/Appointments tabs; Visits/Billing/Files/Messages hidden until their phase; consents on Overview; list name → profile). No new migration.
 2.2.1 DONE locally (new patient form S03/S16: four required fields, More details fold, duplicate-check on mobile debounce, POST `/api/staff/patients` mints P- code + search tokens + audit; after save Book appointment / Walk-in now). No new migration.
@@ -16,7 +17,7 @@ Phase: 2. Current task: none; next is **2.2.4** (patient edit).
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.2.4**+.
+Next: **2.2.5**+.
 
 ## Phase 1 gate (from PLAN.md)
 

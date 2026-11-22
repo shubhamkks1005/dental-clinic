@@ -100,6 +100,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "patients.edit" },
   },
   {
+    method: "PUT",
+    path: "/api/staff/patients/:id",
+    access: { kind: "permission", action: "patients.edit" },
+  },
+  {
     method: "POST",
     path: "/api/staff/patients/duplicate-check",
     access: { kind: "permission", action: "patients.view" },

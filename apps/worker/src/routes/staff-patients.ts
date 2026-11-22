@@ -7,11 +7,12 @@ import {
   getPatient,
   listPatients,
   restorePatient,
+  updatePatient,
 } from "../domain/patients";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
-// GET /patients — list (S02/S15). GET :id profile (2.2.2). POST create (2.2.1).
+// GET /patients — list (S02/S15). GET :id profile (2.2.2). POST create (2.2.1). PUT edit (2.2.4).
 export const staffPatients = new Hono<AppEnv>();
 
 staffPatients.get("/patients", async (c) => {
@@ -29,6 +30,13 @@ staffPatients.post("/patients", async (c) => {
   const result = await createPatient(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ patient: result.patient }), 201);
+});
+
+staffPatients.put("/patients/:id", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await updatePatient(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ patient: result.patient }));
 });
 
 staffPatients.post("/patients/duplicate-check", async (c) => {

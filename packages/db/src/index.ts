@@ -38,6 +38,7 @@ export {
 export { patientArchiveRepo } from "./repos/patient-archive";
 export { patientCreateRepo, type CreatedPatient } from "./repos/patient-create";
 export { patientGetRepo, type PatientDetail } from "./repos/patient-get";
+export { patientUpdateRepo } from "./repos/patient-update";
 export {
   patientDuplicatesRepo,
   type DuplicateHit,

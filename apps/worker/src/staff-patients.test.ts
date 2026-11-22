@@ -73,6 +73,61 @@ describe("GET /api/staff/patients/:id (2.2.2)", () => {
   });
 });
 
+describe("PUT /api/staff/patients/:id (2.2.4)", () => {
+  it("updates and returns the new version", async () => {
+    const cookie = await sessionCookie(env, "rec@example.test");
+    const init = sameOriginPost(cookie);
+    const res = await app.request(
+      `${ORIGIN}/api/staff/patients/p1`,
+      {
+        ...init,
+        method: "PUT",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: "Fake One Edited",
+          gender: "female",
+          ageYearsAtReg: 30,
+          mobile: "9000000001",
+          version: 1,
+        }),
+      },
+      env,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      ok: true;
+      data: { patient: { fullName: string; version: number } };
+    };
+    expect(body.data.patient).toMatchObject({ fullName: "Fake One Edited", version: 2 });
+  });
+
+  it("returns 409 on stale version", async () => {
+    const cookie = await sessionCookie(env, "doc@example.test");
+    const init = sameOriginPost(cookie);
+    const stale = {
+      ...init,
+      method: "PUT" as const,
+      headers: {
+        ...(init.headers as Record<string, string>),
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        fullName: "Stale",
+        gender: "female",
+        ageYearsAtReg: 30,
+        mobile: "9000000001",
+        version: 1,
+      }),
+    };
+    expect((await app.request(`${ORIGIN}/api/staff/patients/p1`, stale, env)).status).toBe(200);
+    const again = await app.request(`${ORIGIN}/api/staff/patients/p1`, stale, env);
+    expect(again.status).toBe(409);
+  });
+});
+
 describe("POST /api/staff/patients/duplicate-check (2.1.7)", () => {
   it("returns soft warnings for doctor", async () => {
     const cookie = await sessionCookie(env, "doc@example.test");

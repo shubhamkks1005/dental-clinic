@@ -86,6 +86,13 @@ export function createPatient(body: Record<string, unknown>): Promise<CreatedPat
   }).then((r) => r.patient);
 }
 
+export function updatePatient(id: string, body: Record<string, unknown>): Promise<PatientDetail> {
+  return api<{ patient: PatientDetail }>(`/api/staff/patients/${encodeURIComponent(id)}`, {
+    method: "PUT",
+    body,
+  }).then((r) => r.patient);
+}
+
 export function checkPatientDuplicates(body: Record<string, unknown>): Promise<DuplicateWarning[]> {
   return api<{ warnings: DuplicateWarning[] }>("/api/staff/patients/duplicate-check", {
     method: "POST",

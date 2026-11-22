@@ -1,5 +1,11 @@
-import { displayDateField, PATIENT_GENDERS, personNameField } from "@clinic/shared";
+import {
+  displayDateField,
+  formatDisplayDate,
+  PATIENT_GENDERS,
+  personNameField,
+} from "@clinic/shared";
 import { z } from "zod";
+import type { PatientDetail } from "./api";
 
 // Client form shape for S03/S16. Server re-validates via parseCreatePatient.
 
@@ -104,6 +110,38 @@ export function toCreateBody(values: NewPatientParsed): Record<string, unknown> 
     guardianMobile: values.guardianMobile,
     legacyRef: values.legacyRef,
     notes: values.notes,
+  };
+}
+
+export function toUpdateBody(values: NewPatientParsed, version: number): Record<string, unknown> {
+  return { ...toCreateBody(values), version };
+}
+
+function mobileDigits(stored: string | null): string {
+  return stored ? stored.replace(/^\+91/, "") : "";
+}
+
+export function defaultsFromPatient(p: PatientDetail): NewPatientFormValues {
+  return {
+    fullName: p.fullName,
+    gender: p.gender,
+    birthDate: p.dateOfBirth ? formatDisplayDate(p.dateOfBirth) : "",
+    ageYears: p.ageYearsAtReg !== null ? String(p.ageYearsAtReg) : "",
+    mobile: mobileDigits(p.mobile),
+    noMobile: !p.mobile,
+    noMobileReason: p.noMobileReason ?? "",
+    mobileSecondary: mobileDigits(p.mobileSecondary),
+    area: p.area ?? "",
+    email: p.email ?? "",
+    referredBy: p.referredBy ?? "",
+    emergencyName: p.emergencyName ?? "",
+    emergencyRelation: p.emergencyRelation ?? "",
+    emergencyMobile: mobileDigits(p.emergencyMobile),
+    guardianName: p.guardianName ?? "",
+    guardianRelation: p.guardianRelation ?? "",
+    guardianMobile: mobileDigits(p.guardianMobile),
+    legacyRef: p.legacyRef ?? "",
+    notes: p.notes ?? "",
   };
 }
 

@@ -12,6 +12,7 @@ import {
   parseCreatePatient,
   parseDuplicateCheck,
   parsePageQuery,
+  parseUpdatePatient,
   parseVersionOnly,
   type Page,
   type ParamReader,
@@ -27,6 +28,21 @@ export function listPatients(repos: Repos, params: ParamReader): Promise<Page<Pa
 // 2.2.2 profile.
 export function getPatient(repos: Repos, id: string): Promise<PatientDetail> {
   return repos.patients.get(id);
+}
+
+// 2.2.4 edit (version-checked).
+export async function updatePatient(
+  repos: Repos,
+  id: string,
+  body: unknown,
+  now: Date = new Date(),
+): Promise<{ ok: true; patient: PatientDetail } | { ok: false; message: string }> {
+  const existing = await repos.patients.get(id);
+  const registeredOn = istDate(new Date(existing.createdAt));
+  const parsed = parseUpdatePatient(body, istDate(now), registeredOn);
+  if (!parsed.ok) return parsed;
+  const patient = await repos.patients.update(id, parsed.value);
+  return { ok: true, patient };
 }
 
 function parseListStatus(raw: string | null): PatientListStatus {

@@ -72,15 +72,46 @@ export type CreatePatientInput = {
   notes: string | null;
 };
 
+export type ParsePatientOptions = {
+  /** Registration day (IST YYYY-MM-DD). Defaults to onDate for create; edit must pass the original. */
+  registeredOn?: string;
+};
+
 export function parseCreatePatient(
   body: unknown,
   onDate: string,
+  options: ParsePatientOptions = {},
 ): { ok: true; value: CreatePatientInput } | { ok: false; message: string } {
   const parsed = createPatientBody.safeParse(body);
   if (!parsed.success) {
     return { ok: false, message: parsed.error.issues[0]?.message ?? "Check the details." };
   }
-  const d = parsed.data;
+  return finishPatientFields(parsed.data, onDate, options.registeredOn ?? onDate);
+}
+
+/** 2.2.4: same fields as create plus optimistic version. */
+export function parseUpdatePatient(
+  body: unknown,
+  onDate: string,
+  registeredOn: string,
+): { ok: true; value: CreatePatientInput & { version: number } } | { ok: false; message: string } {
+  if (typeof body !== "object" || body === null) {
+    return { ok: false, message: "Send the patient details as JSON." };
+  }
+  const version = Number((body as { version?: unknown }).version);
+  if (!Number.isInteger(version) || version < 1) {
+    return { ok: false, message: "Reload the page, then try again." };
+  }
+  const fields = parseCreatePatient(body, onDate, { registeredOn });
+  if (!fields.ok) return fields;
+  return { ok: true, value: { ...fields.value, version } };
+}
+
+function finishPatientFields(
+  d: CreatePatientBody,
+  onDate: string,
+  registeredOn: string,
+): { ok: true; value: CreatePatientInput } | { ok: false; message: string } {
   const dateOfBirth = d.dateOfBirth ?? null;
   const ageYearsAtReg = d.ageYearsAtReg ?? null;
   if (!dateOfBirth && ageYearsAtReg === null) {
@@ -124,7 +155,7 @@ export function parseCreatePatient(
     {
       dateOfBirth,
       ageYearsAtReg,
-      registeredOn: onDate,
+      registeredOn,
       ...guardian,
     },
     onDate,

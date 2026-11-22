@@ -7,6 +7,7 @@ import { patientCreateRepo } from "./patient-create";
 import { patientDuplicatesRepo } from "./patient-duplicates";
 import { patientGetRepo } from "./patient-get";
 import { patientsRepo } from "./patients";
+import { patientUpdateRepo } from "./patient-update";
 import { settingsRepo } from "./settings";
 import { staffRepo } from "./staff";
 
@@ -22,6 +23,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...patientArchiveRepo(db, ctx),
       ...patientCreateRepo(db, ctx),
       ...patientGetRepo(db, ctx),
+      ...patientUpdateRepo(db, ctx),
     },
     patientDuplicates: patientDuplicatesRepo(db, ctx),
     consents: consentsRepo(db, ctx),

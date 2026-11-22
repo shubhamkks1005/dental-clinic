@@ -85,7 +85,7 @@
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents; deny by default applies)
-- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
+- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
@@ -142,7 +142,7 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; other nav NotBuiltYet
-- src/features/patients/ - list, new form, profile (Overview/Appointments; later tabs flagged off), PatientSearch (2.2.3 / debounce arrows Enter), consents, duplicate warnings, api, CSS; filters still 2.2.5
+- src/features/patients/ - list, new form, profile + PatientEditForm (2.2.4 mobile confirm), PatientSearch (2.2.3), consents, duplicate warnings, api, CSS; filters still 2.2.5
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -246,6 +246,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/patient-archive.ts (+ test) - 2.1.8 archive(reason)/restore with version check + audit
 - src/repos/patient-create.ts (+ test) - 2.2.1 create (takePatientCode + insert + audit, then search tokens)
 - src/repos/patient-get.ts (+ test) - 2.2.2 get by id for profile
+- src/repos/patient-update.ts (+ test) - 2.2.4 update with version check, mobile audit, search rebuild
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 
 ## packages/shared
@@ -262,7 +263,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes, referral_sources); listItemSchema(key); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)
-- src/patient-create.ts (+ test) - 2.2.1 parseCreatePatient (mobile XOR reason, DOB/age, guardian under 18)
+- src/patient-create.ts (+ test) - 2.2.1 parseCreatePatient; 2.2.4 parseUpdatePatient (+ version)
 - src/patient-age.ts (+ test) - ageYearsFromDob, ageYearsOn, displayAge/formatAgeYears, isMinor (under 18); never store current age
 - src/patient-guardian.ts (+ test) - 2.1.3 guardianSaveError (10yo without guardian cannot save), normalisedGuardian
 - src/patient-search-tokens.ts (+ test) - 2.1.6 buildSearchTokens, searchWords, tokenRangeEnd (no FTS5, no LIKE %x%)

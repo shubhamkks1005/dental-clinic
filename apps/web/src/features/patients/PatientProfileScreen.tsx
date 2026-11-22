@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ApiError } from "../../api/client";
+import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
@@ -9,9 +10,11 @@ import { PatientProfileHeader } from "./PatientProfileHeader";
 import { readyPatientTabs } from "./patient-tabs";
 import "./patient-profile.css";
 
-// S04 (laptop) / S17 (phone): profile with ready tabs only (2.2.2).
+// S04 (laptop) / S17 (phone): profile with ready tabs only (2.2.2 / edit 2.2.4).
 export function PatientProfileScreen() {
   const { id } = useParams<{ id: string }>();
+  const { permissions } = useMe();
+  const canEdit = permissions.includes("patients.edit");
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
@@ -64,7 +67,7 @@ export function PatientProfileScreen() {
     label: t.label,
     content:
       t.id === "overview" ? (
-        <PatientOverviewTab patient={patient} />
+        <PatientOverviewTab patient={patient} canEdit={canEdit} onPatientChange={setPatient} />
       ) : (
         <PatientAppointmentsTab patientId={patient.id} />
       ),
