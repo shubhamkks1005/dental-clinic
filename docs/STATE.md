@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 3. Current task: **3.2.7**. 3.1.1 skipped (Waiting on me). 3.1.2–3.2.6 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.2.7** (next session — HANDOFF written; prior session stopped for context). 3.1.1 skipped (Waiting on me). 3.1.2–3.2.6 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 3.2.6 DONE locally (finalise snapshot+hash; repo blocks draft edits on final; addenda). **New migration `0024_visit_addenda.sql` — owner applies; agent did not apply to staging.** No SQL triggers (DECISIONS).
 3.2.5 DONE locally (plan_items + plan_item_versions; estimate increase needs reason). **New migration `0023_plan_items.sql` — owner applies; agent did not apply to staging.**
