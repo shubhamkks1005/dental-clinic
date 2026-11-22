@@ -268,6 +268,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. as +91…, gender, ageYearsAtReg, stable seed ids (dry_run only)
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
 - src/seed/seed-sql.ts (+ test) - 1.1.7/2.1.6 buildLocalPatientSeedSql: DELETE seed%, patient + patient_search batches, counter upsert (local only)
+- src/seed/fake-clinical-sql.ts - 3.10.5 local-only 200 fake clinical patients (visits/chart/files meta)
 - src/seed/factories.ts (+ test) - 1.7.5 fakePatient / fakeMobile / fakePersonName / fakeHistory (made-up only; clinical strings say "fake")
 - src/search/patient-tokens.ts (+ test) - rebuildPatientSearchStatements (same batch as patient write)
 - src/search/search-scale.test.ts - 2.1.6: 5,000 fake patients, EXPLAIN uses token index, <100 rows

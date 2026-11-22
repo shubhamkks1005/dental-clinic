@@ -12,6 +12,7 @@
     "test:workers": "vitest run --config vitest.workers.config.ts",
     "db:migrate": "pnpm wr d1 migrations apply DB --local --env=''",
     "db:seed": "node scripts/seed-local-patients.mjs",
+    "db:seed:clinical": "node scripts/seed-local-clinical.mjs",
     "deploy:staging": "pnpm wr deploy --env staging",
     "spike:d1": "node spike/run.mjs",
     "staff:seed-doctor": "node scripts/staff-admin.mjs seed-doctor",

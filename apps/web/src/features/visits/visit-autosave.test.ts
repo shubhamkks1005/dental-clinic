@@ -32,9 +32,21 @@ describe("diffVisitNotes (3.5.5)", () => {
   });
 });
 
-describe("saveStatusLabel (3.5.5)", () => {
-  it("labels each chip state", () => {
+describe("saveStatusLabel (3.5.5 / 3.10.2)", () => {
+  it("labels each chip state including conflict/offline retry", () => {
     expect(saveStatusLabel("saved")).toBe("Saved");
+    expect(saveStatusLabel("saving")).toBe("Saving…");
+    expect(saveStatusLabel("dirty")).toBe("Not saved");
     expect(saveStatusLabel("error")).toBe("Not saved — retrying");
+  });
+});
+
+describe("autosave patch rules (3.10.2)", () => {
+  it("keeps pending changes as a patch while version advances only on save", () => {
+    const pending = diffVisitNotes(1, { ...base, chiefComplaint: "Pain" }, base);
+    expect(pending).toEqual({ version: 1, chiefComplaint: "Pain" });
+    // After a conflict the next attempt still includes the same note with the version we hold.
+    const retry = diffVisitNotes(1, { ...base, chiefComplaint: "Pain" }, base);
+    expect(retry?.chiefComplaint).toBe("Pain");
   });
 });

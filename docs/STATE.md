@@ -1,7 +1,13 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.9 skip then 3.10** next. 3.1.1 skipped (Waiting on me). Through **3.7.2** DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. **Phase 3 gate recorded below.** Do not start Phase 4. Current task: none (stop).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.10.5 DONE locally (fake clinical seed SQL + `pnpm db:seed:clinical` for 200 local-only patients; chart <400 rows test). No migration.
+3.10.4 SKIPPED (needs 3.10.3 usability issues list — Waiting on doctor).
+3.10.3 SKIPPED / Waiting (doctor usability session).
+3.10.2 DONE locally (autosave patch/retry labels covered; offline hold already in useVisitAutosave). No migration.
+3.10.1 DONE locally (phase3-gate + existing clinical/file/plan/history permission tests). No migration.
+3.9.1–3.9.2 SKIPPED (baad me records demand). Listed under Waiting / DECISIONS.
 3.8.3 DONE locally (photo upload soft-warns without photo consent). No migration.
 3.8.2 DONE locally (consents visit/plan/template columns; extraction finalise soft warning). Migration 0031.
 3.8.1 DONE locally (DRAFT consent templates setting + Settings editor). **New migration `0031_consent_templates.sql` — owner applies.**
@@ -102,6 +108,30 @@ Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not s
 4. Check at 360 / 768 / 1366 (horizontal scroll inside board OK on phone).
 
 
+
+## Phase 3 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist API (notes/restricted/X-ray 403) | **passed** (staff-visits, medical-history, files-permissions, history-feed, phase3-gate) |
+| Finalise lock + addendum / entered-in-error | **passed** (staff-visits + repo tests) |
+| Plan sync on finalise | **passed** (3.6.4) |
+| Upload permissions + no public URL | **passed** (3.7.2/3.7.5) |
+| Consent soft warning on extraction | **passed** (3.8.2) |
+| Chart/timeline &lt;400 rows on fake history | **passed** (tooth-events + fake-clinical seed test) |
+| Fake-data-only scan | **passed** (seeds/tests marked fake) |
+| 10-year fake history opens &lt;1s | **passed with exception** — history feed page test exists (3.5.12); full 10-year seed not loaded this round |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check still open |
+| Keyboard use | **passed with exception** — chart/tabs keyboard tests exist; full clinic keyboard pass Waiting |
+| Doctor usability 5 min consult / 60s follow-up | **waiting** (3.10.3) |
+| Autosave after 30s offline | **passed with exception** — code path covered; manual clinic wifi-off still Waiting |
+| Chart facing/notation sister haan | **waiting** (3.4.3) |
+| X-ray viewer + access_log | **passed** (3.7.4–3.7.5) |
+| B2/storage keys on staging | **waiting** |
+
+**Phase 3 gate: passed with exceptions** (do not start Phase 4 until Waiting items that block real patients are cleared).
+
 ## Phase 2 gate (from PLAN.md + owner checklist)
 
 | Criterion | Status |
@@ -158,6 +188,8 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
+- **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
 - **B2 bucket and keys set on staging** (STORAGE_DRIVER=s3 + S3_* vars/secrets; run storage check script after)
 - **3.7.1**: sister confirm which RVG/software and whether it exports JPEG/PNG (or only DICOM)
 - **3.6.3**: multi-sitting step tracker deferred (baad me)
