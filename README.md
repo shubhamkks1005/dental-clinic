@@ -44,11 +44,11 @@ gitignored). Tokens and accounts are listed in `docs/ACCOUNTS.md`.
 ```
 read -rs "CLOUDFLARE_API_TOKEN?Cloudflare API token (hidden): "; echo
 export CLOUDFLARE_API_TOKEN
-export CLOUDFLARE_ACCOUNT_ID=<account id from the dashboard; not a secret>
 cd apps/worker && pnpm wr d1 list     # proves the token works
 ```
 
-When done: `unset CLOUDFLARE_API_TOKEN` (or close the terminal). Never paste the token in chat,
+The account id is not a secret and lives in `apps/worker/wrangler.jsonc` (`account_id`), so it is
+not exported. When done: `unset CLOUDFLARE_API_TOKEN` (or close the terminal). Never paste the token in chat,
 a file, a commit or a command line argument.
 
 ### First-time setup (once per Cloudflare account)

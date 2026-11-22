@@ -1,5 +1,5 @@
 // Runs spike 0.6.3 against the real throwaway D1 from this Mac. Needs CLOUDFLARE_API_TOKEN
-// (typed with `read -s`, never stored) and CLOUDFLARE_ACCOUNT_ID in the current terminal.
+// (typed with `read -s`, never stored) in the current terminal; the account id is in wrangler.spike.jsonc.
 import { spawn } from "node:child_process";
 
 const PORT = 8799;
@@ -10,10 +10,8 @@ const env = {
   WRANGLER_SEND_METRICS: "false",
 };
 
-if (!env.CLOUDFLARE_API_TOKEN || !env.CLOUDFLARE_ACCOUNT_ID) {
-  console.error(
-    "Set CLOUDFLARE_API_TOKEN (with read -s) and CLOUDFLARE_ACCOUNT_ID in this terminal first.",
-  );
+if (!env.CLOUDFLARE_API_TOKEN) {
+  console.error("Set CLOUDFLARE_API_TOKEN in this terminal first (with read -s).");
   process.exit(1);
 }
 

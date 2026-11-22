@@ -3,6 +3,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dental-clinic-local",
+  // Cloudflare account (not a secret). Top level, so staging and production inherit it.
+  "account_id": "bc903cf48da626b1bbd501857a4a0013",
   "main": "src/index.ts",
   "compatibility_date": "2026-11-01",
   "send_metrics": false,

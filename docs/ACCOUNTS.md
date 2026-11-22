@@ -10,14 +10,16 @@ Every token: least permissions, an expiry date, one purpose. Review this file ev
 | Account | Used for | Owner login | 2FA | Notes |
 | --- | --- | --- | --- | --- |
 | GitHub (shubhamkks1005) | repo, CI, encrypted secrets | owner | (owner fills) | personal account only |
-| Cloudflare | Worker, D1, R2 | (owner fills) | (owner fills) | created on the owner's personal device; never logged in on the dev Mac |
+| Cloudflare | Worker, D1, R2 | owner's personal Gmail via Google login, plus a password | security key | created on the owner's personal device; never logged in on the dev Mac |
 | Cloudflare Zero Trust (Access) | staff login (one-time PIN) | same as Cloudflare | same | Free plan; if it asks for a card, stop and decide first |
+
+The Cloudflare account was created with the owner's personal Gmail via Google login; a password is set and 2FA uses a security key.
 
 ## Not secret, but needed (fill in after setup)
 
 | Item | Value | Used by |
 | --- | --- | --- |
-| Account ID | (owner fills) | CLOUDFLARE_ACCOUNT_ID in the terminal session and later CI |
+| Account ID | bc903cf48da626b1bbd501857a4a0013 | `account_id` in apps/worker/wrangler.jsonc and wrangler.spike.jsonc (not exported in the terminal); later CI |
 | Access team domain | (owner fills, like yourteam.cloudflareaccess.com) | JWT check (1.3.2) |
 | Access app AUD tag (staging) | (owner fills) | JWT check (1.3.2) |
 | Staging URL | (owner fills, printed by deploy) | Access app domain, smoke tests |
