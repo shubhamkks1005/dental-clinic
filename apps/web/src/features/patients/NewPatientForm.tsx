@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { DateInput, Field, MobileInput, zodResolver } from "../../ui/form";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
@@ -22,6 +23,8 @@ type Props = { onCreated: (patient: CreatedPatient) => void };
 
 // S03 / S16: four required fields on top; more details fold; Enter saves.
 export function NewPatientForm({ onCreated }: Props) {
+  const [params] = useSearchParams();
+  const presetName = params.get("name")?.trim() || "";
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<DuplicateWarning[]>([]);
@@ -33,7 +36,7 @@ export function NewPatientForm({ onCreated }: Props) {
     formState: { errors, isSubmitting, isDirty },
   } = useForm<NewPatientFormValues, unknown, NewPatientParsed>({
     resolver: zodResolver(newPatientSchema),
-    defaultValues: NEW_PATIENT_DEFAULTS,
+    defaultValues: { ...NEW_PATIENT_DEFAULTS, fullName: presetName },
   });
 
   const fullName = watch("fullName");

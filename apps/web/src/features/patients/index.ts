@@ -3,3 +3,4 @@ export { PatientConsentsScreen } from "./PatientConsentsScreen";
 export { ConsentsPanel } from "./ConsentsPanel";
 export { NewPatientScreen } from "./NewPatientScreen";
 export { PatientProfileScreen } from "./PatientProfileScreen";
+export { PatientSearch } from "./PatientSearch";

@@ -142,7 +142,7 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; other nav NotBuiltYet
-- src/features/patients/ - list, new form, profile (header + Overview/Appointments tabs; Visits/Billing/Files/Messages flagged off), consents panel, duplicate warnings, api, CSS; filters still 2.2.5
+- src/features/patients/ - list, new form, profile (Overview/Appointments; later tabs flagged off), PatientSearch (2.2.3 / debounce arrows Enter), consents, duplicate warnings, api, CSS; filters still 2.2.5
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -161,7 +161,7 @@
 - src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
 - src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width); gets menu items, user card and canAddPatient as props (no feature imports)
 - src/ui/shell/MainNav.tsx - brand, the role's nav items (active also on sub-pages, except Today), user card at the bottom: laptop navy sidebar 232px, tablet tabs row, phone hidden
-- src/ui/shell/TopBar.tsx - tablet/laptop: search ("/" focuses it, hint shown in the box), Walk-in, + New patient (not wired yet; hidden without patients.edit); tablet also shows the user card
+- src/ui/shell/TopBar.tsx - tablet/laptop: search slot (PatientSearch from feature), Walk-in, + New patient; tablet also shows the user card
 - src/ui/shell/search-shortcut.ts (+ test) - isSearchShortcut: "/" without modifiers, not while typing in a field
 - src/ui/shell/BottomTabs.tsx - phone: the role's bottom tabs + round "+" new patient button (hidden without patients.edit)
 - src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name

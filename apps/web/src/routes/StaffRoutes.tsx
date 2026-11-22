@@ -5,6 +5,7 @@ import {
   NewPatientScreen,
   PatientConsentsScreen,
   PatientProfileScreen,
+  PatientSearch,
   PatientsScreen,
 } from "../features/patients";
 import { PrintRoutes } from "../features/print";
@@ -43,6 +44,7 @@ function ShellRoutes() {
       phoneTabs={visibleNav(PHONE_TABS, permissions)}
       canAddPatient={permissions.includes(NEW_PATIENT_PERMISSION)}
       user={<UserCard />}
+      search={permissions.includes("patients.view") ? <PatientSearch /> : <span />}
     >
       <Routes>
         <Route index element={home} />

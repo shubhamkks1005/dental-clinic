@@ -1,0 +1,63 @@
+.patient-search {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-search .top-search {
+  width: 100%;
+}
+
+.patient-search-panel {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: min(70vh, 420px);
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid var(--border, #e3e9ee);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(15 42 92 / 12%);
+}
+
+.patient-search-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.patient-search-row.is-active,
+.patient-search-row:hover {
+  background: var(--soft-blue, #e6eefa);
+}
+
+.patient-search-name {
+  font-weight: 600;
+}
+
+.patient-search-visit {
+  font-size: 12px;
+}
+
+.patient-search-new {
+  justify-content: center;
+  min-height: 48px;
+  text-align: center;
+}

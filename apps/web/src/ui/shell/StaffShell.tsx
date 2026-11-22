@@ -12,15 +12,16 @@ type Props = {
   phoneTabs: NavItem[];
   canAddPatient: boolean;
   user: ReactNode;
+  search: ReactNode;
 };
 
 // Staff app frame (S01 laptop, S14 phone). Which parts show is decided by CSS breakpoints.
 // The caller passes only the menu items the signed-in role may use, and the user card.
-export function StaffShell({ children, mainNav, phoneTabs, canAddPatient, user }: Props) {
+export function StaffShell({ children, mainNav, phoneTabs, canAddPatient, user, search }: Props) {
   return (
     <div className="shell">
       <MainNav items={mainNav} user={user} />
-      <TopBar canAddPatient={canAddPatient} user={user} />
+      <TopBar canAddPatient={canAddPatient} user={user} search={search} />
       <main className="shell-main">{children}</main>
       <BottomTabs items={phoneTabs} canAddPatient={canAddPatient} />
     </div>
