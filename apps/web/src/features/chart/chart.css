@@ -117,10 +117,30 @@
   display: inline-block;
   width: 12px;
   height: 12px;
-  margin-right: 6px;
+  margin-right: 4px;
   border-radius: 2px;
   background: #1e4fa3;
   vertical-align: -1px;
+}
+
+.tooth-chart-icon {
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.chart-playground-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 280px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chart-playground-pick select {
+  min-height: 44px;
+  font: inherit;
+  font-weight: 400;
 }
 
 @media (min-width: 768px) {

@@ -88,8 +88,13 @@ export const LIST_DEFS = {
   conditions: {
     title: "Tooth conditions",
     itemName: "condition",
-    help: "Codes used on the tooth chart (caries, filling, RCT…).",
-    fields: [{ name: "color", label: "Colour", kind: "colour" }],
+    help: "Used on the tooth chart. Colour plus icon and name (not colour alone). Applies to: surface, whole, or both.",
+    fields: [
+      { name: "code", label: "Code", kind: "text", max: 40 },
+      { name: "color", label: "Colour", kind: "colour" },
+      { name: "icon", label: "Icon", kind: "text", max: 8 },
+      { name: "applies_to", label: "Applies to", kind: "text", max: 10 },
+    ],
   },
   allergens: {
     title: "Allergens",

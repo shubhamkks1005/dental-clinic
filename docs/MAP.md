@@ -150,7 +150,7 @@
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
-- src/features/chart/ - 3.4.2–3.4.3 ToothChart SVG (chart.view facing+notation; FDI store; surfaces, keyboard); ChartPlayground on /app/style-guide
+- src/features/chart/ - 3.4.2–3.4.4 ToothChart SVG (chart.view; conditions list colours/icons/applies_to; FDI store; keyboard); ChartPlayground on /app/style-guide
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -302,6 +302,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/visits.ts (+ test) - 3.2.1 VISIT_STATUSES, openVisitBody, vitals schema
 - src/teeth.ts (+ test) - 3.2.2 FDI lists, surfaces m/d/o/b/l/whole, chartFromEvents
 - src/chart-view.ts (+ test) - 3.4.3 chart.view facing+notation; toothDisplayLabel (FDI/Universal/Palmer)
+- src/conditions.ts (+ test) - 3.4.4 chart conditions from list (code/colour/icon/applies_to)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
 - src/appointment-display.ts (+ test) - 2.4.1 APPOINTMENT_STATUS_LABEL + appointmentStatusTone
 - src/day-view.ts (+ test) - 2.4.1 dayWindow / snapToSlot / emptySlotStarts

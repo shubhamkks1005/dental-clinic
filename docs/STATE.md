@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.4.4** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.4.3 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.4.5** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.4.4 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.4.4 DONE locally (conditions list: code/colour/icon/applies_to; DRAFT full starter set; chart legend + surface colours from list). **New migration `0028_conditions_chart_fields.sql` — owner applies; agent did not apply to staging.**
 3.4.3 DONE locally (dentist-view R label + FDI default; single setting `chart.view` facing+notation; labels convert Universal/Palmer; notation name always on chart). **New migration `0027_chart_view_setting.sql` — owner applies; agent did not apply to staging.** Sister "haan" still Waiting.
 3.4.2 DONE locally (custom SVG ToothChart: permanent/primary/mixed rows, 5 surfaces + whole, keyboard arrows+Enter, aria labels; playground on /app/style-guide). No migration.
 3.4.1 DONE locally (chart UI spike → custom SVG; table in DECISIONS.md). No migration. Sister facing/notation still Waiting (3.4.3).
@@ -49,7 +50,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.4.4 conditions colours → 3.4.5–3.4.6 → visit → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.4.5 wire chart to draft visit tooth_events → 3.4.6 → visit → History stage 1 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.4.3)
 1. Open /app/style-guide as doctor; chart shows "R (patient's right) · FDI".
@@ -104,7 +105,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0027 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0028 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -121,7 +122,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 Waiting on me (owner):
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
-- Staging: apply migrations **0006–0027**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0028**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - **3.4.3**: sister confirm chart facing/notation habit ("haan"); default remains dentist+FDI until then
 - 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)

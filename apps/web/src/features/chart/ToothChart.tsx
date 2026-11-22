@@ -17,19 +17,22 @@ export type ToothChartProps = {
   /** Facing + display notation; storage remains FDI (3.4.3). */
   view?: ChartView;
   cells?: ChartCell[];
+  /** conditionCode → colour from the editable conditions list (3.4.4). */
+  colorsByCode?: Map<string, string>;
   /** Condition applied when the doctor presses Enter on a focused surface (3.4.2). */
   applyCondition?: string;
   onApply?: (tooth: FdiTooth, surface: ToothSurface, conditionCode: string) => void;
-  legend?: { code: string; label: string; color?: string }[];
+  legend?: { code: string; label: string; color?: string; icon?: string }[];
 };
 
 export function ToothChart({
   dentition = "permanent",
   view = DEFAULT_CHART_VIEW,
   cells = [],
+  colorsByCode,
   applyCondition = "filling",
   onApply,
-  legend = [{ code: "filling", label: "Filling" }],
+  legend = [{ code: "filling", label: "Filling", icon: "F" }],
 }: ToothChartProps) {
   const labelId = useId();
   const [focus, setFocus] = useState<ChartFocus>(() => initialFocus(dentition, view.facing));
@@ -90,6 +93,7 @@ export function ToothChart({
                   fdi={fdi}
                   notation={view.notation}
                   cells={cells}
+                  colorsByCode={colorsByCode}
                   focused={focus.tooth === fdi}
                   focusSurface={focus.surface}
                   onSelect={(surface) => setFocus({ tooth: fdi, surface })}
@@ -109,7 +113,11 @@ export function ToothChart({
               <span
                 className="tooth-chart-swatch"
                 style={item.color ? { background: item.color } : undefined}
+                aria-hidden
               />
+              <span className="tooth-chart-icon" aria-hidden>
+                {item.icon ?? item.code.slice(0, 2)}
+              </span>{" "}
               {item.label}
             </li>
           ))}

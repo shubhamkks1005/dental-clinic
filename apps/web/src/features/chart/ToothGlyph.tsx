@@ -12,6 +12,8 @@ type Props = {
   fdi: FdiTooth;
   notation?: ChartNotation;
   cells: ChartCell[];
+  /** conditionCode → #RRGGBB from the editable conditions list (3.4.4). */
+  colorsByCode?: Map<string, string>;
   focused: boolean;
   focusSurface: ToothSurface;
   onSelect: (surface: ToothSurface) => void;
@@ -30,12 +32,15 @@ export function ToothGlyph({
   fdi,
   notation = "fdi",
   cells,
+  colorsByCode,
   focused,
   focusSurface,
   onSelect,
 }: Props) {
   const bySurface = new Map(cells.filter((c) => c.toothFdi === fdi).map((c) => [c.surface, c]));
   const label = toothDisplayLabel(fdi, notation);
+  const whole = bySurface.get("whole");
+  const wholeColor = whole ? colorsByCode?.get(whole.conditionCode) : undefined;
 
   return (
     <div className={`tooth-glyph${focused ? " tooth-glyph-focus" : ""}`}>
@@ -43,11 +48,13 @@ export function ToothGlyph({
         {(Object.keys(PATH) as Exclude<ToothSurface, "whole">[]).map((surface) => {
           const cell = bySurface.get(surface);
           const isFocus = focused && focusSurface === surface;
+          const fill = cell ? colorsByCode?.get(cell.conditionCode) : undefined;
           return (
             <path
               key={surface}
               d={PATH[surface]}
               className={`tooth-surf${cell ? " tooth-surf-marked" : ""}${isFocus ? " tooth-surf-focus" : ""}`}
+              style={fill ? { fill } : undefined}
               tabIndex={isFocus ? 0 : -1}
               role="button"
               aria-label={surfaceAriaLabel(fdi, surface)}
@@ -69,14 +76,11 @@ export function ToothGlyph({
       <button
         type="button"
         className={`tooth-whole${focused && focusSurface === "whole" ? " tooth-whole-focus" : ""}`}
+        style={wholeColor ? { background: wholeColor, color: "#fff" } : undefined}
         aria-label={surfaceAriaLabel(fdi, "whole")}
         onClick={() => onSelect("whole")}
       >
-        {bySurface.get("whole")
-          ? TOOTH_SURFACE_LABEL.whole
-          : SURFACE_ORDER.includes("whole")
-            ? "W"
-            : "W"}
+        {whole ? TOOTH_SURFACE_LABEL.whole : SURFACE_ORDER.includes("whole") ? "W" : "W"}
       </button>
     </div>
   );
