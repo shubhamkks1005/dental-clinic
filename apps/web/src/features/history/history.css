@@ -1,0 +1,64 @@
+/* 3.5.11 History tab (S04/S17). */
+.patient-history {
+  display: grid;
+  gap: var(--s4);
+}
+
+.history-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+  margin: 0;
+  padding: var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.history-summary div {
+  display: grid;
+  gap: 2px;
+}
+
+.history-summary dt {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.history-summary dd {
+  margin: 0;
+  font-size: 14px;
+}
+
+.history-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.history-filters .is-active {
+  border-color: var(--brand, #1e4fa3);
+}
+
+.history-empty {
+  display: grid;
+  gap: var(--s3);
+  justify-items: start;
+  padding: var(--s4) 0;
+}
+
+.history-feed-placeholder {
+  padding: var(--s2) 0;
+}
+
+@media (min-width: 768px) {
+  .history-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1366px) {
+  .history-summary {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}

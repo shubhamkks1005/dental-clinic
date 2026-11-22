@@ -1,6 +1,7 @@
 // 2.2.2: only ship tabs whose phase is ready. Sister must not see unfinished tabs.
 export const PATIENT_PROFILE_TABS = [
   { id: "overview", label: "Overview", ready: true },
+  { id: "history", label: "History", ready: true }, // 3.5.11
   { id: "appointments", label: "Appointments", ready: true },
   { id: "chart", label: "Chart", ready: true }, // 3.4.5 (full visit screen still 3.5.x)
   { id: "visits", label: "Visits", ready: true }, // 3.5.9 timeline

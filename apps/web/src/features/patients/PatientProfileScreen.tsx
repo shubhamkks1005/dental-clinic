@@ -5,6 +5,7 @@ import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
 import { VisitChartPanel } from "../chart";
+import { PatientHistoryTab, getHistorySummary } from "../history";
 import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
 import { PatientOverviewTab } from "./PatientOverviewTab";
@@ -23,15 +24,27 @@ export function PatientProfileScreen() {
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
+  const [defaultTabReady, setDefaultTabReady] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     let cancelled = false;
     setError(null);
     setPatient(null);
+    setDefaultTabReady(false);
     getPatient(id)
-      .then((row) => {
-        if (!cancelled) setPatient(row);
+      .then(async (row) => {
+        if (cancelled) return;
+        setPatient(row);
+        // 3.5.11: returning patient (any past visit) opens on History.
+        try {
+          const summary = await getHistorySummary(row.id);
+          if (!cancelled && summary.totalVisits > 0) setTab("history");
+        } catch {
+          // Keep overview if summary fails; History tab still loads on click.
+        } finally {
+          if (!cancelled) setDefaultTabReady(true);
+        }
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -63,7 +76,7 @@ export function PatientProfileScreen() {
     );
   }
 
-  if (!patient) {
+  if (!patient || !defaultTabReady) {
     return <p className="muted">Loading…</p>;
   }
 
@@ -81,6 +94,8 @@ export function PatientProfileScreen() {
             canEditClinical={canEditClinical}
             onPatientChange={setPatient}
           />
+        ) : t.id === "history" ? (
+          <PatientHistoryTab patientId={patient.id} />
         ) : t.id === "chart" ? (
           <VisitChartPanel
             patientId={patient.id}

@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.11** next (History tab shell). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me). Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.5.12** next (merged history feed). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.5.11 DONE locally (History tab + summary strip S04/S17; empty state; filter chip stubs; GET `/history/summary`; access_log on view; returning patient defaults to History). No migration.
 3.5.10 SKIPPED (baad me): visit templates deferred; listed under Waiting / DECISIONS. No migration.
 3.5.9 DONE locally (Visits tab timeline S04/S17; GET `/patients/:id/visits/timeline` with dx/px filters; 30-visit speed test; receptionist 403). No migration.
 3.5.8 DONE locally (Today incomplete-visits widget; GET `/visits/drafts`; yesterday’s drafts still listed; never auto-finalise; receptionist 403). No migration. Screen: S01.
@@ -62,7 +63,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: History 3.5.11–15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
+Next: History 3.5.12–15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.5.2)
 1. Open a visit as doctor from Today or patient profile.

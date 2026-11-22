@@ -85,9 +85,10 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth… staff-visits, staff-chart; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth… staff-visits, staff-chart, staff-history; deny by default applies)
 - src/routes/staff-chart.ts (+ domain/chart.ts, staff-chart.test.ts) - 3.4.5 GET/POST patient chart events; as-of finalised visit; clinical.view/edit
 - src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7–3.5.9 visits API: open/get/patch/diagnoses/procedures/finalise/addenda; drafts; timeline; recent list; receptionist 403 on clinical
+- src/routes/staff-history.ts (+ domain/history.ts, staff-history.test.ts) - 3.5.11 history summary; feed 3.5.12+
 - src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
@@ -149,7 +150,9 @@
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
-- src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view
+- src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11
+- src/features/history/ - 3.5.11 PatientHistoryTab + summary strip + filter chip stubs (S04/S17); feed 3.5.12+
+- src/repos/history-summary.ts (+ test) - 3.5.11 pinned strip; access_log view; receptionist alert labels empty
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
 - src/features/chart/ - 3.4.2–3.4.6 ToothChart + VisitChartPanel (dentition by age; chart events; as-of history); ChartPlayground on /app/style-guide
 - src/features/visits/ - 3.5.1–3.5.9 VisitScreen (S05) + PatientVisitsTab timeline (S04/S17); notes autosave, diagnoses, Chart+procedures, finalise, VisitAddenda; drafts API; route /app/visits/:id
