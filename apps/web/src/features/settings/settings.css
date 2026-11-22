@@ -1,0 +1,71 @@
+/* S12 Settings frame. Phone first: section tabs above the open section. Laptop: list beside it. */
+.settings {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s5) var(--s4) var(--s6);
+}
+
+.settings-head p {
+  margin-top: var(--s1);
+}
+
+.settings-body {
+  display: grid;
+  gap: var(--s4);
+  align-items: start;
+  min-width: 0;
+}
+
+.settings-nav {
+  display: flex;
+  gap: var(--s1);
+  padding: var(--s2);
+  overflow-x: auto;
+}
+
+.settings-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border-radius: var(--radius-control);
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.settings-nav a[aria-current="page"] {
+  background: var(--blue-soft);
+  color: var(--blue-hover);
+}
+
+.settings-panel {
+  min-width: 0;
+  padding: var(--s4);
+}
+
+@media (min-width: 768px) {
+  .settings {
+    padding: var(--s5) var(--s6) var(--s6);
+  }
+
+  .settings-panel {
+    padding: var(--s5);
+  }
+}
+
+@media (min-width: 1366px) {
+  /* The laptop top bar already leaves space above the title. */
+  .settings {
+    padding-top: 0;
+  }
+
+  .settings-body {
+    grid-template-columns: 172px minmax(0, 1fr);
+  }
+
+  .settings-nav {
+    flex-direction: column;
+  }
+}

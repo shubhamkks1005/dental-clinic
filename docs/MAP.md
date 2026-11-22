@@ -67,7 +67,10 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth and staff-users; deny by default applies)
+- src/routes/staff-users.ts - Settings > Staff API (doctor only via the repo): GET /users, POST /users, POST /users/:id/deactivate | reactivate | role | google-reset; bad input 400, guard refusal 422, stale page 409; replies with the fresh list
+- src/domain/staff.ts - listStaff, addStaff, changeStaff (calls the staff repo, returns the fresh list)
+- src/staff-users.test.ts - 1.3.6 over HTTP: 403 for receptionist, add 201, 400/422/409, deactivate = next request 401, role applies at once, reactivate + reset, CSRF
 - src/routes/portal.ts - /api/portal/* group (empty; read-only, Phase 8)
 - src/routes/hooks.ts - /hooks/* group (empty; signed webhooks)
 - src/index.test.ts - route-group tests (JSON 404 shape, static fallthrough)
@@ -75,7 +78,7 @@
 - src/adapters/jwks.ts - fetch + isolate-memory cache of signing keys (Cache-Control max-age, capped 24 h); unknown kid refetches at most once per 5 min; verifyWithJwks()
 - src/middleware/access-jwt.ts - optional Cloudflare Access check on /api/staff/* (off while ACCESS_AUD / ACCESS_TEAM_DOMAIN are empty; health bypassed)
 - src/testing/jwt-fixtures.ts - test-only RSA key + RS256 token signer
-- src/errors.ts - errorReply(err): RepoError -> 403/404/409 with its plain message; anything else -> generic 500 (used by app.onError)
+- src/errors.ts - errorReply(err): RepoError -> 403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
 - src/errors.test.ts - 409 conflict reply, 403/404, 500 hides details
 - src/architecture.test.ts - 1.2.6 guard: route files never import drizzle-orm / @clinic/db or touch env.DB; domain files never import drizzle-orm
 
@@ -89,7 +92,9 @@
 - src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me; 401 -> full load of /), api.ts, auth.css
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
 - src/App.tsx - top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/routes/StaffRoutes.tsx - staff route tree in StaffShell: index = Today; nav targets show "Not ready yet"
+- src/routes/StaffRoutes.tsx - staff route tree in StaffShell: index = Today; settings/* = SettingsScreen; other nav targets show "Not ready yet"
+- src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
+- src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
 - src/styles/base.css - DESIGN.md tokens (colours, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn, .input, .card
 - src/ui/ui.css - status badges (5 tones), patient number chip, stat card, logo tile, page message
@@ -100,7 +105,7 @@
 - src/ui/StatCard.tsx - label / big value / note card
 - src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
 - src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width)
-- src/ui/shell/MainNav.tsx - brand, 7 nav items, user card: laptop navy sidebar 232px, tablet tabs row, phone hidden
+- src/ui/shell/MainNav.tsx - brand, 7 nav items (active also on sub-pages, except Today), user card: laptop navy sidebar 232px, tablet tabs row, phone hidden
 - src/ui/shell/TopBar.tsx - tablet/laptop: search, Walk-in, + New patient (not wired yet)
 - src/ui/shell/BottomTabs.tsx - phone: 5 bottom tabs + round "+" new patient button
 - src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name
@@ -136,13 +141,15 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/index.ts - package entry (createDb, Db, Ctx, createRepos, Repos, permissions, errors, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert)
 - src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
 - src/context.ts - Ctx { userId, role, requestId } passed to every repository function
-- src/audit.ts - auditInsert() (put in the same db.batch as the change), auditInsertIfChanged() (only if the UPDATE before it changed a row), accessInsert() (views, exports, logins)
+- src/audit.ts - auditInsert() (put in the same db.batch as the change), auditInsertIfChanged() (only if the UPDATE before it changed a row), accessInsert() (views, exports, logins), accessInsertIfChanged() (directly after auditInsertIfChanged)
 - src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
 - src/append-only.test.ts - 1.2.5 guard: no app code updates or deletes audit_log / access_log (no triggers allowed yet)
-- src/errors.ts - RepoError (code forbidden|not_found|conflict) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError
+- src/errors.ts - RepoError (code forbidden|not_found|conflict|not_allowed) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError, NotAllowedError (a business rule refused)
 - src/permissions.ts - PERMISSIONS: the one role table (AUTH_PLAN 4f, 19 actions: patients, clinical, prescriptions, appointments, bills, files, reports, settings, staff, audit; TO BE CONFIRMED BY THE DOCTOR); isAllowed, permissionsFor, assertAllowed
 - src/permissions.test.ts - exact actions per role (doctor all; receptionist 9; developer settings only)
-- src/repos/index.ts - createRepos(db, ctx) -> { settings }; Repos type (built once per request by the Worker)
+- src/repos/index.ts - createRepos(db, ctx) -> { settings, staff }; Repos type (built once per request by the Worker)
+- src/repos/staff.ts - staffRepo (staff.manage): list, add, deactivate (ends sessions in the same batch), reactivate, changeRole, resetGoogleLink. Guards inside the UPDATE (not yourself, never 0 active doctors, version) + audit + staff_change event written only if the UPDATE happened
+- src/repos/staff.test.ts - 1.3.6: 403 for others, list, add, duplicate email, deactivate ends only their sessions, no self, two doctors racing leave one, reactivate, role rules, Google reset, stale version, not found
 - src/repos/settings.ts - settings.get(key) -> { value, version }; settings.update(key, value, expectedVersion): permission check, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
 - src/repos/settings.test.ts - 1.2.6 + 1.2.7: doctor update = one audit row; receptionist refused; not-found; two tabs and a parallel race -> one wins, one conflict, one audit row
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
@@ -168,7 +175,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
-- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), financialYearOf() ("2026-27", April-March by IST date)
+- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), financialYearOf() ("2026-27", April-March by IST date)
+- src/staff.ts - STAFF_ROLES (doctor, receptionist), StaffMember type, normaliseEmail (the one email normaliser), parseNewStaff / parseRoleChange / parseGoogleReset / parseVersionOnly (plain validation, used by Worker and web)
+- src/staff.test.ts - name/email/role rules, no developer role, version required
 - src/time.test.ts - IST day boundary, 1 April boundary
 - src/ulid.ts - newUlid(): 26-char sortable ids (Web Crypto, no dependency)
 - src/ulid.test.ts - format, spec example, time order

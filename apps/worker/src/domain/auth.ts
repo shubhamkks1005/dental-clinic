@@ -1,4 +1,4 @@
-import type { UserStatus } from "@clinic/shared";
+import { normaliseEmail, type UserStatus } from "@clinic/shared";
 import { checkStandardClaims, type JwtPayload } from "./jwt";
 
 // Staff sign-in rules (docs/AUTH_PLAN.md). Pure functions; no I/O.
@@ -45,8 +45,6 @@ export function googleAuthorizeUrl(p: AuthorizeParams): string {
   });
   return `${GOOGLE_AUTHORIZE_URL}?${query.toString()}`;
 }
-
-export const normaliseEmail = (email: string) => email.trim().toLowerCase();
 
 // For logs: first letter and domain only, e.g. n***@gmail.com.
 export function maskEmail(email: string): string {

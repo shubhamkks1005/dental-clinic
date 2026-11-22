@@ -18,7 +18,7 @@ export function MainNav() {
       <ul className="nav-list">
         {MAIN_NAV.map((item) => (
           <li key={item.to}>
-            <NavLink to={item.to} end>
+            <NavLink to={item.to} end={item.to === "/app"}>
               {icons[item.icon]}
               {item.label}
             </NavLink>

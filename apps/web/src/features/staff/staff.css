@@ -1,0 +1,159 @@
+/* Settings > Staff. Phone first: each person is a stacked card row; from 768px the name, the
+   badges and the buttons sit side by side and wrap when space runs out. */
+.staff-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.staff-head p {
+  margin-top: var(--s1);
+}
+
+.notice {
+  margin-top: var(--s4);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius-control);
+  overflow-wrap: anywhere;
+}
+
+.notice-ok {
+  color: #14532d;
+  background: #dcfce7;
+}
+
+.notice-error {
+  color: #9a3412;
+  background: #ffe4d6;
+}
+
+.staff-list {
+  margin: var(--s4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.staff-row {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4) 0;
+  border-top: 1px solid var(--border);
+}
+
+.staff-who {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.staff-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  font-weight: 700;
+}
+
+.staff-email {
+  overflow-wrap: anywhere;
+}
+
+.staff-tags,
+.staff-actions,
+.staff-panel-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.staff-panel {
+  display: grid;
+  gap: var(--s3);
+  margin-top: var(--s4);
+  padding: var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--bg);
+}
+
+.staff-row .staff-panel {
+  margin-top: 0;
+}
+
+.staff-panel h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.field {
+  display: grid;
+  gap: var(--s1);
+  font-weight: 600;
+}
+
+.field .small {
+  font-weight: 400;
+}
+
+.role-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.role-picker legend {
+  margin-bottom: var(--s1);
+  padding: 0;
+  font-weight: 600;
+}
+
+.role-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  cursor: pointer;
+}
+
+.role-option:has(input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  color: var(--blue-hover);
+  font-weight: 600;
+}
+
+.role-option input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--blue);
+}
+
+@media (min-width: 768px) {
+  .staff-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .staff-tags {
+    justify-content: flex-end;
+  }
+
+  .staff-actions,
+  .staff-row .staff-panel {
+    grid-column: 1 / -1;
+  }
+
+  .staff-panel {
+    max-width: 36rem;
+  }
+}

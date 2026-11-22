@@ -1,7 +1,7 @@
 // Repository errors carry a stable code; the Worker turns them into { ok: false, error } replies.
 export class RepoError extends Error {
   constructor(
-    readonly code: "forbidden" | "not_found" | "conflict",
+    readonly code: "forbidden" | "not_found" | "conflict" | "not_allowed",
     message: string,
   ) {
     super(message);
@@ -22,6 +22,13 @@ export class ConflictError extends RepoError {
       "conflict",
       "Someone else changed this record while you were editing. Reload to see the latest version, then make your change again.",
     );
+  }
+}
+
+// A business rule refused the change (for example: the last active doctor). The message says why.
+export class NotAllowedError extends RepoError {
+  constructor(message: string) {
+    super("not_allowed", message);
   }
 }
 

@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router";
+import { SettingsScreen } from "../features/settings";
 import { TodayScreen } from "../features/today";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
 import { StaffShell } from "../ui/shell/StaffShell";
@@ -11,7 +12,6 @@ const NOT_BUILT = [
   "billing",
   "messages",
   "reports",
-  "settings",
   "more",
 ];
 
@@ -20,6 +20,7 @@ export function StaffRoutes() {
     <StaffShell>
       <Routes>
         <Route index element={<TodayScreen />} />
+        <Route path="settings/*" element={<SettingsScreen />} />
         {NOT_BUILT.map((path) => (
           <Route key={path} path={path} element={<NotBuiltYet />} />
         ))}

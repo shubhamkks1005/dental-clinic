@@ -1,5 +1,6 @@
 import { newUlid, type AccessAction, type AuditAction } from "@clinic/shared";
 import { getTableColumns, is, SQL, sql } from "drizzle-orm";
+import type { SQLiteTable } from "drizzle-orm/sqlite-core";
 import type { Db } from "./client";
 import type { Ctx } from "./context";
 import { accessLog, auditLog } from "./schema";
@@ -35,14 +36,17 @@ export function auditInsert(db: Db, ctx: Ctx, entry: AuditEntry) {
 // For version-checked updates (1.2.7): place right after the UPDATE in the batch. It writes the
 // audit row only if that UPDATE changed a row (SQLite changes()), so a lost race leaves no audit row.
 export function auditInsertIfChanged(db: Db, ctx: Ctx, entry: AuditEntry) {
-  const values: Record<string, unknown> = auditValues(ctx, entry);
+  return insertIfChanged(db, auditLog, auditValues(ctx, entry));
+}
+
+function insertIfChanged<T extends SQLiteTable>(db: Db, table: T, values: Record<string, unknown>) {
   // insert().select(sql) fills every column in table order, so give each one a value or its default.
-  const cells = Object.entries(getTableColumns(auditLog)).map(([key, column]) => {
+  const cells = Object.entries(getTableColumns(table)).map(([key, column]) => {
     if (key in values) return sql`${values[key]}`;
     if (is(column.default, SQL)) return column.default;
     return column.default === undefined ? sql`NULL` : sql`${column.default}`;
   });
-  return db.insert(auditLog).select(sql`SELECT ${sql.join(cells, sql`, `)} WHERE changes() > 0`);
+  return db.insert(table).select(sql`SELECT ${sql.join(cells, sql`, `)} WHERE changes() > 0`);
 }
 
 export type AccessEntry = {
@@ -54,8 +58,19 @@ export type AccessEntry = {
 
 // Sign-ins (also failed ones, actor 'anonymous'), staff changes, and every view or export of
 // patient data. Also append-only. Only who and request id are needed from the context.
-export function accessInsert(db: Db, actor: Pick<Ctx, "userId" | "requestId">, entry: AccessEntry) {
-  return db.insert(accessLog).values({
+export function accessInsert(db: Db, actor: Actor, entry: AccessEntry) {
+  return db.insert(accessLog).values(accessValues(actor, entry));
+}
+
+// Same changes() rule as auditInsertIfChanged; place it directly after that audit insert.
+export function accessInsertIfChanged(db: Db, actor: Actor, entry: AccessEntry) {
+  return insertIfChanged(db, accessLog, accessValues(actor, entry));
+}
+
+type Actor = Pick<Ctx, "userId" | "requestId">;
+
+function accessValues(actor: Actor, entry: AccessEntry) {
+  return {
     id: newUlid(),
     action: entry.action,
     resource: entry.resource,
@@ -64,5 +79,5 @@ export function accessInsert(db: Db, actor: Pick<Ctx, "userId" | "requestId">, e
     requestId: actor.requestId,
     createdBy: actor.userId,
     updatedBy: actor.userId,
-  });
+  } satisfies typeof accessLog.$inferInsert;
 }

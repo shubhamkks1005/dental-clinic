@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
-import { accessInsert, auditInsert, auditInsertIfChanged } from "./audit";
+import { accessInsert, accessInsertIfChanged, auditInsert, auditInsertIfChanged } from "./audit";
 import type { Db } from "./client";
 import type { Ctx } from "./context";
 import { settings } from "./schema";
@@ -83,6 +83,35 @@ describe("audit log (1.2.5)", () => {
     ]);
     expect(rows("SELECT action, created_by, created_at FROM audit_log")).toEqual([
       { action: "update", created_by: "user-doctor", created_at: expect.stringMatching(/Z$/) },
+    ]);
+  });
+
+  it("accessInsertIfChanged follows the same rule when placed after auditInsertIfChanged (1.3.6)", async () => {
+    const row = await prefixRow();
+    const pair = (version: number) =>
+      [
+        db
+          .update(settings)
+          .set({ version: version + 1 })
+          .where(sql`${settings.id} = ${row.id} AND ${settings.version} = ${version}`),
+        auditInsertIfChanged(db, ctx, { action: "update", table: "settings", rowId: row.id }),
+        accessInsertIfChanged(db, ctx, {
+          action: "staff_change",
+          resource: "settings",
+          detail: "x",
+        }),
+      ] as const;
+
+    await db.batch(pair(99));
+    expect(rows("SELECT * FROM access_log")).toHaveLength(0);
+    await db.batch(pair(1));
+    expect(rows("SELECT action, detail, created_by, created_at FROM access_log")).toEqual([
+      {
+        action: "staff_change",
+        detail: "x",
+        created_by: "user-doctor",
+        created_at: expect.stringMatching(/Z$/),
+      },
     ]);
   });
 
