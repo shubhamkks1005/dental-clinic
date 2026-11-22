@@ -84,9 +84,10 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments; deny by default applies)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
+- src/routes/staff-appointments.ts (+ staff-appointments.test, domain/appointments.ts) - 2.3.4 POST /appointments (overlap race → 409)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
@@ -254,6 +255,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/patient-get.ts (+ test) - 2.2.2 get by id for profile
 - src/repos/patient-update.ts (+ test) - 2.2.4 update with version check, mobile audit, search rebuild
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
+- src/repos/appointment-insert.ts - INSERT…SELECT WHERE NOT EXISTS (busy overlap) for booking
+- src/repos/appointments-book.ts (+ test) - 2.3.4 book(); 50 parallel same-slot → one win, no loser audit
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
@@ -262,6 +265,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
+- src/appointment-book.ts (+ test) - 2.3.4 parseBookAppointment / bookAppointmentSchema
 - src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (working hours − lunch − holidays − busy; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions

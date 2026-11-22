@@ -18,6 +18,7 @@ describe("worker architecture (1.2.6)", () => {
     expect(routes.map((f) => f.path).sort()).toEqual([
       "apps/worker/src/routes/hooks.ts",
       "apps/worker/src/routes/portal.ts",
+      "apps/worker/src/routes/staff-appointments.ts",
       "apps/worker/src/routes/staff-auth.ts",
       "apps/worker/src/routes/staff-consents.ts",
       "apps/worker/src/routes/staff-lists.ts",

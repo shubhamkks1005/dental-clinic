@@ -129,6 +129,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/patients/:id/consents",
     access: { kind: "permission", action: "patients.edit" },
   },
+  {
+    method: "POST",
+    path: "/api/staff/appointments",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

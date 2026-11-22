@@ -1,0 +1,40 @@
+import { describe, expect, it } from "vitest";
+import { parseBookAppointment } from "./appointment-book";
+
+describe("book appointment body (2.3.4)", () => {
+  it("accepts a phone booking and defaults priority to normal", () => {
+    expect(
+      parseBookAppointment({
+        patientId: "p1",
+        visitTypeId: "v1",
+        dateLocal: "2026-11-23",
+        startMin: 600,
+        source: "phone",
+      }),
+    ).toEqual({
+      ok: true,
+      value: {
+        patientId: "p1",
+        visitTypeId: "v1",
+        dateLocal: "2026-11-23",
+        startMin: 600,
+        source: "phone",
+        priority: "normal",
+        complaint: null,
+      },
+    });
+  });
+
+  it("refuses a missing patient or bad start", () => {
+    expect(parseBookAppointment({ visitTypeId: "v1" }).ok).toBe(false);
+    expect(
+      parseBookAppointment({
+        patientId: "p1",
+        visitTypeId: "v1",
+        dateLocal: "2026-11-23",
+        startMin: 2000,
+        source: "phone",
+      }).ok,
+    ).toBe(false);
+  });
+});

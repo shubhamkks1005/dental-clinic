@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.3.4** (booking + overlap race). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
+Phase: 2. Current task: none; next is **2.3.5** (booking rules + override). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
+2.3.4 DONE locally (POST `/api/staff/appointments`; INSERT…WHERE NOT EXISTS overlap + auditInsertIfChanged; 50 parallel same-slot → 1 win / 49 ConflictError / 1 audit). No new migration.
 2.3.3 DONE locally (findFreeSlots: working hours − lunch − holidays − busy statuses; slotSearchEarliest = now+15m; 12 unit tests for empty/full/lunch/holiday/gap/RCT/today/Sunday/cancelled/rescheduled/arrived/limit). No new migration.
 2.3.2 DONE locally (visit_types: minutes + colour; seed Consultation/Follow-up/Cleaning/RCT sitting/Extraction/Ortho adjustment/Emergency; roundUpToSlot + visitTypeSnapshot so list edits do not rewrite old bookings; Settings list UI colour picker). **New migration `0016_visit_types_seed.sql` — owner applies; agent did not apply to staging.**
 2.3.1 DONE locally (appointments table: patient, chair_id, visit_type id/label, start_at UTC, date_local + start_min/end_min IST, status/source/priority/overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status; EXPLAIN uses indexes). **New migration `0015_appointments.sql` — owner applies; agent did not apply to staging.**
@@ -23,7 +24,7 @@ Phase: 2. Current task: none; next is **2.3.4** (booking + overlap race). Skip 2
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.3.4**+.
+Next: **2.3.5**+.
 
 ## Phase 1 gate (from PLAN.md)
 

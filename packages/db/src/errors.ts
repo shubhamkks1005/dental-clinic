@@ -15,13 +15,12 @@ export class ForbiddenError extends RepoError {
   }
 }
 
-// Optimistic locking (1.2.7): the record's version changed since the user opened it.
+// Optimistic locking (1.2.7) and booking races (2.3.4): nothing written when the change lost.
 export class ConflictError extends RepoError {
-  constructor() {
-    super(
-      "conflict",
-      "Someone else changed this record while you were editing. Reload to see the latest version, then make your change again.",
-    );
+  constructor(
+    message = "Someone else changed this record while you were editing. Reload to see the latest version, then make your change again.",
+  ) {
+    super("conflict", message);
   }
 }
 

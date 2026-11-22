@@ -1,5 +1,6 @@
 import type { Db } from "../client";
 import type { Ctx } from "../context";
+import { appointmentsBookRepo } from "./appointments-book";
 import { consentsRepo } from "./consents";
 import { listsRepo } from "./lists";
 import { patientArchiveRepo } from "./patient-archive";
@@ -27,6 +28,9 @@ export function createRepos(db: Db, ctx: Ctx) {
     },
     patientDuplicates: patientDuplicatesRepo(db, ctx),
     consents: consentsRepo(db, ctx),
+    appointments: {
+      ...appointmentsBookRepo(db, ctx),
+    },
   };
 }
 

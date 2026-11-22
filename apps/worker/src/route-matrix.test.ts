@@ -81,6 +81,15 @@ function bodyFor(method: string, path: string): string | undefined {
       method: "form",
     });
   }
+  if (path === "/api/staff/appointments" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      visitTypeId: "01M83VTYPE01CONSULT000001",
+      dateLocal: "2026-11-23",
+      startMin: 600,
+      source: "phone",
+    });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }
