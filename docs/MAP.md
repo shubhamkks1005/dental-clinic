@@ -283,6 +283,10 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/plan-items.ts - 3.2.5 plan_items + plan_item_versions
 - src/repos/plan-items.ts (+ test) - create; changeEstimate requires reason on increase
 - migrations/0023_plan_items.sql - 3.2.5 (owner applies)
+- src/schema/visit-addenda.ts - 3.2.6 addenda after finalise
+- src/crypto-sha256.ts / domain/visit-snapshot.ts - snapshot SHA-256
+- src/repos/visits-finalise.ts (+ test) - finalise + addendum + draft-only patch guard
+- migrations/0024_visit_addenda.sql - 3.2.6 (owner applies)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

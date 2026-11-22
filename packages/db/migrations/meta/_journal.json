@@ -169,6 +169,13 @@
       "when": 1795372527420,
       "tag": "0023_plan_items",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1795372616565,
+      "tag": "0024_visit_addenda",
+      "breakpoints": true
     }
   ]
 }
