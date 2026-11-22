@@ -6,6 +6,7 @@ import {
   addVisitProcedure,
   finaliseVisit,
   getVisit,
+  listDraftVisits,
   listRecentVisits,
   openVisit,
   patchVisit,
@@ -21,6 +22,12 @@ staffVisits.post("/visits", async (c) => {
   const result = await openVisit(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ visit: result.visit }), 201);
+});
+
+// 3.5.8: incomplete drafts for Today (before /visits/:id so "drafts" is not an id).
+staffVisits.get("/visits/drafts", async (c) => {
+  const result = await listDraftVisits(signedIn(c).repos);
+  return c.json(ok({ visits: result.visits }));
 });
 
 // 3.5.2: last N visits for the visit screen side panel (doctor only).

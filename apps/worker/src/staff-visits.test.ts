@@ -228,4 +228,26 @@ describe("staff visit clinical API (3.2.7)", () => {
         .status,
     ).toBe(400);
   });
+
+  it("doctor lists incomplete drafts; receptionist is 403 (3.5.8)", async () => {
+    const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
+      patientId: "p1",
+      visitDateLocal: "2026-11-21",
+    });
+    expect(opened.status).toBe(201);
+    const list = await staffJson("doc@example.test", "GET", "/api/staff/visits/drafts");
+    expect(list.status).toBe(200);
+    const body = (await list.json()) as {
+      ok: true;
+      data: { visits: { visitDateLocal: string; patientName: string }[] };
+    };
+    expect(body.data.visits).toHaveLength(1);
+    expect(body.data.visits[0]).toMatchObject({
+      visitDateLocal: "2026-11-21",
+      patientName: "Fake Visit One",
+    });
+    expect((await staffJson("rec@example.test", "GET", "/api/staff/visits/drafts")).status).toBe(
+      403,
+    );
+  });
 });

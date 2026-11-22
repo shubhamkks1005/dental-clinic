@@ -22,6 +22,7 @@ import { planItemsRepo } from "./plan-items";
 import { toothEventsRepo } from "./tooth-events";
 import { visitDiagnosesRepo } from "./visit-diagnoses";
 import { visitProceduresRepo } from "./visit-procedures";
+import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
 import { visitsGetRepo } from "./visits-get";
 import { visitsOpenRepo } from "./visits-open";
@@ -57,6 +58,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...visitsGetRepo(db, ctx),
       ...visitsFinaliseRepo(db, ctx),
       ...visitsPatchRepo(db, ctx),
+      ...visitsDraftsRepo(db, ctx),
     },
     toothEvents: toothEventsRepo(db, ctx),
     visitDiagnoses: visitDiagnosesRepo(db, ctx),

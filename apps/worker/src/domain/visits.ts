@@ -30,6 +30,11 @@ export async function listRecentVisits(repos: Repos, patientId: string, limit: n
   return { ok: true as const, visits };
 }
 
+export async function listDraftVisits(repos: Repos) {
+  const visits = await repos.visits.listDrafts();
+  return { ok: true as const, visits };
+}
+
 export async function patchVisit(repos: Repos, id: string, body: unknown) {
   const parsed = parsePatchVisit(body);
   if (!parsed.ok) return parsed;

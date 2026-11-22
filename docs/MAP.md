@@ -87,7 +87,7 @@
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth… staff-visits, staff-chart; deny by default applies)
 - src/routes/staff-chart.ts (+ domain/chart.ts, staff-chart.test.ts) - 3.4.5 GET/POST patient chart events; as-of finalised visit; clinical.view/edit
-- src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7–3.5.4 visits API: open/get/patch/diagnoses/procedures/finalise/addenda; recent list; receptionist 403 on clinical
+- src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7–3.5.8 visits API: open/get/patch/diagnoses/procedures/finalise/addenda; drafts list; recent list; receptionist 403 on clinical
 - src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
@@ -178,7 +178,7 @@
 - src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
 - src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
-- src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
+- src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
@@ -276,6 +276,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/visit-insert.ts - INSERT…SELECT WHERE NOT EXISTS live visit for appointment
 - src/repos/visits-open.ts (+ test) - open draft (return existing or insert); receptionist forbidden
 - src/repos/visits-get.ts (+ test) - 3.2.7 getById; 3.5.2 listRecentByPatient (newest first, skip void; clinical.view)
+- src/repos/visits-drafts.ts (+ test) - 3.5.8 listDrafts (any day, patient name/code; clinical.view; never auto-finalise)
 - src/repos/visits-patch.ts (+ test) - 3.5.3 updateDraftFields (versioned; no audit per patch)
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 - migrations/0018_visits.sql - 3.2.1 visits table + indexes (owner applies; agent did not apply to staging)

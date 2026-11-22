@@ -67,6 +67,16 @@ export type VisitRecent = {
   chiefComplaint: string | null;
 };
 
+/** Draft reminder row for Today incomplete widget (3.5.8). */
+export type VisitDraftReminder = {
+  id: string;
+  patientId: string;
+  patientCode: string;
+  patientName: string;
+  visitDateLocal: string;
+  chiefComplaint: string | null;
+};
+
 export type VisitPatchBody = {
   version: number;
   chiefComplaint?: string | null;
@@ -153,4 +163,8 @@ export function listRecentVisits(patientId: string, limit = 3) {
   return api<{ visits: VisitRecent[] }>(
     `/api/staff/patients/${encodeURIComponent(patientId)}/visits?${q}`,
   ).then((r) => r.visits);
+}
+
+export function listDraftVisits() {
+  return api<{ visits: VisitDraftReminder[] }>("/api/staff/visits/drafts").then((r) => r.visits);
 }

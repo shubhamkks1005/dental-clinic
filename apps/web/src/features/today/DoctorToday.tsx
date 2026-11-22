@@ -5,6 +5,7 @@ import { ApiError } from "../../api/client";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { openOrReuseVisit } from "../visits/open-visit";
 import type { TodayListRow, TodayModel } from "./buildTodayModel";
+import { IncompleteVisitsWidget } from "./IncompleteVisitsWidget";
 
 type Props = {
   model: TodayModel;
@@ -106,6 +107,7 @@ export function DoctorToday({ model, busyId, onStatus }: Props) {
           {openError}
         </p>
       ) : null}
+      <IncompleteVisitsWidget />
       <DoctorCard
         title="Now"
         row={model.doctorNow}
