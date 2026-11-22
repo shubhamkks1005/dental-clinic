@@ -17,7 +17,7 @@ Written: 2026-11-23 (Phase 3 complete locally — gate recorded). Read STATE.md 
 | 3.7.4 | `4411b45` |
 | 3.7.5–3.7.7 (skip 3.7.8) | `6dc153d` |
 | 3.8 | `8596f75` |
-| 3.9 skip + 3.10 + gate | (this commit) |
+| 3.9 skip + 3.10 + gate | `64a3b5c` |
 
 ## New migrations (owner applies; agent did not touch staging)
 - **0018–0029** (prior)
