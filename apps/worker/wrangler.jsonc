@@ -52,13 +52,13 @@
       ],
       // No FILES (R2) binding on staging until task 3.7: R2 may need a card (see DECISIONS.md).
       "r2_buckets": [],
-      // GOOGLE_CLIENT_ID: fill in from the Google Cloud web client (not a secret).
+      // GOOGLE_CLIENT_ID: the Google Cloud web client for staging + local (not a secret).
       "vars": {
         "MESSAGING_MODE": "dry_run",
         "ACCESS_TEAM_DOMAIN": "",
         "ACCESS_AUD": "",
         "APP_ORIGIN": "https://dental-clinic-staging.shubhamkks1005.workers.dev",
-        "GOOGLE_CLIENT_ID": "",
+        "GOOGLE_CLIENT_ID": "310719770102-o5tts4nmp3715ltiobco5drd11phc9sh.apps.googleusercontent.com",
         "AUTH_MODE": "google",
       },
     },
