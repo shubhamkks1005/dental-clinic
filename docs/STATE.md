@@ -46,7 +46,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.4.1 chart UI spike decision → 3.4.2+ chart → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.4.2 build chart component → 3.4.3–3.4.6 → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
 
 
 ## Phase 2 gate (from PLAN.md + owner checklist)

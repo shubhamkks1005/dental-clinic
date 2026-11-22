@@ -97,5 +97,14 @@
 - 2026-11-22 - Clinical list seed rows are DRAFT until 3.1.1 doctor "haan" - agent
 - 2026-11-23 - Medical history checklist is editable list `medical_history_items` (code, section, alert_label, restricted); allergens list supplies allergy rows; current medicines free-text is item code `current_medicines` with note. DRAFT seed 0025 until 3.1.1 - agent (3.3.1)
 - 2026-11-23 - Stale medical history uses setting `medical_history.stale_months` (default 6). "No change" re-saves the same answers as a new version (bumps recordedAt). Prompt also on patient Overview until visit-open UI exists (3.5.1) - agent (3.3.4)
+- 2026-11-23 - **3.4.1 Chart UI spike (decision):**
+
+  | Option | Surfaces | Deciduous | Keyboard | Size / CSP | License | Change cost |
+  |--------|----------|-----------|----------|------------|---------|-------------|
+  | (a) Custom SVG | Full (m/d/o/b/l + whole) owned by us | Yes (FDI primary) | Full control | Tiny; fits DESIGN.md | Ours | Cheap — schema already FDI/surface |
+  | (b) react-odontogram | Whole tooth only | Buggy primary FDI / quadrant swap | Limited | Extra dep; styling fights DESIGN | MIT | High — fight package model |
+  | (c) react-advanced-odontogram (or similar surface pkg) | Surfaces claimed; maturity unclear | Unknown | Unknown | Extra dep; CSP risk | Varies | Medium–high |
+
+  **Choose (a) custom SVG.** Matches 3.1.2 note, append-only tooth_events, no new dependency, keyboard + screen-reader labels under our control. Sister facing/notation confirmation still Waiting on me (3.1.1 / 3.4.3). - agent (3.4.1)
 - 2026-11-22 - **3.1.2 Reference projects:** Took from open-dentist (MIT, React/Vite/Hono/D1): patient tab layout (overview / chart / plan / notes / billing), treatment-plan item statuses, agenda "now" line ideas — schema ideas only, no code copied, and we do not run it against any patient data. Did **not** take its Tailwind/shadcn UI, free-form notes model, or login-less README posture (our Access/Google + permission table + audit rules are stricter). Took from react-odontogram (MIT): confirmation that FDI + primary dentition belong in the product; did **not** adopt the package — it selects whole teeth only (no surfaces), has open bugs on primary FDI numbering and lower-quadrant swap, and would fight our DESIGN.md/CSP and append-only tooth_events schema. Chart UI stays custom SVG (plan 3.4.1 option a) with FDI stored always - agent (3.1.2)
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
