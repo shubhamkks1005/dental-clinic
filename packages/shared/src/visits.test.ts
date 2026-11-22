@@ -3,6 +3,7 @@ import {
   openVisitBody,
   parseAddVisitAddendum,
   parseAddVisitDiagnosis,
+  parseAddVisitProcedure,
   parseFinaliseVisit,
   parseOpenVisit,
   parsePatchVisit,
@@ -61,5 +62,17 @@ describe("visit patch and diagnosis (3.5.3)", () => {
   it("rejects patch without version and diagnosis without text", () => {
     expect(parsePatchVisit({ chiefComplaint: "Pain" }).ok).toBe(false);
     expect(parseAddVisitDiagnosis({}).ok).toBe(false);
+  });
+
+  it("parses a procedure with tooth and surfaces", () => {
+    expect(
+      parseAddVisitProcedure({
+        listItemId: "p1",
+        toothFdi: 46,
+        surfaces: ["o", "m"],
+        note: "Shade A2",
+      }).ok,
+    ).toBe(true);
+    expect(parseAddVisitProcedure({}).ok).toBe(false);
   });
 });

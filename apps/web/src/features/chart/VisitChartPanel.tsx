@@ -31,6 +31,9 @@ type Props = {
   dateOfBirth?: string | null;
   ageYearsAtReg?: number | null;
   registeredOn?: string;
+  /** When set (visit screen), chart events bind to this draft instead of opening another. */
+  visitId?: string | null;
+  onFocusChange?: (tooth: FdiTooth, surface: ToothSurface) => void;
 };
 
 /** 3.4.5–3.4.6: live chart, as-of history, age-based dentition with manual override (S05). */
@@ -40,16 +43,22 @@ export function VisitChartPanel({
   dateOfBirth = null,
   ageYearsAtReg = null,
   registeredOn,
+  visitId = null,
+  onFocusChange,
 }: Props) {
   const [chart, setChart] = useState<PatientChart | null>(null);
   const [conditions, setConditions] = useState<ChartCondition[]>([]);
   const [view, setView] = useState<ChartView>(DEFAULT_CHART_VIEW);
   const [applyCode, setApplyCode] = useState("filling");
   const [asOfVisitId, setAsOfVisitId] = useState("");
-  const [draftVisitId, setDraftVisitId] = useState<string | null>(null);
+  const [draftVisitId, setDraftVisitId] = useState<string | null>(visitId);
   const [dentitionOverride, setDentitionOverride] = useState<DentitionView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (visitId) setDraftVisitId(visitId);
+  }, [visitId]);
 
   const todayLocal = istDate(new Date());
   const ageYears = useMemo(
@@ -205,6 +214,7 @@ export function VisitChartPanel({
           colorsByCode={colorsByCode}
           applyCondition={applyCode}
           onApply={readOnly ? undefined : onApply}
+          onFocusChange={onFocusChange}
           legend={conditions.map((c) => ({
             code: c.code,
             label: c.label,

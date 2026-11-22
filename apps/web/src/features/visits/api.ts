@@ -20,6 +20,18 @@ export type VisitDiagnosis = {
   sortOrder: number;
 };
 
+export type VisitProcedure = {
+  id: string;
+  visitId: string;
+  listItemId: string | null;
+  label: string;
+  toothFdi: number | null;
+  surfaces: Array<"m" | "d" | "o" | "b" | "l" | "whole">;
+  note: string | null;
+  defaultPaise: number | null;
+  sortOrder: number;
+};
+
 export type VisitSummary = VisitOpened & {
   chiefComplaint: string | null;
   historyNote: string | null;
@@ -34,6 +46,7 @@ export type VisitSummary = VisitOpened & {
   finalisedBy: string | null;
   snapshotHash: string | null;
   diagnoses: VisitDiagnosis[];
+  procedures: VisitProcedure[];
 };
 
 export type VisitRecent = {
@@ -88,6 +101,21 @@ export function addVisitDiagnosis(
     `/api/staff/visits/${encodeURIComponent(visitId)}/diagnoses`,
     { method: "POST", body: JSON.stringify(body) },
   ).then((r) => r.diagnosis);
+}
+
+export function addVisitProcedure(
+  visitId: string,
+  body: {
+    listItemId: string;
+    toothFdi?: number | null;
+    surfaces?: Array<"m" | "d" | "o" | "b" | "l" | "whole">;
+    note?: string | null;
+  },
+) {
+  return api<{ procedure: VisitProcedure }>(
+    `/api/staff/visits/${encodeURIComponent(visitId)}/procedures`,
+    { method: "POST", body: JSON.stringify(body) },
+  ).then((r) => r.procedure);
 }
 
 export function listRecentVisits(patientId: string, limit = 3) {

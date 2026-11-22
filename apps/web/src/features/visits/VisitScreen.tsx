@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
-import { VisitChartPanel } from "../chart";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { Tabs } from "../../ui/Tabs";
 import { getVisit, listRecentVisits, type VisitRecent, type VisitSummary } from "./api";
 import { RecentVisitsSide } from "./RecentVisitsSide";
+import { VisitChartTab } from "./VisitChartTab";
 import { VisitStubPanel } from "./VisitStubPanel";
 import { VISIT_TAB_IDS, VISIT_TAB_LABEL, type VisitTabId } from "./visit-tabs";
 import { VisitTodayPanel } from "./VisitTodayPanel";
@@ -86,12 +86,11 @@ export function VisitScreen() {
         <VisitTodayPanel visit={visit} canEdit={canEditClinical} onVisitChange={setVisit} />
       ) : tabId === "chart" ? (
         canViewClinical ? (
-          <VisitChartPanel
-            patientId={patient.id}
-            canEdit={canEditClinical && visit.status === "draft"}
-            dateOfBirth={patient.dateOfBirth}
-            ageYearsAtReg={patient.ageYearsAtReg}
-            registeredOn={patient.createdAt.slice(0, 10)}
+          <VisitChartTab
+            visit={visit}
+            patient={patient}
+            canEdit={canEditClinical}
+            onVisitChange={setVisit}
           />
         ) : (
           <p className="muted">Chart is only for the doctor.</p>

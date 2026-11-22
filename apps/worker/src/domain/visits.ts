@@ -2,6 +2,7 @@ import type { Repos } from "@clinic/db";
 import {
   parseAddVisitAddendum,
   parseAddVisitDiagnosis,
+  parseAddVisitProcedure,
   parseFinaliseVisit,
   parseOpenVisit,
   parsePatchVisit,
@@ -16,8 +17,11 @@ export async function openVisit(repos: Repos, body: unknown) {
 
 export async function getVisit(repos: Repos, id: string) {
   const visit = await repos.visits.getById(id);
-  const diagnoses = await repos.visitDiagnoses.listForVisit(id);
-  return { ok: true as const, visit: { ...visit, diagnoses } };
+  const [diagnoses, procedures] = await Promise.all([
+    repos.visitDiagnoses.listForVisit(id),
+    repos.visitProcedures.listForVisit(id),
+  ]);
+  return { ok: true as const, visit: { ...visit, diagnoses, procedures } };
 }
 
 export async function listRecentVisits(repos: Repos, patientId: string, limit: number | undefined) {
@@ -30,8 +34,11 @@ export async function patchVisit(repos: Repos, id: string, body: unknown) {
   if (!parsed.ok) return parsed;
   const { version, ...fields } = parsed.value;
   const visit = await repos.visits.updateDraftFields(id, version, fields);
-  const diagnoses = await repos.visitDiagnoses.listForVisit(id);
-  return { ok: true as const, visit: { ...visit, diagnoses } };
+  const [diagnoses, procedures] = await Promise.all([
+    repos.visitDiagnoses.listForVisit(id),
+    repos.visitProcedures.listForVisit(id),
+  ]);
+  return { ok: true as const, visit: { ...visit, diagnoses, procedures } };
 }
 
 export async function addVisitDiagnosis(repos: Repos, visitId: string, body: unknown) {
@@ -44,6 +51,19 @@ export async function addVisitDiagnosis(repos: Repos, visitId: string, body: unk
     toothFdi: parsed.value.toothFdi,
   });
   return { ok: true as const, diagnosis };
+}
+
+export async function addVisitProcedure(repos: Repos, visitId: string, body: unknown) {
+  const parsed = parseAddVisitProcedure(body);
+  if (!parsed.ok) return parsed;
+  const procedure = await repos.visitProcedures.add({
+    visitId,
+    listItemId: parsed.value.listItemId,
+    toothFdi: parsed.value.toothFdi,
+    surfaces: parsed.value.surfaces,
+    note: parsed.value.note,
+  });
+  return { ok: true as const, procedure };
 }
 
 export async function finaliseVisit(repos: Repos, id: string, body: unknown) {

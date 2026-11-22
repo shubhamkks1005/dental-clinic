@@ -22,6 +22,8 @@ export type ToothChartProps = {
   /** Condition applied when the doctor presses Enter on a focused surface (3.4.2). */
   applyCondition?: string;
   onApply?: (tooth: FdiTooth, surface: ToothSurface, conditionCode: string) => void;
+  /** 3.5.4: notify when focus moves so procedures can use tooth/surface. */
+  onFocusChange?: (tooth: FdiTooth, surface: ToothSurface) => void;
   legend?: { code: string; label: string; color?: string; icon?: string }[];
 };
 
@@ -32,6 +34,7 @@ export function ToothChart({
   colorsByCode,
   applyCondition = "filling",
   onApply,
+  onFocusChange,
   legend = [{ code: "filling", label: "Filling", icon: "F" }],
 }: ToothChartProps) {
   const labelId = useId();
@@ -46,6 +49,11 @@ export function ToothChart({
     setFocus(initialFocus(dentition, view.facing));
   }, [dentition, view.facing]);
 
+  function setFocusAndNotify(next: ChartFocus) {
+    setFocus(next);
+    onFocusChange?.(next.tooth, next.surface);
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     const arrow = e.key;
     if (
@@ -55,7 +63,11 @@ export function ToothChart({
       arrow === "ArrowDown"
     ) {
       e.preventDefault();
-      setFocus((f) => moveFocus(f, dentition, arrow, view.facing));
+      setFocus((f) => {
+        const next = moveFocus(f, dentition, arrow, view.facing);
+        onFocusChange?.(next.tooth, next.surface);
+        return next;
+      });
       return;
     }
     if (e.key === "Enter" && onApply) {
@@ -96,7 +108,7 @@ export function ToothChart({
                   colorsByCode={colorsByCode}
                   focused={focus.tooth === fdi}
                   focusSurface={focus.surface}
-                  onSelect={(surface) => setFocus({ tooth: fdi, surface })}
+                  onSelect={(surface) => setFocusAndNotify({ tooth: fdi, surface })}
                 />
               ))}
             </div>

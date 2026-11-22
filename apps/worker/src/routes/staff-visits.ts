@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import {
   addVisitAddendum,
   addVisitDiagnosis,
+  addVisitProcedure,
   finaliseVisit,
   getVisit,
   listRecentVisits,
@@ -52,6 +53,13 @@ staffVisits.post("/visits/:id/diagnoses", async (c) => {
   const result = await addVisitDiagnosis(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ diagnosis: result.diagnosis }), 201);
+});
+
+staffVisits.post("/visits/:id/procedures", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await addVisitProcedure(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ procedure: result.procedure }), 201);
 });
 
 staffVisits.post("/visits/:id/finalise", async (c) => {

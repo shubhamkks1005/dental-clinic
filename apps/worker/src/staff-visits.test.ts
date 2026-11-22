@@ -181,6 +181,47 @@ describe("staff visit clinical API (3.2.7)", () => {
     ).toBe(403);
   });
 
+  it("doctor adds a procedure from the list; receptionist cannot (3.5.4)", async () => {
+    const opened = await staffJson("doc@example.test", "POST", "/api/staff/visits", {
+      patientId: "p1",
+      visitDateLocal: "2026-11-24",
+    });
+    const visitId = ((await opened.json()) as { data: { visit: { id: string } } }).data.visit.id;
+
+    const proc = await staffJson(
+      "doc@example.test",
+      "POST",
+      `/api/staff/visits/${visitId}/procedures`,
+      {
+        listItemId: "01M83PROC02FILLING0000001",
+        toothFdi: 46,
+        surfaces: ["o", "m"],
+        note: "Shade A2",
+      },
+    );
+    expect(proc.status).toBe(201);
+    const body = (await proc.json()) as {
+      data: { procedure: { label: string; defaultPaise: number; surfaces: string[] } };
+    };
+    expect(body.data.procedure.label).toBe("Composite filling");
+    expect(body.data.procedure.defaultPaise).toBe(200000);
+    expect(body.data.procedure.surfaces).toEqual(["o", "m"]);
+
+    const got = await staffJson("doc@example.test", "GET", `/api/staff/visits/${visitId}`);
+    const gotBody = (await got.json()) as {
+      data: { visit: { procedures: { label: string }[] } };
+    };
+    expect(gotBody.data.visit.procedures.map((p) => p.label)).toContain("Composite filling");
+
+    expect(
+      (
+        await staffJson("rec@example.test", "POST", `/api/staff/visits/${visitId}/procedures`, {
+          listItemId: "01M83PROC02FILLING0000001",
+        })
+      ).status,
+    ).toBe(403);
+  });
+
   it("bad open body is 400 for the doctor", async () => {
     expect(
       (await staffJson("doc@example.test", "POST", "/api/staff/visits", { patientId: "p1" }))

@@ -123,6 +123,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/visits/:id/diagnoses" && method === "POST") {
     return JSON.stringify({ freeText: "Matrix caries" });
   }
+  if (path === "/api/staff/visits/:id/procedures" && method === "POST") {
+    return JSON.stringify({ listItemId: "proc1", toothFdi: 46, surfaces: ["o"] });
+  }
   if (path === "/api/staff/visits/:id/finalise" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }

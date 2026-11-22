@@ -127,3 +127,25 @@ export function parseAddVisitDiagnosis(body: unknown) {
   }
   return { ok: true as const, value: parsed.data };
 }
+
+const surfaceSchema = z.enum(["m", "d", "o", "b", "l", "whole"]);
+
+// 3.5.4: procedure from the procedures list; tooth/surfaces usually from chart selection.
+export const addVisitProcedureBody = z
+  .object({
+    listItemId: z.string().min(1, "Pick a procedure."),
+    toothFdi: z.number().int().min(11).max(85).nullable().optional(),
+    surfaces: z.array(surfaceSchema).max(6).optional(),
+    note: z.string().trim().max(1000).nullable().optional(),
+  })
+  .strict();
+
+export type AddVisitProcedureBody = z.infer<typeof addVisitProcedureBody>;
+
+export function parseAddVisitProcedure(body: unknown) {
+  const parsed = addVisitProcedureBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}

@@ -167,6 +167,29 @@ a.visit-side-link:focus-visible {
   flex: 1 1 180px;
 }
 
+.visit-chart-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.visit-proc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.visit-proc-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.visit-proc-add {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .visit-stub-title {
   margin: 0 0 8px;
   font-size: 16px;
