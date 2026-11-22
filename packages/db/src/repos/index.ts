@@ -22,6 +22,7 @@ import { planItemsRepo } from "./plan-items";
 import { toothEventsRepo } from "./tooth-events";
 import { visitDiagnosesRepo } from "./visit-diagnoses";
 import { visitProceduresRepo } from "./visit-procedures";
+import { historyFeedRepo } from "./history-feed";
 import { historySummaryRepo } from "./history-summary";
 import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
@@ -68,7 +69,10 @@ export function createRepos(db: Db, ctx: Ctx) {
     visitProcedures: visitProceduresRepo(db, ctx),
     medicalHistory: medicalHistoryRepo(db, ctx),
     planItems: planItemsRepo(db, ctx),
-    history: historySummaryRepo(db, ctx),
+    history: {
+      ...historySummaryRepo(db, ctx),
+      ...historyFeedRepo(db, ctx),
+    },
   };
 }
 

@@ -22,7 +22,7 @@ async function get(email: string, path: string) {
   return app.request(`${ORIGIN}${path}`, { method: "GET", headers: { cookie } }, env);
 }
 
-describe("staff history summary (3.5.11)", () => {
+describe("staff history (3.5.11 / 3.5.12)", () => {
   it("doctor and receptionist can load the summary", async () => {
     const doc = await get("doc@example.test", "/api/staff/patients/p-hist/history/summary");
     expect(doc.status).toBe(200);
@@ -33,5 +33,15 @@ describe("staff history summary (3.5.11)", () => {
 
     const rec = await get("rec@example.test", "/api/staff/patients/p-hist/history/summary");
     expect(rec.status).toBe(200);
+  });
+
+  it("returns an empty feed page with null cursor", async () => {
+    const res = await get("doc@example.test", "/api/staff/patients/p-hist/history");
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      data: { entries: unknown[]; nextCursor: string | null };
+    };
+    expect(body.data.entries).toEqual([]);
+    expect(body.data.nextCursor).toBeNull();
   });
 });
