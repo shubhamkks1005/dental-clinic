@@ -35,7 +35,11 @@ export function ItemRow({
 }: Props) {
   const [editing, setEditing] = useState(false);
   const def: ListDef = LIST_DEFS[listKey];
-  const details = def.fields.map((f) => `${item.data[f.name] ?? "-"} ${f.suffix}`).join(" · ");
+  const details = def.fields
+    .filter((f) => f.kind === "number")
+    .map((f) => `${item.data[f.name] ?? "-"} ${f.suffix}`)
+    .join(" · ");
+  const colour = def.fields.some((f) => f.kind === "colour") ? String(item.data.color ?? "") : "";
 
   if (editing) {
     return (
@@ -57,6 +61,14 @@ export function ItemRow({
   return (
     <li className={item.active ? "item-row" : "item-row item-row-hidden"}>
       <div className="item-text">
+        {colour && (
+          <span
+            className="item-colour-swatch"
+            style={{ backgroundColor: colour }}
+            title={colour}
+            aria-hidden
+          />
+        )}
         <span className="item-label">{item.label}</span>
         {details && <span className="small muted">{details}</span>}
       </div>

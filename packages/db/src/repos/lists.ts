@@ -20,7 +20,7 @@ type Row = typeof listItems.$inferSelect;
 const toItem = (r: Row): ListItem => ({
   id: r.id,
   label: r.label,
-  data: JSON.parse(r.dataJson) as Record<string, number>,
+  data: JSON.parse(r.dataJson) as ListItem["data"],
   active: r.active,
   sortOrder: r.sortOrder,
   version: r.version,

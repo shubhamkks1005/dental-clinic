@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.3.2** (visit types colour + seed). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
+Phase: 2. Current task: none; next is **2.3.3** (free slot calculation). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
+2.3.2 DONE locally (visit_types: minutes + colour; seed Consultation/Follow-up/Cleaning/RCT sitting/Extraction/Ortho adjustment/Emergency; roundUpToSlot + visitTypeSnapshot so list edits do not rewrite old bookings; Settings list UI colour picker). **New migration `0016_visit_types_seed.sql` — owner applies; agent did not apply to staging.**
 2.3.1 DONE locally (appointments table: patient, chair_id, visit_type id/label, start_at UTC, date_local + start_min/end_min IST, status/source/priority/overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status; EXPLAIN uses indexes). **New migration `0015_appointments.sql` — owner applies; agent did not apply to staging.**
 2.2.8 DONE locally (contact_relation; contactMobile = own or guardian; profile shows relation + “N others on this number”). **New migration `0014_patient_contact_relation.sql` — owner applies; agent did not apply to staging.**
 2.2.7 DONE locally (registration consent panel; create without consent OK; SMS/marketing/notice rows only when checked; settings privacy_notice.*). **New migration `0013_privacy_notice_settings.sql` — owner applies; agent did not apply to staging.**
@@ -21,7 +22,7 @@ Phase: 2. Current task: none; next is **2.3.2** (visit types colour + seed). Ski
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.3.2**+.
+Next: **2.3.3**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -41,7 +42,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0015 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0016 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -56,7 +57,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- Staging: apply migrations **0006–0015**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0016**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist

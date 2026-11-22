@@ -36,37 +36,43 @@ beforeEach(async () => {
 describe("editable lists API (1.5.4)", () => {
   it("the doctor adds, edits, hides and moves; replies carry the fresh list", async () => {
     const added = await send("POST", "/lists/visit_types", doctor, {
-      label: "Consultation",
-      data: { minutes: 20 },
+      label: "Test consult",
+      data: { minutes: 20, color: "#1E4FA3" },
     });
     expect(added.status).toBe(201);
-    await send("POST", "/lists/visit_types", doctor, { label: "Follow-up", data: { minutes: 15 } });
+    await send("POST", "/lists/visit_types", doctor, {
+      label: "Test follow-up",
+      data: { minutes: 15, color: "#0B7A75" },
+    });
     const res = await send("GET", "/lists/visit_types", receptionist);
-    const [first, second] = await itemsOf(res);
+    const all = await itemsOf(res);
+    const first = all.find((i) => i.label === "Test consult");
+    const second = all.find((i) => i.label === "Test follow-up");
     if (!first || !second) throw new Error("items missing");
 
     const edited = await itemsOf(
       await send("PUT", `/lists/visit_types/${first.id}`, doctor, {
         label: "Checkup",
-        data: { minutes: 20 },
-        version: 1,
+        data: { minutes: 20, color: "#1E4FA3" },
+        version: first.version,
       }),
     );
-    expect(edited[0]?.label).toBe("Checkup");
+    expect(edited.find((i) => i.id === first.id)?.label).toBe("Checkup");
     const hidden = await itemsOf(
       await send("POST", `/lists/visit_types/${second.id}/active`, doctor, {
         active: false,
-        version: 1,
+        version: second.version,
       }),
     );
-    expect(hidden[1]?.active).toBe(false);
+    expect(hidden.find((i) => i.id === second.id)?.active).toBe(false);
     const moved = await itemsOf(
       await send("POST", `/lists/visit_types/${second.id}/move`, doctor, {
         direction: "up",
-        version: 2,
+        version: second.version + 1,
       }),
     );
-    expect(moved.map((i) => i.label)).toEqual(["Follow-up", "Checkup"]);
+    const labels = moved.map((i) => i.label);
+    expect(labels.indexOf("Test follow-up")).toBeLessThan(labels.indexOf("Checkup"));
   });
 
   it("400 bad input, 422 duplicate, 409 stale, 404 unknown list, 403 receptionist change", async () => {
