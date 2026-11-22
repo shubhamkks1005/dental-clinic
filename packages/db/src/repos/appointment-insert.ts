@@ -14,11 +14,12 @@ export type AppointmentInsertValues = {
   dateLocal: string;
   startMin: number;
   endMin: number;
-  status: "scheduled";
+  status: "scheduled" | "arrived";
   source: BookAppointmentInput["source"];
   priority: BookAppointmentInput["priority"];
   overbook: boolean;
   complaint: string | null;
+  arrivedAt?: string | null;
   createdBy: string;
   updatedBy: string;
 };
@@ -37,6 +38,32 @@ function insertSelectWhere<T extends SQLiteTable>(
   return db.insert(table).select(sql`SELECT ${sql.join(cells, sql`, `)} WHERE ${where}`);
 }
 
+function appointmentInsertCells(values: AppointmentInsertValues) {
+  return {
+    id: values.id,
+    createdBy: values.createdBy,
+    updatedBy: values.updatedBy,
+    patientId: values.patientId,
+    chairId: values.chairId,
+    visitTypeId: values.visitTypeId,
+    visitTypeLabel: values.visitTypeLabel,
+    startAt: values.startAt,
+    dateLocal: values.dateLocal,
+    startMin: values.startMin,
+    endMin: values.endMin,
+    status: values.status,
+    source: values.source,
+    priority: values.priority,
+    overbook: values.overbook ? 1 : 0,
+    complaint: values.complaint,
+    cancelReason: null,
+    rescheduledFrom: null,
+    arrivedAt: values.arrivedAt ?? null,
+    startedAt: null,
+    endedAt: null,
+  };
+}
+
 // INSERT ... SELECT WHERE NOT EXISTS (overlap). Pair with auditInsertIfChanged (2.3.4).
 export function insertAppointmentIfFree(db: Db, values: AppointmentInsertValues) {
   const busy = APPOINTMENT_BUSY_STATUSES.map((s) => sql`${s}`);
@@ -51,32 +78,10 @@ export function insertAppointmentIfFree(db: Db, values: AppointmentInsertValues)
         AND end_min > ${values.startMin}
     )
   `;
-  return insertSelectWhere(
-    db,
-    appointments,
-    {
-      id: values.id,
-      createdBy: values.createdBy,
-      updatedBy: values.updatedBy,
-      patientId: values.patientId,
-      chairId: values.chairId,
-      visitTypeId: values.visitTypeId,
-      visitTypeLabel: values.visitTypeLabel,
-      startAt: values.startAt,
-      dateLocal: values.dateLocal,
-      startMin: values.startMin,
-      endMin: values.endMin,
-      status: values.status,
-      source: values.source,
-      priority: values.priority,
-      overbook: values.overbook ? 1 : 0,
-      complaint: values.complaint,
-      cancelReason: null,
-      rescheduledFrom: null,
-      arrivedAt: null,
-      startedAt: null,
-      endedAt: null,
-    },
-    free,
-  );
+  return insertSelectWhere(db, appointments, appointmentInsertCells(values), free);
+}
+
+// 2.3.7 emergency overbook: insert even when the chair slot overlaps a busy row.
+export function insertAppointmentAllowingOverlap(db: Db, values: AppointmentInsertValues) {
+  return insertSelectWhere(db, appointments, appointmentInsertCells(values), sql`1`);
 }

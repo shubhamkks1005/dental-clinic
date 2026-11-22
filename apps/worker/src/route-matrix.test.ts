@@ -90,6 +90,12 @@ function bodyFor(method: string, path: string): string | undefined {
       source: "phone",
     });
   }
+  if (path === "/api/staff/appointments/walk-in" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      visitTypeId: "01M83VTYPE01CONSULT000001",
+    });
+  }
   if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
     return JSON.stringify({ status: "confirmed", version: 1 });
   }

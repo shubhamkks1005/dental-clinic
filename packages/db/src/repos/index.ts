@@ -2,6 +2,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { appointmentsBookRepo } from "./appointments-book";
 import { appointmentsStatusRepo } from "./appointments-status";
+import { appointmentsWalkInRepo } from "./appointments-walk-in";
 import { consentsRepo } from "./consents";
 import { listsRepo } from "./lists";
 import { patientArchiveRepo } from "./patient-archive";
@@ -32,6 +33,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     appointments: {
       ...appointmentsBookRepo(db, ctx),
       ...appointmentsStatusRepo(db, ctx),
+      ...appointmentsWalkInRepo(db, ctx),
     },
   };
 }
