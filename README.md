@@ -28,8 +28,8 @@ resources are created in Cloudflare.
 All environments also bind `ASSETS` (the built web app from `apps/web/dist`). `FILES` exists locally
 and in production config; staging has none until task 3.7.
 
-- Local: `pnpm dev`, `pnpm db:migrate` (local D1).
-- Staging: `pnpm deploy:staging` (one command; needs the first-time setup below).
+- Local: `pnpm db:migrate`, then `pnpm db:seed` (5,000 fake patients into local D1 only), then `pnpm dev`. Open `/app/patients` to see them.
+- Staging: `pnpm deploy:staging` (one command; needs the first-time setup below). Never run `db:seed` against staging.
 - Production: manual commands below. CI deploys are not set up yet (CI only runs checks).
 
 ## Deploy

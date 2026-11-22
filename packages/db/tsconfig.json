@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "lib": ["ES2022"],
-    "types": []
+    "types": [],
+    // seed-sql.ts is also loaded by Node's type stripper for `pnpm db:seed` (needs .ts paths).
+    "allowImportingTsExtensions": true
   },
   "include": ["src", "drizzle.config.ts", "../../types"]
 }

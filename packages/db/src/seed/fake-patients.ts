@@ -1,11 +1,24 @@
 // Made-up data for local development and tests only. Never real patients.
 // Mobiles are a patterned fake range; they may only be used with MESSAGING_MODE=dry_run.
+// Keep genders in sync with PATIENT_GENDERS in @clinic/shared (no import: seed script runs under bare Node).
+
+const GENDERS = ["female", "male", "other"] as const;
+type FakeGender = (typeof GENDERS)[number];
 
 export type FakePatient = {
+  /** Deterministic primary key for local seed rows (id LIKE 'seed%'). */
+  id: string;
   code: string;
   firstName: string;
   lastName: string;
+  fullName: string;
+  gender: FakeGender;
+  /** Years at registration; DOB left null so age display (2.1.4) uses this path. */
+  ageYearsAtReg: number;
+  /** Ten digits in the fake range 9000000000… (not stored form). */
   mobile: string;
+  /** Stored form +91XXXXXXXXXX. */
+  mobileE164: string;
 };
 
 const FIRST_NAMES = [
@@ -68,12 +81,27 @@ const FAKE_MOBILE_START = 9_000_000_000;
 
 export function generateFakePatients(count = 5000, seed = 1): FakePatient[] {
   const random = mulberry32(seed);
-  return Array.from({ length: count }, (_, i) => ({
-    code: `P-${String(i + 1).padStart(6, "0")}`,
-    firstName: pick(FIRST_NAMES, random),
-    lastName: pick(LAST_NAMES, random),
-    mobile: String(FAKE_MOBILE_START + i),
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    const firstName = pick(FIRST_NAMES, random);
+    const lastName = pick(LAST_NAMES, random);
+    const mobile = String(FAKE_MOBILE_START + i);
+    return {
+      id: seedPatientId(i + 1),
+      code: `P-${String(i + 1).padStart(6, "0")}`,
+      firstName,
+      lastName,
+      fullName: `${firstName} ${lastName}`,
+      gender: GENDERS[i % GENDERS.length]!,
+      ageYearsAtReg: 5 + (i % 90),
+      mobile,
+      mobileE164: `+91${mobile}`,
+    };
+  });
+}
+
+/** Stable 26-char ids so re-seed can DELETE WHERE id LIKE 'seed%'. */
+export function seedPatientId(oneBasedIndex: number): string {
+  return `seed${String(oneBasedIndex).padStart(22, "0")}`;
 }
 
 function pick(list: readonly string[], random: () => number): string {

@@ -27,4 +27,5 @@ export {
   type SessionRow,
   type StaffUser,
 } from "./repos/auth";
+export { PATIENT_LIST_SORTABLE, patientsRepo, type PatientListRow } from "./repos/patients";
 export type { SettingRow, SettingValue } from "./repos/settings";

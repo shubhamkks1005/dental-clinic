@@ -1,0 +1,32 @@
+.patients {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1100px;
+}
+
+.patients-head h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.patients-head p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
+
+.patients-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.patients-name-main {
+  font-weight: 600;
+}
+
+.patients-name-meta {
+  font-size: 12px;
+}

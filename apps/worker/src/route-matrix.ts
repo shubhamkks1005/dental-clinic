@@ -84,6 +84,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/users/:id/google-reset",
     access: { kind: "permission", action: "staff.manage" },
   },
+  {
+    method: "GET",
+    path: "/api/staff/patients",
+    access: { kind: "permission", action: "patients.view" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

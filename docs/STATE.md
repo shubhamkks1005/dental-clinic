@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **1.1.7** rest (`pnpm db:seed` into local D1), then **2.1.3**…
+Phase: 2. Current task: none; next is **2.1.3** (minor/guardian rules).
+1.1.7 DONE locally (`pnpm db:seed` loads 5,000 fake patients into local D1 only; GET `/api/staff/patients` + Patients screen S02/S15 so a developer can see them). Never seed staging/production.
 2.1.2 DONE locally (20 good + 20 bad unit tests for `normaliseMobile` in packages/shared; displayMobile covered).
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
@@ -14,7 +15,7 @@ version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so
 1.6.1 DONE locally (structured JSON logs).
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **1.1.7** rest (seed insert), then **2.1.3**+.
+Next: **2.1.3**+.
 
 ## Phase 1 gate (from PLAN.md)
 
