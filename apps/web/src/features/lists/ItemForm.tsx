@@ -23,6 +23,11 @@ export function ItemForm({
   onCancel?: () => void;
 }) {
   const def: ListDef = LIST_DEFS[listKey];
+  // Blank extra fields must be named keys, or reset() leaves the last minutes in the input.
+  const blank = (): ListItemInput => ({
+    label: "",
+    data: Object.fromEntries(def.fields.map((f) => [f.name, undefined as unknown as number])),
+  });
   const {
     register,
     handleSubmit,
@@ -30,12 +35,12 @@ export function ItemForm({
     formState: { errors, isSubmitting },
   } = useForm<ListItemInput>({
     resolver: zodResolver(listItemSchema(listKey)),
-    defaultValues: initial ?? { label: "", data: {} },
+    defaultValues: initial ?? blank(),
   });
 
   const submit = handleSubmit(async (input) => {
     const saved = await onSubmit(input);
-    if (saved && !initial) reset({ label: "", data: {} });
+    if (saved && !initial) reset(blank());
   });
 
   return (

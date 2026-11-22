@@ -69,10 +69,13 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth and staff-users; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists; deny by default applies)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
+- src/routes/staff-lists.ts - 1.5.4 lists API: GET /lists/:key, POST /lists/:key, PUT /lists/:key/:id, POST /lists/:key/:id/active | move; unknown list 404; replies with the fresh list
+- src/domain/lists.ts - listItems / addListItem / updateListItem / setListItemActive / moveListItem (thin; rules in the repo)
+- src/staff-lists.test.ts - 1.5.4 over HTTP: add/edit/hide/move, 403 for receptionist write, 400/409
 - src/routes/staff-users.ts - Settings > Staff API (doctor only via the repo): GET /users, POST /users, POST /users/:id/deactivate | reactivate | role | google-reset; bad input 400, guard refusal 422, stale page 409; replies with the fresh list
 - src/domain/staff.ts - listStaff, addStaff, changeStaff (calls the staff repo, returns the fresh list)
 - src/staff-users.test.ts - 1.3.6 over HTTP: 403 for receptionist, add 201, 400/422/409, deactivate = next request 401, role applies at once, reactivate + reset, CSRF
@@ -118,7 +121,8 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
-- src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
+- src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
+- src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
@@ -181,7 +185,10 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/errors.ts - RepoError (code forbidden|not_found|conflict|not_allowed|invalid) with plain-sentence messages; ForbiddenError, NotFoundError, ConflictError, NotAllowedError (a business rule refused), InvalidError (the value breaks its rule)
 - src/permissions.ts - PERMISSIONS: the one role table (AUTH_PLAN 4f, 19 actions: patients, clinical, prescriptions, appointments, bills, files, reports, settings, staff, audit; TO BE CONFIRMED BY THE DOCTOR); isAllowed, permissionsFor, assertAllowed
 - src/permissions.test.ts - exact actions per role (doctor all; receptionist 9; developer settings only)
-- src/repos/index.ts - createRepos(db, ctx) -> { settings, staff }; Repos type (built once per request by the Worker)
+- src/repos/index.ts - createRepos(db, ctx) -> { settings, staff, lists }; Repos type (built once per request by the Worker)
+- src/repos/lists.ts (+ test) - 1.5.4 listsRepo: list (active+hidden, sort_order), add, update (version), setActive (hide/show, never delete), move up/down; settings.read to list, settings.write to change; audit on every write
+- src/schema/list-items.ts - list_items (list_key, label, data_json, active, sort_order) + soft delete
+- migrations/0008_list_items.sql - creates list_items
 - src/repos/staff.ts - staffRepo (staff.manage): list, add, deactivate (ends sessions in the same batch), reactivate, changeRole, resetGoogleLink. Guards inside the UPDATE (not yourself, never 0 active doctors, version) + audit + staff_change event written only if the UPDATE happened
 - src/repos/staff.test.ts - 1.3.6: 403 for others, list, add, duplicate email, deactivate ends only their sessions, no self, two doctors racing leave one, reactivate, role rules, Google reset, stale version, not found
 - src/repos/settings.ts - settings.list() (known keys, fixed order), get(key) -> { value, version }; update(key, value, expectedVersion): permission, unknown key = not found, value checked by the shared rule (InvalidError 400, nothing written), cleaned value saved, version-checked UPDATE + audit row in one batch, ConflictError if someone saved first
@@ -212,6 +219,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo, clinic.timings, clinic.holidays); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
+- src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes, referral_sources); listItemSchema(key); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule: normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"). Plan 2.1.2 / 7.7.2 reuse it
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)
