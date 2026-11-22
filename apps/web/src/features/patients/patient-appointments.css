@@ -1,0 +1,37 @@
+.patient-appts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.patient-appts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.patient-appts-card {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.patient-appts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.patient-appts-status {
+  text-transform: capitalize;
+  font-size: 0.9rem;
+}
+
+.patient-appts-chain {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}

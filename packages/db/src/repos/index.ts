@@ -1,6 +1,9 @@
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { appointmentsBookRepo } from "./appointments-book";
+import { appointmentsCancelRepo } from "./appointments-cancel";
+import { appointmentsListRepo } from "./appointments-list";
+import { appointmentsRescheduleRepo } from "./appointments-reschedule";
 import { appointmentsStatusRepo } from "./appointments-status";
 import { appointmentsWalkInRepo } from "./appointments-walk-in";
 import { consentsRepo } from "./consents";
@@ -34,6 +37,9 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...appointmentsBookRepo(db, ctx),
       ...appointmentsStatusRepo(db, ctx),
       ...appointmentsWalkInRepo(db, ctx),
+      ...appointmentsCancelRepo(db, ctx),
+      ...appointmentsRescheduleRepo(db, ctx),
+      ...appointmentsListRepo(db, ctx),
     },
   };
 }

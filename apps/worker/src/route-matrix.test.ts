@@ -96,6 +96,16 @@ function bodyFor(method: string, path: string): string | undefined {
       visitTypeId: "01M83VTYPE01CONSULT000001",
     });
   }
+  if (path === "/api/staff/appointments/:id/cancel" && method === "POST") {
+    return JSON.stringify({ version: 1, reason: "patient_request" });
+  }
+  if (path === "/api/staff/appointments/:id/reschedule" && method === "POST") {
+    return JSON.stringify({
+      version: 1,
+      dateLocal: "2026-11-24",
+      startMin: 600,
+    });
+  }
   if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
     return JSON.stringify({ status: "confirmed", version: 1 });
   }

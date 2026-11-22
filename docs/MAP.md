@@ -260,6 +260,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/appointments-book.ts (+ test) - 2.3.4/2.3.5 book(); soft rules + override→overbook; 50 parallel same-slot → one win, no loser audit
 - src/repos/appointments-status.ts (+ test) - 2.3.6 changeStatus(); wheel + stamps + no_show/undo gates; version conflict
 - src/repos/appointments-walk-in.ts (+ test) - 2.3.7 walkIn(); arrived walk-ins; emergency overbook; queue order test
+- src/repos/appointments-cancel.ts - 2.3.8 cancel() with reason codes; notifyPatient on audit
+- src/repos/appointments-reschedule.ts (+ test) - 2.3.8 reschedule(); chain; listForPatient
+- src/repos/appointments-list.ts - listForPatient + rescheduleChain
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 
 ## packages/shared
@@ -274,6 +277,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/appointment-status-change.ts - parseChangeAppointmentStatus body
 - src/appointment-queue.ts (+ test) - 2.3.7 sortWaitingQueue / waitingMinutes / formatWaiting
 - src/appointment-walk-in.ts - parseWalkInAppointment
+- src/appointment-cancel.ts - cancel reasons + parseCancelAppointment
+- src/appointment-reschedule.ts - parseRescheduleAppointment
 - src/booking-rules.ts (+ test) - 2.3.5 bookingRuleViolations + clinicWorkingIntervals (past/closed/lunch/ahead)
 - src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (uses clinicWorkingIntervals; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)

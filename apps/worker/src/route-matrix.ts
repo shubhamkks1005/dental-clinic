@@ -130,6 +130,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "patients.edit" },
   },
   {
+    method: "GET",
+    path: "/api/staff/patients/:id/appointments",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
     method: "POST",
     path: "/api/staff/appointments",
     access: { kind: "permission", action: "appointments.manage" },
@@ -137,6 +142,21 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   {
     method: "POST",
     path: "/api/staff/appointments/walk-in",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/cancel",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/reschedule",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/appointments/:id/chain",
     access: { kind: "permission", action: "appointments.manage" },
   },
   {

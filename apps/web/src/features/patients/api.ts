@@ -109,3 +109,30 @@ export function checkPatientDuplicates(body: Record<string, unknown>): Promise<D
     body,
   }).then((r) => r.warnings);
 }
+
+export type PatientAppointmentRow = {
+  id: string;
+  dateLocal: string;
+  startMin: number;
+  endMin: number;
+  startAt: string;
+  status: string;
+  visitTypeLabel: string;
+  priority: string;
+  source: string;
+  rescheduledFrom: string | null;
+  cancelReason: string | null;
+  version: number;
+};
+
+export function listPatientAppointments(patientId: string): Promise<PatientAppointmentRow[]> {
+  return api<{ appointments: PatientAppointmentRow[] }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/appointments`,
+  ).then((r) => r.appointments);
+}
+
+export function getAppointmentChain(id: string): Promise<PatientAppointmentRow[]> {
+  return api<{ chain: PatientAppointmentRow[] }>(
+    `/api/staff/appointments/${encodeURIComponent(id)}/chain`,
+  ).then((r) => r.chain);
+}

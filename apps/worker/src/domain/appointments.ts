@@ -1,7 +1,9 @@
 import type { Repos } from "@clinic/db";
 import {
   parseBookAppointment,
+  parseCancelAppointment,
   parseChangeAppointmentStatus,
+  parseRescheduleAppointment,
   parseWalkInAppointment,
   type Holiday,
   type Timings,
@@ -45,4 +47,40 @@ export async function walkInAppointment(repos: Repos, body: unknown, now: Date =
   const { timings, holidays } = await clinicClock(repos);
   const appointment = await repos.appointments.walkIn(parsed.value, { timings, holidays, now });
   return { ok: true as const, appointment };
+}
+
+export async function cancelAppointment(repos: Repos, id: string, body: unknown) {
+  const parsed = parseCancelAppointment(body);
+  if (!parsed.ok) return parsed;
+  const appointment = await repos.appointments.cancel(id, parsed.value);
+  return { ok: true as const, appointment };
+}
+
+export async function rescheduleAppointment(
+  repos: Repos,
+  id: string,
+  body: unknown,
+  now: Date = new Date(),
+) {
+  const parsed = parseRescheduleAppointment(body);
+  if (!parsed.ok) return parsed;
+  const { timings, holidays } = await clinicClock(repos);
+  const bookAheadDays = (await repos.settings.get("appointments.book_ahead_days")).value as number;
+  const result = await repos.appointments.reschedule(id, parsed.value, {
+    timings,
+    holidays,
+    bookAheadDays,
+    now,
+  });
+  return { ok: true as const, ...result };
+}
+
+export async function listPatientAppointments(repos: Repos, patientId: string) {
+  const appointments = await repos.appointments.listForPatient(patientId);
+  return { ok: true as const, appointments };
+}
+
+export async function appointmentRescheduleChain(repos: Repos, id: string) {
+  const chain = await repos.appointments.rescheduleChain(id);
+  return { ok: true as const, chain };
 }

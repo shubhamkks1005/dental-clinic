@@ -20,6 +20,7 @@ export type AppointmentInsertValues = {
   overbook: boolean;
   complaint: string | null;
   arrivedAt?: string | null;
+  rescheduledFrom?: string | null;
   createdBy: string;
   updatedBy: string;
 };
@@ -57,7 +58,7 @@ function appointmentInsertCells(values: AppointmentInsertValues) {
     overbook: values.overbook ? 1 : 0,
     complaint: values.complaint,
     cancelReason: null,
-    rescheduledFrom: null,
+    rescheduledFrom: values.rescheduledFrom ?? null,
     arrivedAt: values.arrivedAt ?? null,
     startedAt: null,
     endedAt: null,

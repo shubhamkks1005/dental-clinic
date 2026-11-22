@@ -1,5 +1,6 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
+import { listPatientAppointments } from "../domain/appointments";
 import {
   archivePatient,
   checkPatientDuplicates,
@@ -18,6 +19,11 @@ export const staffPatients = new Hono<AppEnv>();
 staffPatients.get("/patients", async (c) => {
   const page = await listPatients(signedIn(c).repos, new URL(c.req.url).searchParams);
   return c.json(ok({ page }));
+});
+
+staffPatients.get("/patients/:id/appointments", async (c) => {
+  const result = await listPatientAppointments(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ appointments: result.appointments }));
 });
 
 staffPatients.get("/patients/:id", async (c) => {
