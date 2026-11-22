@@ -1,5 +1,6 @@
 // Top level = local (`wrangler dev`). Deploys must always pass --env staging or --env production.
-// All IDs below are placeholders. Secrets never go in this file: use `wrangler secret put` or .dev.vars.
+// Staging D1 id is real; local and production ids are placeholders. IDs are not secrets.
+// Secrets never go in this file: use `wrangler secret put` or .dev.vars.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dental-clinic-local",
@@ -33,7 +34,7 @@
         {
           "binding": "DB",
           "database_name": "dental-clinic-staging",
-          "database_id": "00000000-0000-0000-0000-000000000002",
+          "database_id": "54a33625-2a34-4e8a-b736-4e65088a6faa",
           "migrations_dir": "../../packages/db/migrations",
         },
       ],
