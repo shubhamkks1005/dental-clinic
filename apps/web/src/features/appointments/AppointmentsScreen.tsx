@@ -1,9 +1,10 @@
 import { addIstDays, istDate } from "@clinic/shared";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { listDayAppointments, type DayAppointmentsReply } from "./api";
 import { DayView } from "./DayView";
+import { QuickBookDialog } from "./QuickBookDialog";
 import "./day-view.css";
 
 function validDate(raw: string | null): string | null {
@@ -11,14 +12,29 @@ function validDate(raw: string | null): string | null {
   return raw;
 }
 
-// S08 Appointments — day view (2.4.1). Week view is baad me (2.4.6).
+function parseBookMin(raw: string | null): number | undefined {
+  if (raw === null || raw === "") return undefined;
+  const n = Number(raw);
+  return Number.isInteger(n) && n >= 0 && n < 1440 ? n : undefined;
+}
+
+// S08 Appointments — day view (2.4.1) + quick-book (2.4.2 / S07).
 export function AppointmentsScreen() {
   const [params, setParams] = useSearchParams();
   const today = istDate(new Date());
   const dateLocal = validDate(params.get("date")) ?? today;
+  const bookMin = parseBookMin(params.get("book"));
+  const patientId = params.get("patient") || undefined;
+  const wantBook = bookMin !== undefined || Boolean(patientId) || params.get("book") === "1";
 
   const [data, setData] = useState<DayAppointmentsReply | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [bookOpen, setBookOpen] = useState(wantBook);
+
+  const prefill = useMemo(
+    () => ({ dateLocal, startMin: bookMin, patientId }),
+    [dateLocal, bookMin, patientId],
+  );
 
   const load = useCallback(() => {
     setError(null);
@@ -38,10 +54,21 @@ export function AppointmentsScreen() {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (wantBook) setBookOpen(true);
+  }, [wantBook]);
+
   function setDate(next: string) {
     const nextParams = new URLSearchParams(params);
     nextParams.set("date", next);
     setParams(nextParams, { replace: true });
+  }
+
+  function clearBookParams() {
+    const next = new URLSearchParams(params);
+    next.delete("book");
+    next.delete("patient");
+    setParams(next, { replace: true });
   }
 
   return (
@@ -78,6 +105,18 @@ export function AppointmentsScreen() {
           <button type="button" className="btn" onClick={() => setDate(today)}>
             Today
           </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => {
+              const next = new URLSearchParams(params);
+              next.set("book", "1");
+              setParams(next, { replace: true });
+              setBookOpen(true);
+            }}
+          >
+            Book
+          </button>
         </div>
       </header>
 
@@ -94,10 +133,21 @@ export function AppointmentsScreen() {
             next.set("date", dateLocal);
             next.set("book", String(startMin));
             setParams(next, { replace: true });
+            setBookOpen(true);
           }}
           onChanged={load}
         />
       ) : null}
+
+      <QuickBookDialog
+        open={bookOpen}
+        prefill={prefill}
+        onClose={() => {
+          setBookOpen(false);
+          clearBookParams();
+        }}
+        onBooked={load}
+      />
     </div>
   );
 }

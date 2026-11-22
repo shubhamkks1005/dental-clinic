@@ -88,7 +88,7 @@
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments; deny by default applies)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
-- src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1 day list + window + serverNow); POST book/walk-in; cancel/reschedule/status/chain
+- src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1); GET /appointments/slots (2.4.2); POST book/walk-in; cancel/reschedule/status/chain
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
 - src/staff-settings.test.ts - 1.5.1 over HTTP: list, valid save, invalid value saves nothing, 400/404/409/403
@@ -144,7 +144,7 @@
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
-- src/features/appointments/ - 2.4.1 day view (S08 day): AppointmentsScreen, DayView, DayCard, DayDetails, api.ts, day-view.css, index.ts
+- src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
@@ -264,6 +264,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/appointments-cancel.ts - 2.3.8 cancel() with reason codes; notifyPatient on audit
 - src/repos/appointments-reschedule.ts (+ test) - 2.3.8 reschedule(); chain; listForPatient
 - src/repos/appointments-list.ts (+ test) - listForDay (2.4.1, join patient), listForPatient + rescheduleChain
+- src/repos/appointments-slots.ts (+ test) - 2.4.2 suggestSlots (findFreeSlots + visit type duration)
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 
 ## packages/shared

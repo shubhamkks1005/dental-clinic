@@ -111,3 +111,32 @@ export async function appointmentRescheduleChain(repos: Repos, id: string) {
   const chain = await repos.appointments.rescheduleChain(id);
   return { ok: true as const, chain };
 }
+
+/** Next free slots for quick-book (2.4.2). */
+export async function suggestAppointmentSlots(
+  repos: Repos,
+  query: { visitTypeId: string; fromDate?: string },
+  now: Date = new Date(),
+) {
+  if (query.fromDate && !DATE_LOCAL.test(query.fromDate)) {
+    return { ok: false as const, message: "Pick a date as YYYY-MM-DD." };
+  }
+  const { timings, holidays } = await clinicClock(repos);
+  // suggestSlots asserts appointments.manage first (403 for denied roles).
+  const slots = await repos.appointments.suggestSlots(query.visitTypeId, {
+    timings,
+    holidays,
+    now,
+    fromDate: query.fromDate,
+    limit: 5,
+  });
+  return {
+    ok: true as const,
+    slots: slots.map((s) => ({
+      dateLocal: s.dateLocal,
+      startMin: s.startMin,
+      endMin: s.endMin,
+      startAt: s.startAt.toISOString(),
+    })),
+  };
+}

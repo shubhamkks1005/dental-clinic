@@ -44,3 +44,28 @@ export function rescheduleAppointment(
     body,
   });
 }
+
+export type SuggestedSlot = {
+  dateLocal: string;
+  startMin: number;
+  endMin: number;
+  startAt: string;
+};
+
+export function suggestSlots(visitTypeId: string, dateLocal?: string): Promise<SuggestedSlot[]> {
+  const q = new URLSearchParams({ visitTypeId });
+  if (dateLocal) q.set("date", dateLocal);
+  return api<{ slots: SuggestedSlot[] }>(`/api/staff/appointments/slots?${q}`).then((r) => r.slots);
+}
+
+export function bookAppointment(body: {
+  patientId: string;
+  visitTypeId: string;
+  dateLocal: string;
+  startMin: number;
+  source: "phone";
+  complaint?: string | null;
+  overrideReason?: string | null;
+}): Promise<{ appointment: DayAppointment }> {
+  return api("/api/staff/appointments", { method: "POST", body });
+}

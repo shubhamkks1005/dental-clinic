@@ -1,0 +1,87 @@
+.quick-book {
+  display: grid;
+  gap: var(--s3);
+}
+
+.quick-book label {
+  display: grid;
+  gap: var(--s2);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.quick-book-picked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-height: 44px;
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--soft-blue, #e6eefa);
+}
+
+.quick-book-search {
+  display: grid;
+  gap: var(--s2);
+}
+
+.quick-book-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  max-height: 12rem;
+  overflow: auto;
+}
+
+.quick-book-result {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s3);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.quick-book-result:last-child {
+  border-bottom: 0;
+}
+
+.quick-book-result:hover,
+.quick-book-result:focus-visible {
+  background: var(--soft-blue, #e6eefa);
+  outline: none;
+}
+
+.quick-book-slots {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.quick-book-slots legend {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: var(--s2);
+}
+
+.quick-book-slots ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.quick-book-slots .btn {
+  min-height: 44px;
+}

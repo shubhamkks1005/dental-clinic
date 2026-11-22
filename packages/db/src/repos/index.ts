@@ -4,6 +4,7 @@ import { appointmentsBookRepo } from "./appointments-book";
 import { appointmentsCancelRepo } from "./appointments-cancel";
 import { appointmentsListRepo } from "./appointments-list";
 import { appointmentsRescheduleRepo } from "./appointments-reschedule";
+import { appointmentsSlotsRepo } from "./appointments-slots";
 import { appointmentsStatusRepo } from "./appointments-status";
 import { appointmentsWalkInRepo } from "./appointments-walk-in";
 import { consentsRepo } from "./consents";
@@ -40,6 +41,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...appointmentsCancelRepo(db, ctx),
       ...appointmentsRescheduleRepo(db, ctx),
       ...appointmentsListRepo(db, ctx),
+      ...appointmentsSlotsRepo(db, ctx),
     },
   };
 }
