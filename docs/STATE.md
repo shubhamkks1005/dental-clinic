@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.7.1** next (after 3.6). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped**; 3.5.11–3.5.15 DONE; **3.6.1–3.6.2, 3.6.4–3.6.5 DONE; 3.6.3 skipped (baad me)**. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.7.2** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped**; 3.5.11–3.5.15 DONE; **3.6.1–3.6.2, 3.6.4–3.6.5 DONE; 3.6.3 skipped (baad me)**; **3.7.1 DONE**. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.7.1 DONE locally (DECISIONS: JPEG/PNG upload path until sister confirms RVG; B2 S3 driver for staging/prod, local R2/memory for dev). No migration.
 3.6.5 DONE locally (estimate change reason required; PATCH `/plan-items/:id/estimate` + Plan tab UI). No migration.
 3.6.4 DONE locally (visit finalise matches/creates plan items → completed). No migration.
 3.6.3 SKIPPED (baad me multi-sitting steps). Listed under Waiting / DECISIONS.
@@ -147,6 +148,8 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **B2 bucket and keys set on staging** (STORAGE_DRIVER=s3 + S3_* vars/secrets; run storage check script after)
+- **3.7.1**: sister confirm which RVG/software and whether it exports JPEG/PNG (or only DICOM)
 - **3.6.3**: multi-sitting step tracker deferred (baad me)
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
