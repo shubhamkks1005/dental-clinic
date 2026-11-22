@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.1.6** (search tokens).
+Phase: 2. Current task: none; next is **2.1.6** (search tokens — Large). HANDOFF updated 2026-11-22 evening.
 2.1.5 DONE locally (`takePatientCode`: counters `patient_code` / period `all` + settings prefix/digits → P-000123; batch with patient INSERT; same takeNumber path for later bill/prescription/portal numbers).
 2.1.4 DONE locally (`displayAge` / `ageYearsOn`: DOB preferred; else age-at-reg + years since registration; Patients list shows computed age, never a stored current-age column).
 2.1.3 DONE locally (guardian_name/relation/mobile columns; `guardianSaveError` blocks under-18 without guardian; age helpers for minor check). **New migration `0010_patient_guardian.sql` — owner must apply to staging (with 0006–0009); agent did not apply it.** Final DPDP lawyer wording still open.
