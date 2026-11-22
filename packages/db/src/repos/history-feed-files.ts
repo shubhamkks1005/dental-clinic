@@ -1,4 +1,5 @@
-import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
+import type { FileKind } from "@clinic/shared";
+import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { files } from "../schema";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
@@ -11,10 +12,16 @@ function afterClause(after: HistorySourceQuery["after"]) {
   );
 }
 
-/** 3.5.13: patient files in the feed (empty until 3.7 upload fills the table). */
-export function fileHistorySource(db: Db): HistorySource {
+/** 3.5.13 / 3.5.14: patient files in the feed. `kinds` null = all; [] = none. */
+export function fileHistorySource(
+  db: Db,
+  opts?: { kinds?: readonly FileKind[] | null },
+): HistorySource {
+  const kinds = opts?.kinds;
   return {
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
+      if (kinds && kinds.length === 0) return [];
+
       const rows = await db
         .select({
           id: files.id,
@@ -24,7 +31,14 @@ export function fileHistorySource(db: Db): HistorySource {
           patientId: files.patientId,
         })
         .from(files)
-        .where(and(eq(files.patientId, q.patientId), isNull(files.deletedAt), afterClause(q.after)))
+        .where(
+          and(
+            eq(files.patientId, q.patientId),
+            isNull(files.deletedAt),
+            afterClause(q.after),
+            kinds ? inArray(files.kind, [...kinds]) : undefined,
+          ),
+        )
         .orderBy(desc(files.createdAt), desc(files.id))
         .limit(q.take)
         .all();

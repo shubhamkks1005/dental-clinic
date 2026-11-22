@@ -153,7 +153,7 @@
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11
 - src/features/history/ - 3.5.11–12 PatientHistoryTab + summary strip + HistoryFeedList + filter stubs (S04/S17)
 - src/repos/history-summary.ts (+ test) - 3.5.11 pinned strip; access_log view; receptionist alert labels empty
-- src/repos/history-feed*.ts (+ test) - 3.5.12–13 merge feed; appointments/visits/treatments/files/medical/consents/amendments; cursor
+- src/repos/history-feed*.ts (+ test) - 3.5.12–14 merge feed; role sources (receptionist: appointments/consents/scan+consent files only); cursor
 - packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
