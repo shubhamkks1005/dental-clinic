@@ -42,6 +42,8 @@ describe("migrations on an empty database (1.2.3)", () => {
       "patients",
       "plan_item_versions",
       "plan_items",
+      "prescription_items",
+      "prescriptions",
       "settings",
       "staff_sessions",
       "tooth_events",

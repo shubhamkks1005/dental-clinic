@@ -232,6 +232,13 @@
       "when": 1795460000000,
       "tag": "0032_medicines_seed",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "6",
+      "when": 1795461000000,
+      "tag": "0033_prescriptions",
+      "breakpoints": true
     }
   ]
 }
