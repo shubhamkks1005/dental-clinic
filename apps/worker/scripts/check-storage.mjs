@@ -7,20 +7,29 @@
  *   S3_ENDPOINT=... S3_BUCKET=... S3_REGION=... S3_KEY_ID=... S3_APP_KEY=... \
  *     node apps/worker/scripts/check-storage.mjs
  */
+import { dirname, join } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { AwsClient } from "aws4fetch";
 
-const endpoint = process.env.S3_ENDPOINT?.trim();
+const here = dirname(fileURLToPath(import.meta.url));
+const { normaliseS3Endpoint } = await import(
+  pathToFileURL(join(here, "../src/adapters/s3-endpoint.ts")).href
+);
+
+const endpointRaw = process.env.S3_ENDPOINT?.trim();
 const bucket = process.env.S3_BUCKET?.trim();
 const region = process.env.S3_REGION?.trim() || "us-west-004";
 const keyId = process.env.S3_KEY_ID?.trim();
 const appKey = process.env.S3_APP_KEY?.trim();
 
-if (!endpoint || !bucket || !keyId || !appKey) {
+if (!endpointRaw || !bucket || !keyId || !appKey) {
   console.error(
     "Missing S3_ENDPOINT, S3_BUCKET, S3_KEY_ID or S3_APP_KEY. Set them in the shell (not in the repo).",
   );
   process.exit(1);
 }
+
+const endpoint = normaliseS3Endpoint(endpointRaw);
 
 const client = new AwsClient({
   accessKeyId: keyId,
@@ -30,8 +39,7 @@ const client = new AwsClient({
 });
 
 const key = `clinic-storage-check/${Date.now()}.txt`;
-const base = endpoint.replace(/\/$/, "");
-const url = `${base}/${encodeURIComponent(bucket)}/${key}`;
+const url = `${endpoint}/${encodeURIComponent(bucket)}/${key}`;
 const body = "dental-clinic storage check";
 
 const put = await client.fetch(url, {

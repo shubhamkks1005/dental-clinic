@@ -1,4 +1,5 @@
 import { AwsClient } from "aws4fetch";
+import { normaliseS3Endpoint } from "./s3-endpoint";
 import type { StorageAdapter, StoredObject } from "./storage";
 import { StorageNotConfiguredError } from "./storage";
 
@@ -22,7 +23,7 @@ export function s3Storage(config: S3Config): StorageAdapter {
     region: config.region,
     service: "s3",
   });
-  const base = config.endpoint.replace(/\/$/, "");
+  const base = normaliseS3Endpoint(config.endpoint);
   const objectUrl = (key: string) =>
     `${base}/${encodeURIComponent(config.bucket)}/${key.split("/").map(encodeURIComponent).join("/")}`;
 
@@ -55,5 +56,5 @@ export function s3Storage(config: S3Config): StorageAdapter {
 
 export function requireS3Config(partial: Partial<S3Config>): S3Config {
   if (!s3ConfigReady(partial)) throw new StorageNotConfiguredError();
-  return partial;
+  return { ...partial, endpoint: normaliseS3Endpoint(partial.endpoint) };
 }
