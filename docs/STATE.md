@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.1.6** (search tokens — Large). HANDOFF updated 2026-11-22 evening.
+Phase: 2. Current task: none; next is **2.1.7** (duplicate warnings).
+2.1.6 DONE locally (`patient_search` tokens + index; range search; last-4 via mobile_rev; seed writes tokens; EXPLAIN uses index; <100 rows on 5k). **New migration `0011_patient_search.sql` — owner applies (with 0006–0010); agent did not apply to staging.**
 2.1.5 DONE locally (`takePatientCode`: counters `patient_code` / period `all` + settings prefix/digits → P-000123; batch with patient INSERT; same takeNumber path for later bill/prescription/portal numbers).
 2.1.4 DONE locally (`displayAge` / `ageYearsOn`: DOB preferred; else age-at-reg + years since registration; Patients list shows computed age, never a stored current-age column).
 2.1.3 DONE locally (guardian_name/relation/mobile columns; `guardianSaveError` blocks under-18 without guardian; age helpers for minor check). **New migration `0010_patient_guardian.sql` — owner must apply to staging (with 0006–0009); agent did not apply it.** Final DPDP lawyer wording still open.
@@ -18,7 +19,7 @@ version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so
 1.6.1 DONE locally (structured JSON logs).
 1.5.4 / 1.5.3 / 1.5.1 DONE locally. 1.5.2 deferred (R2). 1.5.5 baad me. 1.5.6 waits on Phase 0 sheets.
 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done tasks; staging Google live-checked 2026-11-22.
-Next: **2.1.6**+.
+Next: **2.1.7**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -55,7 +56,7 @@ Exceptions that are *not* hard blockers but still open: staging migrations 0006�
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- Staging: apply migrations **0006–0010**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0011**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist

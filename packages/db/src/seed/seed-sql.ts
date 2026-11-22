@@ -1,3 +1,4 @@
+import { buildSearchTokens } from "../../../shared/src/patient-search-tokens.ts";
 import { generateFakePatients } from "./fake-patients.ts";
 
 const BATCH = 100;
@@ -7,8 +8,10 @@ const ACTOR = "system";
 export function buildLocalPatientSeedSql(count = 5000, seed = 1): string[] {
   const patients = generateFakePatients(count, seed);
   const statements: string[] = [
+    "DELETE FROM patient_search WHERE patient_id LIKE 'seed%';",
     "DELETE FROM patients WHERE id LIKE 'seed%';",
     ...insertBatches(patients),
+    ...tokenBatches(patients),
     counterUpsert(count),
   ];
   return statements;
@@ -31,8 +34,44 @@ function insertBatches(patients: ReturnType<typeof generateFakePatients>): strin
   return out;
 }
 
+function tokenBatches(patients: ReturnType<typeof generateFakePatients>): string[] {
+  type Row = { id: string; patientId: string; token: string; kind: string };
+  const rows: Row[] = [];
+  let n = 0;
+  for (const p of patients) {
+    for (const t of buildSearchTokens({
+      fullName: p.fullName,
+      code: p.code,
+      mobile: p.mobileE164,
+      mobileSecondary: null,
+      legacyRef: null,
+    })) {
+      n += 1;
+      rows.push({
+        id: `seedtok${String(n).padStart(18, "0")}`,
+        patientId: p.id,
+        token: t.token,
+        kind: t.kind,
+      });
+    }
+  }
+  const out: string[] = [];
+  for (let i = 0; i < rows.length; i += BATCH) {
+    const chunk = rows.slice(i, i + BATCH);
+    const values = chunk
+      .map(
+        (r) =>
+          `(${sqlStr(r.id)}, ${sqlStr(ACTOR)}, ${sqlStr(ACTOR)}, ${sqlStr(r.patientId)}, ${sqlStr(r.token)}, ${sqlStr(r.kind)})`,
+      )
+      .join(",\n");
+    out.push(
+      `INSERT INTO patient_search (id, created_by, updated_by, patient_id, token, kind) VALUES\n${values};`,
+    );
+  }
+  return out;
+}
+
 function counterUpsert(count: number): string {
-  // Keep a higher live counter if non-seed patients already advanced it.
   return (
     `INSERT INTO counters (id, name, period, value, created_by, updated_by) ` +
     `VALUES (${sqlStr("seedcounter00000000000001")}, 'patient_code', 'all', ${count}, ${sqlStr(ACTOR)}, ${sqlStr(ACTOR)}) ` +

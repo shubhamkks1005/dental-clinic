@@ -18,6 +18,7 @@ export {
 } from "./errors";
 export { NEVER_RESETS, patientCodeSql, takeNumber, takePatientCode } from "./numbering";
 export { pingDb } from "./ping";
+export { rebuildPatientSearchStatements } from "./search/patient-tokens";
 export { assertAllowed, isAllowed, PERMISSIONS, permissionsFor, type Action } from "./permissions";
 export { createRepos, type Repos } from "./repos";
 export {

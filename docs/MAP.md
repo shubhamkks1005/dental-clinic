@@ -172,8 +172,10 @@
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
 - patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, notes, status (active|archived)
+- patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
 - migrations/0009_patients.sql - creates patients
 - migrations/0010_patient_guardian.sql - adds guardian_name, guardian_relation, guardian_mobile
+- migrations/0011_patient_search.sql - creates patient_search + token indexes
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -232,9 +234,11 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/ - SQL migrations (never edit a committed one)
 - src/seed/fake-patients.ts - generateFakePatients(count=5000, seed=1): made-up names, codes P-000001.., mobiles 9000000000.. as +91…, gender, ageYearsAtReg, stable seed ids (dry_run only)
 - src/seed/fake-patients.test.ts - count, unique codes and mobiles, formats, same seed = same people
-- src/seed/seed-sql.ts (+ test) - 1.1.7 buildLocalPatientSeedSql: DELETE seed%, batched INSERTs, patient_code counter upsert (local only)
+- src/seed/seed-sql.ts (+ test) - 1.1.7/2.1.6 buildLocalPatientSeedSql: DELETE seed%, patient + patient_search batches, counter upsert (local only)
 - src/seed/factories.ts (+ test) - 1.7.5 fakePatient / fakeMobile / fakePersonName / fakeHistory (made-up only; clinical strings say "fake")
-- src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; page + LIKE search until 2.1.6 tokens)
+- src/search/patient-tokens.ts (+ test) - rebuildPatientSearchStatements (same batch as patient write)
+- src/search/search-scale.test.ts - 2.1.6: 5,000 fake patients, EXPLAIN uses token index, <100 rows
+- src/repos/patients.ts (+ test) - patientsRepo.list (patients.view; 2.1.6 token range search, last-4 via mobile_rev)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code
@@ -252,6 +256,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)
 - src/patient-age.ts (+ test) - ageYearsFromDob, ageYearsOn, displayAge/formatAgeYears, isMinor (under 18); never store current age
 - src/patient-guardian.ts (+ test) - 2.1.3 guardianSaveError (10yo without guardian cannot save), normalisedGuardian
+- src/patient-search-tokens.ts (+ test) - 2.1.6 buildSearchTokens, searchWords, tokenRangeEnd (no FTS5, no LIKE %x%)
 - src/fields.ts - zod form fields shared by browser and Worker: personNameField, mobileField (-> +91...), displayDateField (DD/MM/YYYY -> YYYY-MM-DD), plain-English messages
 - src/request-id.ts (+ test) - REQUEST_ID_HEADER, shortRequestId(): the 8-character Error ID (search Worker logs for it)
 - src/paging.ts (+ test) - server-side list contract: PageQuery/Page, parsePageQuery (safe: unknown sort ignored, size capped at 100, search 100 chars), pageQueryParams, pageWindow (LIMIT/OFFSET), lastPage, firstPage

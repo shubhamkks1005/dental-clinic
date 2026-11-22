@@ -55,6 +55,7 @@ describe("table rules (1.2.1)", () => {
       "counters",
       "files",
       "list_items",
+      "patient_search",
       "patients",
       "settings",
       "staff_sessions",

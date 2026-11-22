@@ -4,6 +4,7 @@ export { counters } from "./counters";
 export { files } from "./files";
 export { listItems } from "./list-items";
 export { patients } from "./patients";
+export { patientSearch } from "./patient-search";
 export { settings } from "./settings";
 export { staffSessions } from "./staff-sessions";
 export { users } from "./users";

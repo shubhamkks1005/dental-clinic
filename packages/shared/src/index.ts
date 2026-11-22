@@ -8,6 +8,7 @@ export * from "./paging";
 export * from "./patient-age";
 export * from "./patient-fields";
 export * from "./patient-guardian";
+export * from "./patient-search-tokens";
 export * from "./request-id";
 export * from "./routing";
 export * from "./settings";
