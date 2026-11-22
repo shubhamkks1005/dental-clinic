@@ -18,7 +18,7 @@ Written: 2026-11-22 (late). Read STATE.md and MAP.md. Fake data only. Never push
 | 2.1.9 consents | `c9241b3` |
 | 2.2.1 new patient form | `133bf6b` |
 | 2.2.2 patient profile | `9a58329` |
-| 2.2.3 search box | *(commit after this HANDOFF)* |
+| 2.2.3 search box | `f11f7bb` |
 
 ## New migrations (owner applies; agent did not touch staging)
 - `0010_patient_guardian.sql`
