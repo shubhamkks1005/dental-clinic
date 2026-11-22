@@ -72,7 +72,8 @@
 - 2026-11-22 - Google sign-in always uses prompt=select_account - owner - owner
 - 2026-11-22 - Permission table in docs/AUTH_PLAN.md 4f: TO BE CONFIRMED BY THE DOCTOR before task 1.3.4 is closed - owner - owner
 - 2026-11-22 - The agent never touches the Cloudflare API token; the owner deletes it after the Google secrets are set - owner - owner
-- 2026-11-22 - PROPOSED (1.3.6, owner may change): "Reset Google link" also takes the Gmail address (prefilled), so a changed Gmail is fixed in one step; it clears the link and ends that person's sessions. The no-self rule covers it too (own lost Gmail = developer recovery command) - agent - pending owner
-- 2026-11-22 - PROPOSED (1.3.6): developer accounts are listed in Settings > Staff; the doctor can deactivate, reactivate or reset them but not give or change the developer role - agent - pending owner
-- 2026-11-22 - Validation of staff inputs is plain TypeScript in packages/shared for now; zod is not installed yet and needs the owner's OK as a new dependency (planned with 1.5.1) - AGENTS.md no-new-dependency rule - agent
+- 2026-11-22 - ACCEPTED (1.3.6): "Reset Google link" also takes the Gmail address (prefilled), so a changed Gmail is fixed in one step; it clears the link and ends that person's sessions. The doctor cannot reset her own link; that stays the developer recovery command - agent proposal - owner
+- 2026-11-22 - ACCEPTED (1.3.6): developer accounts are listed in Settings > Staff; the doctor can deactivate, reactivate or reset them but not give or change the developer role - agent proposal - owner
+- 2026-11-22 - ACCEPTED (1.3.7): menu per role: Today needs appointments.manage, Messages needs patients.view (reminders carry patient names), a developer account starts in Settings - agent proposal - owner
+- 2026-11-22 - Validation of staff inputs is plain TypeScript in packages/shared for now; zod is added when 1.5.1 needs it (owner OK given) - AGENTS.md no-new-dependency rule - owner
 - Stack: Cloudflare Worker + Hono, D1 + Drizzle, R2, Vite + React; no Next.js - free-plan limits (see plan Tech decisions); final only after Phase 0 spike passes - plan
