@@ -8,6 +8,7 @@ import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { toothEvents, visitAddenda, visitDiagnoses, visitProcedures, visits } from "../schema";
 import { nowUtcSql } from "../sql";
+import { planSyncStatementsForFinalise } from "./plan-items-from-visit";
 // Draft field patches live in visits-patch.ts (3.5.3).
 
 export type FinaliseInput = { version: number };
@@ -52,6 +53,11 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
         finalisedBy: ctx.userId,
       });
 
+      const planSync = await planSyncStatementsForFinalise(db, ctx, {
+        visitId,
+        patientId: visit.patientId,
+      });
+
       await db.batch([
         db
           .update(visits)
@@ -79,6 +85,7 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
           before: { status: "draft", version: visit.version },
           after: { status: "final", version: visit.version + 1, snapshotHash: hash },
         }),
+        ...planSync,
       ]);
 
       const row = await db

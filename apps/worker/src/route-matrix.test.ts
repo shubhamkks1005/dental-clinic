@@ -140,6 +140,21 @@ function bodyFor(method: string, path: string): string | undefined {
       conditionCode: "filling",
     });
   }
+  if (path === "/api/staff/plan-items" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      procedureLabel: "Matrix filling",
+      estimatePaise: 10000,
+      phase: 1,
+      sittings: 1,
+    });
+  }
+  if (path === "/api/staff/plan-items/:id/estimate" && method === "PATCH") {
+    return JSON.stringify({ estimatePaise: 20000, reason: "Matrix reason", version: 1 });
+  }
+  if (path === "/api/staff/plan-items/:id/decision" && method === "PATCH") {
+    return JSON.stringify({ status: "declined", version: 1 });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

@@ -158,7 +158,10 @@
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
 - src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only; 3.3.2 AlertsStrip + ProfileAlerts (icon on Today/DayCard)
 - src/features/chart/ - 3.4.2–3.4.6 ToothChart + VisitChartPanel (dentition by age; chart events; as-of history); ChartPlayground on /app/style-guide
-- src/features/visits/ - 3.5.1–3.5.9 VisitScreen (S05) + PatientVisitsTab timeline (S04/S17); notes autosave, diagnoses, Chart+procedures, finalise, VisitAddenda; drafts API; route /app/visits/:id
+- src/features/visits/ - 3.5.1–3.5.9 VisitScreen (S05) + PatientVisitsTab timeline (S04/S17); notes autosave, diagnoses, Chart+procedures, finalise, VisitAddenda; drafts API; route /app/visits/:id; Plan tab hosts VisitPlanPanel
+- src/features/plan/ - 3.6.1–3.6.2 / 3.6.5 VisitPlanPanel + PlanAddForm + PlanItemRow (S05/S06); api.ts
+- apps/worker staff-plan (+ domain/plan-items, staff-plan.test) - plan-items CRUD/decision/estimate
+- packages/db plan-items*.ts (+ from-visit sync on finalise 3.6.4)
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css

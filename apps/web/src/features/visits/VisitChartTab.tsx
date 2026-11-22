@@ -10,10 +10,12 @@ type Props = {
   patient: PatientDetail;
   canEdit: boolean;
   onVisitChange: (visit: VisitSummary) => void;
+  /** 3.6.1: share focused tooth with the Plan tab. */
+  onToothFocus?: (tooth: FdiTooth | null) => void;
 };
 
 /** 3.5.4: chart + procedures on the visit Chart tab (S05). */
-export function VisitChartTab({ visit, patient, canEdit, onVisitChange }: Props) {
+export function VisitChartTab({ visit, patient, canEdit, onVisitChange, onToothFocus }: Props) {
   const readOnly = !canEdit || visit.status !== "draft";
   const [selection, setSelection] = useState<ChartSelection | null>(null);
   const [procedures, setProcedures] = useState(visit.procedures);
@@ -24,12 +26,16 @@ export function VisitChartTab({ visit, patient, canEdit, onVisitChange }: Props)
 
   function onFocusChange(tooth: FdiTooth, surface: ToothSurface) {
     setSelection((prev) => {
-      if (!prev || prev.tooth !== tooth) return { tooth, surfaces: [surface] };
-      if (prev.surfaces.includes(surface)) {
-        const next = prev.surfaces.filter((s) => s !== surface);
-        return { tooth, surfaces: next.length > 0 ? next : [surface] };
+      let next: ChartSelection;
+      if (!prev || prev.tooth !== tooth) next = { tooth, surfaces: [surface] };
+      else if (prev.surfaces.includes(surface)) {
+        const surfaces = prev.surfaces.filter((s) => s !== surface);
+        next = { tooth, surfaces: surfaces.length > 0 ? surfaces : [surface] };
+      } else {
+        next = { tooth, surfaces: [...prev.surfaces, surface] };
       }
-      return { tooth, surfaces: [...prev.surfaces, surface] };
+      onToothFocus?.(next.tooth);
+      return next;
     });
   }
 

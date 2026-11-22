@@ -1,0 +1,72 @@
+.visit-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.plan-add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.plan-add-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 8rem;
+  font-size: 0.875rem;
+}
+
+.plan-add-row select,
+.plan-add-row input {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+}
+
+.plan-total {
+  margin: 0;
+}
+
+.plan-item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.plan-item-row {
+  border-top: 1px solid var(--border, #e2e8f0);
+  padding-top: 0.75rem;
+}
+
+.plan-item-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-top: 0.5rem;
+}
+
+.plan-item-edit label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  min-width: 7rem;
+}
+
+.plan-item-edit input,
+.plan-item-edit select {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .plan-add-row label {
+    min-width: 10rem;
+  }
+}

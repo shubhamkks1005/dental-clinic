@@ -1,10 +1,11 @@
-import { VISIT_STATUS_LABEL } from "@clinic/shared";
+import { VISIT_STATUS_LABEL, type FdiTooth } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
+import { VisitPlanPanel } from "../plan";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { Tabs } from "../../ui/Tabs";
 import { getVisit, listRecentVisits, type VisitRecent, type VisitSummary } from "./api";
@@ -29,6 +30,7 @@ export function VisitScreen() {
   const [recent, setRecent] = useState<VisitRecent[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<VisitTabId>("today");
+  const [planTooth, setPlanTooth] = useState<FdiTooth | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -92,15 +94,22 @@ export function VisitScreen() {
             patient={patient}
             canEdit={canEditClinical}
             onVisitChange={setVisit}
+            onToothFocus={setPlanTooth}
           />
         ) : (
           <p className="muted">Chart is only for the doctor.</p>
         )
       ) : tabId === "plan" ? (
-        <VisitStubPanel
-          title="Plan"
-          note="Treatment plan for this visit will open here (Phase 3.6)."
-        />
+        canViewClinical ? (
+          <VisitPlanPanel
+            patientId={patient.id}
+            visitId={visit.id}
+            canEdit={canEditClinical}
+            toothFdi={planTooth}
+          />
+        ) : (
+          <p className="muted">Plan is only for the doctor.</p>
+        )
       ) : tabId === "history" ? (
         <VisitStubPanel
           title="History"

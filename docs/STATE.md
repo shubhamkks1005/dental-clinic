@@ -1,7 +1,12 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.6.1** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.15 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.7.1** next (after 3.6). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped**; 3.5.11–3.5.15 DONE; **3.6.1–3.6.2, 3.6.4–3.6.5 DONE; 3.6.3 skipped (baad me)**. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.6.5 DONE locally (estimate change reason required; PATCH `/plan-items/:id/estimate` + Plan tab UI). No migration.
+3.6.4 DONE locally (visit finalise matches/creates plan items → completed). No migration.
+3.6.3 SKIPPED (baad me multi-sitting steps). Listed under Waiting / DECISIONS.
+3.6.2 DONE locally (Plan tab by phase + totals; accepted requires toldOn; PATCH decision). No migration. Screens: S05/S06.
+3.6.1 DONE locally (POST/GET plan-items; Plan karo from visit Plan tab with chart tooth focus). No migration.
 3.5.15 DONE locally (archived patient History summary+feed still 200; extends 2.1.8 acceptance). No migration.
 3.5.14 DONE locally (receptionist history feed uses non-clinical sources only; files limited to scan/consent; API + repo tests). No migration.
 3.5.13 DONE locally (stage-1 feed sources: treatments, files, medical_change, consent, amendment; visits enriched with dx; empty sources stay empty). **New migration `0029_files_patient_history_idx.sql` — owner applies; agent did not apply to staging.**
@@ -67,7 +72,7 @@ PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: A
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.6 treatment plan → 3.7–3.10 → Phase 3 gate. Do not start Phase 4.
+Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.5.2)
 1. Open a visit as doctor from Today or patient profile.
@@ -142,6 +147,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **3.6.3**: multi-sitting step tracker deferred (baad me)
 - **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
 - **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
 - 2.4.4: test-print A4 day list on the clinic printer (sister)
