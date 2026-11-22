@@ -56,6 +56,8 @@
 - src/auth-deps.ts - authConfig(env) (null if Google not set up) and loginDeps (Google client + db)
 - src/middleware/session.ts - requireStaff: 401 unless public path or valid session; sets ctx + repos
 - src/middleware/csrf.ts - non-GET /api calls need Origin = APP_ORIGIN and header x-clinic-request: 1
+- src/middleware/headers.ts - apiHeaders(): security headers (CSP default-src 'none', HSTS, nosniff, DENY framing, referrer) + Cache-Control no-store on /api and /hooks
+- src/headers.test.ts - 1.3.5: API reply headers and the web _headers rules
 - src/routes/staff-auth.ts - health, auth/branding, auth/start, auth/callback, auth/logout, me (thin)
 - src/domain/auth.ts - sign-in rules: authorize URL (openid email, PKCE S256, prompt=select_account), Google claim checks, decideLogin (bind sub / mismatch), session check (12 h, 60 min idle), touch every 5 min, maskEmail
 - src/domain/auth-crypto.ts - randomToken, sha256, safeEqual, seal/unseal (HMAC-signed flow cookie)
@@ -80,6 +82,7 @@
 ## apps/web
 - index.html - SPA entry with viewport meta; preloads the Inter font
 - vite.config.ts - dev server 5173, proxy /api and /hooks to 8787 (sends the Worker's origin so CSRF passes), build to dist
+- public/_headers - security headers for every web page and asset (strict CSP: own scripts, styles, fonts, images only; no inline code; no framing; HSTS; Permissions-Policy). Static assets skip the Worker, so this file is the only place these are set
 - public/fonts/InterVariable.woff2 - Inter 4.1 variable font (full character set incl. ₹), from the official rsms/inter v4.1 release zip; sha256 693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
 - src/api/client.ts - the one typed API client (ApiError; adds x-clinic-request on non-GET; same-origin cookies)
