@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.13** next (stage-1 feed sources). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.12 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.5.13** next (session stopped — context full; see docs/HANDOFF.md). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.12 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 3.5.12 DONE locally (GET `/patients/:id/history` merged feed; cursor pagination; appointments+visits sources; access_log; <1s page test). No new migration (existing patient indexes). Treatments/files/medical/consents stubs until 3.5.13.
 3.5.11 DONE locally (History tab + summary strip S04/S17; empty state; filter chip stubs; GET `/history/summary`; access_log on view; returning patient defaults to History). No migration.
