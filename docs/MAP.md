@@ -277,6 +277,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/visit-diagnoses.ts / visit-procedures.ts - 3.2.3 visit child rows
 - src/repos/visit-diagnoses.ts (+ test) - add list/free-text diagnosis to draft visit
 - migrations/0020_visit_clinical_children.sql / 0021_clinical_lists_seed.sql - tables + DRAFT seeds
+- src/schema/medical-history.ts / alerts.ts - 3.2.4 versioned history + alerts
+- src/repos/medical-history.ts (+ test) - save new version; alertFlags for receptionist
+- migrations/0022_medical_history_alerts.sql - 3.2.4 (owner applies)
 
 ## packages/shared
 - src/api.ts - ApiReply type + ok()/fail() helpers (reply shape for every endpoint); SESSION_TIMED_OUT code

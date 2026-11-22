@@ -51,12 +51,14 @@ describe("table rules (1.2.1)", () => {
   it("covers the base tables", () => {
     expect(tables.map((t) => getTableConfig(t).name).sort()).toEqual([
       "access_log",
+      "alerts",
       "appointments",
       "audit_log",
       "consents",
       "counters",
       "files",
       "list_items",
+      "medical_history",
       "patient_search",
       "patients",
       "settings",

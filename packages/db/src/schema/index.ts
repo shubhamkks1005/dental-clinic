@@ -14,3 +14,5 @@ export { visits } from "./visits";
 export { toothEvents } from "./tooth-events";
 export { visitDiagnoses } from "./visit-diagnoses";
 export { visitProcedures } from "./visit-procedures";
+export { medicalHistory } from "./medical-history";
+export { alerts } from "./alerts";
