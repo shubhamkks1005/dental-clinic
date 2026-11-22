@@ -20,32 +20,34 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
       input: CreatePatientInput & { version: number },
     ): Promise<PatientDetail> {
       assertAllowed(ctx, "patients.edit");
-      const row = await load(id, input.version);
+      const { consents, version, ...fields } = input;
+      void consents;
+      const row = await load(id, version);
       const nextVersion = row.version + 1;
       await db.batch([
         db
           .update(patients)
           .set({
-            fullName: input.fullName,
-            gender: input.gender,
-            dateOfBirth: input.dateOfBirth,
-            ageYearsAtReg: input.ageYearsAtReg,
-            mobile: input.mobile,
-            noMobileReason: input.noMobileReason,
-            mobileSecondary: input.mobileSecondary,
-            area: input.area,
-            email: input.email,
-            referralSourceId: input.referralSourceId,
-            referredBy: input.referredBy,
-            emergencyName: input.emergencyName,
-            emergencyRelation: input.emergencyRelation,
-            emergencyMobile: input.emergencyMobile,
-            guardianName: input.guardianName,
-            guardianRelation: input.guardianRelation,
-            guardianMobile: input.guardianMobile,
-            messageLanguage: input.messageLanguage,
-            legacyRef: input.legacyRef,
-            notes: input.notes,
+            fullName: fields.fullName,
+            gender: fields.gender,
+            dateOfBirth: fields.dateOfBirth,
+            ageYearsAtReg: fields.ageYearsAtReg,
+            mobile: fields.mobile,
+            noMobileReason: fields.noMobileReason,
+            mobileSecondary: fields.mobileSecondary,
+            area: fields.area,
+            email: fields.email,
+            referralSourceId: fields.referralSourceId,
+            referredBy: fields.referredBy,
+            emergencyName: fields.emergencyName,
+            emergencyRelation: fields.emergencyRelation,
+            emergencyMobile: fields.emergencyMobile,
+            guardianName: fields.guardianName,
+            guardianRelation: fields.guardianRelation,
+            guardianMobile: fields.guardianMobile,
+            messageLanguage: fields.messageLanguage,
+            legacyRef: fields.legacyRef,
+            notes: fields.notes,
             version: nextVersion,
             updatedAt: nowUtcSql,
             updatedBy: ctx.userId,
@@ -61,9 +63,9 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
             noMobileReason: row.noMobileReason,
           },
           after: {
-            fullName: input.fullName,
-            mobile: input.mobile,
-            noMobileReason: input.noMobileReason,
+            fullName: fields.fullName,
+            mobile: fields.mobile,
+            noMobileReason: fields.noMobileReason,
           },
         }),
       ]);

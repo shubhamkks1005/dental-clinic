@@ -58,6 +58,8 @@ describe("migrations on an empty database (1.2.3)", () => {
       "clinic.timings",
       "patient_code.digits",
       "patient_code.prefix",
+      "privacy_notice.body",
+      "privacy_notice.version",
     ]);
     expect(rows.slice(1, 3)).toEqual([
       { key: "clinic.logo", value_json: "null" },

@@ -193,6 +193,25 @@ export function NewPatientForm({ onCreated }: Props) {
         </div>
       )}
 
+      <fieldset className="new-patient-consents">
+        <legend>Notice and consent</legend>
+        <p className="muted">
+          Patient can be saved without these. SMS reminders stay off until consent is recorded.
+        </p>
+        <label className="new-patient-check">
+          <input type="checkbox" {...register("noticeShown")} />
+          Privacy notice shown
+        </label>
+        <label className="new-patient-check">
+          <input type="checkbox" {...register("smsReminders")} />
+          SMS reminders allowed
+        </label>
+        <label className="new-patient-check">
+          <input type="checkbox" {...register("marketing")} />
+          Promo messages (off by default)
+        </label>
+      </fieldset>
+
       {formError && (
         <p className="notice notice-error" role="alert">
           {formError}

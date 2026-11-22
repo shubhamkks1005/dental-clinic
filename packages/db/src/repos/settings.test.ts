@@ -83,6 +83,8 @@ describe("settings store rules (1.5.1)", () => {
       ["clinic.logo", null, 1],
       ["clinic.timings", expect.objectContaining({ slotMinutes: 15, chairs: 1 }), 1],
       ["clinic.holidays", [], 1],
+      ["privacy_notice.version", 1, 1],
+      ["privacy_notice.body", expect.stringContaining("PLACEHOLDER privacy notice"), 1],
     ]);
   });
 });

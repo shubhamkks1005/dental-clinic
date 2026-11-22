@@ -25,6 +25,16 @@ export const SETTING_SCHEMAS = {
   // 1.5.3: weekly hours, slot length, chairs; and the list of holidays.
   "clinic.timings": timingsSchema,
   "clinic.holidays": holidaysSchema,
+  // 2.2.7: registration notice; version stored on each consent row.
+  "privacy_notice.version": z
+    .number({ error: "Enter a whole number." })
+    .int("Use a whole number.")
+    .min(1, "Notice version must be at least 1."),
+  "privacy_notice.body": z
+    .string({ error: "Enter the notice text." })
+    .trim()
+    .min(1, "Enter the notice text.")
+    .max(20000, "The notice is too long."),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

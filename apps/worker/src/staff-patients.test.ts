@@ -205,4 +205,70 @@ describe("POST /api/staff/patients (2.2.1)", () => {
     );
     expect(res.status).toBe(403);
   });
+
+  it("saves without consent and records SMS when checked (2.2.7)", async () => {
+    const cookie = await sessionCookie(env, "rec@example.test");
+    const init = sameOriginPost(cookie);
+    const headers = {
+      ...(init.headers as Record<string, string>),
+      "content-type": "application/json",
+    };
+    const none = await app.request(
+      `${ORIGIN}/api/staff/patients`,
+      {
+        ...init,
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          fullName: "Fake No Consent",
+          gender: "female",
+          ageYearsAtReg: 25,
+          mobile: "9111112244",
+        }),
+      },
+      env,
+    );
+    expect(none.status).toBe(201);
+    const noneBody = (await none.json()) as { ok: true; data: { patient: { id: string } } };
+    const empty = await app.request(
+      `${ORIGIN}/api/staff/patients/${noneBody.data.patient.id}/consents`,
+      { headers: { cookie } },
+      env,
+    );
+    const emptyJson = (await empty.json()) as { ok: true; data: { consents: unknown[] } };
+    expect(emptyJson.data.consents).toEqual([]);
+
+    const withSms = await app.request(
+      `${ORIGIN}/api/staff/patients`,
+      {
+        ...init,
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          fullName: "Fake With Sms",
+          gender: "male",
+          ageYearsAtReg: 33,
+          mobile: "9111112255",
+          consents: { noticeShown: true, smsReminders: true, marketing: false },
+        }),
+      },
+      env,
+    );
+    expect(withSms.status).toBe(201);
+    const smsBody = (await withSms.json()) as { ok: true; data: { patient: { id: string } } };
+    const list = await app.request(
+      `${ORIGIN}/api/staff/patients/${smsBody.data.patient.id}/consents`,
+      { headers: { cookie } },
+      env,
+    );
+    const listJson = (await list.json()) as {
+      ok: true;
+      data: { consents: { type: string; given: boolean }[] };
+    };
+    expect(listJson.data.consents.map((c) => c.type).sort()).toEqual([
+      "privacy_notice",
+      "sms_reminders",
+    ]);
+    expect(listJson.data.consents.every((c) => c.given)).toBe(true);
+  });
 });

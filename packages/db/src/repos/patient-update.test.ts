@@ -31,6 +31,7 @@ const baseInput = {
   messageLanguage: null,
   legacyRef: null,
   notes: "Prefers mornings",
+  consents: { noticeShown: false, smsReminders: false, marketing: false },
 };
 
 beforeEach(() => {

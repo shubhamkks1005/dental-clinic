@@ -1,6 +1,7 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.2.7** (notice/consent on registration). Skip 2.2.6 (baad me).
+Phase: 2. Current task: none; next is **2.2.8** (no-mobile / shared contact). Skip 2.2.6 (baad me).
+2.2.7 DONE locally (registration consent panel; create without consent OK; SMS/marketing/notice rows only when checked; settings privacy_notice.*). **New migration `0013_privacy_notice_settings.sql` — owner applies; agent did not apply to staging.**
 2.2.5 DONE locally (list filters: new this month, not seen in 6 months [reg proxy until 2.3], archived; default sort created_at desc; server pagination). No new migration.
 2.2.4 DONE locally (PUT `/patients/:id` version-checked edit; audit old/new mobile; ConfirmDialog on mobile change; 409 stale version). No new migration.
 2.2.3 DONE locally (top-bar PatientSearch: `/` focus, 250 ms debounce, arrows+Enter → profile; empty → New patient: query; last visit placeholder until 2.3). No new migration.
@@ -18,7 +19,7 @@ Phase: 2. Current task: none; next is **2.2.7** (notice/consent on registration)
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.2.7**+.
+Next: **2.2.8**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -53,7 +54,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- Staging: apply migrations **0006–0012**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- Staging: apply migrations **0006–0013**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
 - 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist

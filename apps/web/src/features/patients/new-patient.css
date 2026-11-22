@@ -91,3 +91,17 @@
   justify-content: center;
   text-align: center;
 }
+
+.new-patient-consents {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border, #e3e9ee);
+  border-radius: 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.new-patient-consents legend {
+  font-weight: 700;
+  padding: 0 4px;
+}

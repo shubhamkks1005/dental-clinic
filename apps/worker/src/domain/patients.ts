@@ -57,7 +57,7 @@ function parseListStatus(raw: string | null): PatientListStatus {
   return "active";
 }
 
-// 2.2.1: create patient (code + tokens + audit).
+// 2.2.1 / 2.2.7: create patient (code + tokens + audit); optional registration consents.
 export async function createPatient(
   repos: Repos,
   body: unknown,
@@ -66,7 +66,35 @@ export async function createPatient(
   const parsed = parseCreatePatient(body, istDate(now));
   if (!parsed.ok) return parsed;
   const patient = await repos.patients.create(parsed.value);
+  await recordRegistrationConsents(repos, patient.id, parsed.value.consents, now);
   return { ok: true, patient };
+}
+
+async function recordRegistrationConsents(
+  repos: Repos,
+  patientId: string,
+  consents: { noticeShown: boolean; smsReminders: boolean; marketing: boolean },
+  now: Date,
+): Promise<void> {
+  const noticeVersion = Number((await repos.settings.get("privacy_notice.version")).value);
+  if (!Number.isInteger(noticeVersion) || noticeVersion < 1) return;
+  const givenAt = now.toISOString();
+  const rows: Array<{
+    type: "privacy_notice" | "sms_reminders" | "marketing";
+    given: boolean;
+  }> = [];
+  if (consents.noticeShown) rows.push({ type: "privacy_notice", given: true });
+  if (consents.smsReminders) rows.push({ type: "sms_reminders", given: true });
+  if (consents.marketing) rows.push({ type: "marketing", given: true });
+  for (const row of rows) {
+    await repos.consents.record(patientId, {
+      type: row.type,
+      noticeVersion,
+      given: row.given,
+      method: "form",
+      givenAt,
+    });
+  }
 }
 
 // 2.1.7: soft duplicate warnings for the new-patient form (never blocks save).

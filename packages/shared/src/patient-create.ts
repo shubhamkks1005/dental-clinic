@@ -14,6 +14,22 @@ const optionalText = z
   .nullable()
   .transform((v) => (v && v.length > 0 ? v : null));
 
+/** 2.2.7 registration consent checkboxes. All optional; patient saves without any. */
+export const registrationConsentsBody = z
+  .object({
+    noticeShown: z.boolean().optional().default(false),
+    smsReminders: z.boolean().optional().default(false),
+    marketing: z.boolean().optional().default(false),
+  })
+  .optional()
+  .default({ noticeShown: false, smsReminders: false, marketing: false });
+
+export type RegistrationConsents = {
+  noticeShown: boolean;
+  smsReminders: boolean;
+  marketing: boolean;
+};
+
 export const createPatientBody = z.object({
   fullName: personNameField,
   gender: z.enum(PATIENT_GENDERS),
@@ -45,6 +61,7 @@ export const createPatientBody = z.object({
     .optional()
     .nullable()
     .transform((v) => (v && v.length > 0 ? v : null)),
+  consents: registrationConsentsBody,
 });
 
 export type CreatePatientBody = z.infer<typeof createPatientBody>;
@@ -70,6 +87,7 @@ export type CreatePatientInput = {
   messageLanguage: (typeof PATIENT_MESSAGE_LANGUAGES)[number] | null;
   legacyRef: string | null;
   notes: string | null;
+  consents: RegistrationConsents;
 };
 
 export type ParsePatientOptions = {
@@ -185,6 +203,7 @@ function finishPatientFields(
       messageLanguage: d.messageLanguage ?? null,
       legacyRef: d.legacyRef,
       notes: d.notes,
+      consents: d.consents ?? { noticeShown: false, smsReminders: false, marketing: false },
     },
   };
 }

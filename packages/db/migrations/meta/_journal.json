@@ -92,6 +92,13 @@
       "when": 1795365450776,
       "tag": "0012_consents",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1795367000000,
+      "tag": "0013_privacy_notice_settings",
+      "breakpoints": true
     }
   ]
 }

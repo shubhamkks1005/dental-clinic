@@ -36,6 +36,9 @@ export const newPatientSchema = z
     guardianMobile: blankToNull,
     legacyRef: blankToNull,
     notes: blankToNull,
+    noticeShown: z.boolean(),
+    smsReminders: z.boolean(),
+    marketing: z.boolean(),
   })
   .superRefine((v, ctx) => {
     const hasDob = Boolean(v.birthDate?.trim());
@@ -110,6 +113,11 @@ export function toCreateBody(values: NewPatientParsed): Record<string, unknown> 
     guardianMobile: values.guardianMobile,
     legacyRef: values.legacyRef,
     notes: values.notes,
+    consents: {
+      noticeShown: values.noticeShown,
+      smsReminders: values.smsReminders,
+      marketing: values.marketing,
+    },
   };
 }
 
@@ -142,6 +150,9 @@ export function defaultsFromPatient(p: PatientDetail): NewPatientFormValues {
     guardianMobile: mobileDigits(p.guardianMobile),
     legacyRef: p.legacyRef ?? "",
     notes: p.notes ?? "",
+    noticeShown: false,
+    smsReminders: false,
+    marketing: false,
   };
 }
 
@@ -165,4 +176,7 @@ export const NEW_PATIENT_DEFAULTS: NewPatientFormValues = {
   guardianMobile: "",
   legacyRef: "",
   notes: "",
+  noticeShown: false,
+  smsReminders: false,
+  marketing: false,
 };

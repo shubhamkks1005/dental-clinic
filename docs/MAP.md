@@ -179,6 +179,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0010_patient_guardian.sql - adds guardian_name, guardian_relation, guardian_mobile
 - migrations/0011_patient_search.sql - creates patient_search + token indexes
 - migrations/0012_consents.sql - creates consents
+- migrations/0013_privacy_notice_settings.sql - seeds privacy_notice.version / body (PLACEHOLDER)
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -259,7 +260,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
-- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS: every known setting key with its zod rule and plain message (patient_code.prefix, patient_code.digits, clinic.name, clinic.logo, clinic.timings, clinic.holidays); isSettingKey, parseSettingValue. New settings add a line here + a seed migration
+- src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ 2.2.7 privacy_notice.version / privacy_notice.body); isSettingKey, parseSettingValue
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes, referral_sources); listItemSchema(key); a new list is one entry here (API + Settings section + editor come from it)
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)
