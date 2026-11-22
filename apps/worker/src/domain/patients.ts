@@ -30,8 +30,8 @@ export async function checkPatientDuplicates(
     fullName: parsed.value.fullName,
     mobile: parsed.value.mobile,
     mobileSecondary: parsed.value.mobileSecondary,
-    dateOfBirth: parsed.value.dateOfBirth,
-    ageYearsAtReg: parsed.value.ageYearsAtReg,
+    dateOfBirth: parsed.value.dateOfBirth ?? null,
+    ageYearsAtReg: parsed.value.ageYearsAtReg ?? null,
     onDate: istDate(now),
   });
   return { ok: true, warnings };
