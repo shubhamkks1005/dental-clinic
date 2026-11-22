@@ -16,7 +16,7 @@ Written: 2026-11-23 (Phase 3 mid-run; context full — stop). Read STATE.md and 
 | 3.4.4 | `c6f8af2` |
 | 3.4.5 | `3232b63` |
 | 3.4.6 | `754e4ff` |
-| 3.5.1 | *(commit after this HANDOFF)* |
+| 3.5.1 | `b634c47` |
 
 Prior: through 3.4.2 see git log / prior HANDOFF.
 
