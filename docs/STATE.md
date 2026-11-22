@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.8** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.7 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.5.8** next (session stopped — context full; see docs/HANDOFF.md). 3.1.1 skipped (Waiting on me). 3.1.2–3.5.7 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 3.5.7 DONE locally (addenda list+form; entered-in-error voids visit with audit; original text kept). No migration.
 3.5.6 DONE locally (Finalise visit UI with soft warnings; locks draft via existing API; fields read-only after). No migration.
