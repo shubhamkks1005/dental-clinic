@@ -92,6 +92,11 @@
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
 - src/api/client.ts - the one typed API client (ApiError with status, code, message and the short errorId from X-Request-Id; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
 - src/api/problem-text.ts (+ test) - problemText(err): the one failure sentence for staff; adds "Error ID: XXXXXXXX" for server faults (5xx, bad reply); no reply = "Cannot reach the clinic server..."
+- src/ui/Toast.tsx + toast.css - 1.4.6 Radix toasts: ToastProvider (mounted in App.tsx) + useToast()({ text, tone }); errors stay 10 s and are announced at once; above the phone tab bar, bottom right from 768px
+- src/ui/ConfirmDialog.tsx - 1.4.6 confirm dialog on Dialog role=alertdialog; Cancel first so it has the focus
+- src/ui/UnsavedChangesGuard.tsx - 1.4.6 <UnsavedChangesGuard dirty /> : in-app navigation asks "Leave without saving?" (react-router useBlocker), tab close/reload uses the browser's own question
+- src/ui/submit-guard.ts (+ test) - 1.4.6 createSubmitGuard / useSubmitOnce: a second click while saving sends nothing (server-side idempotency key: Phase 5)
+- src/features/style-guide/FeedbackDemos.tsx - 1.4.6 demos (toasts, confirm, double-click guard, unsaved notes)
 - src/ui/form/ - 1.4.4 form kit (react-hook-form + zod): zod-resolver.ts (+ test; our own adapter, nested errors), Field.tsx (label, hint, inline error linked by aria-describedby, aria-invalid), inputs.tsx (MobileInput with +91 prefix and number pad, DateInput DD/MM/YYYY), form.css
 - src/features/style-guide/SampleForm.tsx - 1.4.4 demo form with FAKE data (name, mobile, date of birth, visit type): inline errors, focus on first error, "Saving..." guard, normalised result
 - src/ui/Dialog.tsx + dialog.css - 1.4.2 modal dialog on native <dialog> (focus inside, page inert, Esc closes, click outside closes unless role alertdialog, focus back to the opener; scroll lock via body:has(dialog[open])). Not Radix: CSP (DECISIONS.md)
@@ -105,8 +110,8 @@
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
-- src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React + BrowserRouter
-- src/App.tsx - OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
+- src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
+- src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
 - src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css

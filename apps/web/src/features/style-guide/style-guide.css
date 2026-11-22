@@ -87,6 +87,12 @@
   accent-color: var(--blue);
 }
 
+.guide-textarea {
+  min-height: 96px;
+  padding: var(--s3) var(--s4);
+  resize: vertical;
+}
+
 .guide-field {
   display: grid;
   gap: var(--s1);

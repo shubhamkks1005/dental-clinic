@@ -5,12 +5,13 @@ import { StaffRoutes } from "./routes/StaffRoutes";
 import { ErrorBoundary } from "./ui/ErrorBoundary";
 import { OfflineBanner } from "./ui/OfflineBanner";
 import { NotFound } from "./ui/PageMessage";
+import { ToastProvider } from "./ui/Toast";
 import { TooltipProvider } from "./ui/Tooltip";
 
 export function App() {
   return (
     <TooltipProvider>
-      <>
+      <ToastProvider>
         <OfflineBanner />
         <ErrorBoundary>
           <Routes>
@@ -28,7 +29,7 @@ export function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ErrorBoundary>
-      </>
+      </ToastProvider>
     </TooltipProvider>
   );
 }
