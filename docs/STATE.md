@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.5.15** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.14 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
-PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+Phase: 3. Current task: **3.6.1** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.5.9 DONE; **3.5.10 skipped** (baad me); 3.5.11–3.5.15 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+PLAN: Unified Patient History Stage 1 complete (3.5.11–3.5.15). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.5.15 DONE locally (archived patient History summary+feed still 200; extends 2.1.8 acceptance). No migration.
 3.5.14 DONE locally (receptionist history feed uses non-clinical sources only; files limited to scan/consent; API + repo tests). No migration.
 3.5.13 DONE locally (stage-1 feed sources: treatments, files, medical_change, consent, amendment; visits enriched with dx; empty sources stay empty). **New migration `0029_files_patient_history_idx.sql` — owner applies; agent did not apply to staging.**
 3.5.12 DONE locally (GET `/patients/:id/history` merged feed; cursor pagination; appointments+visits sources; access_log; <1s page test). No new migration (existing patient indexes).
@@ -66,7 +67,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: History 3.5.15 → 3.6–3.10 → Phase 3 gate. Do not start Phase 4.
+Next: 3.6 treatment plan → 3.7–3.10 → Phase 3 gate. Do not start Phase 4.
 
 ## Manual check (3.5.2)
 1. Open a visit as doctor from Today or patient profile.

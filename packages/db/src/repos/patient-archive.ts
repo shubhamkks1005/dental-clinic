@@ -9,7 +9,8 @@ import { nowUtcSql } from "../sql";
 
 type Row = typeof patients.$inferSelect;
 
-// 2.1.8: archive hides from default search; restore brings back. Soft delete stays separate.
+// 2.1.8 / 3.5.15: archive hides from default search only; History (and get-by-id) stay viewable.
+// Restore brings back. Soft delete stays separate.
 export function patientArchiveRepo(db: Db, ctx: Ctx) {
   return {
     async archive(id: string, reason: string, version: number): Promise<void> {

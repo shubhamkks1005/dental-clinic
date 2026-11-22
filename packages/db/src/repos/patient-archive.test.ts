@@ -67,4 +67,27 @@ describe("patient archive / restore (2.1.8)", () => {
     await expect(repos.patients.archive("p1", " ", 1)).rejects.toBeInstanceOf(InvalidError);
     await expect(repos.patients.archive("p1", "ok", 99)).rejects.toBeInstanceOf(ConflictError);
   });
+
+  it("keeps History summary and feed viewable after archive (3.5.15 / 2.1.8)", async () => {
+    const repos = createRepos(db, doctor);
+    sqlite
+      .prepare(
+        `INSERT INTO appointments (
+           id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+           start_at, date_local, start_min, end_min, status, source, priority
+         ) VALUES (
+           'a-arch-1', 'system', 'system', 'p1', '1', '01M83VTYPE01CONSULT000001', 'Consultation',
+           '2026-10-01T04:30:00.000Z', '2026-10-01', 600, 630, 'completed', 'phone', 'normal'
+         )`,
+      )
+      .run();
+    await repos.patients.archive("p1", "Moved away (fake)", 1);
+
+    const summary = await repos.history.getSummary("p1");
+    expect(summary.totalVisits).toBe(0);
+
+    const feed = await repos.history.listFeed("p1", { limit: 10 });
+    expect(feed.entries.some((e) => e.type === "appointment")).toBe(true);
+    expect((await repos.patients.list(firstPage())).total).toBe(0);
+  });
 });

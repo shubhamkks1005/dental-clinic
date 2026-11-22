@@ -128,4 +128,37 @@ describe("staff history (3.5.11 / 3.5.12)", () => {
     const docBody = (await doc.json()) as { data: { entries: { type: string }[] } };
     expect(docBody.data.entries.some((e) => e.type === "visit")).toBe(true);
   });
+
+  it("archived patient history remains viewable (3.5.15)", async () => {
+    sqlite
+      .prepare(
+        `INSERT INTO appointments (
+           id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+           start_at, date_local, start_min, end_min, status, source, priority
+         ) VALUES (
+           'a-arch-hist', 'system', 'system', 'p-hist', '1', '01M83VTYPE01CONSULT000001', 'Consultation',
+           '2026-09-01T04:30:00.000Z', '2026-09-01', 600, 630, 'completed', 'phone', 'normal'
+         )`,
+      )
+      .run();
+    sqlite
+      .prepare(
+        `UPDATE patients SET status = 'archived', version = version + 1, updated_by = 'doc-a'
+         WHERE id = 'p-hist'`,
+      )
+      .run();
+
+    const res = await get("doc@example.test", "/api/staff/patients/p-hist/history");
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      data: { entries: { type: string }[] };
+    };
+    expect(body.data.entries.some((e) => e.type === "appointment")).toBe(true);
+
+    const sum = await get("doc@example.test", "/api/staff/patients/p-hist/history/summary");
+    expect(sum.status).toBe(200);
+
+    const rec = await get("rec@example.test", "/api/staff/patients/p-hist/history");
+    expect(rec.status).toBe(200);
+  });
 });
