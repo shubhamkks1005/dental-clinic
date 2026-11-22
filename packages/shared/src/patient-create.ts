@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { personNameField } from "./fields";
 import { normaliseMobile } from "./mobile";
+import {
+  CONTACT_RELATIONS,
+  contactRelationSaveError,
+  defaultContactRelation,
+  type ContactRelation,
+} from "./patient-contact";
 import { PATIENT_GENDERS, PATIENT_MESSAGE_LANGUAGES, type PatientGender } from "./patient-fields";
 import { guardianSaveError, normalisedGuardian } from "./patient-guardian";
 
@@ -52,6 +58,7 @@ export const createPatientBody = z.object({
   guardianName: optionalText,
   guardianRelation: optionalText,
   guardianMobile: z.string().trim().optional().nullable(),
+  contactRelation: z.enum(CONTACT_RELATIONS).optional().nullable(),
   messageLanguage: z.enum(PATIENT_MESSAGE_LANGUAGES).optional().nullable(),
   legacyRef: optionalText,
   notes: z
@@ -84,6 +91,7 @@ export type CreatePatientInput = {
   guardianName: string | null;
   guardianRelation: string | null;
   guardianMobile: string | null;
+  contactRelation: ContactRelation | null;
   messageLanguage: (typeof PATIENT_MESSAGE_LANGUAGES)[number] | null;
   legacyRef: string | null;
   notes: string | null;
@@ -180,6 +188,16 @@ function finishPatientFields(
   );
   if (guardianErr) return { ok: false, message: guardianErr };
 
+  const contactRelation =
+    d.contactRelation ??
+    defaultContactRelation({ mobile, guardianMobile: guardian.guardianMobile });
+  const contactErr = contactRelationSaveError({
+    mobile,
+    guardianMobile: guardian.guardianMobile,
+    contactRelation,
+  });
+  if (contactErr) return { ok: false, message: contactErr };
+
   return {
     ok: true,
     value: {
@@ -200,6 +218,7 @@ function finishPatientFields(
       guardianName: guardian.guardianName,
       guardianRelation: guardian.guardianRelation,
       guardianMobile: guardian.guardianMobile,
+      contactRelation,
       messageLanguage: d.messageLanguage ?? null,
       legacyRef: d.legacyRef,
       notes: d.notes,

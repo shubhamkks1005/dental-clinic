@@ -99,6 +99,13 @@
       "when": 1795367000000,
       "tag": "0013_privacy_notice_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1795368000000,
+      "tag": "0014_patient_contact_relation",
+      "breakpoints": true
     }
   ]
 }

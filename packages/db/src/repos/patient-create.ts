@@ -52,6 +52,7 @@ export function patientCreateRepo(db: Db, ctx: Ctx) {
           guardianName: fields.guardianName,
           guardianRelation: fields.guardianRelation,
           guardianMobile: fields.guardianMobile,
+          contactRelation: fields.contactRelation,
           messageLanguage: fields.messageLanguage,
           legacyRef: fields.legacyRef,
           notes: fields.notes,

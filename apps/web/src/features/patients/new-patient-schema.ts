@@ -1,4 +1,5 @@
 import {
+  CONTACT_RELATIONS,
   displayDateField,
   formatDisplayDate,
   PATIENT_GENDERS,
@@ -34,6 +35,7 @@ export const newPatientSchema = z
     guardianName: blankToNull,
     guardianRelation: blankToNull,
     guardianMobile: blankToNull,
+    contactRelation: z.enum(CONTACT_RELATIONS).optional().nullable(),
     legacyRef: blankToNull,
     notes: blankToNull,
     noticeShown: z.boolean(),
@@ -111,6 +113,7 @@ export function toCreateBody(values: NewPatientParsed): Record<string, unknown> 
     guardianName: values.guardianName,
     guardianRelation: values.guardianRelation,
     guardianMobile: values.guardianMobile,
+    contactRelation: values.contactRelation ?? null,
     legacyRef: values.legacyRef,
     notes: values.notes,
     consents: {
@@ -148,6 +151,7 @@ export function defaultsFromPatient(p: PatientDetail): NewPatientFormValues {
     guardianName: p.guardianName ?? "",
     guardianRelation: p.guardianRelation ?? "",
     guardianMobile: mobileDigits(p.guardianMobile),
+    contactRelation: p.contactRelation ?? "self",
     legacyRef: p.legacyRef ?? "",
     notes: p.notes ?? "",
     noticeShown: false,
@@ -174,6 +178,7 @@ export const NEW_PATIENT_DEFAULTS: NewPatientFormValues = {
   guardianName: "",
   guardianRelation: "",
   guardianMobile: "",
+  contactRelation: "self",
   legacyRef: "",
   notes: "",
   noticeShown: false,

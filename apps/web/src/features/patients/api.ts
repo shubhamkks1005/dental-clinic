@@ -46,6 +46,9 @@ export type PatientDetail = {
   guardianName: string | null;
   guardianRelation: string | null;
   guardianMobile: string | null;
+  contactRelation: "self" | "mother" | "father" | "spouse" | "guardian" | "other" | null;
+  contactMobile: string | null;
+  sameMobileCount: number;
   messageLanguage: "english" | "hinglish" | null;
   legacyRef: string | null;
   notes: string | null;

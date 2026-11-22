@@ -1,10 +1,15 @@
-import { PATIENT_GENDERS, PATIENT_MESSAGE_LANGUAGES, PATIENT_STATUSES } from "@clinic/shared";
+import {
+  CONTACT_RELATIONS,
+  PATIENT_GENDERS,
+  PATIENT_MESSAGE_LANGUAGES,
+  PATIENT_STATUSES,
+} from "@clinic/shared";
 import { sql } from "drizzle-orm";
 import { check, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { oneOf, standardColumns } from "./columns";
 
 // 2.1.1 patient row. Guardian required under 18 (2.1.3). Search tokens (2.1.6), numbering (2.1.5).
-// Soft delete via deleted_at; archive via status (2.1.8). Fake data only in seeds/tests.
+// Soft delete via deleted_at; archive via status (2.1.8). contact_relation (2.2.8). Fake data only.
 export const patients = sqliteTable(
   "patients",
   {
@@ -28,6 +33,8 @@ export const patients = sqliteTable(
     guardianName: text("guardian_name"),
     guardianRelation: text("guardian_relation"),
     guardianMobile: text("guardian_mobile"),
+    // 2.2.8: who owns the contact mobile (own or guardian) for reminders / portal OTP.
+    contactRelation: text("contact_relation", { enum: CONTACT_RELATIONS }),
     messageLanguage: text("message_language", { enum: PATIENT_MESSAGE_LANGUAGES }),
     legacyRef: text("legacy_ref"),
     notes: text("notes"),
@@ -36,6 +43,12 @@ export const patients = sqliteTable(
   (t) => [
     check("patients_gender_check", oneOf(t.gender.name, PATIENT_GENDERS)),
     check("patients_status_check", oneOf(t.status.name, PATIENT_STATUSES)),
+    check(
+      "patients_contact_relation_check",
+      sql.raw(
+        `("contact_relation" IS NULL OR "contact_relation" IN (${CONTACT_RELATIONS.map((v) => `'${v}'`).join(", ")}))`,
+      ),
+    ),
     check(
       "patients_message_language_check",
       sql.raw(

@@ -1,13 +1,8 @@
-import {
-  displayAge,
-  displayMobile,
-  istDate,
-  type PatientGender,
-  type PatientStatus,
-} from "@clinic/shared";
+import { displayAge, displayMobile, istDate, type PatientGender } from "@clinic/shared";
 import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
+import type { PatientDetail } from "./api";
 
 const GENDER: Record<PatientGender, string> = {
   female: "Female",
@@ -15,20 +10,8 @@ const GENDER: Record<PatientGender, string> = {
   other: "Other",
 };
 
-export type ProfileHeaderPatient = {
-  id: string;
-  code: string;
-  fullName: string;
-  gender: PatientGender;
-  dateOfBirth: string | null;
-  ageYearsAtReg: number | null;
-  createdAt: string;
-  mobile: string | null;
-  status: PatientStatus;
-};
-
-// S04 / S17 header: name, age, gender, code, mobile; alerts arrive in Phase 3.
-export function PatientProfileHeader({ patient }: { patient: ProfileHeaderPatient }) {
+// S04 / S17 header: name, age, gender, code, mobile, contact (2.2.8); alerts Phase 3.
+export function PatientProfileHeader({ patient }: { patient: PatientDetail }) {
   const today = istDate(new Date());
   const age = displayAge(
     {
@@ -56,7 +39,33 @@ export function PatientProfileHeader({ patient }: { patient: ProfileHeaderPatien
           {patient.mobile ? displayMobile(patient.mobile) : "No mobile"}
         </span>
       </div>
+      {patient.contactMobile && (
+        <p className="muted patient-profile-contact">
+          Contact {displayMobile(patient.contactMobile)}
+          {patient.contactRelation ? ` (${patient.contactRelation})` : ""}
+          {patient.sameMobileCount > 0
+            ? ` · ${patient.sameMobileCount} other${patient.sameMobileCount === 1 ? "" : "s"} on this number`
+            : ""}
+        </p>
+      )}
       <p className="muted patient-profile-alerts">Alerts will show here later.</p>
     </header>
   );
 }
+
+// Keep type import used for status narrowing in callers that pass a subset.
+export type ProfileHeaderPatient = Pick<
+  PatientDetail,
+  | "id"
+  | "code"
+  | "fullName"
+  | "gender"
+  | "dateOfBirth"
+  | "ageYearsAtReg"
+  | "createdAt"
+  | "mobile"
+  | "status"
+  | "contactMobile"
+  | "contactRelation"
+  | "sameMobileCount"
+>;

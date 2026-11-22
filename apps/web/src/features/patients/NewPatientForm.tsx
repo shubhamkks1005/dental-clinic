@@ -177,6 +177,22 @@ export function NewPatientForm({ onCreated }: Props) {
           <Field label="Guardian mobile" error={errors.guardianMobile?.message}>
             {(p) => <MobileInput {...p} {...register("guardianMobile")} />}
           </Field>
+          <Field
+            label="Whose contact mobile"
+            hint="Self, mother, father, spouse, guardian or other"
+            error={errors.contactRelation?.message}
+          >
+            {(p) => (
+              <select className="input" {...p} {...register("contactRelation")}>
+                <option value="self">Self</option>
+                <option value="mother">Mother</option>
+                <option value="father">Father</option>
+                <option value="spouse">Spouse</option>
+                <option value="guardian">Guardian</option>
+                <option value="other">Other</option>
+              </select>
+            )}
+          </Field>
           <Field label="Emergency contact" error={errors.emergencyName?.message}>
             {(p) => (
               <input className="input" autoComplete="off" {...p} {...register("emergencyName")} />

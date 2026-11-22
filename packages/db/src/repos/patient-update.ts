@@ -1,4 +1,4 @@
-import { type CreatePatientInput, type PatientGender } from "@clinic/shared";
+import { type CreatePatientInput } from "@clinic/shared";
 import { and, eq, isNull } from "drizzle-orm";
 import { auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
@@ -8,7 +8,7 @@ import { assertAllowed } from "../permissions";
 import { patients } from "../schema";
 import { rebuildPatientSearchStatements } from "../search/patient-tokens";
 import { nowUtcSql } from "../sql";
-import type { PatientDetail } from "./patient-get";
+import { patientGetRepo, type PatientDetail } from "./patient-get";
 
 type Row = typeof patients.$inferSelect;
 
@@ -45,6 +45,7 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
             guardianName: fields.guardianName,
             guardianRelation: fields.guardianRelation,
             guardianMobile: fields.guardianMobile,
+            contactRelation: fields.contactRelation,
             messageLanguage: fields.messageLanguage,
             legacyRef: fields.legacyRef,
             notes: fields.notes,
@@ -71,7 +72,14 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
       ]);
 
       const updated = await db
-        .select()
+        .select({
+          code: patients.code,
+          fullName: patients.fullName,
+          mobile: patients.mobile,
+          mobileSecondary: patients.mobileSecondary,
+          legacyRef: patients.legacyRef,
+          version: patients.version,
+        })
         .from(patients)
         .where(and(eq(patients.id, id), isNull(patients.deletedAt)))
         .get();
@@ -92,7 +100,7 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
         ),
       ]);
 
-      return toDetail(updated);
+      return patientGetRepo(db, ctx).get(id);
     },
   };
 
@@ -106,34 +114,4 @@ export function patientUpdateRepo(db: Db, ctx: Ctx) {
     if (row.version !== version) throw new ConflictError();
     return row;
   }
-}
-
-function toDetail(row: Row): PatientDetail {
-  return {
-    id: row.id,
-    code: row.code,
-    fullName: row.fullName,
-    gender: row.gender as PatientGender,
-    dateOfBirth: row.dateOfBirth,
-    ageYearsAtReg: row.ageYearsAtReg,
-    mobile: row.mobile,
-    noMobileReason: row.noMobileReason,
-    mobileSecondary: row.mobileSecondary,
-    area: row.area,
-    email: row.email,
-    referralSourceId: row.referralSourceId,
-    referredBy: row.referredBy,
-    emergencyName: row.emergencyName,
-    emergencyRelation: row.emergencyRelation,
-    emergencyMobile: row.emergencyMobile,
-    guardianName: row.guardianName,
-    guardianRelation: row.guardianRelation,
-    guardianMobile: row.guardianMobile,
-    messageLanguage: row.messageLanguage,
-    legacyRef: row.legacyRef,
-    notes: row.notes,
-    status: row.status as PatientDetail["status"],
-    version: row.version,
-    createdAt: row.createdAt,
-  };
 }

@@ -180,6 +180,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0011_patient_search.sql - creates patient_search + token indexes
 - migrations/0012_consents.sql - creates consents
 - migrations/0013_privacy_notice_settings.sql - seeds privacy_notice.version / body (PLACEHOLDER)
+- migrations/0014_patient_contact_relation.sql - adds patients.contact_relation (2.2.8)
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -265,6 +266,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/mobile.ts (+ test) - THE mobile rule (2.1.2): normaliseMobile (spaces, +91/91, leading 0 removed; 10 digits starting 6-9; stored +91XXXXXXXXXX; else null), displayMobile ("98765 43210"); 20 good + 20 bad unit cases. 7.7.2 reuses it
 - src/patient-fields.ts (+ test) - 2.1.1 PATIENT_FIELDS (required/optional + purpose), PATIENT_GENDERS / STATUSES / MESSAGE_LANGUAGES, PATIENT_SAVE_REQUIRED; guardian_* keys (2.1.3)
 - src/patient-create.ts (+ test) - 2.2.1 parseCreatePatient; 2.2.4 parseUpdatePatient (+ version)
+- src/patient-contact.ts (+ test) - 2.2.8 contactMobile, contactRelation, defaults
 - src/patient-age.ts (+ test) - ageYearsFromDob, ageYearsOn, displayAge/formatAgeYears, isMinor (under 18); never store current age
 - src/patient-guardian.ts (+ test) - 2.1.3 guardianSaveError (10yo without guardian cannot save), normalisedGuardian
 - src/patient-search-tokens.ts (+ test) - 2.1.6 buildSearchTokens, searchWords, tokenRangeEnd (no FTS5, no LIKE %x%)

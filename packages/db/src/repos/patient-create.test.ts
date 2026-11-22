@@ -42,6 +42,7 @@ describe("patientCreateRepo (2.2.1)", () => {
       messageLanguage: null,
       legacyRef: null,
       notes: null,
+      contactRelation: "self" as const,
       consents: { noticeShown: false, smsReminders: false, marketing: false },
     });
     expect(created.code).toMatch(/^P-\d{6}$/);

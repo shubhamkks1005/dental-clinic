@@ -1,9 +1,11 @@
 import {
+  contactMobile,
+  type ContactRelation,
   type PatientGender,
   type PatientMessageLanguage,
   type PatientStatus,
 } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -30,6 +32,11 @@ export type PatientDetail = {
   guardianName: string | null;
   guardianRelation: string | null;
   guardianMobile: string | null;
+  contactRelation: ContactRelation | null;
+  /** Derived: own mobile or guardian mobile (2.2.8). */
+  contactMobile: string | null;
+  /** Other active patients sharing this contact mobile (2.2.8). */
+  sameMobileCount: number;
   messageLanguage: PatientMessageLanguage | null;
   legacyRef: string | null;
   notes: string | null;
@@ -64,6 +71,7 @@ export function patientGetRepo(db: Db, ctx: Ctx) {
           guardianName: patients.guardianName,
           guardianRelation: patients.guardianRelation,
           guardianMobile: patients.guardianMobile,
+          contactRelation: patients.contactRelation,
           messageLanguage: patients.messageLanguage,
           legacyRef: patients.legacyRef,
           notes: patients.notes,
@@ -75,12 +83,35 @@ export function patientGetRepo(db: Db, ctx: Ctx) {
         .where(and(eq(patients.id, id), isNull(patients.deletedAt)))
         .get();
       if (!row) throw new NotFoundError("This patient");
+      const contact = contactMobile({
+        mobile: row.mobile,
+        guardianMobile: row.guardianMobile,
+      });
+      const sameMobileCount = contact ? await countSameContactMobile(db, id, contact) : 0;
       return {
         ...row,
         gender: row.gender as PatientGender,
         status: row.status as PatientStatus,
+        contactRelation: row.contactRelation as ContactRelation | null,
+        contactMobile: contact,
+        sameMobileCount,
         messageLanguage: row.messageLanguage as PatientMessageLanguage | null,
       };
     },
   };
+}
+
+async function countSameContactMobile(db: Db, excludeId: string, mobile: string): Promise<number> {
+  const row = await db
+    .select({ n: sql<number>`count(*)` })
+    .from(patients)
+    .where(
+      and(
+        isNull(patients.deletedAt),
+        ne(patients.id, excludeId),
+        or(eq(patients.mobile, mobile), eq(patients.guardianMobile, mobile)),
+      ),
+    )
+    .get();
+  return Number(row?.n ?? 0);
 }
