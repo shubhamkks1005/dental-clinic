@@ -1,0 +1,68 @@
+/* S20 Start and S21 Access not available: centred like S18. Phone first; two cards from 768px. */
+.start {
+  display: grid;
+  gap: var(--s6);
+  justify-items: center;
+  max-width: 48rem;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--s6) var(--s4);
+  align-content: center;
+}
+
+.start-brand {
+  display: grid;
+  justify-items: center;
+  gap: var(--s2);
+}
+
+.start-brand .logo-tile {
+  border: 1px solid var(--border);
+}
+
+.start-logo {
+  max-width: 10rem;
+  max-height: 4rem;
+}
+
+.start-clinic {
+  color: var(--red);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.start-cards {
+  display: grid;
+  gap: var(--s4);
+  width: 100%;
+}
+
+.start-card {
+  display: grid;
+  gap: var(--s3);
+  align-content: start;
+  padding: var(--s6);
+}
+
+.start-card h1,
+.start-card h2 {
+  font-size: 22px;
+}
+
+.start-card-off {
+  justify-items: start;
+  background: var(--bg);
+}
+
+.start-single {
+  width: 100%;
+  max-width: 28rem;
+}
+
+@media (min-width: 768px) {
+  .start-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
