@@ -1,6 +1,7 @@
 import type { AppointmentStatus } from "@clinic/shared";
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { AlertsStrip } from "../medical-history";
 import type { TodayListRow } from "./buildTodayModel";
 
 type Props = {
@@ -28,6 +29,15 @@ export function TodayList({ rows, busyId, onStatus }: Props) {
               <span className="today-who">
                 <span className="today-name">
                   {row.name}
+                  {row.hasAlert ? (
+                    <AlertsStrip
+                      mode="icon"
+                      flags={{
+                        hasAlert: row.hasAlert,
+                        hasRestricted: row.hasRestrictedAlert,
+                      }}
+                    />
+                  ) : null}
                   {row.noMobile ? <span className="today-no-mobile"> No mobile</span> : null}
                   {row.priority === "emergency" ? (
                     <span className="today-emergency"> Emergency</span>

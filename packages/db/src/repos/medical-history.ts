@@ -1,5 +1,5 @@
 import { newUlid, type MedicalHistoryItem, type SaveMedicalHistoryInput } from "@clinic/shared";
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
@@ -169,6 +169,32 @@ export function medicalHistoryRepo(db: Db, ctx: Ctx) {
         hasAlert: rows.length > 0,
         hasRestricted: rows.some((r) => r.restricted),
       };
+    },
+
+    /** Day list / cards: flags only, never labels (3.3.2). Empty map when no ids. */
+    async alertFlagsForPatients(
+      patientIds: string[],
+    ): Promise<Map<string, { hasAlert: boolean; hasRestricted: boolean }>> {
+      assertAllowed(ctx, "clinical.alert_flag");
+      const out = new Map<string, { hasAlert: boolean; hasRestricted: boolean }>();
+      const unique = [...new Set(patientIds.filter(Boolean))];
+      for (const id of unique) out.set(id, { hasAlert: false, hasRestricted: false });
+      if (unique.length === 0) return out;
+
+      const rows = await db
+        .select({ patientId: alerts.patientId, restricted: alerts.restricted })
+        .from(alerts)
+        .where(
+          and(inArray(alerts.patientId, unique), eq(alerts.active, true), isNull(alerts.deletedAt)),
+        );
+
+      for (const row of rows) {
+        const cur = out.get(row.patientId);
+        if (!cur) continue;
+        cur.hasAlert = true;
+        if (row.restricted) cur.hasRestricted = true;
+      }
+      return out;
     },
   };
 }

@@ -22,6 +22,8 @@ export type DayAppointment = {
   endedAt: string | null;
   updatedAt: string;
   version: number;
+  /** 3.3.2 icon-only; never clinical labels. */
+  alertFlags?: { hasAlert: boolean; hasRestricted: boolean };
 };
 
 export type DayAppointmentsReply = {

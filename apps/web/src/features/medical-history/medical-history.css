@@ -34,6 +34,22 @@
   padding: 0;
 }
 
+.mh-alert-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  background: #fef3c7;
+  color: #78350f;
+  flex-shrink: 0;
+}
+
 .mh-alert,
 .mh-alert-restricted {
   display: inline-flex;

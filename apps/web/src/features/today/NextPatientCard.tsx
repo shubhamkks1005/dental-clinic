@@ -1,4 +1,5 @@
 import { PatientNoChip } from "../../ui/PatientNoChip";
+import { AlertsStrip } from "../medical-history";
 import type { TodayModel } from "./buildTodayModel";
 
 type Props = {
@@ -19,7 +20,18 @@ export function NextPatientCard({ patient, busy, onSendIn }: Props) {
   return (
     <section className="next-patient" aria-label="Next patient">
       <p className="next-label small">Next patient</p>
-      <p className="next-name">{patient.name}</p>
+      <p className="next-name">
+        {patient.name}
+        {patient.hasAlert ? (
+          <AlertsStrip
+            mode="icon"
+            flags={{
+              hasAlert: patient.hasAlert,
+              hasRestricted: patient.hasRestrictedAlert,
+            }}
+          />
+        ) : null}
+      </p>
       <p className="next-meta">
         <PatientNoChip patientNo={patient.patientNo} />
         <span>

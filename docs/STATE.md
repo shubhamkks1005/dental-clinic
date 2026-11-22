@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 3. Current task: **3.3.2** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.3.1 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
+Phase: 3. Current task: **3.3.3** next. 3.1.1 skipped (Waiting on me). 3.1.2–3.3.2 DONE. Phase 2 gate was **passed with exceptions**; leftovers stay under **Before real patients** (do not redo).
 PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11–3.5.15 after visit/treatment deps exist. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+3.3.2 DONE locally (AlertsStrip on profile S04/S17 + Today/day appointment cards icon-only; day API adds alertFlags; visit-screen strip waits for 3.5.2 layout). No new migration.
 3.3.1 DONE locally (medical history checklist form on patient Overview S04/S17; list `medical_history_items` + allergens; API GET/POST + alert-flags; receptionist 403 on clinical history). **New migration `0025_medical_history_checklist_seed.sql` — owner applies; agent did not apply to staging.**
 3.2.7 DONE locally (staff visit API: open/get/finalise/addenda; STAFF_ROUTE_MATRIX clinical.edit/view; receptionist+developer HTTP 403). No new migration.
 3.2.6 DONE locally (finalise snapshot+hash; repo blocks draft edits on final; addenda). **New migration `0024_visit_addenda.sql` — owner applies; agent did not apply to staging.** No SQL triggers (DECISIONS).
@@ -43,7 +44,7 @@ PLAN: Unified Patient History (docs/PATIENT_HISTORY.md) Stage 1 = tasks 3.5.11�
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: 3.3.2 alerts strip → 3.3.3–3.3.4 → chart → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
+Next: 3.3.3 restricted alerts → 3.3.4 stale prompt → chart → visit screen → History stage 1 → Phase 3 gate. Do not start Phase 4.
 
 
 ## Phase 2 gate (from PLAN.md + owner checklist)

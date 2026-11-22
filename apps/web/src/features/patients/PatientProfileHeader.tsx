@@ -2,6 +2,7 @@ import { displayAge, displayMobile, istDate, type PatientGender } from "@clinic/
 import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { ProfileAlerts } from "../medical-history";
 import type { PatientDetail } from "./api";
 
 const GENDER: Record<PatientGender, string> = {
@@ -10,8 +11,14 @@ const GENDER: Record<PatientGender, string> = {
   other: "Other",
 };
 
-// S04 / S17 header: name, age, gender, code, mobile, contact (2.2.8); alerts Phase 3.
-export function PatientProfileHeader({ patient }: { patient: PatientDetail }) {
+type HeaderProps = {
+  patient: PatientDetail;
+  canViewClinical: boolean;
+  canSeeFlags: boolean;
+};
+
+// S04 / S17 header: name, age, gender, code, mobile, contact (2.2.8); alerts 3.3.2.
+export function PatientProfileHeader({ patient, canViewClinical, canSeeFlags }: HeaderProps) {
   const today = istDate(new Date());
   const age = displayAge(
     {
@@ -48,7 +55,11 @@ export function PatientProfileHeader({ patient }: { patient: PatientDetail }) {
             : ""}
         </p>
       )}
-      <p className="muted patient-profile-alerts">Alerts will show here later.</p>
+      <ProfileAlerts
+        patientId={patient.id}
+        canViewClinical={canViewClinical}
+        canSeeFlags={canSeeFlags}
+      />
     </header>
   );
 }

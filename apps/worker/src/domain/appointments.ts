@@ -96,6 +96,14 @@ export async function listDayAppointments(
   }
   // listForDay asserts appointments.manage first so denied roles get 403.
   const appointments = await repos.appointments.listForDay(dateLocal);
+  // 3.3.2: icon-only flags on cards (never labels). Callers have clinical.alert_flag.
+  const flags = await repos.medicalHistory.alertFlagsForPatients(
+    appointments.map((a) => a.patientId),
+  );
+  const withFlags = appointments.map((a) => ({
+    ...a,
+    alertFlags: flags.get(a.patientId) ?? { hasAlert: false, hasRestricted: false },
+  }));
   const { timings, holidays } = await clinicClock(repos);
   const window = dayWindow(dateLocal, timings, holidays);
   return {
@@ -103,7 +111,7 @@ export async function listDayAppointments(
     dateLocal,
     serverNow: now.toISOString(),
     window,
-    appointments,
+    appointments: withFlags,
   };
 }
 

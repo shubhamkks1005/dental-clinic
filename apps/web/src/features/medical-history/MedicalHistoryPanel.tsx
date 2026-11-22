@@ -82,7 +82,7 @@ export function MedicalHistoryPanel({ patientId, gender, canEdit }: Props) {
             <ul className="mh-alert-list">
               {alerts.map((a) => (
                 <li key={a.id} className={a.restricted ? "mh-alert-restricted" : "mh-alert"}>
-                  {a.restricted ? "Doctor to check" : a.label}
+                  {a.label}
                 </li>
               ))}
             </ul>

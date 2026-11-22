@@ -22,6 +22,8 @@ export type TodayListRow = {
   statusLabel: string;
   noMobile: boolean;
   priority: "normal" | "emergency";
+  hasAlert: boolean;
+  hasRestrictedAlert: boolean;
   actions: { status: DayAppointment["status"]; label: string }[];
   version: number;
   startAt: string;
@@ -45,6 +47,8 @@ export type TodayModel = {
     status: DayAppointment["status"];
     startAt: string;
     updatedAt: string;
+    hasAlert: boolean;
+    hasRestrictedAlert: boolean;
   } | null;
   rows: TodayListRow[];
   callList: { id: string; initials: string; name: string; note: string; mobile: string | null }[];
@@ -71,6 +75,8 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     statusLabel: waiting ?? APPOINTMENT_STATUS_LABEL[a.status],
     noMobile: !a.patientMobile,
     priority: a.priority,
+    hasAlert: a.alertFlags?.hasAlert ?? false,
+    hasRestrictedAlert: a.alertFlags?.hasRestricted ?? false,
     actions: statusActionButtons(a.status, {
       startAt: new Date(a.startAt),
       statusChangedAt: new Date(a.updatedAt),
@@ -157,6 +163,8 @@ export function buildTodayModel(
           status: nextAppt.status,
           startAt: nextAppt.startAt,
           updatedAt: nextAppt.updatedAt,
+          hasAlert: nextAppt.alertFlags?.hasAlert ?? false,
+          hasRestrictedAlert: nextAppt.alertFlags?.hasRestricted ?? false,
         }
       : null,
     rows,

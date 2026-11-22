@@ -96,5 +96,8 @@ describe("medical history (3.2.4)", () => {
     );
     const flags = await repos(receptionist).medicalHistory.alertFlags(PATIENT_ID);
     expect(flags).toEqual({ hasAlert: true, hasRestricted: true });
+
+    const batch = await repos(receptionist).medicalHistory.alertFlagsForPatients([PATIENT_ID]);
+    expect(batch.get(PATIENT_ID)).toEqual({ hasAlert: true, hasRestricted: true });
   });
 });

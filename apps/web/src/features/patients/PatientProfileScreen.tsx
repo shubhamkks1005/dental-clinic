@@ -17,6 +17,7 @@ export function PatientProfileScreen() {
   const canEdit = permissions.includes("patients.edit");
   const canViewClinical = permissions.includes("clinical.view");
   const canEditClinical = permissions.includes("clinical.edit");
+  const canSeeFlags = permissions.includes("clinical.alert_flag");
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
@@ -83,7 +84,11 @@ export function PatientProfileScreen() {
 
   return (
     <div className="patient-profile">
-      <PatientProfileHeader patient={patient} />
+      <PatientProfileHeader
+        patient={patient}
+        canViewClinical={canViewClinical}
+        canSeeFlags={canSeeFlags}
+      />
       <Tabs label="Patient sections" tabs={tabs} value={tab} onChange={setTab} />
     </div>
   );
