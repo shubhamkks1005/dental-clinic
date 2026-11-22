@@ -109,6 +109,15 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
     return JSON.stringify({ status: "confirmed", version: 1 });
   }
+  if (path === "/api/staff/visits" && method === "POST") {
+    return JSON.stringify({ patientId: "p1", visitDateLocal: "2026-11-22" });
+  }
+  if (path === "/api/staff/visits/:id/finalise" && method === "POST") {
+    return JSON.stringify({ version: 1 });
+  }
+  if (path === "/api/staff/visits/:id/addenda" && method === "POST") {
+    return JSON.stringify({ body: "Matrix addendum", reason: "Matrix reason" });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

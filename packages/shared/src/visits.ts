@@ -31,3 +31,50 @@ export const openVisitBody = z
   .strict();
 
 export type OpenVisitInput = z.infer<typeof openVisitBody>;
+
+export function parseOpenVisit(body: unknown) {
+  const parsed = openVisitBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+// 3.2.6 / 3.5.6: lock a draft. Version is the one the doctor last saw.
+export const finaliseVisitBody = z
+  .object({
+    version: z.number({ error: "Reload the visit and try again." }).int().positive(),
+  })
+  .strict();
+
+export type FinaliseVisitInput = z.infer<typeof finaliseVisitBody>;
+
+export function parseFinaliseVisit(body: unknown) {
+  const parsed = finaliseVisitBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const ADDENDUM_KINDS = ["note", "entered_in_error"] as const;
+export type AddendumKind = (typeof ADDENDUM_KINDS)[number];
+
+// 3.2.6 / 3.5.7: correction after finalise. Never edits the locked visit row.
+export const addVisitAddendumBody = z
+  .object({
+    body: z.string().trim().min(1, "Enter the addendum text.").max(4000),
+    reason: z.string().trim().min(1, "Enter a reason for the addendum.").max(500),
+    kind: z.enum(ADDENDUM_KINDS).optional(),
+  })
+  .strict();
+
+export type AddVisitAddendumInput = z.infer<typeof addVisitAddendumBody>;
+
+export function parseAddVisitAddendum(body: unknown) {
+  const parsed = addVisitAddendumBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}

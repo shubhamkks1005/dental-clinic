@@ -85,7 +85,8 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments, staff-visits; deny by default applies)
+- src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7 POST /visits, GET /visits/:id, POST finalise, POST addenda (clinical.edit/view; receptionist 403)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1); GET /appointments/slots (2.4.2); POST book/walk-in; cancel/reschedule/status/chain
@@ -269,6 +270,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/schema/visits.ts - 3.2.1 visits table (draft/final/void; one live visit per appointment)
 - src/repos/visit-insert.ts - INSERT…SELECT WHERE NOT EXISTS live visit for appointment
 - src/repos/visits-open.ts (+ test) - open draft (return existing or insert); receptionist forbidden
+- src/repos/visits-get.ts (+ test) - 3.2.7 getById (clinical.view; no snapshot_json in reply)
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 - migrations/0018_visits.sql - 3.2.1 visits table + indexes (owner applies; agent did not apply to staging)
 - src/schema/tooth-events.ts - 3.2.2 append-only tooth_events (FDI + surface)
