@@ -15,6 +15,8 @@ export function PatientProfileScreen() {
   const { id } = useParams<{ id: string }>();
   const { permissions } = useMe();
   const canEdit = permissions.includes("patients.edit");
+  const canViewClinical = permissions.includes("clinical.view");
+  const canEditClinical = permissions.includes("clinical.edit");
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
@@ -67,7 +69,13 @@ export function PatientProfileScreen() {
     label: t.label,
     content:
       t.id === "overview" ? (
-        <PatientOverviewTab patient={patient} canEdit={canEdit} onPatientChange={setPatient} />
+        <PatientOverviewTab
+          patient={patient}
+          canEdit={canEdit}
+          canViewClinical={canViewClinical}
+          canEditClinical={canEditClinical}
+          onPatientChange={setPatient}
+        />
       ) : (
         <PatientAppointmentsTab patientId={patient.id} />
       ),

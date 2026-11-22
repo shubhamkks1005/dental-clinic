@@ -10,6 +10,7 @@ describe("editable lists config (1.5.4 / 2.3.2)", () => {
       "procedures",
       "conditions",
       "allergens",
+      "medical_history_items",
       "quick_phrases",
     ]);
     expect(isListKey("visit_types")).toBe(true);

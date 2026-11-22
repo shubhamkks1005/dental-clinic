@@ -22,6 +22,7 @@ describe("worker architecture (1.2.6)", () => {
       "apps/worker/src/routes/staff-auth.ts",
       "apps/worker/src/routes/staff-consents.ts",
       "apps/worker/src/routes/staff-lists.ts",
+      "apps/worker/src/routes/staff-medical-history.ts",
       "apps/worker/src/routes/staff-patients.ts",
       "apps/worker/src/routes/staff-settings.ts",
       "apps/worker/src/routes/staff-users.ts",

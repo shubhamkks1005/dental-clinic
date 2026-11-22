@@ -23,5 +23,6 @@
   "0021_clinical_lists_seed.sql": "7f43591d7fe9e7cc52a5e415ce43c5b13c85ad5bed49bd168c067f33f134b078",
   "0022_medical_history_alerts.sql": "c67cfe3ac18ba9bfaab0c4cd4441c71020481adafd4b4ba0320b27923f233cc0",
   "0023_plan_items.sql": "8312817dfa1a558dc329420887dccd752ff208b32f2b922098db58b98dbc32a8",
-  "0024_visit_addenda.sql": "4bd1fc53d9f58223f96e559604ac01528aa5e6071d262dec787b0f67aca629dd"
+  "0024_visit_addenda.sql": "4bd1fc53d9f58223f96e559604ac01528aa5e6071d262dec787b0f67aca629dd",
+  "0025_medical_history_checklist_seed.sql": "2d4ff9be3356e3536f7eda24eba832ecfbbbc6d16bc396af22f41ea81cd72d09"
 }

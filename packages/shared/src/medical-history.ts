@@ -25,3 +25,35 @@ export const saveMedicalHistoryBody = z
   .strict();
 
 export type SaveMedicalHistoryInput = z.infer<typeof saveMedicalHistoryBody>;
+
+export function parseSaveMedicalHistory(body: unknown) {
+  const parsed = saveMedicalHistoryBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+/** Checklist form sections (3.3.1). Values stored on list item data.section. */
+export const MEDICAL_HISTORY_SECTIONS = [
+  "conditions",
+  "allergies",
+  "medicines",
+  "pregnancy",
+  "habits",
+] as const;
+export type MedicalHistorySection = (typeof MEDICAL_HISTORY_SECTIONS)[number];
+
+export const MEDICAL_HISTORY_SECTION_LABEL: Record<MedicalHistorySection, string> = {
+  conditions: "Medical conditions",
+  allergies: "Allergies",
+  medicines: "Medicines",
+  pregnancy: "Pregnancy / breastfeeding",
+  habits: "Habits",
+};
+
+export const MEDICAL_ANSWER_LABEL: Record<MedicalAnswer, string> = {
+  yes: "Yes",
+  no: "No",
+  unknown: "Not sure",
+};

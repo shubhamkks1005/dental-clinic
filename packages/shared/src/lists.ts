@@ -97,6 +97,18 @@ export const LIST_DEFS = {
     help: "Common allergies for the medical history checklist.",
     fields: [],
   },
+  // 3.3.1 checklist rows (DRAFT seed until 3.1.1). section groups the form.
+  medical_history_items: {
+    title: "Medical history checklist",
+    itemName: "question",
+    help: "Yes / No / Unknown questions on the medical history form. Alert label shows on the patient when the answer is Yes.",
+    fields: [
+      { name: "code", label: "Code", kind: "text", max: 40 },
+      { name: "section", label: "Section", kind: "text", max: 40 },
+      { name: "alert_label", label: "Alert label", kind: "text", max: 80, optional: true },
+      { name: "restricted", label: "Restricted (yes/blank)", kind: "text", max: 3, optional: true },
+    ],
+  },
   quick_phrases: {
     title: "Quick phrases",
     itemName: "phrase",

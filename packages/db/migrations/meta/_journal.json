@@ -176,6 +176,13 @@
       "when": 1795372616565,
       "tag": "0024_visit_addenda",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "6",
+      "when": 1795450000000,
+      "tag": "0025_medical_history_checklist_seed",
+      "breakpoints": true
     }
   ]
 }

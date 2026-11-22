@@ -1,6 +1,7 @@
 import { displayMobile } from "@clinic/shared";
 import { useState } from "react";
 import { Link } from "react-router";
+import { MedicalHistoryPanel } from "../medical-history";
 import type { PatientDetail } from "./api";
 import { ConsentsPanel } from "./ConsentsPanel";
 import { PatientEditForm } from "./PatientEditForm";
@@ -8,11 +9,20 @@ import { PatientEditForm } from "./PatientEditForm";
 type Props = {
   patient: PatientDetail;
   canEdit: boolean;
+  /** Doctor: clinical.view / clinical.edit. Receptionist must not see this panel (3.2.7 / 3.3.1). */
+  canViewClinical: boolean;
+  canEditClinical: boolean;
   onPatientChange: (patient: PatientDetail) => void;
 };
 
-// Overview: next appointment, details (or edit), consents.
-export function PatientOverviewTab({ patient, canEdit, onPatientChange }: Props) {
+// Overview: next appointment, details (or edit), medical history (doctor), consents.
+export function PatientOverviewTab({
+  patient,
+  canEdit,
+  canViewClinical,
+  canEditClinical,
+  onPatientChange,
+}: Props) {
   const [editing, setEditing] = useState(false);
 
   if (editing) {
@@ -73,6 +83,14 @@ export function PatientOverviewTab({ patient, canEdit, onPatientChange }: Props)
           </div>
         </dl>
       </section>
+
+      {canViewClinical && (
+        <MedicalHistoryPanel
+          patientId={patient.id}
+          gender={patient.gender}
+          canEdit={canEditClinical}
+        />
+      )}
 
       <ConsentsPanel patientId={patient.id} />
     </div>

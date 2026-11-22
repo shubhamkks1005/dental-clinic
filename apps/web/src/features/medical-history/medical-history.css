@@ -1,0 +1,170 @@
+.mh-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mh-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mh-head h2,
+.mh-panel > h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.mh-meta {
+  margin: 0;
+  font-size: 12px;
+}
+
+.mh-alert-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mh-alert,
+.mh-alert-restricted {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.mh-alert-restricted {
+  background: #ffe4d6;
+  color: #9a3412;
+}
+
+.mh-summary {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 14px;
+}
+
+.mh-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mh-lead {
+  margin: 0;
+}
+
+.mh-section {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #e3e9ee;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.mh-section legend {
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy, #0f2a5c);
+}
+
+.mh-row {
+  display: grid;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #edf1f4;
+}
+
+.mh-row:first-of-type {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.mh-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mh-answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mh-answer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid #e3e9ee;
+  border-radius: 12px;
+  background: #f3f6f7;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.mh-answer:has(input:checked) {
+  border-color: #1e4fa3;
+  background: #e6eefa;
+}
+
+.mh-note input,
+.mh-medicines textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #e3e9ee;
+  border-radius: 12px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.mh-medicines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.mh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 768px) {
+  .mh-row {
+    grid-template-columns: minmax(140px, 1.2fr) minmax(200px, 1fr) minmax(120px, 1fr);
+    align-items: center;
+  }
+}

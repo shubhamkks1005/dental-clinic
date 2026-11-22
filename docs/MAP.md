@@ -85,8 +85,9 @@
 - src/testing/app-env.ts - test env (fake D1), addStaff, sessionCookie, sameOriginPost
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
-- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-appointments, staff-visits; deny by default applies)
+- src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents, staff-medical-history, staff-appointments, staff-visits; deny by default applies)
 - src/routes/staff-visits.ts (+ domain/visits.ts, staff-visits.test.ts) - 3.2.7 POST /visits, GET /visits/:id, POST finalise, POST addenda (clinical.edit/view; receptionist 403)
+- src/routes/staff-medical-history.ts (+ domain/medical-history.ts, staff-medical-history.test.ts) - 3.3.1 GET/POST medical-history; GET alert-flags (receptionist)
 - src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); PUT :id edit (2.2.4); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-appointments.ts (+ domain/appointments.ts) - GET /appointments?date= (2.4.1); GET /appointments/slots (2.4.2); POST book/walk-in; cancel/reschedule/status/chain
@@ -147,7 +148,8 @@
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
-- src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS
+- src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view
+- src/features/medical-history/ - 3.3.1 checklist form (S04/S17 Overview): panel, form, MhQuestionRow, checklist helpers, api; doctor only
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css

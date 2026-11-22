@@ -109,6 +109,11 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
     return JSON.stringify({ status: "confirmed", version: 1 });
   }
+  if (path === "/api/staff/patients/:id/medical-history" && method === "POST") {
+    return JSON.stringify({
+      items: [{ code: "diabetes", label: "Diabetes", answer: "no" }],
+    });
+  }
   if (path === "/api/staff/visits" && method === "POST") {
     return JSON.stringify({ patientId: "p1", visitDateLocal: "2026-11-22" });
   }
