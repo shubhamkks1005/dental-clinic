@@ -30,6 +30,7 @@ describe("migrations on an empty database (1.2.3)", () => {
   it("create exactly the base tables", () => {
     expect(tableNames()).toEqual([
       "access_log",
+      "appointments",
       "audit_log",
       "consents",
       "counters",

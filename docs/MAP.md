@@ -175,12 +175,14 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, notes, status (active|archived)
 - patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
 - consents - 2.1.9 append-only consent history (src/schema/consents.ts) - patient_id, type, notice_version, given, given_at, recorded_by, method; withdraw = new row with given=0
+- appointments - 2.3.1 bookings (src/schema/appointments.ts) - patient_id, chair_id, visit_type_id/label (copied), start_at (UTC), date_local + start_min/end_min (IST), status, source, priority, overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status
 - migrations/0009_patients.sql - creates patients
 - migrations/0010_patient_guardian.sql - adds guardian_name, guardian_relation, guardian_mobile
 - migrations/0011_patient_search.sql - creates patient_search + token indexes
 - migrations/0012_consents.sql - creates consents
 - migrations/0013_privacy_notice_settings.sql - seeds privacy_notice.version / body (PLACEHOLDER)
 - migrations/0014_patient_contact_relation.sql - adds patients.contact_relation (2.2.8)
+- migrations/0015_appointments.sql - creates appointments + day indexes (2.3.1)
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
@@ -234,6 +236,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/testing/repo-files.ts - sourceFiles(dir): app source files (no tests) for guard tests
 - src/testing/index.ts - test helpers entry, imported as @clinic/db/testing (never from Worker/web code)
 - src/schema/index.ts - schema entry (exports every table)
+- src/schema/appointments.ts (+ appointments-index.test) - 2.3.1 appointments table + EXPLAIN index guard for day queries
 - src/schema/columns.ts - standardColumns() (id ULID, created/updated at+by, deleted_at, version), STANDARD_COLUMNS, oneOf() for enum CHECKs
 - src/schema/rules.test.ts - 1.2.1 rules: every table has the standard columns, *_paise integer, *_at/*_on text, enums have CHECK
 - migrations/ - SQL migrations (never edit a committed one)
@@ -257,6 +260,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
+- src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)

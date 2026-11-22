@@ -1,4 +1,5 @@
 export { accessLog } from "./access-log";
+export { appointments } from "./appointments";
 export { auditLog } from "./audit-log";
 export { consents } from "./consents";
 export { counters } from "./counters";

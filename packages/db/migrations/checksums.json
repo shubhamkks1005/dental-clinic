@@ -13,5 +13,6 @@
   "0011_patient_search.sql": "18b5fed728f586fbef61f418241a5a5426764119612cb55a7ead3979a172916d",
   "0012_consents.sql": "82216bfa0852af8e870b65634cc5b6c30a69a343415b048c2c3c900f219aeb8e",
   "0013_privacy_notice_settings.sql": "3ce584478c1ff7013c41f816d78d7cf86bf56f8670c63733ead7468bbf0f57b9",
-  "0014_patient_contact_relation.sql": "852f309e25aaec27df0f11785d1dc4f4c89c4f22d43e59e8b8c762c2268d8a6b"
+  "0014_patient_contact_relation.sql": "852f309e25aaec27df0f11785d1dc4f4c89c4f22d43e59e8b8c762c2268d8a6b",
+  "0015_appointments.sql": "1570784c1ab334e6b812ec9a369ffee670a217846cf988640690eb80e66bfba6"
 }

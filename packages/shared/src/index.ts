@@ -1,4 +1,5 @@
 export * from "./api";
+export * from "./appointments";
 export * from "./enums";
 export * from "./fields";
 export * from "./lists";
