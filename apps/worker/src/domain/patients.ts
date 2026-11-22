@@ -2,6 +2,7 @@ import {
   PATIENT_LIST_SORTABLE,
   type CreatedPatient,
   type DuplicateHit,
+  type PatientDetail,
   type PatientListRow,
   type PatientListStatus,
   type Repos,
@@ -21,6 +22,11 @@ export function listPatients(repos: Repos, params: ParamReader): Promise<Page<Pa
   const query = parsePageQuery(params, PATIENT_LIST_SORTABLE);
   const status = parseListStatus(params.get("status"));
   return repos.patients.list(query, { status });
+}
+
+// 2.2.2 profile.
+export function getPatient(repos: Repos, id: string): Promise<PatientDetail> {
+  return repos.patients.get(id);
 }
 
 function parseListStatus(raw: string | null): PatientListStatus {

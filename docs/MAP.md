@@ -85,7 +85,7 @@
 - src/session.test.ts, src/deny-by-default.test.ts, src/domain/auth.test.ts, src/domain/login.test.ts - 1.3.8 tests (sessions, CSRF, public endpoints, route walk, rules, full callback flow)
 - src/types.ts - AppEnv (Hono bindings type)
 - src/routes/staff.ts - /api/staff/* group (mounts staff-auth, staff-users, staff-settings, staff-lists, staff-patients, staff-consents; deny by default applies)
-- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; POST create (2.2.1); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
+- src/routes/staff-patients.ts (+ staff-patients.test, domain/patients.ts) - GET /patients; GET :id (2.2.2); POST create (2.2.1); POST duplicate-check (2.1.7); POST :id/archive|restore (2.1.8)
 - src/routes/staff-consents.ts (+ domain/consents.ts) - 2.1.9 GET/POST /patients/:id/consents (append-only; withdraw = new row)
 - src/routes/staff-settings.ts - 1.5.1 settings store API: GET /settings (list), PUT /settings/:key { value, version } (invalid value 400, unknown key 404, stale 409, no permission 403)
 - src/domain/settings.ts - listSettings, updateSetting (the repo does permission, rule, version, audit)
@@ -141,8 +141,8 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen (2.2.1); patients/:id/consents = PatientConsentsScreen (2.1.9 temp until 2.2.2); settings/* = SettingsScreen; more = MoreScreen; other nav targets show "Not ready yet"
-- src/features/patients/ - PatientsScreen (S02/S15); NewPatientScreen/Form (S03/S16); ConsentsPanel + PatientConsentsScreen (2.1.9); DuplicateWarnings; new-patient-schema; api.ts; CSS; filters still 2.2.5
+- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; other nav NotBuiltYet
+- src/features/patients/ - list, new form, profile (header + Overview/Appointments tabs; Visits/Billing/Files/Messages flagged off), consents panel, duplicate warnings, api, CSS; filters still 2.2.5
 - src/features/settings/ - S12 Settings frame: SettingsScreen (SECTIONS list: path, label, permission, screen; Timings (settings.read), one section per LIST_KEYS (settings.read), Staff (staff.manage); /app/settings -> first visible section; none = "Not ready yet"), settings.css
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
@@ -245,6 +245,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/patient-duplicates.ts (+ test) - 2.1.7 findWarnings (top 3 soft hits: mobile_name, name_age, secondary_mobile)
 - src/repos/patient-archive.ts (+ test) - 2.1.8 archive(reason)/restore with version check + audit
 - src/repos/patient-create.ts (+ test) - 2.2.1 create (takePatientCode + insert + audit, then search tokens)
+- src/repos/patient-get.ts (+ test) - 2.2.2 get by id for profile
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 
 ## packages/shared

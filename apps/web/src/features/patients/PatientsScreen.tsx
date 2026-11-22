@@ -35,7 +35,7 @@ const COLUMNS: Column<PatientListRow>[] = [
     sortable: true,
     render: (r) => (
       <span className="patients-name">
-        <Link className="patients-name-main" to={`/app/patients/${r.id}/consents`}>
+        <Link className="patients-name-main" to={`/app/patients/${r.id}`}>
           {r.fullName}
         </Link>
         <span className="muted patients-name-meta">

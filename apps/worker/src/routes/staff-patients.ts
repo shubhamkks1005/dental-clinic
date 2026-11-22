@@ -4,18 +4,24 @@ import {
   archivePatient,
   checkPatientDuplicates,
   createPatient,
+  getPatient,
   listPatients,
   restorePatient,
 } from "../domain/patients";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
-// GET /patients — list (S02/S15). POST create (2.2.1); duplicate-check / archive / restore.
+// GET /patients — list (S02/S15). GET :id profile (2.2.2). POST create (2.2.1).
 export const staffPatients = new Hono<AppEnv>();
 
 staffPatients.get("/patients", async (c) => {
   const page = await listPatients(signedIn(c).repos, new URL(c.req.url).searchParams);
   return c.json(ok({ page }));
+});
+
+staffPatients.get("/patients/:id", async (c) => {
+  const patient = await getPatient(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ patient }));
 });
 
 staffPatients.post("/patients", async (c) => {

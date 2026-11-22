@@ -26,6 +26,34 @@ export type CreatedPatient = {
   version: number;
 };
 
+export type PatientDetail = {
+  id: string;
+  code: string;
+  fullName: string;
+  gender: "female" | "male" | "other";
+  dateOfBirth: string | null;
+  ageYearsAtReg: number | null;
+  mobile: string | null;
+  noMobileReason: string | null;
+  mobileSecondary: string | null;
+  area: string | null;
+  email: string | null;
+  referralSourceId: string | null;
+  referredBy: string | null;
+  emergencyName: string | null;
+  emergencyRelation: string | null;
+  emergencyMobile: string | null;
+  guardianName: string | null;
+  guardianRelation: string | null;
+  guardianMobile: string | null;
+  messageLanguage: "english" | "hinglish" | null;
+  legacyRef: string | null;
+  notes: string | null;
+  status: "active" | "archived";
+  version: number;
+  createdAt: string;
+};
+
 export type DuplicateWarning = {
   id: string;
   code: string;
@@ -43,6 +71,12 @@ export function getPatientConsents(patientId: string): Promise<ConsentRow[]> {
   return api<{ consents: ConsentRow[] }>(
     `/api/staff/patients/${encodeURIComponent(patientId)}/consents`,
   ).then((r) => r.consents);
+}
+
+export function getPatient(id: string): Promise<PatientDetail> {
+  return api<{ patient: PatientDetail }>(`/api/staff/patients/${encodeURIComponent(id)}`).then(
+    (r) => r.patient,
+  );
 }
 
 export function createPatient(body: Record<string, unknown>): Promise<CreatedPatient> {

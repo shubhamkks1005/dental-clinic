@@ -54,6 +54,25 @@ describe("GET /api/staff/patients (1.1.7)", () => {
   });
 });
 
+describe("GET /api/staff/patients/:id (2.2.2)", () => {
+  it("returns the patient for receptionist", async () => {
+    const cookie = await sessionCookie(env, "rec@example.test");
+    const res = await app.request(`${ORIGIN}/api/staff/patients/p1`, { headers: { cookie } }, env);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      ok: true;
+      data: { patient: { code: string; fullName: string } };
+    };
+    expect(body.data.patient).toMatchObject({ code: "P-000001", fullName: "Fake One" });
+  });
+
+  it("refuses developer", async () => {
+    const cookie = await sessionCookie(env, "dev@example.test");
+    const res = await app.request(`${ORIGIN}/api/staff/patients/p1`, { headers: { cookie } }, env);
+    expect(res.status).toBe(403);
+  });
+});
+
 describe("POST /api/staff/patients/duplicate-check (2.1.7)", () => {
   it("returns soft warnings for doctor", async () => {
     const cookie = await sessionCookie(env, "doc@example.test");

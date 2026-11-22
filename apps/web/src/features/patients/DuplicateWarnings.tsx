@@ -17,7 +17,7 @@ export function DuplicateWarnings({ warnings }: { warnings: DuplicateWarning[] }
       <ul>
         {warnings.map((w) => (
           <li key={w.id}>
-            <Link to={`/app/patients/${w.id}/consents`}>
+            <Link to={`/app/patients/${w.id}`}>
               {w.fullName} ({w.code})
             </Link>
             {w.mobile ? ` · ${displayMobile(w.mobile)}` : ""} — {REASON[w.reason]}
