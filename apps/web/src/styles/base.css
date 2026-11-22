@@ -160,6 +160,15 @@ input {
   padding: 0 var(--s4);
 }
 
+/* Native select keeps its keyboard and phone pickers; only the arrow is ours. */
+select.input {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235b6b7b' stroke-width='2'/%3E%3C/svg%3E");
+  background-position: right 16px center;
+  background-repeat: no-repeat;
+}
+
 .input {
   width: 100%;
   min-height: var(--control-h);

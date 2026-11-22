@@ -5,27 +5,30 @@ import { StaffRoutes } from "./routes/StaffRoutes";
 import { ErrorBoundary } from "./ui/ErrorBoundary";
 import { OfflineBanner } from "./ui/OfflineBanner";
 import { NotFound } from "./ui/PageMessage";
+import { TooltipProvider } from "./ui/Tooltip";
 
 export function App() {
   return (
-    <>
-      <OfflineBanner />
-      <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/denied" element={<AccessDenied />} />
-          <Route
-            path="/app/*"
-            element={
-              <RequireStaff>
-                <StaffRoutes />
-              </RequireStaff>
-            }
-          />
-          <Route path="/my/*" element={<PortalRoutes />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </ErrorBoundary>
-    </>
+    <TooltipProvider>
+      <>
+        <OfflineBanner />
+        <ErrorBoundary>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/denied" element={<AccessDenied />} />
+            <Route
+              path="/app/*"
+              element={
+                <RequireStaff>
+                  <StaffRoutes />
+                </RequireStaff>
+              }
+            />
+            <Route path="/my/*" element={<PortalRoutes />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
+      </>
+    </TooltipProvider>
   );
 }

@@ -1,6 +1,7 @@
 import { formatRupees } from "@clinic/shared";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { ComponentDemos } from "./ComponentDemos";
 import { SampleTable } from "./SampleTable";
 import { BRAND, NEUTRALS, StatusPairs, SwatchList } from "./Swatches";
 import "./style-guide.css";
@@ -63,6 +64,11 @@ export function StyleGuideScreen() {
         <p className="notice notice-ok">Saved.</p>
         <p className="notice notice-warning">Check this before you continue.</p>
         <p className="notice notice-error">Could not save. Check the internet connection.</p>
+      </section>
+
+      <section className="card guide-card" aria-labelledby="g-components">
+        <h2 id="g-components">Components</h2>
+        <ComponentDemos />
       </section>
 
       <section className="card guide-card" aria-labelledby="g-table">

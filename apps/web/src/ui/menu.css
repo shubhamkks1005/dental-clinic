@@ -1,0 +1,31 @@
+/* Dropdown menu (1.4.2). Items are 44px tall for fingers. */
+.menu {
+  z-index: 50;
+  min-width: 12rem;
+  padding: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  box-shadow: 0 8px 24px rgb(15 42 92 / 16%);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s3);
+  border-radius: 8px;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+}
+
+.menu-item[data-highlighted] {
+  background: var(--blue-soft);
+  color: var(--blue-hover);
+}
+
+.menu-item[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

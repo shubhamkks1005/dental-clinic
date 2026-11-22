@@ -92,6 +92,10 @@
 - public/fonts/OFL.txt - the font's SIL Open Font License (must ship with the font)
 - src/api/client.ts - the one typed API client (ApiError with status, code, message and the short errorId from X-Request-Id; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
 - src/api/problem-text.ts (+ test) - problemText(err): the one failure sentence for staff; adds "Error ID: XXXXXXXX" for server faults (5xx, bad reply); no reply = "Cannot reach the clinic server..."
+- src/ui/Dialog.tsx + dialog.css - 1.4.2 modal dialog on native <dialog> (focus inside, page inert, Esc closes, click outside closes unless role alertdialog, focus back to the opener; scroll lock via body:has(dialog[open])). Not Radix: CSP (DECISIONS.md)
+- src/ui/Tabs.tsx + tabs.css + tabs-keys.ts (+ test) - 1.4.2 tabs in the S11 look; arrows/Home/End move and select, only the selected tab is in the Tab order
+- src/ui/Tooltip.tsx + tooltip.css - 1.4.2 Radix tooltip (TooltipProvider mounted in App.tsx); hint only, never the only label
+- src/ui/Menu.tsx + menu.css - 1.4.2 Radix dropdown menu, non-modal (the modal mode injects a <style> tag the CSP blocks); 44px items
 - src/ui/ErrorBoundary.tsx (+ test) - crash page with a fresh Error ID and a Reload button (console only, no tracker)
 - src/ui/OfflineBanner.tsx + src/ui/use-online.ts - "No internet connection. Don't close this page..." bar on every page while offline
 - src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
@@ -105,10 +109,10 @@
 - src/features/settings/ - S12 Settings frame: SettingsScreen (title, section list shown per permission, /app/settings -> first section; no section = "Not ready yet"), settings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css
 - src/routes/PortalRoutes.tsx - portal route tree in PortalShell: placeholder "Your records" card
-- src/styles/base.css - DESIGN.md tokens (brand, neutrals, teal, on-navy text, success/info/warning/danger/neutral text+bg pairs, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn (+ disabled), .input, .card. Feature CSS uses these variables, never raw hex
+- src/styles/base.css - DESIGN.md tokens (brand, neutrals, teal, on-navy text, success/info/warning/danger/neutral text+bg pairs, radii, 4px spacing, 48px controls), Inter @font-face (swap), .btn (+ disabled), .input (+ native select arrow), .card. Feature CSS uses these variables, never raw hex
 - src/styles/contrast.test.ts - 1.4.1: reads base.css and checks every text/background pair the screens use is at least 4.5:1 (WCAG AA)
 - src/ui/ui.css - status badges (5 tones), notices (ok, warning, error), patient number chip, stat card, logo tile, page message
-- src/features/style-guide/ - 1.4.1 style guide at /app/style-guide (not in the menu, no real data): colour swatches read live from base.css, type scale, buttons, badges, chip, input, notices; 1.4.5 data table demo (SampleTable over 5,000 FAKE rows from sample-table.ts, which mimics a list endpoint; pretend-failure checkbox)
+- src/features/style-guide/ - 1.4.1 style guide at /app/style-guide (not in the menu, no real data): colour swatches read live from base.css, type scale, buttons, badges, chip, input, notices; 1.4.5 data table demo (SampleTable over 5,000 FAKE rows from sample-table.ts, which mimics a list endpoint; pretend-failure checkbox); 1.4.2 ComponentDemos (dialog, tooltip, menu, select, tabs)
 - src/ui/table/ - 1.4.5 data table kit: DataTable (filter, loading/error/empty states, pager), TableFilter (search after 300 ms pause; phone "Sort by" list), TableViews (table on tablet/laptop in its own scroll box, cards on phones, pager), table-query.ts (+ test: toggleSort, ariaSort, rangeText with Indian grouping), data-table.css
 - src/ui/icons.tsx - small inline stroke icons (no icon library)
 - src/ui/Logo.tsx - placeholder tooth mark until the owner uploads a logo

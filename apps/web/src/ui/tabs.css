@@ -1,0 +1,35 @@
+/* Tabs (1.4.2), S11 look: blue text and underline on the selected tab. Scrolls sideways inside
+   its own row on narrow phones. */
+.tabs {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+
+.tabs-list {
+  display: flex;
+  gap: var(--s1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs-list [role="tab"] {
+  min-height: 44px;
+  padding: 0 var(--s3);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs-list [role="tab"][aria-selected="true"] {
+  border-bottom-color: var(--blue);
+  color: var(--blue);
+}
+
+.tabs-panel:focus-visible {
+  outline-offset: 4px;
+}
