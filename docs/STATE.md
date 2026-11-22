@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.4.4** (Today list print). Skip 2.2.6 / 2.3.9–2.3.11 / 2.4.5–2.4.6 (baad me). Phase 2 gate not yet reached.
+Phase: 2. Current task: none; next is **2.4.7** (auto-refresh). Skip 2.2.6 / 2.3.9–2.3.11 / 2.4.5–2.4.6 (baad me). Phase 2 gate not yet reached.
 PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.5.15 (P3 +19h), 4.2.8 (P4 +3h), 5.3.16 (P5 +3h), 6.7.1–6.7.3 (P6 +9h) = **+34 core h**. Totals: core **1,063 → 1,097**; tasks 477 → 487; Kul 1,182 → 1,216. **Cut A (raasta 2) pre-pilot: 738 → 772 (yes, changes).** Full pre-pilot 981 → 1,015. No History feature code yet.
+2.4.4 DONE locally (A4 day list at /app/print/day?date=; Print today/tomorrow from Today; browser print). Printer test on clinic printer waiting on owner. No new migration.
 2.4.3 DONE locally (Today wired to GET day appointments; status one-click; walk-in dialog; next/waiting/call-list no-shows; doctor Now+Next3; collection stat deferred to Phase 5). No new migration. Screens: S01/S14.
 2.4.2 DONE locally (QuickBookDialog S07: patient search, visit type, 5 slots, phone note, POST book; GET `/appointments/slots`). No new migration.
 2.4.1 DONE locally (day view at /app/appointments: GET `/appointments?date=`, CSS grid timeline, status colour+label, now-line from serverNow, empty-slot → ?book=, drag-reschedule with confirm). No new migration. Screen: S08 (day).
@@ -32,7 +33,7 @@ PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.4.4**+.
+Next: **2.4.7**+.
 
 ## Phase 1 gate (from PLAN.md)
 
@@ -67,6 +68,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- 2.4.4: test-print A4 day list on the clinic printer (sister)
 - Staging: apply migrations **0006–0017**, then `pnpm deploy:staging`; curl `/api/staff/health`
 - 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
 - 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
