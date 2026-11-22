@@ -261,10 +261,11 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/routing.ts - areaOf(path): staff-api, portal-api, hooks, unknown-api, staff-app (/app), portal-app (/my), asset; isWorkerArea()
 - src/routing.test.ts - path table tests (whole segments: /application is not /app)
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
-- src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID
+- src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
+- src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (working hours − lunch − holidays − busy; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
-- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
+- src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ 2.2.7 privacy_notice.version / privacy_notice.body); isSettingKey, parseSettingValue
 - src/lists.ts (+ test) - 1.5.4 LIST_DEFS / LIST_KEYS (visit_types with minutes+colour, referral_sources); listItemSchema(key); roundUpToSlot / visitTypeSnapshot (2.3.2); a new list is one entry here (API + Settings section + editor come from it)

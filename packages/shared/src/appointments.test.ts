@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  APPOINTMENT_BUSY_STATUSES,
   APPOINTMENT_PRIORITIES,
   APPOINTMENT_SOURCES,
   APPOINTMENT_STATUSES,
+  appointmentHoldsChair,
   DEFAULT_CHAIR_ID,
 } from "./appointments";
 
@@ -21,5 +23,13 @@ describe("appointment enums (2.3.1)", () => {
     expect([...APPOINTMENT_SOURCES]).toEqual(["phone", "walk_in", "referral", "other"]);
     expect([...APPOINTMENT_PRIORITIES]).toEqual(["normal", "emergency"]);
     expect(DEFAULT_CHAIR_ID).toBe("1");
+    expect([...APPOINTMENT_BUSY_STATUSES]).toEqual([
+      "scheduled",
+      "confirmed",
+      "arrived",
+      "in_chair",
+    ]);
+    expect(appointmentHoldsChair("scheduled")).toBe(true);
+    expect(appointmentHoldsChair("cancelled")).toBe(false);
   });
 });

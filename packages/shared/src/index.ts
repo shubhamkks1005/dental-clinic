@@ -2,6 +2,7 @@ export * from "./api";
 export * from "./appointments";
 export * from "./enums";
 export * from "./fields";
+export * from "./free-slots";
 export * from "./lists";
 export * from "./mobile";
 export * from "./money";

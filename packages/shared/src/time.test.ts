@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  addIstDays,
   financialYearOf,
   formatDisplayDate,
   istDate,
   istDateTime,
   istHour,
+  istLocalToUtc,
   istLongDate,
+  istMinutes,
   parseDisplayDate,
 } from "./time";
 
@@ -32,8 +35,14 @@ describe("istLongDate and istHour", () => {
     expect(istLongDate(new Date("2026-11-21T19:00:00Z"))).toBe("Sunday, 22 November");
   });
 
-  it("gives the IST hour", () => {
+  it("gives the IST hour and minutes from midnight", () => {
     expect(istHour(new Date("2026-11-22T03:30:00Z"))).toBe(9);
+    expect(istMinutes(new Date("2026-11-22T04:30:00Z"))).toBe(10 * 60); // 10:00 IST
+  });
+
+  it("adds IST calendar days and converts local minutes back to UTC", () => {
+    expect(addIstDays("2026-11-22", 1)).toBe("2026-11-23");
+    expect(istLocalToUtc("2026-11-23", 10 * 60).toISOString()).toBe("2026-11-23T04:30:00.000Z");
   });
 
   it("formats a stored UTC time as a short IST date and time", () => {

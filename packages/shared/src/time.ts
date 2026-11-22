@@ -15,6 +15,27 @@ export function istHour(instant: Date): number {
   return inIst(instant).getUTCHours();
 }
 
+// Minutes from IST midnight (0..1439). Used with appointments.start_min / end_min.
+export function istMinutes(instant: Date): number {
+  const ist = inIst(instant);
+  return ist.getUTCHours() * 60 + ist.getUTCMinutes();
+}
+
+// YYYY-MM-DD plus whole calendar days in IST (no DST in India).
+export function addIstDays(isoDay: string, days: number): string {
+  const [y, m, d] = isoDay.split("-").map(Number) as [number, number, number];
+  const next = new Date(Date.UTC(y, m - 1, d + days));
+  return next.toISOString().slice(0, 10);
+}
+
+// Instant for an IST local date + minutes-from-midnight, as UTC Date.
+export function istLocalToUtc(isoDay: string, minutesFromMidnight: number): Date {
+  const [y, m, d] = isoDay.split("-").map(Number) as [number, number, number];
+  const utcMs =
+    Date.UTC(y, m - 1, d, 0, 0, 0) - (5 * 60 + 30) * 60 * 1000 + minutesFromMidnight * 60 * 1000;
+  return new Date(utcMs);
+}
+
 // Long date for screen headers, e.g. "Saturday, 22 November".
 export function istLongDate(instant: Date): string {
   const parts = new Intl.DateTimeFormat("en-GB", {

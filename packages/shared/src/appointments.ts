@@ -21,3 +21,16 @@ export type AppointmentPriority = (typeof APPOINTMENT_PRIORITIES)[number];
 
 // One chair for now; UI hides chair_id (PLAN 2.3.1). Timings.chairs is the count.
 export const DEFAULT_CHAIR_ID = "1";
+
+// These statuses still hold the chair for overlap / free-slot math (2.3.3, 2.3.4).
+export const APPOINTMENT_BUSY_STATUSES = [
+  "scheduled",
+  "confirmed",
+  "arrived",
+  "in_chair",
+] as const satisfies readonly AppointmentStatus[];
+export type AppointmentBusyStatus = (typeof APPOINTMENT_BUSY_STATUSES)[number];
+
+export function appointmentHoldsChair(status: AppointmentStatus): boolean {
+  return (APPOINTMENT_BUSY_STATUSES as readonly string[]).includes(status);
+}
