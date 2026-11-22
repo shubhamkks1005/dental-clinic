@@ -90,6 +90,9 @@ function bodyFor(method: string, path: string): string | undefined {
       source: "phone",
     });
   }
+  if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
+    return JSON.stringify({ status: "confirmed", version: 1 });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

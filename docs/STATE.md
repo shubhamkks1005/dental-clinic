@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-22
-Phase: 2. Current task: none; next is **2.3.6** (status machine). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
+Phase: 2. Current task: none; next is **2.3.7** (walk-in + emergency). Skip 2.2.6 (baad me). Phase 2 gate not yet reached.
 PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.5.15 (P3 +19h), 4.2.8 (P4 +3h), 5.3.16 (P5 +3h), 6.7.1–6.7.3 (P6 +9h) = **+34 core h**. Totals: core **1,063 → 1,097**; tasks 477 → 487; Kul 1,182 → 1,216. **Cut A (raasta 2) pre-pilot: 738 → 772 (yes, changes).** Full pre-pilot 981 → 1,015. No History feature code yet.
+2.3.6 DONE locally (status wheel in shared; PATCH `/appointments/:id/status`; arrived/started/ended stamps; no_show after start+15m; cancelled/no_show→scheduled within 24h via updated_at; statusActionButtons for UI). No new migration.
 2.3.5 DONE locally (booking rules: past/closed/lunch/ahead; overrideReason → overbook + audit; setting appointments.book_ahead_days=90). **New migration `0017_appointments_book_ahead.sql` — owner applies; agent did not apply to staging.**
 2.3.4 DONE locally (POST `/api/staff/appointments`; INSERT…WHERE NOT EXISTS overlap + auditInsertIfChanged; 50 parallel same-slot → 1 win / 49 ConflictError / 1 audit). No new migration.
 2.3.3 DONE locally (findFreeSlots: working hours − lunch − holidays − busy statuses; slotSearchEarliest = now+15m; 12 unit tests for empty/full/lunch/holiday/gap/RCT/today/Sunday/cancelled/rescheduled/arrived/limit). No new migration.
@@ -26,7 +27,7 @@ PLAN: Unified Patient History added (docs/PATIENT_HISTORY.md). Tasks 3.5.11–3.
 2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
 version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
 1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
-Next: **2.3.6**+.
+Next: **2.3.7**+.
 
 ## Phase 1 gate (from PLAN.md)
 

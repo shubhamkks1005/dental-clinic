@@ -87,4 +87,49 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     expect(forced.status).toBe(201);
     expect(sqlite.prepare("SELECT overbook FROM appointments").get()).toEqual({ overbook: 1 });
   });
+
+  it("PATCH status follows the wheel; illegal jump is 409", async () => {
+    const created = await book("rec@example.test", {
+      patientId: "p1",
+      visitTypeId: VISIT_ID,
+      dateLocal: "2026-11-23",
+      startMin: 600,
+      source: "phone",
+    });
+    expect(created.status).toBe(201);
+    const createdBody = (await created.json()) as {
+      data: { appointment: { id: string; version: number } };
+    };
+    const appointment = createdBody.data.appointment;
+    const cookie = await sessionCookie(env, "rec@example.test");
+    const init = sameOriginPost(cookie);
+    const ok = await app.request(
+      `${ORIGIN}/api/staff/appointments/${appointment.id}/status`,
+      {
+        ...init,
+        method: "PATCH",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ status: "confirmed", version: appointment.version }),
+      },
+      env,
+    );
+    expect(ok.status).toBe(200);
+    const bad = await app.request(
+      `${ORIGIN}/api/staff/appointments/${appointment.id}/status`,
+      {
+        ...init,
+        method: "PATCH",
+        headers: {
+          ...(init.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ status: "completed", version: appointment.version + 1 }),
+      },
+      env,
+    );
+    expect(bad.status).toBe(409);
+  });
 });

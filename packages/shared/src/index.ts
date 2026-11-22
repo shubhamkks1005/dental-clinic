@@ -1,5 +1,7 @@
 export * from "./api";
 export * from "./appointment-book";
+export * from "./appointment-status";
+export * from "./appointment-status-change";
 export * from "./appointments";
 export * from "./booking-rules";
 export * from "./enums";

@@ -1,5 +1,10 @@
 import type { Repos } from "@clinic/db";
-import { parseBookAppointment, type Holiday, type Timings } from "@clinic/shared";
+import {
+  parseBookAppointment,
+  parseChangeAppointmentStatus,
+  type Holiday,
+  type Timings,
+} from "@clinic/shared";
 
 export async function bookAppointment(repos: Repos, body: unknown, now: Date = new Date()) {
   const parsed = parseBookAppointment(body);
@@ -13,5 +18,17 @@ export async function bookAppointment(repos: Repos, body: unknown, now: Date = n
     bookAheadDays,
     now,
   });
+  return { ok: true as const, appointment };
+}
+
+export async function changeAppointmentStatus(
+  repos: Repos,
+  id: string,
+  body: unknown,
+  now: Date = new Date(),
+) {
+  const parsed = parseChangeAppointmentStatus(body);
+  if (!parsed.ok) return parsed;
+  const appointment = await repos.appointments.changeStatus(id, parsed.value, now);
   return { ok: true as const, appointment };
 }

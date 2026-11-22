@@ -170,7 +170,7 @@
 - src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
 - src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
-- src/features/today/ - Today screen (S01 laptop, S14 phone) with FAKE sample data: TodayScreen, TodayList, NextPatientCard, CallList, sample-data.ts, today.css (layout), today-cards.css (cards), index.ts
+- src/features/today/ - Today screen (S01 laptop, S14 phone) with FAKE sample data: TodayScreen, TodayList, NextPatientCard, CallList, sample-data.ts, statusActions.ts (+ test, 2.3.6 button filter), today.css (layout), today-cards.css (cards), index.ts
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
@@ -258,6 +258,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 - src/repos/appointment-insert.ts - INSERT…SELECT WHERE NOT EXISTS (busy overlap) for booking
 - src/repos/appointments-book.ts (+ test) - 2.3.4/2.3.5 book(); soft rules + override→overbook; 50 parallel same-slot → one win, no loser audit
+- src/repos/appointments-status.ts (+ test) - 2.3.6 changeStatus(); wheel + stamps + no_show/undo gates; version conflict
 - migrations/0017_appointments_book_ahead.sql - seeds appointments.book_ahead_days = 90
 
 ## packages/shared
@@ -268,6 +269,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/enums.ts - ROLES, USER_STATUSES, COUNTER_NAMES, AUDIT_ACTIONS, ACCESS_ACTIONS, FILE_KINDS, FILE_MIME_TYPES (used by db CHECKs)
 - src/appointments.ts (+ test) - 2.3.1 APPOINTMENT_STATUSES / SOURCES / PRIORITIES, DEFAULT_CHAIR_ID, APPOINTMENT_BUSY_STATUSES / appointmentHoldsChair
 - src/appointment-book.ts (+ test) - 2.3.4/2.3.5 parseBookAppointment (optional overrideReason)
+- src/appointment-status.ts (+ test) - 2.3.6 status wheel, statusActionTargets, no_show + undo gates
+- src/appointment-status-change.ts - parseChangeAppointmentStatus body
 - src/booking-rules.ts (+ test) - 2.3.5 bookingRuleViolations + clinicWorkingIntervals (past/closed/lunch/ahead)
 - src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (uses clinicWorkingIntervals; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
