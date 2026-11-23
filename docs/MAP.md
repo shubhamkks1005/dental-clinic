@@ -273,6 +273,11 @@
 - src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
 - src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
+- docs/FIXES.md - owner's bug and polish list, worked top to bottom; Done rows get the commit hash
+- .cursor/rules/01-start-here.mdc - tells Cursor to read AGENTS.md, STATE, FIXES, MAP first (Claude Code gets the same through CLAUDE.md)
+- packages/shared consent-body.ts (+ test) - parses consent text markup (# heading, - bullet, 1. item, [ ] tick box)
+- packages/shared consent-forms-hi-a/b/c.ts - doctor's Hindi consent forms (extraction, filling, scaling / root canal, crown and bridge / orthodontic); consent-templates.ts has the keys, schema, CONSENT_TEMPLATE_META (language, tooth line) and resolveConsentTemplates
+- apps/web features/print ConsentBody.tsx, ConsentSheet.tsx - draw a consent form (patient strip, text, signature block); PrintConsentScreen.tsx loads data and prints
 - src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)

@@ -1,22 +1,78 @@
 .consent-print-title {
-  margin: 0 0 var(--s3);
+  margin: 0 0 var(--s1);
+  text-align: center;
   font-size: 1.15rem;
 }
 
-.consent-print-meta {
-  margin: 0 0 var(--s2);
+.consent-print-sub {
+  margin: 0 0 var(--s3);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Hindi forms: no web font ships Devanagari, so use the fonts on the clinic PC (DECISIONS.md). */
+.consent-sheet.is-hindi {
+  font-family:
+    "Noto Sans Devanagari", "Nirmala UI", "Mangal", "Kohinoor Devanagari", "Lohit Devanagari",
+    var(--font-sans, system-ui), sans-serif;
+}
+
+.consent-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2) var(--s4);
+  margin: 0 0 var(--s3);
   font-size: 0.9rem;
 }
 
-.consent-print-body {
-  margin: var(--s4) 0;
-  line-height: 1.45;
-  white-space: pre-wrap;
+.consent-field {
+  display: flex;
+  gap: var(--s2);
+  border-bottom: 1px solid #111;
+  min-height: 1.6em;
 }
 
-.consent-print-procedure {
-  margin: var(--s4) 0;
+.consent-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+.consent-field dt {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.consent-field dd {
+  margin: 0;
+}
+
+.consent-heading {
+  margin: var(--s3) 0 var(--s1);
+  font-size: 1rem;
+  break-after: avoid;
+}
+
+.consent-subheading {
+  margin: var(--s2) 0 var(--s1);
   font-size: 0.95rem;
+  break-after: avoid;
+}
+
+.consent-para {
+  margin: 0 0 var(--s2);
+  line-height: 1.45;
+}
+
+.consent-list {
+  margin: 0 0 var(--s2);
+  padding-left: 1.4em;
+  line-height: 1.45;
+}
+
+.consent-list li {
+  margin-bottom: 0.2em;
+  break-inside: avoid;
 }
 
 .consent-print-signs {
@@ -24,14 +80,11 @@
   gap: var(--s3);
   margin-top: var(--s5);
   font-size: 0.9rem;
+  break-inside: avoid;
 }
 
 @media print {
-  .consent-print-body {
+  .consent-body {
     font-size: 11pt;
-  }
-
-  .consent-print-signs {
-    page-break-inside: avoid;
   }
 }

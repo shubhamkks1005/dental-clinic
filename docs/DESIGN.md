@@ -52,7 +52,7 @@ Staff login is the Cloudflare Access page; do not design one.
 - Finalised records (visit, prescription, bill) show read-only with a "Finalised" badge and an "Add note" action instead of Edit.
 
 ## Words
-- All UI text and printed documents are in English only. No Hindi, no Hinglish, no translation system.
+- All UI text and printed documents are in English only. No Hindi, no Hinglish, no translation system. Exception: printed patient consent forms are Hindi (owner decision 2026-11-23); see DECISIONS.md.
 - Short, plain labels the receptionist uses daily (Today, New patient, Walk-in, Send in, Waiting). Errors are plain sentences: what happened, what to do.
 - Patient portal says "Call the clinic" for anything the patient wants changed (it is read only).
 

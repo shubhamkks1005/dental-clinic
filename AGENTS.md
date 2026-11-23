@@ -5,7 +5,7 @@ Staff app + read-only patient portal. NO public website in this repo.
 The human owner is a developer who gives you tasks; the doctor (his sister) is not technical.
 
 ## Start of every session (do this first, nothing else)
-1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), and docs/MAP.md (what each file does).
+1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), docs/FIXES.md (the owner's bug and polish list, work it top to bottom), and docs/MAP.md (what each file does).
 2. Do NOT read the whole codebase. Find files with search (grep/ripgrep), then read only the lines you need.
 3. If the task needs a decision that is not in docs/SPEC.md or docs/DECISIONS.md, ASK the owner. Never guess clinical, legal, tax or money rules. (When following RUN_PROMPT.md, prefer writing the choice in DECISIONS.md and continuing unless it is a real blocker.)
 
@@ -48,7 +48,7 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 - Follow docs/DESIGN.md and the mockups linked there for every screen.
 - TypeScript strict. Small files, small functions, plain names. Comments only for the "why".
 - UI text is short and simple.
-- ALL UI text and printed documents (prescription, bill, receipt) are in English only: no Hindi, no Hinglish, no translation system.
+- ALL UI text and printed documents (prescription, bill, receipt) are in English only: no Hindi, no Hinglish, no translation system. ONE exception (owner decision 2026-11-23): the printed patient CONSENT forms are Hindi, with the English form name under the Hindi heading. The app screens around them stay English.
 - EVERY screen (staff app and portal) must be responsive: phone (360 px wide), tablet (768 px) and laptop (1366x768). Design mobile-first, one layout that adapts, no separate mobile site. Touch targets at least 44 px, no horizontal scroll, tables become cards or scroll inside their own box on phones, inputs use the right keyboard (tel, numeric). A UI task is done only when checked at 360, 768 and 1366 px widths.
 - Errors shown to staff are plain sentences (what happened, what to do). Never show stack traces.
 

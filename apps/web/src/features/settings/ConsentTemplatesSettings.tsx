@@ -1,5 +1,6 @@
 import {
   CONSENT_TEMPLATE_KEYS,
+  resolveConsentTemplates,
   type ConsentTemplateKey,
   type ConsentTemplates,
 } from "@clinic/shared";
@@ -7,7 +8,7 @@ import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { getSetting, putSetting } from "./api";
 
-/** 3.8.1: edit DRAFT consent templates (English). Sister/lawyer confirm later. */
+/** 3.8.1: edit consent templates. The doctor's forms are Hindi; lawyer confirms later. */
 export function ConsentTemplatesSettings() {
   const [templates, setTemplates] = useState<ConsentTemplates | null>(null);
   const [version, setVersion] = useState(1);
@@ -17,9 +18,9 @@ export function ConsentTemplatesSettings() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    getSetting<ConsentTemplates>("consent.templates")
+    getSetting<unknown>("consent.templates")
       .then((row) => {
-        setTemplates(row.value);
+        setTemplates(resolveConsentTemplates(row.value));
         setVersion(row.version);
       })
       .catch((e: unknown) => {
@@ -62,8 +63,10 @@ export function ConsentTemplatesSettings() {
     <section className="consent-templates">
       <h2>Consent templates</h2>
       <p className="muted">
-        English only. Text marked &quot;DRAFT - lawyer to confirm&quot; until sister and lawyer
-        approve.
+        Consent forms are printed in Hindi, everything else in English. Lines: &quot;#
+        Heading&quot;, &quot;## Sub heading&quot;, &quot;- bullet&quot;, &quot;1. numbered&quot;,
+        &quot;[ ]&quot; for a tick box. Name, age, mobile, date, doctor and signature lines are
+        added when printing.
       </p>
       <label>
         Template
@@ -90,9 +93,19 @@ export function ConsentTemplatesSettings() {
         />
       </label>
       <label>
+        Heading on the printed form
+        <input
+          value={current.printTitle ?? ""}
+          disabled={busy}
+          onChange={(e) =>
+            setTemplates({ ...templates, [key]: { ...current, printTitle: e.target.value } })
+          }
+        />
+      </label>
+      <label>
         Body
         <textarea
-          rows={10}
+          rows={16}
           value={current.body}
           disabled={busy}
           onChange={(e) =>

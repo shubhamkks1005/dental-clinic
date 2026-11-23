@@ -208,3 +208,12 @@
 - Only `message_attempts` 90d, `message_outbox` 1y, `error_log` 30d. `error_log` 30 days comes from PLAN 9.2.5 and was added to the RETENTION.md table.
 - Old behaviour (soft delete of message_attempts every hour with raw SQL in the cron file) replaced: rules now live in packages/db, hard delete is allowed for operational rows per RETENTION.md.
 - Audit row only when rows were eligible, to avoid unbounded growth of the never-purged audit log.
+
+## Consent forms in Hindi, letterhead (2026-11-23)
+- Owner: printed patient consent forms are Hindi (patients in Jhansi read Hindi); every other screen and document stays English. AGENTS.md, DESIGN.md and RUN_PROMPT.md carry the exception.
+- The doctor's six forms (extraction, filling, root canal, scaling, crown and bridge, orthodontic) are the defaults for their keys. Implant, whitening, anaesthesia and photos/X-rays stay English DRAFT until the doctor sends a form. Wording is the doctor's own; the lawyer still has to confirm (STATE.md). The printed page carries no DRAFT banner; the print screen toolbar says "lawyer still to confirm".
+- No migration: four new template keys are optional in the `consent.templates` setting, and `resolveConsentTemplates` fills them. A template still at version 1 with the seeded English DRAFT text is replaced by the new default; anything the doctor saved is kept.
+- Template text is plain text with a tiny markup (`# `, `## `, `- `, `1. `, `[ ]`), parsed by packages/shared consent-body.ts, so the doctor can edit it in Settings.
+- Same layout for every consent form: patient strip (name, age from DOB, mobile, patient no., date, doctor, tooth line), the doctor's text, one signature block (patient or thumb, guardian if applicable, doctor, witness). Witness and guardian lines were added to the forms that lacked them, so all forms match. Clinic name field dropped: the letterhead already shows it.
+- Hindi font: no web font ships Devanagari. CSS uses the fonts on the clinic PC (Noto Sans Devanagari, Nirmala UI, Mangal, Kohinoor). Owner to check one print on the clinic printer; if the Hindi looks wrong, ship Noto Sans Devanagari (OFL) in apps/web/public/fonts like Inter.
+- Header on the first page only (the doctor's PDFs do the same); long forms continue on the next A4 page without a header.

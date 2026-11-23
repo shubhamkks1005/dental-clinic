@@ -19,7 +19,7 @@ This file is complete on its own. Also follow AGENTS.md stack/data/privacy rules
 - Tax stays a setting with default "no tax"; do not invent tax rules; CA answers live in docs/CA_QUESTIONS.md.
 - Permissions: use docs/AUTH_PLAN.md section 4f as the default, all role rules in packages/db/src/permissions.ts. Receptionist can create bills and take payments but cannot give discounts or refunds and cannot see clinical notes or diagnosis. Doctor does discounts, refunds and voids with a mandatory reason. Enforce in the API with tests, not only the UI.
 - Clinical data safety: finalised visits, prescriptions and certificates are read-only, corrections are new versions or addenda with who and when; nothing is hard-deleted; views and changes of clinical data are audited.
-- Printing: English only, A4 or A5 as the task says, clean black and white for a cheap clinic printer, no browser header or footer text, existing letterhead pattern. A reprint is marked "Duplicate copy" with the reprint date.
+- Printing: English only (consent forms are the one Hindi exception, DECISIONS.md), A4 or A5 as the task says, clean black and white for a cheap clinic printer, no browser header or footer text, existing letterhead pattern. A reprint is marked "Duplicate copy" with the reprint date.
 - Patient History: keep every module's records in the history feed with the same receptionist filtering and tests.
 - Anything that needs lawyer, CA or doctor wording uses clear placeholder text marked "DRAFT - ... to confirm" and a line in STATE.md. Do not block on it.
 - Never write keys or secrets into any file. File storage uses the existing StorageAdapter.

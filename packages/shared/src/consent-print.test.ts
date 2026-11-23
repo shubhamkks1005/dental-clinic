@@ -3,10 +3,8 @@ import { DRAFT_CONSENT_TEMPLATES } from "./consent-templates";
 import { consentPrintDocumentId, parseConsentTemplateKey } from "./consent-print";
 
 describe("consent print (4.4.2)", () => {
-  it("extraction template is DRAFT for lawyer and one-page oriented", () => {
-    const body = DRAFT_CONSENT_TEMPLATES.extraction.body;
-    expect(body).toContain("DRAFT - lawyer to confirm");
-    expect(body.length).toBeLessThan(800);
+  it("English drafts still say DRAFT for the lawyer", () => {
+    expect(DRAFT_CONSENT_TEMPLATES.implant.body).toContain("DRAFT - lawyer to confirm");
   });
 
   it("builds stable print document ids", () => {

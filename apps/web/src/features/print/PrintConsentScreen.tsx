@@ -1,9 +1,13 @@
 import {
+  CONSENT_TEMPLATE_META,
   consentPrintDocumentId,
   DRAFT_CONSENT_TEMPLATES,
   displayAge,
+  displayMobile,
+  formatDisplayDate,
   istDate,
   parseConsentTemplateKey,
+  resolveConsentTemplates,
   type ConsentTemplateKey,
   type ConsentTemplates,
 } from "@clinic/shared";
@@ -14,6 +18,7 @@ import { problemText } from "../../api/problem-text";
 import { PrintLayout, printTitle } from "../../ui/print";
 import { getPatient } from "../patients";
 import { clinicHeaderFromSettings } from "./clinic-header";
+import { ConsentSheet } from "./ConsentSheet";
 import "./consent-print.css";
 import "./print-screen.css";
 
@@ -26,7 +31,7 @@ export function PrintConsentScreen() {
   const [patientName, setPatientName] = useState("");
   const [patientCode, setPatientCode] = useState("");
   const [patientAge, setPatientAge] = useState("");
-  const [patientArea, setPatientArea] = useState("");
+  const [patientMobile, setPatientMobile] = useState("");
   const [templates, setTemplates] = useState<ConsentTemplates>(DRAFT_CONSENT_TEMPLATES);
   const [clinic, setClinic] = useState(clinicHeaderFromSettings([]));
   const [duplicate, setDuplicate] = useState(false);
@@ -46,7 +51,7 @@ export function PrintConsentScreen() {
         if (cancelled) return;
         setPatientName(patient.fullName);
         setPatientCode(patient.code);
-        setPatientArea(patient.area ?? "");
+        setPatientMobile(patient.mobile ? displayMobile(patient.mobile) : "");
         setPatientAge(
           displayAge(
             {
@@ -59,9 +64,7 @@ export function PrintConsentScreen() {
         );
         setClinic(clinicHeaderFromSettings(settings.settings));
         const row = settings.settings.find((s) => s.key === "consent.templates");
-        if (row?.value && typeof row.value === "object") {
-          setTemplates(row.value as ConsentTemplates);
-        }
+        setTemplates(resolveConsentTemplates(row?.value));
         const docId = consentPrintDocumentId(patientId, templateKey);
         const preview = await api<{ isReprint: boolean }>(
           `/api/staff/print-log/preview?kind=consent&id=${encodeURIComponent(docId)}`,
@@ -117,13 +120,17 @@ export function PrintConsentScreen() {
   if (!ready) return <main className="print-screen muted">Loading…</main>;
 
   const tpl = templates[templateKey];
+  const meta = CONSENT_TEMPLATE_META[templateKey];
 
   return (
     <main className="print-screen">
       <div className="card print-toolbar">
         <div>
           <h1>Consent form</h1>
-          <p className="muted">{tpl.title}</p>
+          <p className="muted">
+            {tpl.title}, version {tpl.version}. Text is the doctor&apos;s own; lawyer still to
+            confirm.
+          </p>
         </div>
         <label className="print-option">
           Template
@@ -156,27 +163,19 @@ export function PrintConsentScreen() {
           duplicate={duplicate}
           duplicateDate={dupDate}
         >
-          <h2 className="consent-print-title">{tpl.title}</h2>
-          <p className="consent-print-meta">
-            Patient: <strong>{patientName}</strong> ({patientCode})
-            {patientAge ? ` · ${patientAge}` : ""}
-            {patientArea ? ` · ${patientArea}` : ""}
-          </p>
-          <p className="consent-print-meta">
-            Doctor: {clinic.doctorName}
-            {clinic.registrationNo ? ` · Reg. no. ${clinic.registrationNo}` : ""}
-          </p>
-          <p className="consent-print-meta">Date: __________ · Template v{tpl.version}</p>
-          <p className="consent-print-body">{tpl.body}</p>
-          <p className="consent-print-procedure">
-            Procedure / tooth (fill in): ________________________________
-          </p>
-          <div className="consent-print-signs">
-            <p>Patient / guardian signature: ________________________ Date: __________</p>
-            <p>Name (print): ________________________ Relation: __________</p>
-            <p>Witness signature: ________________________ Name: __________</p>
-            <p>Doctor signature: ________________________</p>
-          </div>
+          <ConsentSheet
+            tpl={tpl}
+            lang={meta.lang}
+            toothLine={meta.toothLine}
+            data={{
+              patientName,
+              patientCode,
+              age: patientAge,
+              mobile: patientMobile,
+              dateText: formatDisplayDate(istDate(new Date())),
+              doctorName: clinic.doctorName,
+            }}
+          />
         </PrintLayout>
       </div>
     </main>

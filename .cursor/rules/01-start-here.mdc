@@ -1,0 +1,5 @@
+---
+description: Start here, every task (Cursor and Claude Code share the same rules)
+alwaysApply: true
+---
+Before any task read AGENTS.md (the rules), then docs/RUN_PROMPT.md, docs/STATE.md, docs/FIXES.md (owner's bug and polish list, top to bottom) and docs/MAP.md (what each file does). Find code with search, do not read whole folders. One task at a time, smallest change, tests first, `pnpm check` before every commit, commit locally, never push. When you add, move or split a file, update docs/MAP.md in the same task. Claude Code reads CLAUDE.md, which imports AGENTS.md; Cursor reads these rules. Keep both pointing at AGENTS.md so the rules live in one place.

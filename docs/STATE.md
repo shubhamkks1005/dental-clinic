@@ -16,6 +16,11 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0055**. Commands to run by han
 | a3c5790 | 9.3.10 DONE locally for operational data: message_attempts 90d, message_outbox 1y, error_log 30d; daily 02:00 IST; **dry run unless Worker var RETENTION_MODE=live**; audit row per run. **Waiting:** doctor/CA on access log, sessions, legal hold, patient/clinical/billing purge. |
 | 68adac0 + next | docs/STAGING_READINESS.md, e2e smoke for error log + requests. **Not run:** Playwright browsers are not installed on this Mac (all e2e tests fail at browser launch, including old smoke/print tests). Run `pnpm exec playwright install chromium` once, then `pnpm test:e2e`. |
 
+## Consent forms in Hindi (2026-11-23, local commit, nothing applied anywhere)
+- Doctor's six consent forms are the defaults (Hindi), same layout for all, edited in Settings > Consent templates. No migration. Print: /app/print/consent/:patientId?template=KEY. Details in DECISIONS.md.
+- **Waiting:** doctor proofreads the Hindi (typed from PDF images, the PDFs' text layer is broken); lawyer confirms wording; owner checks a print and the Hindi font on the clinic printer; forms for implant, whitening, anaesthesia, photos still English DRAFT.
+- Fix list from the owner: docs/FIXES.md (letterhead and the doctor flow are next).
+
 ## Known gaps from this run
 - Seed CLI end to end (vite load + remote D1) is unverified against a database: the local D1 is not fully migrated (run `pnpm --filter @clinic/worker db:migrate`, then `db:seed:staging -- --local`). The seed logic itself is covered by a test on a fresh migrated DB.
 - 9.2.1 live GraphQL request count is still a stub (needs owner token).
