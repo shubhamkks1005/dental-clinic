@@ -1,5 +1,7 @@
 # WORKFLOWS: end-to-end tasks
 
+> **Read first:** the first version of this file was written from single screens plus code reading, not from complete runs. Real runs are now in [flows/](flows/README.md) (G01 new patient to payment, G02 second visit, B02 cancel/reschedule, H01 messages, A02 registration edge cases, D02 refund/cancel). Where they disagree with this file, the flow files win. W2, W3, W5 below are partly guesses; W1 is superseded by G01.
+
 Labels: [seen] = walked in the browser; [code] = read only. IDs refer to AUDIT.md. Two users: the **doctor** (not technical) and the **receptionist** (daily user). Steps are what the user does.
 
 ## W1 Doctor: see the patient, record, prescribe, finalise, hand over for billing

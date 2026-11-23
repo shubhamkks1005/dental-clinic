@@ -1,0 +1,63 @@
+{
+ "title": "The patient says the bill is wrong: take payment, refund, cancel the bill",
+ "aim": "Follow a correction the way a clinic really has one: the patient paid ₹500 on a bill and then the bill turns out to be wrong. Who can cancel it, what the screens say, whether a refund fixes the balance, and whether the old bill stays visible. Money rules from the project: payments are never edited; a paid bill must be refunded first; only the doctor refunds or cancels.",
+ "who": "Receptionist (payment, looks for a way to fix the bill), then Doctor (cancel attempts, refund, cancel again), laptop",
+ "pre": "Fresh local database. Neha Testcase (P-000014) has one issued bill SB-2627-000014 of ₹2,500, nothing paid.",
+ "verdict": "CONFUSING, and the numbers look WRONG after a refund",
+ "summary": "The receptionist, who is the one at the desk, has no way to cancel or fix the bill: the bill page shows only 'Patient account' and 'Print bill'. The doctor can cancel, with a mandatory reason, but a part-paid bill must be refunded first and the screen says so only after pressing Confirm. After a ₹500 refund the History tab lists the refund, but Outstanding stays ₹2,000, the printed statement still lists the ₹500 payment and no refund, and cancelling still answers 'Refund or move the payments on this bill before cancelling it'. So the bill could not be cancelled in this run.",
+ "problems": [
+  {
+   "id": "D2-1",
+   "sev": "High",
+   "step": "7",
+   "text": "The receptionist's view of an issued bill has no Cancel and no way to ask the doctor to cancel it. Only 'Patient account' and 'Print bill'.",
+   "why": "The tester script (docs/TESTING.md task 10) expects the receptionist to 'fix a wrong bill'. She cannot, and no message tells her to call the doctor.",
+   "fix": "Show a quiet 'Ask the doctor to cancel' with a reason, or a line 'Only the doctor can cancel a bill'."
+  },
+  {
+   "id": "D2-2",
+   "sev": "High",
+   "step": "27, 35-36",
+   "text": "After a ₹500 refund (SF-2627-000002) the History feed shows both the payment and the refund, but Outstanding stays ₹2,000 (should be back to ₹2,500 if the refund returns the money), the bill row still says 'Due ₹2,000', and the printed account statement lists the ₹500 payment but no refund.",
+   "why": "The balance the receptionist quotes to the patient and the paper statement disagree with the history. The bill then cannot be cancelled. Either the balance rule or the screen is wrong; for money this must be checked first.",
+   "fix": "Decide the rule (refund re-opens the due amount), show refunds on the statement, and test: pay 500, refund 500, outstanding returns to 2,500.",
+   "evidence": "seen: statement text 'Outstanding: ₹2,000 ... Payments SR-2627-000019 ₹500' and History 'Refund SF-2627-000002: ₹500 (cash)'. Not verified against the money rules in code."
+  },
+  {
+   "id": "D2-3",
+   "sev": "Medium",
+   "step": "18-19",
+   "text": "Cancel bill: pressing 'Confirm cancel' on a part-paid bill answers with a plain sentence at the top of the page ('Refund or move the payments on this bill before cancelling it.'). The explanation 'Paid bills must be refunded first' is shown in the panel only after the doctor has opened it.",
+   "why": "It is good that the system refuses; but the rule is learnt by failing, and the refund lives on a different screen (patient Billing tab).",
+   "fix": "If the bill has payments, show a 'Refund first' button in the panel that opens the refund form with this bill's payment preselected."
+  },
+  {
+   "id": "D2-4",
+   "sev": "Medium",
+   "step": "12",
+   "text": "The doctor's Billing tab stacks: Take payment form, a Refund (doctor) panel and bill list. The refund needs 4 inputs (payment select, amount, mode, reason), shown as bare controls like the payment form.",
+   "why": "Easy to refund the wrong payment; looks unfinished (see AUDIT H2).",
+   "fix": "Refund as a dialog opened from a payment row, with amount defaulted to the payment and a required reason."
+  },
+  {
+   "id": "D2-5",
+   "sev": "Medium",
+   "step": "15, 17",
+   "text": "'Confirm cancel' has the same look and weight as 'Back'; the reason box is a bare input.",
+   "why": "Final irreversible-looking action without emphasis or warning.",
+   "fix": "Use a destructive style for the final button and a labelled textarea."
+  }
+ ],
+ "good": [
+  "Cancelling needs a reason (empty reason is refused) and only the doctor sees the Cancel bill button.",
+  "The system refuses to cancel a bill that still has payments and says what to do.",
+  "The patient history records payment, refund and bill with who did it (Dev Doctor, Dev Receptionist).",
+  "Refund panel lists only refundable payments with the maximum amount ('up to ₹500 (cash)')."
+ ],
+ "notTested": [
+  "A successful cancel (it could not be reached, see D2-2) and the 'cancelled' filter, and creating the replacement bill.",
+  "Discount request and approval (draft bill, G01 shows the form).",
+  "A bill paid in two modes, partial refund, or a refund bigger than the payment.",
+  "Day close after a refund."
+ ]
+}

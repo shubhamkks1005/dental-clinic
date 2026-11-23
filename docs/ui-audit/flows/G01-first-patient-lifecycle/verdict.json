@@ -1,0 +1,131 @@
+{
+ "title": "A brand-new patient from first phone call to first payment",
+ "aim": "Follow one new patient through the whole clinic the way a real day goes: receptionist registers and books the patient, the clinic day happens (arrive, chair, doctor writes the visit, chart, procedure, diagnosis, prescription, finalise), the bill is made, and the receptionist takes the money. Find every place where the user has to guess where to go, where the screens do not connect, and where something breaks.",
+ "who": "Receptionist (register, book, walk-in, payment), then Doctor (visit, bill), then Receptionist again",
+ "pre": "Fresh local database with 30 fake patients, 3 appointments today. The test clock is 8:45 PM on Mon 23 Nov 2026, after clinic hours, so every slot today has passed. Because of this the 'arrival' part uses an emergency walk-in instead of tomorrow's booking (the server clock cannot be moved). The flow runner repairs bug C1 (double-encoded request bodies) so later steps can be reached.",
+ "verdict": "BROKEN at two points, CONFUSING in several",
+ "summary": "The chain can be finished only because the test harness repairs bug C1 (otherwise the doctor cannot even open the visit). Inside the visit the prescription cannot be issued (new bug C3), yet Finalise still goes through with no warning. The receptionist can register, book and take money in few clicks, but nothing tells her the visit is ready to bill, no receipt is offered after taking money, and 'Full balance' records money in one click with no confirm.",
+ "problems": [
+  {
+   "id": "C1",
+   "sev": "Critical",
+   "step": "28-44",
+   "text": "Opening the visit, autosaving notes, adding procedure, adding diagnosis, adding medicine and finalising go through API files that double-encode the body (9 calls in this flow).",
+   "why": "A real doctor gets 'Invalid input: expected object, received string' at the first click (see AUDIT.md C1).",
+   "fix": "Pass plain objects to api() in the six feature api.ts files."
+  },
+  {
+   "id": "C3 (new)",
+   "sev": "Critical",
+   "step": "40-41",
+   "text": "Clicking Issue on the prescription always fails: 'Someone else changed this record while you were editing. Reload...' although nobody else was there. Cause: onIssue saves advice first (version goes up), then issues with the old version still held in memory. Reloading does not help; the same two calls repeat.",
+   "why": "The doctor can never issue a prescription. The message blames another person, so the doctor will reload and retry in vain.",
+   "fix": "Use the version returned by the save (or skip the save when nothing changed) before calling issue. Add a browser test: add a medicine, press Issue.",
+   "evidence": "seen+code: VisitMedicinesPanel.tsx onIssue() lines 207-212, network log in step 40"
+  },
+  {
+   "id": "P1",
+   "sev": "High",
+   "step": "42-43",
+   "text": "Finalise is allowed with an unissued prescription and the dialog does not mention it.",
+   "why": "The visit locks with a draft prescription, so the patient may leave without a printable prescription.",
+   "fix": "Add 'Prescription not issued' to the Finalise warnings."
+  },
+  {
+   "id": "P2",
+   "sev": "High",
+   "step": "47",
+   "text": "After the doctor finalises, the receptionist's Today still shows Riya as 'In chair' with a 'Completed' button. The only cue that money is due is a small grey 'Due ₹1,500' next to the name. There is no 'Bill' or 'Take payment' action on the row.",
+   "why": "The receptionist has to remember to search the patient and open the Billing tab. This is the busiest hand-off in the clinic.",
+   "fix": "When a visit is finalised show 'Ready to bill' on the row with a Take payment button (mockup S01 has Bill/Finish buttons)."
+  },
+  {
+   "id": "P3",
+   "sev": "High",
+   "step": "53-54",
+   "text": "After 'Record payment' the balance changes, but there is no toast, no receipt number and no Print receipt button. The Billing tab lists the bill (still 'issued') but no payments. The receipt numbers (SR-2627-000019/20) only appear on the printed statement and in History.",
+   "why": "A patient who pays at the desk gets no paper receipt unless the receptionist knows to open History or the statement.",
+   "fix": "After payment show a toast 'Payment ₹500 recorded. Receipt SR-... [Print]' and list payments under the bill."
+  },
+  {
+   "id": "P4",
+   "sev": "High",
+   "step": "58-59",
+   "text": "'Full balance' (and 'Half') record the payment immediately when clicked: no amount check, no confirm, mode defaults to cash. The form then disappears.",
+   "why": "A mis-click records ₹1,000 of cash that was not received. Payments cannot be edited, only reversed (RUN_PROMPT).",
+   "fix": "Make Full balance and Half fill the Amount field only; the user presses Record payment."
+  },
+  {
+   "id": "P5",
+   "sev": "Medium",
+   "step": "44-45",
+   "text": "Draft bill screen is unstyled: bullets, bare inputs, the mixed labels, 'Cancel bill' next to 'Issue bill', and the internal text 'gst_mode off — DRAFT accountant'. A bill is created as a draft and must be issued with a separate click.",
+   "why": "Looks unfinished on the most important money screen. Extra step with no explanation of why a draft exists.",
+   "fix": "Rebuild to mockup S09; create the bill as issued when the doctor finalises, or explain Draft."
+  },
+  {
+   "id": "P6",
+   "sev": "Medium",
+   "step": "33",
+   "text": "On the Chart tab 'Scaling' is pre-selected in the Procedure list, so pressing Add procedure after clicking a tooth silently adds a ₹1,500 billable item.",
+   "why": "Accidental billable items. The flow author did it without choosing.",
+   "fix": "Start on 'Choose procedure' and keep Add disabled until chosen."
+  },
+  {
+   "id": "P7",
+   "sev": "Medium",
+   "step": "16",
+   "text": "After booking with 'SMS reminders allowed' ticked, Messages stays empty (all four lists show 'None'). No confirm message was created or queued.",
+   "why": "The user cannot tell whether the patient will get a confirmation. Possibly created later by the cron job (not checked in this flow, see H-flows).",
+   "fix": "Show 'Confirmation will be created at <time>' on the booking toast or create it at booking."
+  },
+  {
+   "id": "P8",
+   "sev": "Medium",
+   "step": "25",
+   "text": "Today says '29 open slots' while the walk-in dialog says 'No free slot left today for a walk-in'. The count includes slots that have already passed.",
+   "why": "Two numbers on the same page disagree.",
+   "fix": "Count only slots from now until closing time."
+  },
+  {
+   "id": "P9",
+   "sev": "Medium",
+   "step": "61",
+   "text": "The patient's 'Next appointment' strip shows today's 8:45 PM walk-in (already in the chair) instead of tomorrow's booked 11:15 AM consultation. Raw dates (2026-11-24) and 'scheduled' in a green chip in the feed.",
+   "why": "Misleading summary; the receptionist cannot confirm the booking at a glance.",
+   "fix": "Next appointment = the next one that has not started."
+  },
+  {
+   "id": "P10",
+   "sev": "Low",
+   "step": "9",
+   "text": "The 'Patient saved' screen shows two equal blue primary buttons (Book appointment, Walk-in now) and has no link to open the new patient's profile; 'Back to patients' goes to the list.",
+   "why": "One main button per screen is the design rule; the user must search to open the profile they just created.",
+   "fix": "Add 'Open patient' as the third option."
+  },
+  {
+   "id": "P11",
+   "sev": "Medium",
+   "step": "-",
+   "text": "Whole chain costs 30 clicks, 14 typed fields and 8 different screens, including searching for the same patient twice and switching tabs 5 times in the visit.",
+   "why": "Slow for a 100-200 patients a month clinic.",
+   "fix": "See AUDIT.md H6 (one-screen visit) and P2/P3 above."
+  }
+ ],
+ "good": [
+  "Registering a patient needs only name, gender, age and mobile (6 typed fields, 2 ticks); errors in the form are plain sentences.",
+  "After saving, the screen offers the next step (Book appointment / Walk-in now) and the booking dialog already has the patient filled in.",
+  "Booking: pick type, date, a time chip; a toast says 'Booked for 24/11/2026, 11:15 AM' and the calendar opens on that date.",
+  "Walk-in after hours is refused with a clear sentence, and the Emergency tick lets it through.",
+  "Top-bar search: type 'Riya', press Enter, the profile opens. Result rows show age, last 4 digits of the mobile, and patient number.",
+  "The patient History feed lists the payments and the booking, so the record is traceable.",
+  "Tooth chart, procedure add, diagnosis add and medicine search-and-Enter are fast once the visit is open."
+ ],
+ "notTested": [
+  "Real arrival of tomorrow's booking (clock cannot be moved).",
+  "Second visit and follow-up (flow G02).",
+  "Consent form, estimate, treatment plan, certificate.",
+  "Printing the prescription (it could not be issued) and a real receipt print.",
+  "Whether Messages get a confirm message later via the cron job (flow H1)."
+ ]
+}

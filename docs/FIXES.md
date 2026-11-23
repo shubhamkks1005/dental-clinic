@@ -24,6 +24,8 @@ Backend stays as is; change it only where a point below says so.
 ## From the UI audit (2026-11-23, details and evidence in docs/ui-audit/AUDIT.md; pointers only)
 - **C1 (bug, do first):** six feature `api.ts` files (visits, prescriptions, chart, plan, history, certificates) JSON.stringify the body and `api()` stringifies again, so Open visit and other writes return 400 "Invalid input: expected object, received string".
 - **C2:** visit to bill dead end: procedures only on the Chart tab, Finalise does not warn, Create bill then fails.
+- **C3:** Issue prescription always 409 (VisitMedicinesPanel.tsx onIssue uses the old version after saving).
+- **C4:** Booking without a note fails with "expected string, received null" (QuickBookDialog.tsx:100 sends null).
 - **H1:** top-bar Walk-in button has no click handler (TopBar.tsx).
 - **T1:** playwright.config.ts uses 127.0.0.1 but APP_ORIGIN is localhost:8787, so e2e writes get 403.
 - Rest (page margins, unstyled Billing/Bill/Messages/Reports, phone "+" overlap, status words, dates): AUDIT.md H2-H10, M1-M14. Not scheduled until the owner picks them.

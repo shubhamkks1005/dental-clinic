@@ -1,0 +1,28 @@
+{
+ "title": "Registering patients: child, no mobile, wrong mobile, duplicate, very long name, future date of birth",
+ "aim": "Try the awkward registrations that happen every week: a child who needs a guardian, an adult with no mobile, a typo in the mobile, someone who is already in the system, a very long name, a nonsense date of birth. See whether the form protects the clinic and whether the messages tell the receptionist what to do.",
+ "who": "Receptionist, laptop. Each case starts from a fresh New patient screen.",
+ "pre": "Fresh local database with 30 fake patients (all surname Testcase; two patients share the mobile 90000 00128).",
+ "verdict": "WORKS, with several confusing messages",
+ "summary": "The form blocks the clear mistakes (child without guardian, no mobile without a reason, 9-digit mobile) and shows a yellow 'Possible match' box for likely duplicates. But the messages are placed far from the field they talk about, the guardian field is hidden when it is required, the duplicate box does not stop or even ask for a second confirmation, and a future date of birth is reported as 'under 18'.",
+ "problems": [
+  {"id":"A2-1","sev":"High","step":"6","text":"Child (age 8) without a guardian: the red message 'Add the guardian's name. Patients under 18 need a guardian on the record.' appears at the very bottom of the form. The guardian fields are inside the collapsed 'More details' section, so the user sees no field to fill.","why":"The receptionist reads the message, scrolls up, and does not know where the guardian is. The form should open the section that needs input.","fix":"When age is under 18, open the guardian fields automatically (or show them inline) and focus the first one."},
+  {"id":"A2-2","sev":"Medium","step":"27-29","text":"A yellow box 'Possible match — check before saving' lists existing patients, but pressing Save still saves a new patient (P-000031) at once with no 'I checked, this is a different person' step.","why":"A busy receptionist presses Save and creates a duplicate record; duplicates then split history, bills and messages. (The box listed Manoj Testcase first for a typed name Disha Testcase, probably because every fake patient has the same surname; the exact match with the same mobile was not visible in the first screen.)","fix":"Put the exact-mobile match first and make Save ask 'Same person? Open existing / Save as new patient'."},
+  {"id":"A2-3","sev":"Medium","step":"20","text":"Nine-digit mobile: 'Enter a valid mobile number, or leave it blank.' But a blank mobile is not allowed either; the field's own rule says 'Enter a mobile number, or tick No mobile'.","why":"Two different messages for the same field. 'Leave it blank' leads to the next error.","fix":"One sentence: 'Enter 10 digits, or tick No mobile.'"},
+  {"id":"A2-4","sev":"Medium","step":"39-44","text":"A date of birth in the future (01/01/2030) is not reported as a date problem. The form answers 'Add the guardian's name. Patients under 18 need a guardian on the record.'","why":"Misleading: the real mistake is the year.","fix":"Reject a date after today with 'The date of birth is in the future.'"},
+  {"id":"A2-5","sev":"Low","step":"13","text":"Adult with no mobile: 'Say why there is no mobile.' appears. A reason field is then required.","why":"Good rule, but not seen whether the reason field opens by itself.","fix":"Show the reason field as soon as 'No mobile' is ticked."},
+  {"id":"A2-6","sev":"Low","step":"36-38","text":"A 70-letter name with an apostrophe and hyphens saved correctly. The long name's look in the Patients list was captured (screenshot) but not judged for wrapping on phone.","why":"-","fix":"Check the list at 360 px with long names (flow J1)."}
+ ],
+ "good": [
+  "Form messages are plain sentences and name the rule (guardian, mobile, reason).",
+  "The Patient saved screen appears with Book appointment / Walk-in now for the next step.",
+  "Names with hyphens and apostrophes are accepted.",
+  "The duplicate box links to the existing patient so the receptionist can open it."
+ ],
+ "notTested": [
+  "Hindi name (the run stopped at the DOB error before saving).",
+  "Typing a date of birth by keyboard in other formats; the age-from-date behaviour (FIXES #5 says done, not re-checked).",
+  "A guardian entered through More details, and the guardian as contact owner for messages (flow G08).",
+  "Phone widths."
+ ]
+}

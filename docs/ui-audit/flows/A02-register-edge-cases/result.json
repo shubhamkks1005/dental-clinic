@@ -1,0 +1,591 @@
+{
+ "spec": {
+  "id": "A02-register-edge-cases",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 7,
+  "typedFields": 22,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/patients"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [
+   "400 /api/staff/patients",
+   "400 /api/staff/patients/duplicate-check",
+   "400 /api/staff/patients",
+   "400 /api/staff/patients"
+  ],
+  "stepCount": 44
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "CASE 1: a child (age 8) with no guardian entered",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-case-1-a-child-age-8-with-no-guardian-en.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age 8",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Save without a guardian",
+   "url": "/app/patients/new",
+   "errors": [
+    "400 /api/staff/patients"
+   ],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [
+     "Add the guardian's name. Patients under 18 need a guardian on the record."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-save-without-a-guardian.jpg"
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "Result for child without guardian: Add the guardian's name. Patients under 18 need a guardian on the record.",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 8,
+   "action": "open /app/patients/new",
+   "why": "CASE 2: adult with no mobile (tick 'No mobile')",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-case-2-adult-with-no-mobile-tick-no-mobi.jpg"
+  },
+  {
+   "n": 9,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 10,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Age 45",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Tick No mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "Save",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [
+     "Say why there is no mobile."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "13-save.jpg"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "Result no mobile: Say why there is no mobile.",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 15,
+   "action": "open /app/patients/new",
+   "why": "CASE 3: mobile with only 9 digits",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-case-3-mobile-with-only-9-digits.jpg"
+  },
+  {
+   "n": 16,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 17,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 18,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 19,
+   "action": "type",
+   "why": "9-digit mobile",
+   "url": "/app/patients/new",
+   "errors": [
+    "400 /api/staff/patients/duplicate-check"
+   ],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 20,
+   "action": "click",
+   "why": "Save",
+   "url": "/app/patients/new",
+   "errors": [
+    "400 /api/staff/patients"
+   ],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [
+     "Enter a valid mobile number, or leave it blank."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-save.jpg"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "Result 9 digits: Enter a valid mobile number, or leave it blank.",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 22,
+   "action": "open /app/patients/new",
+   "why": "CASE 4: same name and mobile as an existing patient (Disha Testcase, 90000 00128)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-case-4-same-name-and-mobile-as-an-existi.jpg"
+  },
+  {
+   "n": 23,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 24,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 25,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 26,
+   "action": "type",
+   "why": "Same mobile as an existing patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [
+     "Possible match — check before saving:\n\nManoj Testcase (P-000013) · 90000 00112 — Same name and similar age\nDisha Testcase (P-000029) · 90000 00128 — Same mobile and a matching name\nDisha Testcase (P-000030) · 90000 00128 — Same mobile and a matching name"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 27,
+   "action": "look",
+   "why": "Is there a duplicate warning before saving?",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [
+     "Possible match — check before saving:\n\nManoj Testcase (P-000013) · 90000 00112 — Same name and similar age\nDisha Testcase (P-000029) · 90000 00128 — Same mobile and a matching name\nDisha Testcase (P-000030) · 90000 00128 — Same mobile and a matching name"
+    ],
+    "dialog": []
+   },
+   "shot": "27-is-there-a-duplicate-warning-before-savi.jpg"
+  },
+  {
+   "n": 28,
+   "action": "click",
+   "why": "Save",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-save.jpg"
+  },
+  {
+   "n": 29,
+   "action": "look",
+   "why": "What happened on Save with a duplicate?",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "29-what-happened-on-save-with-a-duplicate.jpg"
+  },
+  {
+   "n": 30,
+   "action": "note",
+   "why": "Result duplicate: Patient saved | Disha Testcase · P-000031 | Book appointment | Walk-in now | Back to patients · Add another",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 31,
+   "action": "open /app/patients/new",
+   "why": "CASE 5: very long name with special characters",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "31-case-5-very-long-name-with-special-chara.jpg"
+  },
+  {
+   "n": 32,
+   "action": "type",
+   "why": "Long name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 34,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 35,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 36,
+   "action": "click",
+   "why": "Save",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "36-save.jpg"
+  },
+  {
+   "n": 37,
+   "action": "note",
+   "why": "Result long name: Patient saved | Ananya-Lakshmi Venkataraman Subramaniam Krishnamurthy-Iyer D'Souza · P-000032 | Book appointment | Walk-in now | Back to patients · Add another",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 38,
+   "action": "open /app/patients",
+   "why": "See how the long name and the new patients look in the list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "38-see-how-the-long-name-and-the-new-patien.jpg"
+  },
+  {
+   "n": 39,
+   "action": "open /app/patients/new",
+   "why": "CASE 6: Hindi name and a date of birth in the future",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "39-case-6-hindi-name-and-a-date-of-birth-in.jpg"
+  },
+  {
+   "n": 40,
+   "action": "type",
+   "why": "Hindi name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 41,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 42,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 43,
+   "action": "click",
+   "why": "Save",
+   "url": "/app/patients/new",
+   "errors": [
+    "400 /api/staff/patients"
+   ],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [
+     "Add the guardian's name. Patients under 18 need a guardian on the record."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "43-save.jpg"
+  },
+  {
+   "n": 44,
+   "action": "note",
+   "why": "Result future DOB: Add the guardian's name. Patients under 18 need a guardian on the record.",
+   "url": "/app/patients/new"
+  }
+ ]
+}
