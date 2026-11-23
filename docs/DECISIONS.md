@@ -155,3 +155,5 @@
 - 2026-11-23 - **5.3.3 statement:** A4 print of charges+payments+outstanding from live list APIs; Billing tab status filter. - agent (5.3.3)
 - 2026-11-23 - **5.3.12 CA export:** GET /bills/export?month=YYYY-MM; reports.full (doctor); CSV with patient_code only; modes as cash:paise;upi:paise. - agent (5.3.12)
 - 2026-11-23 - **5.3.15 plan money:** billed/paid from issued bill_items.plan_item_id; paid pro-rated by line/bill total. UI flags billed > estimate. - agent (5.3.15)
+- 2026-11-23 - **5.4.1 billing integrity:** weekly GH Action exports staging D1 and runs scripts/billing-integrity/check.mjs (SQL aggregates). Healthchecks via HEALTHCHECKS_BILLING_URL. - agent (5.4.1)
+- 2026-11-23 - **5.4.2 deferred:** billing domain events wait on 2.5.1. - agent

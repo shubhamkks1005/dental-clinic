@@ -35,6 +35,7 @@ The Cloudflare account was created with the owner's personal Gmail via Google lo
 | AGE recipient (public) | encrypt nightly dumps (1.6.3) | GitHub variable `AGE_RECIPIENT` (age1… public only). Private key: paper + password manager only — never GitHub, never the repo | - | - | - | - |
 | B2 application key | upload encrypted dumps (1.6.3) | GitHub secrets `B2_KEY_ID` + `B2_APPLICATION_KEY`; variables `B2_BUCKET` + optional `B2_ENDPOINT` | bucket write only, this backup bucket | - | - | - |
 | Healthchecks backup check | dead-man ping after backup (1.6.3 / 1.6.4) | GitHub secret `HEALTHCHECKS_BACKUP_URL` (the ping URL, not the login) | - | - | - | - |
+| Healthchecks billing integrity | weekly billing SQL re-add fail alarm (5.4.1) | GitHub secret `HEALTHCHECKS_BILLING_URL` (ping URL only) | - | - | - | - |
 | UptimeRobot monitor | hit `/api/staff/health` every 5 min (1.6.4) | UptimeRobot account only (no repo secret) | - | - | - | - |
 
 Add a row before creating any new token (B2, Healthchecks, Brevo, SMS gateway, domain).
