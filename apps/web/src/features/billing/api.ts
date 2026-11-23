@@ -244,6 +244,7 @@ export function recordPayment(input: {
   reference?: string;
   splitMode?: string;
   splitPaise?: number;
+  allowAdvance?: boolean;
 }) {
   return api<{ payment: { id: string; receiptNo: string | null; advancePaise: number } }>(
     "/api/staff/payments",

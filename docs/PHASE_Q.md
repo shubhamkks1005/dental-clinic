@@ -47,7 +47,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q0.3 | Prescription Issue works (C3) | Done (see git log "Q0.3") |
 | Q0.4 | Booking without a note works (C4) | Done (see git log "Q0.4") |
 | Q0.5 | Core-loop browser test | Done (see git log "Q0.5") |
-| Q0.6 | Payment safety | Todo |
+| Q0.6 | Payment safety | Done (see git log "Q0.6") |
 | Q0.7 | Refund rule and balances | BLOCKED (decision D1) |
 | Q0.G | Gate P0 | Todo |
 | Q1.1 | Visit to bill chain, minimal | Todo (needs decision D2 for the addendum part) |

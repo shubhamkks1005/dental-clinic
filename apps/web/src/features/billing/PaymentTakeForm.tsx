@@ -1,7 +1,12 @@
+import { formatRupees } from "@clinic/shared";
 import { useState } from "react";
 import { recordPayment } from "./api";
 
 const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
+
+function rupeeText(paise: number): string {
+  return paise % 100 === 0 ? String(paise / 100) : (paise / 100).toFixed(2);
+}
 
 /** S09 take payment: amount, mode, optional split cash+UPI, reference. */
 export function PaymentTakeForm({
@@ -22,11 +27,23 @@ export function PaymentTakeForm({
   const [splitRupees, setSplitRupees] = useState("");
   const [reference, setReference] = useState("");
   const [saving, setSaving] = useState(false);
+  // Q0.6: an amount above the balance is only recorded after this confirm.
+  const [confirmAdvance, setConfirmAdvance] = useState(false);
 
   const typedPaise = Math.round(Number(amountRupees) * 100);
   const splitPaise = Math.round(Number(splitRupees) * 100);
 
-  async function takePayment(paise: number) {
+  const amountTyped = amountRupees.trim() !== "";
+  const amountInvalid = amountTyped && (!Number.isFinite(typedPaise) || typedPaise <= 0);
+  const overPaise = Number.isFinite(typedPaise) ? typedPaise - duePaise : 0;
+
+  function onRecordClick() {
+    if (typedPaise > duePaise) setConfirmAdvance(true);
+    else void takePayment(typedPaise, false);
+  }
+
+  async function takePayment(paise: number, allowAdvance: boolean) {
+    setConfirmAdvance(false);
     setSaving(true);
     onError("");
     try {
@@ -35,11 +52,15 @@ export function PaymentTakeForm({
         amountPaise: paise,
         mode,
         reference: reference.trim() || undefined,
+        ...(allowAdvance ? { allowAdvance: true } : {}),
         ...(splitOn && splitMode !== mode && splitPaise > 0 ? { splitMode, splitPaise } : {}),
       });
       setAmountRupees("");
       setSplitRupees("");
       setReference("");
+      setMode("cash");
+      setSplitOn(false);
+      setSplitMode("upi");
       onDone();
       window.open(`/app/print/receipt/${encodeURIComponent(pay.id)}`, "_blank", "noopener");
     } catch (e: unknown) {
@@ -63,7 +84,11 @@ export function PaymentTakeForm({
             min={0}
             step="1"
             value={amountRupees}
-            onChange={(e) => setAmountRupees(e.target.value)}
+            onChange={(e) => {
+              setAmountRupees(e.target.value);
+              setConfirmAdvance(false);
+            }}
+            aria-invalid={amountInvalid}
             style={{ minHeight: 44, minWidth: 120 }}
           />
         </label>
@@ -92,6 +117,12 @@ export function PaymentTakeForm({
           />
         </label>
       </div>
+
+      {amountInvalid ? (
+        <p className="notice notice-error" role="alert">
+          Enter an amount above 0.
+        </p>
+      ) : null}
 
       <label className="row gap-sm align-center" style={{ minHeight: 44 }}>
         <input type="checkbox" checked={splitOn} onChange={(e) => setSplitOn(e.target.checked)} />
@@ -140,7 +171,7 @@ export function PaymentTakeForm({
           type="button"
           className="btn"
           disabled={saving || !Number.isFinite(typedPaise) || typedPaise <= 0}
-          onClick={() => void takePayment(typedPaise)}
+          onClick={onRecordClick}
         >
           Record payment
         </button>
@@ -148,7 +179,10 @@ export function PaymentTakeForm({
           type="button"
           className="btn secondary"
           disabled={saving || duePaise <= 0}
-          onClick={() => void takePayment(duePaise)}
+          onClick={() => {
+            setAmountRupees(rupeeText(duePaise));
+            setConfirmAdvance(false);
+          }}
         >
           Full balance
         </button>
@@ -156,11 +190,35 @@ export function PaymentTakeForm({
           type="button"
           className="btn secondary"
           disabled={saving || duePaise <= 0}
-          onClick={() => void takePayment(Math.floor(duePaise / 2))}
+          onClick={() => {
+            setAmountRupees(rupeeText(Math.floor(duePaise / 2)));
+            setConfirmAdvance(false);
+          }}
         >
           Half
         </button>
       </div>
+      {confirmAdvance ? (
+        <div className="notice notice-error stack gap-sm" role="alert">
+          <p>
+            {formatRupees(typedPaise)} is {formatRupees(overPaise)} more than the balance (
+            {formatRupees(duePaise)}). Record the extra as an advance?
+          </p>
+          <div className="row wrap gap-sm">
+            <button type="button" className="btn" onClick={() => setConfirmAdvance(false)}>
+              Change amount
+            </button>
+            <button
+              type="button"
+              className="btn secondary"
+              disabled={saving}
+              onClick={() => void takePayment(typedPaise, true)}
+            >
+              Record as advance
+            </button>
+          </div>
+        </div>
+      ) : null}
       {mode === "cash" && typedPaise >= 2_00_00_000 ? (
         <p className="muted small">
           Warning: cash of ₹2,00,000 or more — check with the accountant (DRAFT).

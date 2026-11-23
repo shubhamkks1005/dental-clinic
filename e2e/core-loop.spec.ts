@@ -98,7 +98,19 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.getByLabel(/Amount/).fill("500");
     await page.getByRole("button", { name: "Record payment" }).click();
     await expect(page.getByText(/500/).first()).toBeVisible();
+    await expect(page.getByText("Due ₹1,000")).toBeVisible();
+    // Q0.6: an amount above the balance asks first; "Change amount" records nothing.
+    await page.getByLabel(/Amount/).fill("20000");
+    await page.getByRole("button", { name: "Record payment" }).click();
+    await expect(page.getByText(/more than the balance/)).toBeVisible();
+    await page.getByRole("button", { name: "Change amount" }).click();
+    await expect(page.getByText(/more than the balance/)).toBeHidden();
+    await page.getByLabel(/Amount/).fill("0");
+    await expect(page.getByText("Enter an amount above 0.")).toBeVisible();
+    // Q0.6: Full balance only fills the Amount field; Record payment takes the money.
     await page.getByRole("button", { name: "Full balance" }).click();
+    await expect(page.getByLabel(/Amount/)).toHaveValue("1000");
+    await page.getByRole("button", { name: "Record payment" }).click();
     await page.goto(`/app/print/statement/${patientId}`);
     const body = page.locator("body");
     await expect(body).toContainText("Outstanding: ₹0");

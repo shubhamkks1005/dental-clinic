@@ -94,6 +94,7 @@ describe("day close (5.3.9)", () => {
         amountPaise: 10_00,
         mode: "cash",
         dayLocal: DAY,
+        allowAdvance: true,
       }),
     ).rejects.toBeInstanceOf(InvalidError);
 
@@ -102,6 +103,7 @@ describe("day close (5.3.9)", () => {
       amountPaise: 10_00,
       mode: "cash",
       dayLocal: DAY,
+      allowAdvance: true,
       lateEntry: true,
     });
     expect(late).toBeTruthy();

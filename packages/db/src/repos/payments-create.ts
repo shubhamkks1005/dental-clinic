@@ -1,5 +1,6 @@
 import {
   allocateToBills,
+  formatRupees,
   financialYearOf,
   istDate,
   newUlid,
@@ -93,6 +94,13 @@ export function paymentsCreateRepo(db: Db, ctx: Ctx) {
       }
 
       const advancePaise = unallocatedPaise(amountPaise, allocations);
+      if (advancePaise > 0 && !input.allowAdvance) {
+        // Fresh balance from the database, so a stale tab sees the real figure (Q0.6).
+        const dueNow = dues.reduce((sum, d) => sum + d.duePaise, 0);
+        throw new InvalidError(
+          `${formatRupees(amountPaise)} is ${formatRupees(advancePaise)} more than the balance (${formatRupees(dueNow)}). Change the amount, or record the extra as an advance.`,
+        );
+      }
       const dayLocal = input.dayLocal ?? istDate(new Date());
       const closed = await isDayClosed(db, dayLocal);
       if (closed && !input.lateEntry) {

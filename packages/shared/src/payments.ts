@@ -23,6 +23,8 @@ const recordPaymentSchema = z.object({
     .optional(),
   /** 5.3.9: allow posting to a closed day as a late entry (notes tagged). */
   lateEntry: z.boolean().optional().default(false),
+  /** Q0.6: an amount above the current due is refused unless the person confirmed an advance. */
+  allowAdvance: z.boolean().optional().default(false),
 });
 
 export type RecordPaymentInput = z.input<typeof recordPaymentSchema>;

@@ -65,8 +65,41 @@ describe("payments allocation (5.2.2)", () => {
       amountPaise: 150_00,
       mode: "upi",
       dayLocal: "2026-11-23",
+      allowAdvance: true,
     });
     expect(pay.advancePaise).toBe(50_00);
+  });
+
+  it("refuses an amount above the due unless allowAdvance, and says the fresh balance (Q0.6)", async () => {
+    await issuedBill(2000_00, "Two thousand");
+    const attempt = repos(receptionist).payments.record({
+      patientId: PATIENT_ID,
+      amountPaise: 20000_00,
+      mode: "cash",
+      dayLocal: "2026-11-23",
+    });
+    await expect(attempt).rejects.toBeInstanceOf(InvalidError);
+    await expect(attempt).rejects.toThrow(/₹2,000/);
+    // Nothing was recorded: the full due can still be paid exactly.
+    const ok = await repos(receptionist).payments.record({
+      patientId: PATIENT_ID,
+      amountPaise: 2000_00,
+      mode: "cash",
+      dayLocal: "2026-11-23",
+    });
+    expect(ok.advancePaise).toBe(0);
+  });
+
+  it("accepts the same overpayment with allowAdvance and keeps the extra as advance (Q0.6)", async () => {
+    await issuedBill(2000_00, "Two thousand");
+    const pay = await repos(receptionist).payments.record({
+      patientId: PATIENT_ID,
+      amountPaise: 20000_00,
+      mode: "cash",
+      dayLocal: "2026-11-23",
+      allowAdvance: true,
+    });
+    expect(pay.advancePaise).toBe(18000_00);
   });
 
   it("records cash + UPI split on one payment (5.3.2)", async () => {

@@ -32,6 +32,7 @@ describe("apply advance to bill (5.3.5)", () => {
       patientId: PATIENT_ID,
       amountPaise: 150_00,
       mode: "upi",
+      allowAdvance: true,
       dayLocal: "2026-11-01",
     });
 
