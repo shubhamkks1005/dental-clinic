@@ -17,7 +17,7 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 - After coding run `pnpm check` (typecheck + lint + tests; Phase 1 creates this script, before that run what exists). Fix failures; do not disable tests or lint.
 - Write a test for every rule in the task. If a test is impossible, write a numbered manual check the owner can follow.
 - Finish with: (a) files changed, (b) how to verify in under 2 minutes, (c) anything unsure. Then update docs/MAP.md and docs/STATE.md.
-- For any UI task, find the matching screen (caption S01 to S19, see the Screen map in docs/DESIGN.md) in docs/design/align-dentistry-screens.pdf before writing code, and follow docs/DESIGN.md. Rebuild it as React components, do not copy anything from the mockup. In your final message, say which screen you followed.
+- For any UI task, find the matching screen (caption S01 to S19, see the Screen map in docs/DESIGN.md) in docs/design/align-dentistry-screens.pdf before writing code, and follow docs/DESIGN.md. Rebuild it as React components, do not copy anything from the mockup. In your final message, say which screen you followed. Also read docs/ui-audit/REVIEW_CHECKLIST.md before coding and tick it in your final message (existing UI problems and design rules: docs/ui-audit/).
 
 ## Stack (fixed; see docs/DECISIONS.md before proposing a change)
 - One Cloudflare Worker with static assets. API: Hono in apps/worker. Staff + portal UI: Vite + React SPA in apps/web.
