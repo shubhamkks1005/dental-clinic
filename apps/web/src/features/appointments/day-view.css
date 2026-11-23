@@ -2,7 +2,6 @@
 .appointments-page {
   display: grid;
   gap: var(--s4);
-  padding: 0 var(--s4) var(--s6);
 }
 
 .appointments-head {
@@ -248,10 +247,6 @@
 }
 
 @media (min-width: 1366px) {
-  .appointments-page {
-    padding-inline: var(--s5);
-  }
-
   .appointments-head h1 {
     font-size: 26px;
   }

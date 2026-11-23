@@ -54,6 +54,11 @@ export const icons = {
       <path d="M5 20V11M12 20V5M19 20v-7" />
     </Icon>
   ),
+  library: (
+    <Icon>
+      <path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3V4zM5 17a3 3 0 013-3h10M9 8h5" />
+    </Icon>
+  ),
   settings: (
     <Icon>
       <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />

@@ -62,7 +62,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q1.10 | Phone breakages | Done (git log "Q1.10"; exception: tooth surface shapes inside a tooth stay small, the whole-tooth button is 44 px) |
 | Q1.11 | Access control in the UI | Done (git log "Q1.11") |
 | Q1.G | Gate A | Passed (2026-11-24, docs/ui-audit/flows/GATE-A.md) |
-| Q2.1 to Q2.13 | Redesign (section 3) | Todo |
+| Q2.1 to Q2.13 | Redesign (section 3) | Q2.1 done |
 | Q3.1 to Q3.6 | Product gaps (section 4) | Todo |
 | Q4.1 | Polish | Todo |
 

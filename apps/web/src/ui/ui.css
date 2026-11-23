@@ -128,3 +128,7 @@ html[data-offline] a[href^="/app"] {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+.badge-struck {
+  text-decoration: line-through;
+}

@@ -19,8 +19,27 @@ const DEVELOPER = ["settings.read", "settings.write"];
 const labels = (items: { label: string }[]) => items.map((i) => i.label);
 
 describe("menu per role (1.3.7)", () => {
-  it("receptionist sees all seven main items (Settings shows only what she may view)", () => {
-    expect(labels(visibleNav(MAIN_NAV, RECEPTIONIST))).toHaveLength(7);
+  it("the sidebar has eight items; the receptionist sees seven (no Library)", () => {
+    expect(MAIN_NAV).toHaveLength(8);
+    expect(labels(visibleNav(MAIN_NAV, RECEPTIONIST))).toEqual([
+      "Today",
+      "Patients",
+      "Appointments",
+      "Billing",
+      "Messages",
+      "Reports",
+      "Settings",
+    ]);
+  });
+
+  it("the doctor sees Library between Reports and Settings", () => {
+    const doctor = [...RECEPTIONIST, "settings.medicines"];
+    expect(labels(visibleNav(MAIN_NAV, doctor)).slice(-3)).toEqual([
+      "Reports",
+      "Library",
+      "Settings",
+    ]);
+    expect(labels(moreItems(doctor))).toEqual(["Messages", "Reports", "Library", "Settings"]);
   });
 
   it("developer (support) sees only Settings, and only More on the phone", () => {

@@ -2,7 +2,6 @@
 .settings {
   display: grid;
   gap: var(--s4);
-  padding: var(--s5) var(--s4) var(--s6);
 }
 
 .settings-head p {
@@ -190,10 +189,6 @@
 }
 
 @media (min-width: 768px) {
-  .settings {
-    padding: var(--s5) var(--s6) var(--s6);
-  }
-
   .settings-panel {
     padding: var(--s5);
   }

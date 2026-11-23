@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BottomTabs } from "./BottomTabs";
+import { PageContainer } from "../page/Page";
 import { MainNav } from "./MainNav";
 import type { NavItem } from "./nav-items";
 import { TopBar } from "./TopBar";
@@ -22,7 +23,9 @@ export function StaffShell({ children, mainNav, phoneTabs, canAddPatient, user, 
     <div className="shell">
       <MainNav items={mainNav} user={user} />
       <TopBar canAddPatient={canAddPatient} user={user} search={search} />
-      <main className="shell-main">{children}</main>
+      <main className="shell-main">
+        <PageContainer>{children}</PageContainer>
+      </main>
       <BottomTabs items={phoneTabs} canAddPatient={canAddPatient} />
     </div>
   );

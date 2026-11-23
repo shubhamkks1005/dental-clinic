@@ -12,6 +12,7 @@ Written: 2026-11-24 (after Gate A). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 **Parts 1, 2 and 3 are done; Gate A passed (2026-11-24, docs/ui-audit/flows/GATE-A.md).** Next is **Part 4: Q2.1 to Q2.6** (frame and 8-item sidebar, one vocabulary, Billing hub and Bill, Visit on one screen, both Today screens, Patients list and profile), read the Q2 table in docs/PHASE_Q.md. Start it only when the owner says so. Before Part 4: the owner applies migration 0056 on staging (command in STATE.md / STAGING_READINESS.md). D1 to D8 are accepted and written in DECISIONS.md (D1 refund rule still to be confirmed by the CA). Known gaps carried into Part 4 are in STATE.md ("Part 2 repair and Part 3").
 
 ## Done in Phase Q
+- Q2.1 Foundation, 2026-11-24 (git log "Q2.1"). ui/page/*, StatusLabel, shared status-words + format, 8-item sidebar, one gutter. Test: e2e/frame.spec.ts. Next in Part 4: Q2.2.
 - Part 2 repair and skipped tasks, 2026-11-24 (git log): "Part 2 repair" (360 px Today rows, Bill payment layout, calendar panel buttons, Missed test no longer depends on the clock), Q0.7 (refund re-opens the due, `paidByBill`), Q1.1 (visit to bill chain), Q1.5 (messages hygiene), Q1.6 rest (offline guard), Q1.7 (discount hand-off), Q1.8 (data and form rules). Browser specs: e2e/visit-to-bill, messages, data-rules, no-silent-failures, appointment-actions, core-loop (25 pass together).
 - Q1.6 No silent failures, 2026-11-24 (git log "Q1.6"). Timings: live sentence + Save disabled with reason; visit autosave stops on a 409 and shows a banner (text kept, Copy my text, Reload visit); reasons under disabled Book, Walk-in and Record payment buttons; offline banner says typed work is kept. Not done: disabling server actions offline. Test: e2e/no-silent-failures.spec.ts.
 - Q1.4 Cancel, Missed, Reschedule, 2026-11-24 (git log "Q1.4"). AppointmentActions "..." menu on Today rows, calendar panel and patient tab; Missed needs a reason (schema + repo, no migration); Close-day blockers name patients; drag hint added. Test: e2e/appointment-actions.spec.ts. NOTE: its Missed part is skipped before 00:20 IST (it moves a booking to 00:00 today with node:sqlite so the 15-minute rule allows it).
@@ -29,6 +30,7 @@ Written: 2026-11-24 (after Gate A). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 (nothing)
 
 ## Waiting on me (the owner). The AI must not guess these
+- Q2.1: should the receptionist see Library? (built doctor-only, see DECISIONS.md).
 - Nothing blocks the AI now. D1 (CA) still needs the CA to confirm the refund rule.
 - D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.
 - Older items: STATE.md "Waiting on me" (staging steps, doctor confirmations, CA questions).

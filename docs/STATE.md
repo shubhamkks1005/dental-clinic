@@ -11,6 +11,9 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by han
 - **One new migration: 0056_bill_cancel_requests.sql (the owner applies it on staging).** Part 4 starts at Q2.1 only when the owner says so.
 - Known gaps going into Part 4: tap targets under 44 px in lists and links at 360 px, plain Billing and profile Billing screens (the Bill screen has a scoped stylesheet), page gutters at 360 px, tooth surface shapes are small, advance on purpose (Q3.1).
 
+## Part 4 (started 2026-11-24)
+- Q2.1 done: PageContainer/PageHeader/Card/ListRow/EmptyState/StatusLabel, shared status map, format helpers, 8-item sidebar (Library doctor-only, placeholder page), same gutter on every screen. Screens: docs/ui-audit/screenshots/redesign/Q2.1/. Waiting on me: should the receptionist see Library (design says yes, Q1.11 made medicines doctor-only)?
+
 ## Phase Q (added 2026-11-23)
 - Browser audit done (docs/ui-audit, docs/product-audit). Phase Q is planned in docs/PHASE_Q.md and runs before Phase 8. Q0.1 done (e2e runs, scratch DB, localhost origin; prettier ignores audit evidence and design mockups). Q0.2 done (C1 fixed, guard + browser test). Q0.3 done (C3). Q0.4 done (C4). Q0.5 done. Q0.6 done. Q0.7 blocked on D1.
 - **Gate P0: passed with exceptions** (2026-11-23). Core-loop e2e: pass. G01 (runner, no repair, id GATE-P0-G01): visit, issue Rx, finalise, bill, payment all with no 400/409; the one 400 is the scripted "no free slot today" walk-in step; the script's old one-click "Full balance" step no longer records money (by design, Q0.6). D03 (GATE-P0-D03): no failed requests; overpay now asks first, 0 and negative blocked, split and 100.50 work. Evidence: docs/ui-audit/flows/GATE-P0-*/result.json. Exceptions: (1) Q0.7 refund rule not done, needs D1, so the D02 refund steps were not run; (2) runner scripts g01/d03 still assume the old Full balance click (screens differ from their notes). Part 2 may start; Q0.7 stays open until D1.

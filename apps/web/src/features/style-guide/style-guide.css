@@ -2,7 +2,6 @@
 .guide {
   display: grid;
   gap: var(--s4);
-  padding: var(--s5) var(--s4) var(--s6);
 }
 
 .guide-card {

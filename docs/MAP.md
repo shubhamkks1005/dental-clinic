@@ -192,6 +192,7 @@
 - src/ui/OfflineBanner.tsx + src/ui/use-online.ts - "No internet connection. Don't close this page..." bar on every page while offline
 - src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
 - src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; "signed out after a period of inactivity" notice; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me), UserCard ("Name · Role" + Sign out, 1.3.7) + user-card.css, api.ts, auth.css
+- src/features/library/ - placeholder Library page (doctor only) until Q2.13
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible
 - src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)
@@ -271,6 +272,10 @@
 - src/ui/StatusBadge.tsx - status word + DESIGN.md colours (never colour alone)
 - src/ui/PatientNoChip.tsx - soft-blue patient number chip (DESIGN.md "Patient number")
 - src/ui/StatCard.tsx - label / big value / note card
+- src/ui/page/Page.tsx - PageContainer (max 1200, gutters 16/24, wrapped around every staff screen by StaffShell) and PageHeader (title, subtitle, actions, back)
+- src/ui/page/Card.tsx, ListRow.tsx (ListRow, ListRows), EmptyState.tsx, page.css - shared page pieces (Q2.1)
+- src/ui/StatusLabel.tsx - status word from the shared map (packages/shared status-words.ts); cancelled is struck through
+- src/ui/format.ts - re-exports formatDate, formatDuration, formatMoney, plural from packages/shared format.ts
 - src/ui/PageMessage.tsx - PageMessage, NotFound, NotBuiltYet
 - src/ui/shell/StaffShell.tsx - staff frame: MainNav + TopBar + main + BottomTabs (CSS decides what shows per width); gets menu items, user card and canAddPatient as props (no feature imports)
 - src/ui/shell/MainNav.tsx - brand, the role's nav items (active also on sub-pages, except Today), user card at the bottom: laptop navy sidebar 232px, tablet tabs row, phone hidden
@@ -278,7 +283,7 @@
 - src/ui/shell/search-shortcut.ts (+ test) - isSearchShortcut: "/" without modifiers, not while typing in a field
 - src/ui/shell/BottomTabs.tsx - phone: the role's bottom tabs + round "+" new patient button (hidden without patients.edit)
 - src/ui/shell/PortalShell.tsx - portal frame: navy header with logo and clinic name
-- src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (7), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
+- src/ui/shell/nav-items.ts (+ test) - MAIN_NAV (8, Library is doctor-only), PHONE_TABS (5) each with the permission it needs, visibleNav(), moreItems(), NEW_PATIENT_PATH/PERMISSION
 - src/ui/shell/sample-session.ts - FAKE clinic name/tagline until Settings (1.5.2)
 - src/ui/shell/shell.css / nav.css / portal.css - shell grid per breakpoint / navigation / portal frame
 - docs/FIXES.md - owner's bug and polish list, worked top to bottom; Done rows get the commit hash
@@ -514,3 +519,5 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - packages/db/src/schema/bill-cancel-requests.ts, migrations/0056_bill_cancel_requests.sql, repos/bills-cancel-request.ts (+ test): receptionist asks the doctor to cancel a bill (Q1.9). Web: features/billing/BillCancelRequestPanel.tsx, WaitingForYou.tsx (also lists these). Routes in staff-bills.ts (cancel-requests).
 - e2e/walk-in-button.spec.ts: Q1.9 top-bar Walk-in.
 - apps/web/src/ui/RequirePermission.tsx: the one permission page (Q1.11). e2e/role-matrix.spec.ts: pages and API for both roles.
+- e2e/frame.spec.ts: Q2.1 sidebar items per role, same gutter on 7 screens at 360/768/1366, keyboard to Library.
+- packages/shared/src/status-words.ts (+ test): ONE status vocabulary (statusWord, billStatusKey). format.ts (+ test): formatDate, formatDuration, formatMoney, plural.

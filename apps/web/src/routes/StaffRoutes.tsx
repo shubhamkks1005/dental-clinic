@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router";
 import { useMe, UserCard } from "../features/auth";
 import { ErrorLogScreen } from "../features/errors";
+import { LibraryScreen } from "../features/library";
 import { MoreScreen } from "../features/more";
 import { RequestsScreen } from "../features/requests";
 import {
@@ -80,6 +81,14 @@ function ShellRoutes() {
         <Route path="bills/:id" element={<BillScreen />} />
         <Route path="reports" element={<ReportsScreen />} />
         <Route path="messages" element={<MessagesScreen />} />
+        <Route
+          path="library"
+          element={
+            <RequirePermission permission="settings.medicines">
+              <LibraryScreen />
+            </RequirePermission>
+          }
+        />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
         <Route

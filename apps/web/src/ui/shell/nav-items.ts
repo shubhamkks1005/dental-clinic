@@ -3,7 +3,7 @@ import type { IconName } from "../icons";
 // permission: the item shows only if the signed-in role has it (packages/db/src/permissions.ts).
 export type NavItem = { to: string; label: string; icon: IconName; permission?: string };
 
-// Laptop sidebar and tablet tabs (DESIGN.md: 7 items).
+// Laptop sidebar and tablet tabs (Sidebar.dc.html: 8 items).
 export const MAIN_NAV: NavItem[] = [
   { to: "/app", label: "Today", icon: "today", permission: "appointments.manage" },
   { to: "/app/patients", label: "Patients", icon: "patients", permission: "patients.view" },
@@ -17,6 +17,9 @@ export const MAIN_NAV: NavItem[] = [
   // Reminders carry patient names, so the same permission as viewing patients.
   { to: "/app/messages", label: "Messages", icon: "messages", permission: "patients.view" },
   { to: "/app/reports", label: "Reports", icon: "reports", permission: "reports.today" },
+  // Library = the doctor's own lists (medicines, procedures, fees). Same permission as editing
+  // the medicine list, so the receptionist does not see it (DECISIONS.md, Q2.1).
+  { to: "/app/library", label: "Library", icon: "library", permission: "settings.medicines" },
   { to: "/app/settings", label: "Settings", icon: "settings", permission: "settings.read" },
 ];
 
