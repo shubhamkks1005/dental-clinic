@@ -1,5 +1,6 @@
 import type { Bindings } from "../types";
 import { runNightlyDailyStats } from "./daily-stats";
+import { runMessagingTick } from "./messaging";
 
 /** One cron trigger; each job is a fast branch (AGENTS.md / worker rules). */
 export async function handleScheduled(
@@ -8,5 +9,5 @@ export async function handleScheduled(
 ): Promise<void> {
   const now = new Date(_event.scheduledTime);
   await runNightlyDailyStats(env, now);
-  // Phase 7+ branches (messaging dispatcher, etc.) join here.
+  await runMessagingTick(env, now);
 }

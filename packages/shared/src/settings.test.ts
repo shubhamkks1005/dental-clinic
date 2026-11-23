@@ -35,6 +35,8 @@ describe("setting rules (1.5.1)", () => {
       "medicines.list_reviewed",
       "billing.shadow_series",
       "billing.gst_mode",
+      "messaging.settings",
+      "messaging.templates",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

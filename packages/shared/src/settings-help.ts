@@ -49,6 +49,10 @@ export const SETTING_HELP: Record<SettingKey, string> = {
     "When on, bill numbers use SB-/SR-/SF- so they do not collide with paper books.",
   "billing.gst_mode":
     "DRAFT — accountant to confirm. Off = no tax on bills. On = tax lines when ready.",
+  "messaging.settings":
+    "Reminder switches, quiet hours, daily cap and WhatsApp options. Example: remind at 17:00. Changes apply to new planned messages.",
+  "messaging.templates":
+    "English WhatsApp/SMS wording. Marked DRAFT until the doctor confirms. Preview with fake names before save.",
 };
 
 export function settingHelp(key: SettingKey): string {

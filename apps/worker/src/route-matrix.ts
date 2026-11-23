@@ -544,6 +544,51 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/refunds",
     access: { kind: "permission", action: "bills.adjust" },
   },
+  {
+    method: "GET",
+    path: "/api/staff/messages/board",
+    access: { kind: "permission", action: "patients.view" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/messages/status",
+    access: { kind: "permission", action: "patients.view" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/messages/dump-to-whatsapp",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/messages/:id/open-whatsapp",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/messages/:id/done-manual",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/messages/:id/cancel",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/patients/:id/messages",
+    access: { kind: "permission", action: "patients.view" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/patients/:id/messages",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/messages/send-now",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

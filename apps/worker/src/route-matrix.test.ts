@@ -272,6 +272,12 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path.endsWith("/deactivate") || path.endsWith("/reactivate")) {
     return JSON.stringify({ version: 1 });
   }
+  if (path === "/api/staff/patients/:id/messages" && method === "POST") {
+    return JSON.stringify({ templateKey: "recall" });
+  }
+  if (path === "/api/staff/appointments/:id/messages/send-now" && method === "POST") {
+    return JSON.stringify({ kind: "confirm" });
+  }
   return "{}";
 }
 

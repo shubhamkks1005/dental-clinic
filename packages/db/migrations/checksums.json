@@ -47,5 +47,7 @@
   "0045_outreach_contacts.sql": "7d4baef5c631c0179a5602430caa561dc465973486a3b14c27fb8423add5cc4a",
   "0046_audit_log_settings_history_idx.sql": "514b1f2ed6c2e9a0aebbada25632f6044b8f55b7bdb8431b65b710490d9da20b",
   "0047_tunable_settings.sql": "52fb028c228ac2b0346fda23c1efddb6f2c32bf2b32a5b345807bcc8364c82f8",
-  "0048_past_records.sql": "0016d97480eea90fbcfae1119a48749f628c2346be37d81d742055bb1dcd56e2"
+  "0048_past_records.sql": "0016d97480eea90fbcfae1119a48749f628c2346be37d81d742055bb1dcd56e2",
+  "0049_message_outbox.sql": "4644b1d892e3d25b453ae60dc1150f4687899d40318604d610f261c810fe7a9b",
+  "0050_privacy_notice_messaging.sql": "5cec29f5bdb9c837bdb90ac1dafe1caab248428f6da8464006264611e0f5fd7a"
 }

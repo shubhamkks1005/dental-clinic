@@ -84,7 +84,7 @@ describe("settings store rules (1.5.1)", () => {
       ["clinic.timings", expect.objectContaining({ slotMinutes: 15, chairs: 1 }), 1],
       ["clinic.holidays", [], 1],
       ["privacy_notice.version", 1, 1],
-      ["privacy_notice.body", expect.stringContaining("PLACEHOLDER privacy notice"), 1],
+      ["privacy_notice.body", expect.stringContaining("Appointment reminders:"), 2],
       ["appointments.book_ahead_days", 90, 1],
       ["appointments.no_show_after_minutes", 15, 1],
       ["appointments.status_undo_hours", 24, 1],
@@ -108,6 +108,12 @@ describe("settings store rules (1.5.1)", () => {
       ["medicines.list_reviewed", null, 1],
       ["billing.shadow_series", true, 1],
       ["billing.gst_mode", "off", 1],
+      ["messaging.settings", expect.objectContaining({ enabled: true, whatsappEnabled: true }), 1],
+      [
+        "messaging.templates",
+        expect.objectContaining({ draftBanner: "DRAFT - doctor to confirm" }),
+        1,
+      ],
     ]);
   });
 });

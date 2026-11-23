@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { chartViewSchema } from "./chart-view";
 import { consentTemplatesSchema } from "./consent-templates";
+import { messageTemplatesSchema, messagingSettingsSchema } from "./messaging";
 import type { Parsed } from "./staff";
 import { holidaysSchema, timingsSchema } from "./timings";
 import { TUNABLES, type TunableKey } from "./tunables";
@@ -98,6 +99,9 @@ export const SETTING_SCHEMAS = {
   "billing.shadow_series": z.boolean(),
   // 5.2.6: DRAFT - accountant to confirm. Default off = no tax on bills.
   "billing.gst_mode": z.enum(["off", "on"]),
+  // 7.4.1 / 7.4.3 messaging (Phase 7). Templates DRAFT until doctor confirms.
+  "messaging.settings": messagingSettingsSchema,
+  "messaging.templates": messageTemplatesSchema,
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;
