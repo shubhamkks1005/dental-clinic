@@ -1,4 +1,4 @@
-import type { ChartView } from "@clinic/shared";
+import { SETTING_HELP, type ChartView } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
@@ -53,7 +53,7 @@ export function PreferencesSettings() {
       <section className="card settings-panel">
         <UnsavedChangesGuard dirty={dirty} />
         <h2>Preferences</h2>
-        <p className="muted">Chart labels update after you save. Storage stays FDI underneath.</p>
+        <p className="muted">{SETTING_HELP["chart.view"]}</p>
         {problem ? (
           <p className="notice notice-error" role="alert">
             {problem}

@@ -31,6 +31,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.5.3 DONE locally (TUNABLES + settings; Preferences Clinic limits; guard test; README table). **Migration `0047_tunable_settings.sql` — owner applies.**
 6.5.4 DONE locally (yearly holidays + national templates + booking block). No migration. DRAFT national list for sister.
 6.5.5 DONE locally (Preferences chart.view in hub; covered with 6.5.1/6.5.3). No migration.
+6.5.6 DONE locally (SETTING_HELP for every key; UI lines on clinic/billing/privacy/prefs/tunables; test). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**

@@ -1,4 +1,4 @@
-import type { SettingKey } from "@clinic/shared";
+import { SETTING_HELP, type SettingKey } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
@@ -126,6 +126,7 @@ export function ClinicDetailsSettings() {
                 onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
               />
             )}
+            <span className="muted settings-help">{SETTING_HELP[f.key]}</span>
           </label>
         ))}
       </div>

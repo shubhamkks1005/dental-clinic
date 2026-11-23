@@ -1,3 +1,4 @@
+import { SETTING_HELP } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
@@ -100,6 +101,7 @@ export function PrivacyNoticeSettings() {
           disabled={!canEdit || busy}
           onChange={(e) => setDraftVer(Number(e.target.value) || 1)}
         />
+        <span className="muted settings-help">{SETTING_HELP["privacy_notice.version"]}</span>
       </label>
       <label className="settings-field">
         <span>Notice text</span>
@@ -110,6 +112,7 @@ export function PrivacyNoticeSettings() {
           disabled={!canEdit || busy}
           onChange={(e) => setDraftBody(e.target.value)}
         />
+        <span className="muted settings-help">{SETTING_HELP["privacy_notice.body"]}</span>
       </label>
       {canEdit ? (
         <p className="settings-actions">

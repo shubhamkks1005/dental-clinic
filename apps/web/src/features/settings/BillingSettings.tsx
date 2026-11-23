@@ -1,3 +1,4 @@
+import { SETTING_HELP } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
@@ -103,6 +104,7 @@ export function BillingSettings() {
           <option value="off">Off (no tax on bills)</option>
           <option value="on">On</option>
         </select>
+        <span className="muted settings-help">{SETTING_HELP["billing.gst_mode"]}</span>
       </label>
       <label className="settings-field settings-field-check">
         <input
@@ -113,6 +115,7 @@ export function BillingSettings() {
         />
         <span>Use shadow series (SB-/SR-/SF-)</span>
       </label>
+      <p className="muted settings-help">{SETTING_HELP["billing.shadow_series"]}</p>
       {canEdit ? (
         <p className="settings-actions">
           <button
