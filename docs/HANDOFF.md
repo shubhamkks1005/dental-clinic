@@ -5,7 +5,7 @@ Written: 2026-11-23 (staging-test run finished). Read RUN_PROMPT.md, STATE.md, M
 ## Where we are
 - Phase 7 complete locally; **do not start Phase 8** until the owner says so.
 - App is ready for staff testing on staging with fake data once the owner runs the by-hand steps (docs/STAGING_READINESS.md).
-- Next free migration: **0055** (0054 error_log role + version is new this run).
+- Next free migration: **0056** (0055 letterhead settings is new this run, owner applies) (0054 error_log role + version is new this run).
 
 ## Done this run (all local commits, see STATE.md table)
 Staging seed, docs/TESTING.md + copyable Error ID, 9.2.5 error log (route, reporter, doctor list), 8.2.11 patient requests staff side, 9.3.10 retention (dry run by default).

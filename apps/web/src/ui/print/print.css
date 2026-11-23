@@ -43,7 +43,30 @@
 .print-header {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 2mm 6mm;
+  grid-template-areas:
+    "brand doctor"
+    "contact doctor";
+  gap: 1mm 6mm;
+  padding-bottom: 2mm;
+  border-bottom: 0.8mm solid var(--navy);
+}
+
+.print-header .print-brand {
+  grid-area: brand;
+}
+
+.print-contact {
+  grid-area: contact;
+  font-size: 8pt;
+}
+
+.print-header .print-doctor {
+  grid-area: doctor;
+}
+
+.print-kind {
+  font-size: 8pt;
+  font-weight: 700;
 }
 
 /* Same height as the printed header band, so the body lands in the same place either way.
@@ -89,14 +112,6 @@
   font-weight: 700;
 }
 
-.print-address {
-  grid-column: 1 / -1;
-  padding: 1.5mm 2mm;
-  border-top: 0.8mm solid var(--navy);
-  background: var(--blue-soft);
-  font-size: 8pt;
-}
-
 .print-body {
   flex: 1;
   display: grid;
@@ -114,6 +129,26 @@
   border-top: 0.2mm solid var(--border);
   font-size: 8pt;
   color: var(--muted);
+}
+
+.print-letterfoot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6mm;
+  margin-top: 3mm;
+  padding-top: 2mm;
+  border-top: 0.8mm solid var(--navy);
+  font-size: 8pt;
+}
+
+.print-timings-title {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.print-places {
+  text-align: right;
 }
 
 /* 4.3.5 reprint mark — plain text, works on a cheap B&W clinic printer. */

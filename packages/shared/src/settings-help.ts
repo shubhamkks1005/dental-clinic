@@ -38,6 +38,11 @@ export const SETTING_HELP: Record<SettingKey, string> = {
     "Address on letterhead. Example: a street in Jhansi. Shows on printed docs after save.",
   "clinic.phone": "Clinic phone on letterhead and messages. Example: a 10-digit number.",
   "clinic.tagline": "Short line under the clinic name. Example: Family dental care. Optional.",
+  "clinic.kind": "Line under the tagline. Example: Orthodontic and Dental Clinic. Optional.",
+  "clinic.email": "Clinic email on letterhead. Optional.",
+  "clinic.instagram": "Instagram name in the letterhead footer. Optional.",
+  "doctor.extra_line":
+    "One more line under the speciality. Example: Former Senior Lecturer, a college name. Optional.",
   "doctor.name": "Doctor name on prescriptions and certificates. Example: Dr. Nidhi Kushwaha.",
   "doctor.qualifications": "Degrees under the doctor name. Example: BDS, MDS. Optional.",
   "doctor.speciality": "Speciality line on letterhead. Example: Orthodontist. Optional.",

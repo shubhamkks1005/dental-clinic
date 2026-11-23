@@ -283,6 +283,7 @@
 - packages/shared time.ts formatClockTime - THE time-of-day display ("2:30 PM"); toHhmm stays for stored 24-hour values only
 - apps/web features/patients BirthAgeFields.tsx + age-from-birth.ts (+ test) - date of birth fills the age (read only); no date of birth = type the age; used by NewPatientForm and PatientEditForm
 - apps/web features/appointments useBookSlots.ts, booked-message.ts (+ test) - book dialog fetches all free times of one day (GET /appointments/slots?day=1, limit 60) plus the next five on any day; AppointmentsScreen jumps to the booked date and toasts; appointments-slots repo takes searchDays
+- apps/web ui/print PrintLayout.tsx (+ test) - letterhead header (brand, phone, email, doctor, rule) and LetterFoot (Consultation Timings, address, Instagram; not on pre-printed "blank" paper); packages/shared timings-lines.ts (+ test) turns Settings timings into footer lines; migration 0055_letterhead_settings.sql seeds the four new empty settings
 - src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)

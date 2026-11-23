@@ -10,7 +10,7 @@ This file is complete on its own. Also follow AGENTS.md stack/data/privacy rules
 - Fake data only, no real patient data and no real money figures from real patients anywhere.
 - Keep files small (about 200 lines is a smell, 300 means split). Tests go in separate test files.
 - Run pnpm check before every commit. If it fails, fix it before moving on.
-- If a migration is new, list it clearly for me, do not apply it to staging yourself. Number migrations in order, never reuse a number (check the highest existing number in packages/db/migrations; the next free number is in HANDOFF.md, now 0055). After adding a migration run `pnpm db:lock`.
+- If a migration is new, list it clearly for me, do not apply it to staging yourself. Number migrations in order, never reuse a number (check the highest existing number in packages/db/migrations; the next free number is in HANDOFF.md, now 0056). After adding a migration run `pnpm db:lock`.
 - Update STATE.md after each task.
 - Follow the screen designs (S-numbers) named in each task.
 - Do not stop to ask me questions. If something is unclear, take the most reasonable choice that matches the plan, write it in DECISIONS.md, and carry on. Stop only for a real blocker (needs my account, a card, a lawyer, an accountant, or a secret). If a task is blocked, skip it, list it in STATE.md under "Waiting on me", and continue.

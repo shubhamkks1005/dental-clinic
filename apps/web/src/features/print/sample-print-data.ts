@@ -12,6 +12,11 @@ export const SAMPLE_CLINIC: ClinicHeader = {
   registrationNo: "[number]",
   address: "Sample address, Sample city 000000",
   phone: "+91 90000 00000",
+  kind: "",
+  email: "",
+  instagram: "",
+  extraLine: "",
+  timingsLines: [],
 };
 
 export type SampleRx = {

@@ -10,6 +10,14 @@ export type ClinicHeader = {
   registrationNo: string;
   address: string;
   phone: string;
+  /** Line under the tagline, e.g. "Orthodontic and Dental Clinic". Empty = not shown. */
+  kind: string;
+  email: string;
+  instagram: string;
+  /** One more doctor line, e.g. a former post. Empty = not shown. */
+  extraLine: string;
+  /** Footer "Consultation Timings" lines. Empty = no timings block. */
+  timingsLines: string[];
 };
 
 export type PaperSize = "A4" | "A5";

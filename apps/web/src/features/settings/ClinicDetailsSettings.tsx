@@ -10,11 +10,15 @@ type Field = { key: SettingKey; label: string; multiline?: boolean };
 const FIELDS: Field[] = [
   { key: "clinic.name", label: "Clinic name" },
   { key: "clinic.tagline", label: "Tagline" },
+  { key: "clinic.kind", label: "Kind of clinic (under the tagline)" },
   { key: "clinic.address", label: "Address", multiline: true },
   { key: "clinic.phone", label: "Phone" },
+  { key: "clinic.email", label: "Email" },
+  { key: "clinic.instagram", label: "Instagram name" },
   { key: "doctor.name", label: "Doctor name" },
   { key: "doctor.qualifications", label: "Qualifications" },
   { key: "doctor.speciality", label: "Speciality" },
+  { key: "doctor.extra_line", label: "Extra line under speciality" },
   { key: "doctor.registration_no", label: "Registration number" },
 ];
 

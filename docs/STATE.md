@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23. Older history (per-task Done lines, Phase 1-7 gate tables): docs/archive/STATE-until-2026-11-23.md.
-Rules: docs/RUN_PROMPT.md. Next free migration: **0055**. Commands to run by hand: docs/STAGING_READINESS.md.
+Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by hand: docs/STAGING_READINESS.md.
 
 ## Where we are
 - Phase 7 complete locally (gate: passed with exceptions). Phase 9 docs drafts and 9.1.x backup minimum done locally. Do not start Phase 8 until the owner says so.
@@ -29,7 +29,7 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0055**. Commands to run by han
 - ops_status has fixed keys, so retention has no dashboard line yet (audit row only).
 
 ## Migrations waiting for the owner (agent did not apply any)
-Staging: everything after the last applied one, up to **0054**. Known pending: 0049 to 0054 at least (HANDOFF listed 0006-0053; `migrations apply` skips what is already there).
+Staging: everything after the last applied one, up to **0055** (0055 = four empty letterhead settings: clinic.kind, clinic.email, clinic.instagram, doctor.extra_line). Known pending: 0049 to 0055 at least (HANDOFF listed 0006-0053; `migrations apply` skips what is already there).
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 

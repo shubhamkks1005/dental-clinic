@@ -77,6 +77,11 @@ export const SETTING_SCHEMAS = {
     .min(1, "Enter the clinic phone.")
     .max(40),
   "clinic.tagline": z.string().trim().max(80).optional().default(""),
+  // Letterhead lines (owner's paper): kind of clinic under the tagline, contact lines, doctor's extra line.
+  "clinic.kind": z.string().trim().max(60).optional().default(""),
+  "clinic.email": z.string().trim().max(80).optional().default(""),
+  "clinic.instagram": z.string().trim().max(60).optional().default(""),
+  "doctor.extra_line": z.string().trim().max(120).optional().default(""),
   "doctor.name": z
     .string({ error: "Enter the doctor's name." })
     .trim()
