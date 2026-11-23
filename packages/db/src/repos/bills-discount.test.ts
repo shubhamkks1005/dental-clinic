@@ -35,7 +35,8 @@ describe("bill discount approval (5.3.6)", () => {
     });
     expect(withDisc.discountPaise).toBe(50_00);
     expect(withDisc.discountApprovedBy).toBeNull();
-    expect(withDisc.totalPaise).toBe(150_00);
+    // Q1.7: a request does not change the total until the doctor approves.
+    expect(withDisc.totalPaise).toBe(200_00);
 
     await expect(
       repos(receptionist).bills.issue(withDisc.id, withDisc.version),
@@ -49,6 +50,7 @@ describe("bill discount approval (5.3.6)", () => {
       version: withDisc.version,
     });
     expect(approved.discountApprovedBy).toBe("doc-a");
+    expect(approved.totalPaise).toBe(150_00);
 
     const issued = await repos(receptionist).bills.issue(approved.id, approved.version);
     expect(issued.status).toBe("issued");

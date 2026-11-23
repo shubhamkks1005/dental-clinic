@@ -109,8 +109,11 @@ export function BillScreen() {
         </div>
         {bill.discountPaise > 0 ? (
           <div className="row space-between">
-            <span>Discount</span>
-            <span>-{formatRupees(bill.discountPaise)}</span>
+            <span>{bill.discountApprovedBy ? "Discount" : "Discount requested, not approved"}</span>
+            <span>
+              {bill.discountApprovedBy ? "-" : ""}
+              {formatRupees(bill.discountPaise)}
+            </span>
           </div>
         ) : null}
         {bill.taxPaise > 0 ? (
@@ -177,6 +180,11 @@ export function BillScreen() {
           <Link className="btn" to={`/app/print/bill/${bill.id}`} target="_blank" rel="noreferrer">
             Print bill
           </Link>
+        ) : null}
+        {bill.status === "draft" && bill.discountPaise > 0 && !bill.discountApprovedBy ? (
+          <p className="muted small" role="status">
+            Waiting for the doctor to approve the discount.
+          </p>
         ) : null}
         <BillCancelPanel bill={bill} onUpdated={setBill} onError={setError} />
       </div>

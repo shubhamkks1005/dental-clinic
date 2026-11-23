@@ -178,3 +178,13 @@
 .today-row-ready {
   background: #f5f8fd;
 }
+
+.waiting-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: var(--s2) 0;
+  border-top: 1px solid var(--border);
+}

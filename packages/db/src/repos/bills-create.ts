@@ -71,6 +71,12 @@ export function billsCreateRepo(db: Db, ctx: Ctx) {
       } catch (e) {
         throw new InvalidError(e instanceof Error ? e.message : "Check the bill amounts.");
       }
+      // Q1.7: a discount that is not doctor-approved is only a request; the total ignores it.
+      const approvedNow = input.discountApproved === true && ctx.role === "doctor";
+      const requestedDiscountPaise = totals.discountPaise;
+      if (requestedDiscountPaise > 0 && !approvedNow) {
+        totals = computeBillTotals(input.items, { gstMode: mode });
+      }
       if (totals.needsCapConfirm && !input.capConfirmed) {
         throw new InvalidError("Confirm this bill: the total is over ₹10,00,000.");
       }
@@ -108,16 +114,10 @@ export function billsCreateRepo(db: Db, ctx: Ctx) {
           status: "draft",
           kind: input.kind ?? "normal",
           subtotalPaise: totals.subtotalPaise,
-          discountPaise: totals.discountPaise,
+          discountPaise: requestedDiscountPaise,
           discountReason: input.discountReason ?? null,
-          discountApprovedBy:
-            totals.discountPaise > 0 && input.discountApproved && ctx.role === "doctor"
-              ? ctx.userId
-              : null,
-          discountApprovedAt:
-            totals.discountPaise > 0 && input.discountApproved && ctx.role === "doctor"
-              ? nowUtcSql
-              : null,
+          discountApprovedBy: requestedDiscountPaise > 0 && approvedNow ? ctx.userId : null,
+          discountApprovedAt: requestedDiscountPaise > 0 && approvedNow ? nowUtcSql : null,
           taxPaise: totals.taxPaise,
           roundOffPaise: totals.roundOffPaise,
           totalPaise: totals.totalPaise,

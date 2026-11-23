@@ -105,7 +105,9 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
           })),
           {
             gstMode: mode,
-            billDiscountPaise: row.discountPaise > 0 ? row.discountPaise : undefined,
+            // Q1.7: only an approved discount lowers the total.
+            billDiscountPaise:
+              row.discountPaise > 0 && row.discountApprovedBy ? row.discountPaise : undefined,
           },
         );
       } catch (e) {
@@ -159,7 +161,7 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
           taxPaise: totals.taxPaise,
           roundOffPaise: totals.roundOffPaise,
           totalPaise: totals.totalPaise,
-          discountPaise: totals.discountPaise,
+          discountPaise: row.discountApprovedBy ? totals.discountPaise : row.discountPaise,
           version: row.version + 1,
           updatedAt: nowUtcSql,
           updatedBy: ctx.userId,

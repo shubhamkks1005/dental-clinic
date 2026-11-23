@@ -12,6 +12,7 @@ import {
   getPayment,
   issueBill,
   listDues,
+  listPendingDiscounts,
   listPatientBills,
   listPatientPayments,
   recordDuesCall,
@@ -56,6 +57,11 @@ staffBills.post("/bills", async (c) => {
   const result = await createBill(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }), 201);
+});
+
+staffBills.get("/bills/pending-discounts", async (c) => {
+  const result = await listPendingDiscounts(signedIn(c).repos);
+  return c.json(ok({ pending: result.pending }));
 });
 
 staffBills.get("/bills/:id", async (c) => {

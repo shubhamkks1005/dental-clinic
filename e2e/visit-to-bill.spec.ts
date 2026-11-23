@@ -75,3 +75,64 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
 
   expect(bad, bad.join("\n")).toEqual([]);
 });
+
+// Q1.7: the desk asks for a discount, the doctor sees it under "Waiting for you" and approves it.
+test("discount request leaves the total alone until the doctor approves", async ({ page }) => {
+  test.setTimeout(120_000);
+  const bad: string[] = [];
+  page.on("response", (r) => {
+    if (r.url().includes("/api/") && r.status() >= 400) bad.push(`${r.status()} ${r.url()}`);
+  });
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Disc Test ${stamp}`;
+  await walkInInChair(page, name, stamp);
+  await doctorOpensVisitOf(page, name);
+  const procedures = page.getByRole("region", { name: "Procedures" });
+  await procedures.getByRole("button", { name: "Add procedure" }).click();
+  await expect(procedures.locator("li")).toHaveCount(1);
+  await page.getByRole("button", { name: "Finalise visit" }).click();
+  await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
+  await page.getByRole("button", { name: "Create bill" }).click();
+  await expect(page).toHaveURL(/\/app\/bills\//);
+  const billPath = new URL(page.url()).pathname;
+  const totalText = async () =>
+    (
+      await page
+        .locator(".bill-screen")
+        .getByText("Total", { exact: true })
+        .locator("xpath=..")
+        .innerText()
+    ).replace(/\s+/g, " ");
+  const before = await totalText();
+
+  // Receptionist asks for a discount: the total stays, Issue says why it is off.
+  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await page.goto(billPath);
+  await page
+    .getByLabel(/Amount/)
+    .last()
+    .fill("100");
+  await page.getByRole("button", { name: "Request discount" }).click();
+  await expect(page.getByText(/Requested ₹100/)).toBeVisible();
+  await expect(page.getByText("Waiting for the doctor to approve the discount.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Issue bill" })).toBeDisabled();
+  expect(await totalText()).toBe(before);
+
+  // Doctor: Waiting for you -> Approve; now the total is lower and Issue works.
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/app");
+  const waiting = page.getByRole("region", { name: "Waiting for you" });
+  await expect(waiting).toContainText(`Discount for ${name}`);
+  await waiting.locator("li", { hasText: name }).getByRole("button", { name: "Approve" }).click();
+  await expect(waiting.locator("li", { hasText: name })).toHaveCount(0);
+  await page.goto(billPath);
+  expect(await totalText()).not.toBe(before);
+  await page.getByRole("button", { name: "Issue bill" }).click();
+  await expect(
+    page
+      .getByRole("button", { name: "Print bill" })
+      .or(page.getByRole("link", { name: "Print bill" })),
+  ).toBeVisible();
+
+  expect(bad, bad.join("\n")).toEqual([]);
+});

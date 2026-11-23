@@ -67,11 +67,14 @@ export function BillDiscountPanel({ bill, onUpdated, onError }: Props) {
       <p className="label">Discount</p>
       {bill.discountPaise > 0 ? (
         <p className="muted small">
+          {bill.discountApprovedBy ? "Discount " : "Requested "}
           {formatRupees(bill.discountPaise)}
           {bill.discountReason
             ? ` · ${REASON_LABEL[bill.discountReason as DiscountReason] ?? bill.discountReason}`
             : ""}
-          {bill.discountApprovedBy ? " · approved" : " · waiting for doctor approval"}
+          {bill.discountApprovedBy
+            ? " · approved"
+            : ", not approved yet. The bill total is unchanged until the doctor approves."}
         </p>
       ) : null}
       {pending && isDoctor ? (

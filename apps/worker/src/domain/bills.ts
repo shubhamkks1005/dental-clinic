@@ -151,3 +151,8 @@ export async function reopenDay(repos: Repos, body: unknown) {
   const summary = await repos.dayClose.reopen(parsed.value);
   return { ok: true as const, summary };
 }
+
+/** Q1.7: discounts the receptionist asked for and the doctor has not approved yet. */
+export async function listPendingDiscounts(repos: Repos) {
+  return { ok: true as const, pending: await repos.bills.listPendingDiscounts() };
+}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { WaitingForYou } from "../billing";
 import { openOrReuseVisit } from "../visits/open-visit";
 import { changeAppointmentStatus } from "./api";
 import type { TodayListRow, TodayModel } from "./buildTodayModel";
@@ -117,6 +118,7 @@ export function DoctorToday({ model, busyId, onStatus }: Props) {
           {openError}
         </p>
       ) : null}
+      <WaitingForYou />
       <IncompleteVisitsWidget />
       <DoctorCard
         title="Now"

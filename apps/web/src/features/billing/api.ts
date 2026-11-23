@@ -253,3 +253,19 @@ export function recordPayment(input: {
     { method: "POST", body: input },
   ).then((r) => r.payment);
 }
+
+export type PendingDiscount = {
+  billId: string;
+  patientId: string;
+  patientName: string;
+  discountPaise: number;
+  reason: string | null;
+  version: number;
+};
+
+/** Q1.7: the doctor's "Waiting for you" discounts. */
+export function listPendingDiscounts() {
+  return api<{ pending: PendingDiscount[] }>("/api/staff/bills/pending-discounts").then(
+    (r) => r.pending,
+  );
+}
