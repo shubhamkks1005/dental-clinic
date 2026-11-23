@@ -1,5 +1,5 @@
 import { STAT_DIM_NONE } from "@clinic/shared";
-import { and, eq, inArray, isNull, like, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, like, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import { appointments, bills, patients } from "../schema";
 import {
@@ -53,6 +53,30 @@ async function patientFlow(
   for (const r of statuses) {
     out.push({ metric: "appt_status", dim: r.dim, value: n(r.value) });
   }
+
+  // No-show % pool excludes walk-ins (PLAN 6.1).
+  const notWalkIn = ne(appointments.source, "walk_in");
+  const noshow = await db
+    .select({ value: sql<number>`count(*)` })
+    .from(appointments)
+    .where(
+      and(dayPred, isNull(appointments.deletedAt), eq(appointments.status, "no_show"), notWalkIn),
+    )
+    .get();
+  const noshowArrived = await db
+    .select({ value: sql<number>`count(distinct ${appointments.patientId})` })
+    .from(appointments)
+    .where(
+      and(
+        dayPred,
+        isNull(appointments.deletedAt),
+        inArray(appointments.status, [...ARRIVED]),
+        notWalkIn,
+      ),
+    )
+    .get();
+  out.push({ metric: "noshow_count", dim: STAT_DIM_NONE, value: n(noshow?.value) });
+  out.push({ metric: "noshow_arrived", dim: STAT_DIM_NONE, value: n(noshowArrived?.value) });
 }
 
 /** Pure SQL aggregates for one IST day (no JS row loops). */

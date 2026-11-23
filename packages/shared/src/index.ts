@@ -27,6 +27,7 @@ export * from "./payments";
 export * from "./dues";
 export * from "./day-close";
 export * from "./daily-stats";
+export * from "./daily-stats-rate";
 export * from "./stats-cron";
 export * from "./amount-words";
 export * from "./paging";

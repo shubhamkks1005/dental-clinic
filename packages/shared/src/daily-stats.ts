@@ -4,6 +4,8 @@ export const DAILY_STAT_METRICS = [
   "new_patients",
   "returning_patients",
   "appt_status",
+  "noshow_count",
+  "noshow_arrived",
   "billed_paise",
   "collected_paise",
   "procedure_count",

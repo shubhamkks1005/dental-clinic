@@ -213,10 +213,11 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0043_patient_first_arrived_on.sql - 6.2.1 first_arrived_on + index + backfill
 - migrations/0044_daily_stats.sql - 6.2.2 daily_stats + monthly_stats tables
 - src/repos/patient-first-arrived.ts (+ test) - 6.2.1 markFirstArrivedBatch; wired from status/walk-in
-- src/repos/daily-stats.ts (+ queries/parts + test) - 6.2.2 recomputeDay/Month SQL aggregates + upsert
+- src/repos/daily-stats.ts (+ queries/parts + test + edges test) - 6.2.2–6.2.5 recompute + noshow_* + edge CI
 - packages/shared/src/patient-new.ts (+ test) - 6.2.1 isNewPatientOn (excludes legacy_ref)
-- packages/shared/src/daily-stats.ts - 6.2.2 metric name constants
+- packages/shared/src/daily-stats.ts / daily-stats-rate.ts - 6.2.2–6.2.5 metric names + noShowPercent
 - schema/daily-stats.ts - 6.2.2 daily_stats + monthly_stats
+- src/repos/day-close.ts - 5.3.9 + 6.2.4 incomplete appointment gate
 - patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
 - consents - 2.1.9 append-only consent history (src/schema/consents.ts) - patient_id, type, notice_version, given, given_at, recorded_by, method; withdraw = new row with given=0
 - appointments - 2.3.1 bookings (src/schema/appointments.ts) - patient_id, chair_id, visit_type_id/label (copied), start_at (UTC), date_local + start_min/end_min (IST), status, source, priority, overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status
