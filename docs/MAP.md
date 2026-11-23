@@ -215,6 +215,10 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - users - staff logins (src/schema/users.ts) - email (unique, lowercase), name, role (doctor|receptionist|developer), status (active|disabled), google_sub (unique, bound on first Google sign-in), last_login_at
 - staff_sessions - staff sign-in sessions (src/schema/staff-sessions.ts) - user_id (FK users, indexed), token_hash (unique, SHA-256 of the cookie token), expires_at (12 h absolute), last_seen_at (idle check), revoked_at, user_agent
 - settings - doctor-editable settings, versioned + audited (src/schema/settings.ts) - key (unique), value_json (valid JSON)
+- bills / bill_items - 5.2.1 billing (src/schema/bills.ts) - patient, visit?, bill_no/period, status draft|issued|cancelled, kind, money columns (paise), items with tax_category
+- migrations/0037_billing_shadow_series.sql - seeds billing.shadow_series true
+- migrations/0038_bills.sql - creates bills + bill_items
+- src/repos/bills-create.ts / bills-get.ts - draft bill create (server totals) + get
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
 - access_log - sign-ins, failures, staff changes, views, exports (src/schema/access-log.ts) - action (login|login_failed|login_denied|logout|staff_change|view|export), resource, resource_id, request_id, detail (reason, masked email); who = created_by ('anonymous' for failed sign-ins)

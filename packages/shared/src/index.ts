@@ -19,6 +19,7 @@ export * from "./print";
 export * from "./mobile";
 export * from "./money";
 export * from "./billing-numbers";
+export * from "./billing";
 export * from "./paging";
 export * from "./patient-age";
 export * from "./patient-fields";

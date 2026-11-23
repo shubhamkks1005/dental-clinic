@@ -21,3 +21,4 @@ export { visitAddenda } from "./visit-addenda";
 export { prescriptions, prescriptionItems } from "./prescriptions";
 export { certificates } from "./certificates";
 export { printLog } from "./print-log";
+export { bills, billItems } from "./bills";
