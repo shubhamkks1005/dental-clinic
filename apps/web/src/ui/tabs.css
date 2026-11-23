@@ -33,3 +33,9 @@
 .tabs-panel:focus-visible {
   outline-offset: 4px;
 }
+
+/* Q1.10: a wide child (the tooth chart) scrolls inside its own card; it must not widen the page. */
+.tabs-panel {
+  min-width: 0;
+  max-width: 100%;
+}

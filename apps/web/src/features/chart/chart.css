@@ -2,6 +2,14 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* Q1.10: the chart scrolls inside its own card; it must never widen the page. */
+  min-width: 0;
+  max-width: 100%;
+}
+
+.visit-chart-tab {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .tooth-chart-head h2 {
@@ -115,8 +123,9 @@
 }
 
 .tooth-whole {
-  min-height: 22px;
-  min-width: 28px;
+  /* Q1.10: a finger-sized target on every width. */
+  min-height: 44px;
+  min-width: 44px;
   padding: 0 4px;
   border: 1px solid #e3e9ee;
   border-radius: 6px;
@@ -170,9 +179,7 @@
   font-weight: 400;
 }
 
-@media (min-width: 768px) {
-  .tooth-glyph svg {
-    width: 44px;
-    height: 52px;
-  }
+.tooth-glyph svg {
+  width: 44px;
+  height: 52px;
 }

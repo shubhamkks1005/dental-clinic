@@ -4,7 +4,8 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: "main";
   min-height: 100dvh;
-  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  /* tab bar (64px) plus 80px so the round "+" never covers the last row (Q1.10) */
+  padding-bottom: calc(144px + env(safe-area-inset-bottom));
 }
 
 /* .shell-nav visibility lives in nav.css only, so load order cannot hide it. */

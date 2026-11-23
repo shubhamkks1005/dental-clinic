@@ -53,6 +53,14 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
   await doctorOpensVisitOf(page, a);
   await page.getByLabel("Chief complaint").fill("Fake: check-up");
   await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
+  // Q1.10: on a phone the chart scrolls inside its own card and the tooth buttons are finger-sized.
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.getByRole("tab", { name: "Chart", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(360);
+  const whole = await page.locator("button.tooth-whole").first().boundingBox();
+  expect(whole && whole.width >= 44 && whole.height >= 44).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.getByRole("tab", { name: "Today's visit", exact: true }).click();
   await page.getByRole("button", { name: "Finalise visit" }).click();
   const dialog = page.locator("dialog[open]");
   await expect(dialog).toContainText("No procedures are recorded");
