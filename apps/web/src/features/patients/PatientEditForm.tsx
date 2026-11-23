@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ApiError } from "../../api/client";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
-import { DateInput, Field, MobileInput, zodResolver } from "../../ui/form";
+import { Field, MobileInput, zodResolver } from "../../ui/form";
+import { BirthAgeFields } from "./BirthAgeFields";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { updatePatient, type PatientDetail } from "./api";
 import {
@@ -29,6 +30,7 @@ export function PatientEditForm({ patient, onSaved, onCancel }: Props) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<NewPatientFormValues, unknown, NewPatientParsed>({
     resolver: zodResolver(newPatientSchema),
@@ -79,22 +81,13 @@ export function PatientEditForm({ patient, onSaved, onCancel }: Props) {
             </select>
           )}
         </Field>
-        <div className="new-patient-age-row">
-          <Field label="Date of birth" hint="DD/MM/YYYY" error={errors.birthDate?.message}>
-            {(p) => <DateInput {...p} {...register("birthDate")} />}
-          </Field>
-          <Field label="Or age at registration" error={errors.ageYears?.message}>
-            {(p) => (
-              <input
-                className="input"
-                inputMode="numeric"
-                autoComplete="off"
-                {...p}
-                {...register("ageYears")}
-              />
-            )}
-          </Field>
-        </div>
+        <BirthAgeFields
+          register={register}
+          errors={errors}
+          birthDate={watch("birthDate")}
+          setAge={(v) => setValue("ageYears", v)}
+          ageLabel="Or age at registration"
+        />
         <Field label="Mobile" error={errors.mobile?.message}>
           {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
         </Field>

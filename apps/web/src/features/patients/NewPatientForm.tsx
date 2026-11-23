@@ -1,8 +1,10 @@
+import { parseDisplayDate } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
-import { DateInput, Field, MobileInput, zodResolver } from "../../ui/form";
+import { Field, MobileInput, zodResolver } from "../../ui/form";
+import { BirthAgeFields } from "./BirthAgeFields";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import {
   checkPatientDuplicates,
@@ -33,6 +35,7 @@ export function NewPatientForm({ onCreated }: Props) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<NewPatientFormValues, unknown, NewPatientParsed>({
     resolver: zodResolver(newPatientSchema),
@@ -55,7 +58,7 @@ export function NewPatientForm({ onCreated }: Props) {
         fullName: fullName.trim(),
         mobile: mobile.trim(),
         ageYearsAtReg: ageYears?.trim() ? Number(ageYears) : null,
-        dateOfBirth: null,
+        dateOfBirth: parseDisplayDate(birthDate ?? ""),
       })
         .then(setWarnings)
         .catch(() => setWarnings([]));
@@ -104,22 +107,13 @@ export function NewPatientForm({ onCreated }: Props) {
         )}
       </Field>
 
-      <div className="new-patient-age-row">
-        <Field label="Date of birth" hint="DD/MM/YYYY" error={errors.birthDate?.message}>
-          {(p) => <DateInput {...p} {...register("birthDate")} />}
-        </Field>
-        <Field label="Or age (years)" error={errors.ageYears?.message}>
-          {(p) => (
-            <input
-              className="input"
-              inputMode="numeric"
-              autoComplete="off"
-              {...p}
-              {...register("ageYears")}
-            />
-          )}
-        </Field>
-      </div>
+      <BirthAgeFields
+        register={register}
+        errors={errors}
+        birthDate={watch("birthDate")}
+        setAge={(v) => setValue("ageYears", v)}
+        ageLabel="Or age (years)"
+      />
 
       <Field label="Mobile" error={errors.mobile?.message}>
         {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
