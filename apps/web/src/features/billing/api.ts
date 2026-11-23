@@ -24,6 +24,7 @@ export type DayCloseSummary = {
   incompleteAppointments: {
     id: string;
     patientId: string;
+    patientName: string;
     status: string;
     startMin: number;
     visitTypeLabel: string;
@@ -210,6 +211,7 @@ export type PatientPaymentRow = {
   dayLocal: string;
   refundedPaise: number;
   refundablePaise: number;
+  appliedTo: string[];
 };
 
 export function listPatientPayments(patientId: string) {

@@ -117,7 +117,17 @@ async function seedPatients(rec: Repos, report: SeedReport, now: Date): Promise<
 
 async function setStatus(rec: Repos, appt: Obj, status: string, when: Date): Promise<Obj> {
   const r = must(
-    await changeAppointmentStatus(rec, appt.id, { status, version: appt.version }, when),
+    await changeAppointmentStatus(
+      rec,
+      appt.id,
+      {
+        status,
+        version: appt.version,
+        // Missed needs a reason (Q1.4).
+        ...(status === "no_show" ? { cancelReason: "Seed data: did not come" } : {}),
+      },
+      when,
+    ),
     status,
   );
   return (r as Obj).appointment;

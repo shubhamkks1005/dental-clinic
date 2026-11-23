@@ -5,7 +5,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, dayCloses, payments } from "../schema";
+import { appointments, dayCloses, patients, payments } from "../schema";
 import { nowUtcSql } from "../sql";
 
 /** 6.2.4: still open on the day — must finish, mark no-show, or cancel before close. */
@@ -16,6 +16,7 @@ export type ModeTotals = Record<PaymentMode, number>;
 export type IncompleteAppt = {
   id: string;
   patientId: string;
+  patientName: string;
   status: string;
   startMin: number;
   visitTypeLabel: string;
@@ -69,11 +70,13 @@ async function incompleteAppointmentsForDay(db: Db, dayLocal: string): Promise<I
     .select({
       id: appointments.id,
       patientId: appointments.patientId,
+      patientName: patients.fullName,
       status: appointments.status,
       startMin: appointments.startMin,
       visitTypeLabel: appointments.visitTypeLabel,
     })
     .from(appointments)
+    .innerJoin(patients, eq(patients.id, appointments.patientId))
     .where(
       and(
         eq(appointments.dateLocal, dayLocal),

@@ -19,6 +19,8 @@ export type PatientAppointmentRow = {
   rescheduledFrom: string | null;
   cancelReason: string | null;
   version: number;
+  visitTypeId: string;
+  updatedAt: string;
 };
 
 /** Walk rescheduled_from links oldest → newest (2.3.8 history chain). */
@@ -40,6 +42,8 @@ export async function loadRescheduleChain(db: Db, tipId: string): Promise<Patien
         rescheduledFrom: appointments.rescheduledFrom,
         cancelReason: appointments.cancelReason,
         version: appointments.version,
+        visitTypeId: appointments.visitTypeId,
+        updatedAt: appointments.updatedAt,
       })
       .from(appointments)
       .where(and(eq(appointments.id, id), isNull(appointments.deletedAt)))
@@ -154,6 +158,8 @@ export function appointmentsListRepo(db: Db, ctx: Ctx) {
           rescheduledFrom: appointments.rescheduledFrom,
           cancelReason: appointments.cancelReason,
           version: appointments.version,
+          visitTypeId: appointments.visitTypeId,
+          updatedAt: appointments.updatedAt,
         })
         .from(appointments)
         .where(and(eq(appointments.patientId, patientId), isNull(appointments.deletedAt)))

@@ -7,6 +7,7 @@ import {
   statusTransitionBlockReason,
   STATUS_UNDO_HOURS,
 } from "./appointment-status";
+import { parseChangeAppointmentStatus } from "./appointment-status-change";
 
 const start = new Date("2026-11-23T04:30:00.000Z"); // 10:00 IST
 const changed = new Date("2026-11-23T05:00:00.000Z");
@@ -71,5 +72,19 @@ describe("appointment status wheel (2.3.6)", () => {
         now: beforeNoShow,
       }),
     ).not.toContain("no_show");
+  });
+});
+
+describe("Missed needs a reason (Q1.4)", () => {
+  it("refuses no_show without a reason and accepts it with one", () => {
+    const no = parseChangeAppointmentStatus({ status: "no_show", version: 1 });
+    expect(no.ok).toBe(false);
+    const yes = parseChangeAppointmentStatus({
+      status: "no_show",
+      version: 1,
+      cancelReason: "Did not answer the phone",
+    });
+    expect(yes.ok).toBe(true);
+    expect(parseChangeAppointmentStatus({ status: "confirmed", version: 1 }).ok).toBe(true);
   });
 });

@@ -9,6 +9,7 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by han
 ## Phase Q (added 2026-11-23)
 - Browser audit done (docs/ui-audit, docs/product-audit). Phase Q is planned in docs/PHASE_Q.md and runs before Phase 8. Q0.1 done (e2e runs, scratch DB, localhost origin; prettier ignores audit evidence and design mockups). Q0.2 done (C1 fixed, guard + browser test). Q0.3 done (C3). Q0.4 done (C4). Q0.5 done. Q0.6 done. Q0.7 blocked on D1.
 - **Gate P0: passed with exceptions** (2026-11-23). Core-loop e2e: pass. G01 (runner, no repair, id GATE-P0-G01): visit, issue Rx, finalise, bill, payment all with no 400/409; the one 400 is the scripted "no free slot today" walk-in step; the script's old one-click "Full balance" step no longer records money (by design, Q0.6). D03 (GATE-P0-D03): no failed requests; overpay now asks first, 0 and negative blocked, split and 100.50 work. Evidence: docs/ui-audit/flows/GATE-P0-*/result.json. Exceptions: (1) Q0.7 refund rule not done, needs D1, so the D02 refund steps were not run; (2) runner scripts g01/d03 still assume the old Full balance click (screens differ from their notes). Part 2 may start; Q0.7 stays open until D1.
+- **Part 2 (2026-11-24, local commits "Q1.2", "Q1.3", "Q1.4", "Q1.6")**: Ready to bill on Today (stat card + Take payment), payment toast and Payments lists, Reschedule / Cancel / Missed menu with reasons, Close-day blockers name patients, timings and visit-conflict messages, reasons under disabled buttons, offline banner says typed work is kept. **Skipped, waiting on the owner:** Q1.1 (D2) and Q1.5 (D6). Browser checks: e2e/core-loop (Q1.2, Q1.3), e2e/appointment-actions (Q1.4), e2e/no-silent-failures (Q1.6). Not done from Q1.6: disabling server actions while offline and keeping the old screen when a menu click loads an empty page (only the banner text changed).
 - Found by the audit and not yet fixed: visit cannot be opened (C1), prescription cannot be issued (C3), booking without a note fails (C4), overpayment accepted silently, refund does not change the balance.
 
 ## This run (commit, task)
@@ -54,6 +55,7 @@ Staging: everything after the last applied one, up to **0055** (0055 = four empt
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **Phase Q decisions:** D2 (can an addendum add a procedure?) blocks Q1.1; D6 (reminder timing) blocks the due-time part of Q1.5 (the rest of Q1.5 could be done, it was skipped whole); D1 still blocks Q0.7. Proposed defaults are in docs/PHASE_Q.md; say "I accept all proposed defaults" to unblock all.
 - **Now:** run docs/STAGING_READINESS.md by hand; install Playwright Chromium and run `pnpm test:e2e`; sister + receptionist follow docs/TESTING.md (this is also the 5.5.2 usability session)
 - **Phase 7**: 7.1.1 sister message-list ok; 7.1.2–7.1.5 gateway/SIM/TRAI/DLT (if ever); 7.9.3–7.9.4 phone test + sister sign-off; 7.3.6 day-cancel wizard; 7.7.3 lawyer privacy paragraph; DRAFT templates doctor confirm
 - **6.1.1 / 6.6.2 / 6.6.3**: sister sign-off on metric defs + dashboard layout; then top-5 fixes

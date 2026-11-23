@@ -7,3 +7,4 @@ export {
 } from "./api";
 export { QuickBookDialog } from "./QuickBookDialog";
 export { QuickBookPatient } from "./QuickBookPatient";
+export { AppointmentActions, type ActionableAppointment } from "./AppointmentActions";

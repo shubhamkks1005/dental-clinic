@@ -90,7 +90,9 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       const skippedArrival = to === "in_chair" && from !== "arrived";
       const stamp = { ...stampsFor(to, nowIso), ...(skippedArrival ? { arrivedAt: nowIso } : {}) };
       const cancelReason =
-        to === "cancelled" ? (input.cancelReason ?? row.cancelReason) : row.cancelReason;
+        to === "cancelled" || to === "no_show"
+          ? (input.cancelReason ?? row.cancelReason)
+          : row.cancelReason;
       const firstArrived =
         to === "arrived" || skippedArrival
           ? markFirstArrivedBatch(db, ctx, row.patientId, row.dateLocal || istDate(now), nowIso)
@@ -125,7 +127,7 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
             ...(stamp.arrivedAt ? { arrivedAt: stamp.arrivedAt } : {}),
             ...(stamp.startedAt ? { startedAt: stamp.startedAt } : {}),
             ...(stamp.endedAt ? { endedAt: stamp.endedAt } : {}),
-            ...(to === "cancelled" && input.cancelReason
+            ...((to === "cancelled" || to === "no_show") && input.cancelReason
               ? { cancelReason: input.cancelReason }
               : {}),
           },

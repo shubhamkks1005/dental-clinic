@@ -2,6 +2,7 @@ import { formatClockTime, formatDisplayDate } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ApiError } from "../../api/client";
+import { AppointmentActions } from "../appointments";
 import { getAppointmentChain, listPatientAppointments, type PatientAppointmentRow } from "./api";
 import "./patient-appointments.css";
 
@@ -19,10 +20,17 @@ function chainSummary(chain: PatientAppointmentRow[]): string {
 }
 
 // S04/S17 Appointments tab — list + reschedule chain (2.3.8). No hard deletes.
-export function PatientAppointmentsTab({ patientId }: { patientId: string }) {
+export function PatientAppointmentsTab({
+  patientId,
+  patientName,
+}: {
+  patientId: string;
+  patientName: string;
+}) {
   const [rows, setRows] = useState<PatientAppointmentRow[] | null>(null);
   const [chains, setChains] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,7 +61,7 @@ export function PatientAppointmentsTab({ patientId }: { patientId: string }) {
     return () => {
       cancelled = true;
     };
-  }, [patientId]);
+  }, [patientId, reloadKey]);
 
   return (
     <section className="patient-appts" aria-labelledby="appts-title">
@@ -74,6 +82,19 @@ export function PatientAppointmentsTab({ patientId }: { patientId: string }) {
                   {formatDisplayDate(r.dateLocal)} · {formatClockTime(r.startMin)}
                 </strong>
                 <span className="patient-appts-status">{statusLabel(r.status)}</span>
+                <AppointmentActions
+                  row={{
+                    id: r.id,
+                    patientId,
+                    patientName,
+                    visitTypeId: r.visitTypeId,
+                    status: r.status,
+                    version: r.version,
+                    startAt: r.startAt,
+                    updatedAt: r.updatedAt,
+                  }}
+                  onChanged={() => setReloadKey((k) => k + 1)}
+                />
               </div>
               <p className="muted">
                 {r.visitTypeLabel}

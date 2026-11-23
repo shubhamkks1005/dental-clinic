@@ -1,14 +1,16 @@
 import { APPOINTMENT_STATUS_LABEL, displayMobile, formatClockTime } from "@clinic/shared";
 import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
+import { AppointmentActions } from "./AppointmentActions";
 import type { DayAppointment } from "./api";
 
 type Props = {
   row: DayAppointment | null;
   onClose: () => void;
+  onChanged: () => void;
 };
 
-export function DayDetails({ row, onClose }: Props) {
+export function DayDetails({ row, onClose, onChanged }: Props) {
   if (!row) return null;
   const mobile = row.patientMobile ? displayMobile(row.patientMobile) : "No mobile";
   return (
@@ -49,6 +51,13 @@ export function DayDetails({ row, onClose }: Props) {
       <Link className="btn" to={`/app/patients/${encodeURIComponent(row.patientId)}`}>
         Open profile
       </Link>
+      <AppointmentActions
+        row={row}
+        onChanged={() => {
+          onChanged();
+          onClose();
+        }}
+      />
     </aside>
   );
 }

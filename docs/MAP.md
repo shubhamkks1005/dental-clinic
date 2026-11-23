@@ -495,3 +495,10 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - pnpm 12 writes its own version into pnpm-lock.yaml (packageManager field). After changing packageManager, run `pnpm install` and commit the lockfile, or CI's frozen install fails.
 - CSS order matters: main.tsx must import base.css/ui.css before App, or base rules (like .btn display) override screen rules. A component's visibility rule lives in one CSS file only (e.g. .shell-nav in nav.css).
 - Vite build prints a harmless "use client" warning from react-router (no server rendering here).
+
+- packages/db/src/repos/bills-ready.ts (+ test) - Q1.2 finalised visits not yet fully paid, by appointment id; exposed as repos.bills.readyToBill (receptionist only, via bills-dues-list.ts)
+- apps/web features/billing PaymentsList.tsx - Q1.3 payments list (date, amount, mode, ref, "Applied to SB-...", Print receipt); used on the patient Billing tab and the Bill screen (BillScreen now also holds the payment form)
+- apps/web features/appointments AppointmentActions.tsx, CancelMissedDialog.tsx - Q1.4 one "..." menu (Reschedule, Cancel, Missed) with its dialogs; used by Today rows, the calendar panel (DayDetails) and the patient Appointments tab. QuickBookDialog has a `reschedule` mode (moves the booking, same visit type)
+- apps/web features/visits visit-autosave.ts notesAsText + "conflict" status, useVisitAutosave.ts - Q1.6 a 409 stops the retry loop and shows a banner (Copy my text, Reload visit)
+- apps/web features/timings WeekForm.tsx - Q1.6 live validation (mode onChange), Save disabled with "Cannot save yet. <Day>: <sentence>"
+- e2e/appointment-actions.spec.ts (Q1.4), e2e/no-silent-failures.spec.ts (Q1.6); e2e/core-loop.spec.ts also covers Q1.2 and Q1.3

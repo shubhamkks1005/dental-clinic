@@ -50,12 +50,12 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q0.6 | Payment safety | Done (see git log "Q0.6") |
 | Q0.7 | Refund rule and balances | BLOCKED (decision D1) |
 | Q0.G | Gate P0 | Passed with exception (Q0.7 open, see STATE.md) |
-| Q1.1 | Visit to bill chain, minimal | Todo (needs decision D2 for the addendum part) |
-| Q1.2 | Ready to bill on receptionist Today | Todo |
-| Q1.3 | Receipts and payments list | Todo |
-| Q1.4 | Cancel, Missed, Reschedule | Todo |
-| Q1.5 | Messages hygiene | Todo (D6) |
-| Q1.6 | No silent failures | Todo |
+| Q1.1 | Visit to bill chain, minimal | SKIPPED: waits for D2 (addendum can add a procedure?) |
+| Q1.2 | Ready to bill on receptionist Today | Done (git log "Q1.2") |
+| Q1.3 | Receipts and payments list | Done (git log "Q1.3") |
+| Q1.4 | Cancel, Missed, Reschedule | Done (git log "Q1.4") |
+| Q1.5 | Messages hygiene | SKIPPED: waits for D6 (reminder timing) |
+| Q1.6 | No silent failures | Done (git log "Q1.6") |
 | Q1.7 | Discount hand-off | Todo |
 | Q1.8 | Data and form rules | Todo (D3) |
 | Q1.9 | Dead Walk-in and wrong-bill path | Todo (D4) |

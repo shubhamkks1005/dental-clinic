@@ -110,6 +110,10 @@ export function DayView({
 
   return (
     <div className="day-view">
+      <p className="muted small day-hint">
+        Tip: drag a card to another time on this day. To pick another day, open the card and choose
+        Reschedule.
+      </p>
       <div
         className="day-timeline"
         ref={scroller}
@@ -160,7 +164,7 @@ export function DayView({
           </div>
         </div>
       </div>
-      <DayDetails row={selected} onClose={() => setSelectedId(null)} />
+      <DayDetails row={selected} onClose={() => setSelectedId(null)} onChanged={onChanged} />
       {error ? <p className="field-error">{error}</p> : null}
       <ConfirmDialog
         open={pending !== null}

@@ -4,7 +4,7 @@ import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { getPatient, type PatientListRow } from "../patients";
-import { bookAppointment, type SuggestedSlot } from "./api";
+import { bookAppointment, rescheduleAppointment, type SuggestedSlot } from "./api";
 import { QuickBookPatient } from "./QuickBookPatient";
 import { useBookSlots } from "./useBookSlots";
 import "./quick-book.css";
@@ -13,6 +13,7 @@ type Prefill = {
   dateLocal: string;
   startMin?: number;
   patientId?: string;
+  visitTypeId?: string;
 };
 
 type Props = {
@@ -21,10 +22,12 @@ type Props = {
   onClose: () => void;
   /** Called with the booked slot so the screen can jump to that day. */
   onBooked: (slot: SuggestedSlot) => void;
+  /** Q1.4: move this appointment instead of booking a new one (same visit type and length). */
+  reschedule?: { id: string; version: number };
 };
 
 // S07 Book appointment — quick dialog (2.4.2): patient → visit type → slot → confirm.
-export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
+export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }: Props) {
   const [patient, setPatient] = useState<PatientListRow | null>(null);
   const [visitTypes, setVisitTypes] = useState<ListItem[]>([]);
   const [visitTypeId, setVisitTypeId] = useState("");
@@ -37,7 +40,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
   useEffect(() => {
     if (!open) return;
     setDateLocal(prefill.dateLocal);
-    setVisitTypeId("");
+    setVisitTypeId(prefill.visitTypeId ?? "");
     setSlot(null);
     setNote("");
     setError(null);
@@ -62,7 +65,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         )
         .catch(() => setPatient(null));
     }
-  }, [open, prefill.dateLocal, prefill.patientId]);
+  }, [open, prefill.dateLocal, prefill.patientId, prefill.visitTypeId]);
 
   const { daySlots, nextSlots, loading } = useBookSlots(open, visitTypeId, dateLocal);
 
@@ -91,14 +94,22 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
     setBusy(true);
     setError(null);
     try {
-      await bookAppointment({
-        patientId: patient.id,
-        visitTypeId,
-        dateLocal: slot.dateLocal,
-        startMin: slot.startMin,
-        source: "phone",
-        complaint: note.trim() || undefined,
-      });
+      if (reschedule) {
+        await rescheduleAppointment(reschedule.id, {
+          version: reschedule.version,
+          dateLocal: slot.dateLocal,
+          startMin: slot.startMin,
+        });
+      } else {
+        await bookAppointment({
+          patientId: patient.id,
+          visitTypeId,
+          dateLocal: slot.dateLocal,
+          startMin: slot.startMin,
+          source: "phone",
+          complaint: note.trim() || undefined,
+        });
+      }
       onBooked(slot);
       onClose();
     } catch (e) {
@@ -111,9 +122,21 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
   }
 
   const canConfirm = Boolean(patient && visitTypeId && slot && !busy);
+  // Q1.6: a disabled button says why.
+  const whyNot = !patient
+    ? "Choose a patient first."
+    : !visitTypeId
+      ? "Choose a visit type."
+      : !slot
+        ? "Pick a time."
+        : null;
 
   return (
-    <Dialog open={open} onClose={onClose} title="Book appointment">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title={reschedule ? "Reschedule appointment" : "Book appointment"}
+    >
       <div className="quick-book">
         <QuickBookPatient
           selected={patient}
@@ -127,7 +150,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
             className="input"
             value={visitTypeId}
             onChange={(e) => setVisitTypeId(e.target.value)}
-            disabled={!patient}
+            disabled={!patient || Boolean(reschedule)}
           >
             <option value="">Choose…</option>
             {visitTypes.map((v) => (
@@ -167,20 +190,23 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
           ) : null}
         </fieldset>
 
-        <label>
-          What they said on the phone
-          <textarea
-            className="input"
-            rows={2}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            maxLength={500}
-            placeholder="Optional note"
-            disabled={!patient}
-          />
-        </label>
+        {reschedule ? null : (
+          <label>
+            What they said on the phone
+            <textarea
+              className="input"
+              rows={2}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              maxLength={500}
+              placeholder="Optional note"
+              disabled={!patient}
+            />
+          </label>
+        )}
 
         {error ? <p className="field-error">{error}</p> : null}
+        {whyNot ? <p className="muted small">{whyNot}</p> : null}
 
         <div className="dialog-actions">
           <button type="button" className="btn" onClick={onClose}>
@@ -192,7 +218,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
             disabled={!canConfirm}
             onClick={() => void confirm()}
           >
-            {busy ? "Booking…" : "Book"}
+            {busy ? "Saving…" : reschedule ? "Move" : "Book"}
           </button>
         </div>
       </div>

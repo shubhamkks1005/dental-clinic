@@ -69,6 +69,10 @@ describe("day close (5.3.9)", () => {
     ).rejects.toThrow(/3 open appointment/);
     const summary = await repos().dayClose.summary(DAY);
     expect(summary.incompleteAppointments).toHaveLength(3);
+    // Q1.4: the blockers list names the patients so the desk can open them.
+    expect(summary.incompleteAppointments.every((a) => /^Fake Day Close/.test(a.patientName))).toBe(
+      true,
+    );
   });
 
   it("closes a 10-payment day with zero difference and locks further entries", async () => {

@@ -1,4 +1,4 @@
-import type { ConsentRow, Page, PageQuery } from "@clinic/shared";
+import type { AppointmentStatus, ConsentRow, Page, PageQuery } from "@clinic/shared";
 import { pageQueryParams } from "@clinic/shared";
 import { api } from "../../api/client";
 
@@ -116,13 +116,15 @@ export type PatientAppointmentRow = {
   startMin: number;
   endMin: number;
   startAt: string;
-  status: string;
+  status: AppointmentStatus;
   visitTypeLabel: string;
   priority: string;
   source: string;
   rescheduledFrom: string | null;
   cancelReason: string | null;
   version: number;
+  visitTypeId: string;
+  updatedAt: string;
 };
 
 export function listPatientAppointments(patientId: string): Promise<PatientAppointmentRow[]> {

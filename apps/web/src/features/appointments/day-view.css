@@ -238,6 +238,10 @@
     align-items: start;
   }
 
+  .day-hint {
+    grid-column: 1 / -1;
+  }
+
   .day-timeline {
     max-height: min(78vh, 860px);
   }

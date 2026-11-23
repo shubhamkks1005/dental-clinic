@@ -140,7 +140,10 @@ export function DailyClosePanel() {
                   <ul className="muted small">
                     {summary.incompleteAppointments.map((a) => (
                       <li key={a.id}>
-                        {a.visitTypeLabel} · {a.status.replace("_", " ")}
+                        <Link to={`/app/patients/${a.patientId}?tab=appointments`}>
+                          {a.patientName}
+                        </Link>{" "}
+                        · {a.visitTypeLabel} · {a.status.replace("_", " ")}
                       </li>
                     ))}
                   </ul>

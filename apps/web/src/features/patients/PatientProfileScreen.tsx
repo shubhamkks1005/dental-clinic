@@ -129,7 +129,7 @@ export function PatientProfileScreen() {
         ) : t.id === "messages" ? (
           <PatientMessagesTab patientId={patient.id} />
         ) : (
-          <PatientAppointmentsTab patientId={patient.id} />
+          <PatientAppointmentsTab patientId={patient.id} patientName={patient.fullName} />
         ),
     }));
 
