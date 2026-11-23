@@ -6552,7 +6552,7 @@ Dental clinic software: ultra detail build plan
 Page 150 of 150
 
 # Phase Q: quality, safety and redesign (added 2026-11-23, runs BEFORE Phase 8)
-Source: the browser audit in docs/ui-audit/ and docs/product-audit/. Full task text, "Done when" tests, design files and the order are in docs/PHASE_Q.md. One task per session, in order. A task is done only after its "Done when" was run in a real browser and pnpm check is green.
+Source: the browser audit in docs/ui-audit/ and docs/product-audit/. Full task text, "Done when" tests, design files and the order are in docs/PHASE_Q.md. The tasks are grouped into 5 PARTS, each done in one long session (Part 1: Q0.1-Q0.7 and Q0.G; Part 2: Q1.1-Q1.6; Part 3: Q1.7-Q1.11 and Q1.G; Part 4: Q2.1-Q2.6; Part 5: Q2.7-Q2.13 and Q4.1). Q3.x is a later phase. Do the tasks of a Part in order, commit after each. A task is done only after its "Done when" was run in a real browser and pnpm check is green.
 Q0.1 Browser tests can run (playwright base URL localhost:8787, Chromium install by owner). Done when: pnpm test:e2e starts and a write spec passes.
 Q0.2 Fix double JSON encoding in six feature api.ts files (C1). Done when: doctor opens a visit, autosaves, adds procedure, diagnosis, medicine, finalises with no 400.
 Q0.3 Prescription Issue uses the fresh version (C3). Done when: add a medicine, Issue works, no 409, reload shows issued.

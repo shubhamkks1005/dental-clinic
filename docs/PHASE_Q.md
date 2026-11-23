@@ -5,8 +5,8 @@ Evidence and reasons: `docs/product-audit/ISSUES.md` (ids like PA-F01), `docs/pr
 
 ## 0. How an AI works in this phase (read all of section 0)
 1. Start: read `docs/RUN_PROMPT.md`, `docs/HANDOFF.md`, then THIS file's section for the task named under "Next task" in HANDOFF. Do not read the whole codebase or all of ISSUES.md. Find files with grep and `docs/MAP.md`.
-2. Do exactly ONE task per session (ids below: Q0.1, Q1.2 ...). Tasks are sized to fit one session. If you have context left after finishing, you may start the next task in order only if the previous one passed its "Done when".
-3. Order is fixed. Never skip ahead. A task marked BLOCKED (needs a decision) is skipped: write it under "Waiting on me" in HANDOFF.md and take the next unblocked task.
+2. Work in **PARTS** (section "The 5 Parts" below). A Part is a batch of tasks done in ONE long session. Do the tasks of the current Part in order, one after another, without waiting for the owner between tasks. Commit locally after EACH task. Stop only when the Part is finished, a task is BLOCKED, or your context is nearly full.
+3. Order is fixed. Never skip ahead to the next Part. A task marked BLOCKED (needs a decision that has no answer yet) is skipped: write it under "Waiting on me" in HANDOFF.md and take the next unblocked task in the same Part. If the context ends mid-Part, the next chat resumes the SAME Part at the first task that is not Done.
 4. **A task is done only when its "Done when" was run in a real browser** (Playwright, `http://localhost:8787`, as every role that can use the screen) and `pnpm check 2>&1 | tail -25` is green. Unit tests alone are not enough: the bugs C1, C3 and C4 passed every unit test.
 5. After each finished task: tick `docs/ui-audit/REVIEW_CHECKLIST.md` for UI tasks, update `docs/ui-audit/AUDIT.md` status of the issues fixed, update `docs/MAP.md`, `docs/STATE.md`, `docs/HANDOFF.md` (done, next task, anything waiting), then **commit locally** with a short message that starts with the task id (example: `Q1.2 Ready to bill on receptionist Today`). Never push. Never apply migrations (list the exact command for the owner).
 6. **Stop and ask (write in HANDOFF "Waiting on me", do not guess) for**: money rules (refund, advance, discount), clinical or legal wording, who may see what, anything marked BLOCKED. This is an exception to the "do not stop to ask" rule in RUN_PROMPT.md.
@@ -14,6 +14,30 @@ Evidence and reasons: `docs/product-audit/ISSUES.md` (ids like PA-F01), `docs/pr
 8. Keep AGENTS.md rules: smallest change for the task, no new dependency, no refactor of untouched code, files under ~300 lines, one rule in one place, fake data only, English UI.
 9. How to run the app for testing (also in `docs/ui-audit/runner/README.md`): Node 26 (`source ~/.nvm/nvm.sh; nvm use system`); migrate and seed a SCRATCH database, not the owner's local one: `pnpm wr d1 migrations apply DB --local --env='' --persist-to <scratch>` in `apps/worker`, then the staging seed in local mode; start `pnpm wr dev --env='' --ip 127.0.0.1 --port 8787 --persist-to <scratch> --test-scheduled`; browse ONLY `http://localhost:8787` (the CSRF guard allows only that origin); sign in with `/api/staff/auth/dev-login?role=doctor` or `receptionist`. The test clock is real time: slots exist only inside clinic hours, so tests must use an Emergency walk-in or tomorrow's date. Run the 5-minute cron by hand with `GET /cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*`.
 10. Designs: see `docs/design/proposal/README.md` (which file is which screen and which task builds it). Read the matching `.dc.html` before writing a UI task. Rebuild it as React; do not copy markup. In the final message say which design file you followed.
+
+## The 5 Parts (the owner wants the whole phase done in about 5 sessions)
+| Part | Tasks | What the clinic gets at the end | Check before the next Part |
+|---|---|---|---|
+| **Part 1: bugs and money safety** | Q0.1, Q0.2, Q0.3, Q0.4, Q0.5, Q0.6, Q0.7, Q0.G | Doctor can open a visit, issue a prescription, receptionist can book without a note, one slip cannot record money, refund balances are right, a browser test guards the main loop | Gate P0 |
+| **Part 2: the daily workflow** | Q1.1, Q1.2, Q1.3, Q1.4, Q1.5, Q1.6 | Visit to bill has no dead end, "Ready to bill" cue, receipts, cancel and reschedule any booking, messages never wrong, no silent failures | `pnpm check` and the flows named in each task |
+| **Part 3: logic, phone and rights** | Q1.7, Q1.8, Q1.9, Q1.10, Q1.11, Q1.G | Discount hand-off, data and form rules, wrong-bill path, phone screens fixed, role matrix test | Gate A |
+| **Part 4: redesign, first half** | Q2.1, Q2.2, Q2.3, Q2.4, Q2.5, Q2.6 | Frame and 8-item sidebar, one vocabulary, Billing hub and Bill, Visit on one screen, both Today screens, Patients list and profile | the matching flows at 360, 768, 1366 px |
+| **Part 5: redesign, second half and polish** | Q2.7, Q2.8, Q2.9, Q2.10, Q2.11, Q2.12, Q2.13, Q4.1 | Calendar and Book dialog, Messages, New patient, one input family, phone and tablet chrome, Reports, **Settings and Library**, polish | all flows re-run; phase done |
+Q3.1 to Q3.6 (advance on purpose, late entry, manual charge, audit of unseen areas, portal, customer discovery) are NOT in the 5 Parts. They are a later phase, started only when the owner asks.
+Honest note for the owner: a Part is big. If a chat runs out of context in the middle of a Part, start a new chat with the same prompt; it resumes at the first task not Done. So 5 Parts may take about 6 to 9 chats in practice, but the work and the order do not change.
+
+## Proposed defaults for the decisions (so no Part waits)
+The AI must not guess these itself. The owner can answer each one, or accept ALL of these at once by saying: "I accept all proposed defaults in docs/PHASE_Q.md". The AI then writes them in `docs/DECISIONS.md` with the date and marks "owner accepted".
+| Id | Proposed default | Why |
+|---|---|---|
+| D1 | A refund re-opens the due amount: refunding ₹500 on a paid bill makes the bill due ₹500 again and Outstanding goes up by ₹500; the statement lists payments and refunds; a bill with no net payment can be cancelled | Matches how a desk thinks: money returned means the patient owes again. CA to confirm |
+| D2 | An addendum cannot add a procedure; procedures must be added before Finalise (the dialog warns) | Simplest and keeps finalised records locked |
+| D3 | Gender has no default and a choice is required (Male, Female, Other) | Avoids silent wrong entry |
+| D4 | The receptionist can only ask the doctor to cancel a bill; she cannot open Settings > Medicines or Billing | Least access |
+| D5 | A bill created from a finalised visit is issued directly; a draft only when "Review first" is chosen | One step less |
+| D6 | Confirmation when booked; reminder created for 17:00 the day before and hidden until due | Matches the existing setting |
+| D7 | Doctor and receptionist may use all three widths; fix phone and tablet in Part 3 and Part 5 | No information |
+| D8 | Advance payments are wanted (done later in Q3.1) | Not needed for Parts 1-5 |
 
 ## Status board (update after each task: Todo, Done with commit hash, Blocked)
 | Task | Title | Status |

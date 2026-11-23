@@ -9,7 +9,7 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
 
 ## Next task
-**Q0.1 Browser tests can run.** Full text and "Done when" in docs/PHASE_Q.md section 1. Then Q0.2, Q0.3, Q0.4, Q0.5, Q0.6 in that order. Q0.7 is BLOCKED until the owner answers D1.
+**Part 1 (bugs and money safety): Q0.1, Q0.2, Q0.3, Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
 
 ## Done in Phase Q
 (nothing yet; add one line per finished task: id, commit hash, date)
@@ -27,7 +27,8 @@ Node 26: `source ~/.nvm/nvm.sh; nvm use system`. Use a SCRATCH database (`--pers
 Check: `pnpm check 2>&1 | tail -25`.
 
 ## Prompts the owner gives a new AI (one line is enough)
-1. Every normal session: **"Read docs/RUN_PROMPT.md and continue from docs/HANDOFF.md."**
-2. If the AI asks which task: **"Do the task named under Next task in docs/HANDOFF.md, following docs/PHASE_Q.md. Stop when the task passes its Done-when or when your context is nearly full; update HANDOFF.md and commit locally first."**
+1. Every session: **"Read docs/RUN_PROMPT.md and continue from docs/HANDOFF.md."** The AI then does the whole Part named under Next task.
+2. If the AI asks what to do: **"Do the whole Part named under Next task in docs/HANDOFF.md, following docs/PHASE_Q.md, task by task, committing locally after each. Stop only when the Part is done, a task is blocked, or your context is nearly full; then update HANDOFF.md first."**
+2b. To answer all decisions at once: **"I accept all proposed defaults in docs/PHASE_Q.md. Write them in docs/DECISIONS.md and continue."**
 3. After the owner answered a decision: **"Read docs/HANDOFF.md. I decided D1: <answer>. Write it in docs/DECISIONS.md, unblock the task in docs/PHASE_Q.md and continue."**
 4. For a check-only session: **"Read docs/RUN_PROMPT.md. Run the Gate named in docs/HANDOFF.md using docs/ui-audit/runner/ and report; change no app code."**
