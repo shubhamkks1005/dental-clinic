@@ -25,6 +25,17 @@ export type DashboardTotals = {
   cancelled: number;
 };
 
+/** Fixed top-4 KPIs (DRAFT until 6.1.1 sister pick). */
+export type DashboardKpis = {
+  todayArrived: number;
+  prevTodayArrived: number;
+  monthNew: number;
+  prevMonthNew: number;
+  monthCollectedPaise: number;
+  prevMonthCollectedPaise: number;
+  outstandingPaise: number;
+};
+
 /** Prepared payload for the doctor dashboard (no patient names). */
 export type DashboardPayload = {
   range: ResolvedDashboardRange;
@@ -35,6 +46,7 @@ export type DashboardPayload = {
   procedures: DashboardDimTotal[];
   referrals: DashboardDimTotal[];
   collectedByMode: DashboardDimTotal[];
+  kpis: DashboardKpis;
   /** Rows returned from stats tables (+ live today aggregates counted as 1 each). */
   rowsRead: number;
 };
@@ -59,6 +71,7 @@ export function buildDashboardFromCells(
   cells: StatCell[],
   compareCells: StatCell[],
   rowsRead: number,
+  kpis: DashboardKpis,
 ): DashboardPayload {
   const { series, totals, apptStatus, procedures, referrals, collectedByMode } = foldCells(cells);
   const compareTotals =
@@ -72,6 +85,7 @@ export function buildDashboardFromCells(
     procedures: topN(procedures, 8),
     referrals: topN(referrals, 6),
     collectedByMode: topN(collectedByMode, 10),
+    kpis,
     rowsRead,
   };
 }

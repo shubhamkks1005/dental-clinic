@@ -14,6 +14,9 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.2.5 DONE locally (edge tests: IST 23:30, legacy not new, walk-in excl. from no-show %, refund vs collected, cancelled bill not billed; noshow_count/noshow_arrived metrics). No migration.
 6.3.1 DONE locally (GET /api/staff/dashboard prepared arrays; daily_stats + live today; Cache-Control private max-age=60; rowsRead <2000 test; receptionist 403). No migration.
 6.3.2 DONE locally (SVG chart kit: bar, stacked, line, heatmap, KPI, sparkline; table toggle + keyboard; style-guide demos; no chart library). No migration.
+6.3.3 DONE locally (S10 doctor dashboard: 4 KPI tiles, charts from /dashboard, attention stubs). No migration.
+6.3.4 DONE locally (range chips today/7d/this_month/last_month/12m/custom + compare). No migration.
+6.3.5 DONE locally (growthNote/growthView thin-data rule; KPI notes always show counts). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**

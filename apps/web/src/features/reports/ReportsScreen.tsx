@@ -1,16 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { DashboardPayload, DashboardRangePreset } from "@clinic/shared";
 import { problemText } from "../../api/problem-text";
 import { useMe } from "../auth";
 import { useToast } from "../../ui/Toast";
-import { recomputeStats } from "./api";
+import { AttentionList } from "./AttentionList";
+import { fetchDashboard, recomputeStats } from "./api";
+import { DashboardCharts } from "./DashboardCharts";
+import { DashboardKpis } from "./DashboardKpis";
+import { RangeControls } from "./RangeControls";
 import "./reports.css";
 
-/** S10 Reports — sample-data label until dashboard (6.3); recompute control (6.2.3). */
+/** S10 Reports / doctor dashboard (6.3.3–6.3.5). */
 export function ReportsScreen() {
   const { permissions } = useMe();
   const toast = useToast();
-  const [busy, setBusy] = useState(false);
   const canFull = permissions.includes("reports.full");
+  const [range, setRange] = useState<DashboardRangePreset>("this_month");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [compare, setCompare] = useState(false);
+  const [data, setData] = useState<DashboardPayload | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!canFull) return;
+    if (range === "custom" && (!from || !to)) return;
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    void fetchDashboard({ range, from, to, compare })
+      .then((d) => {
+        if (!cancelled) setData(d);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(problemText(err));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [canFull, range, from, to, compare]);
 
   async function onRecompute() {
     if (busy) return;
@@ -18,6 +51,8 @@ export function ReportsScreen() {
     try {
       const { days } = await recomputeStats();
       toast({ text: `Stats updated for ${days.join(", ")}.`, tone: "ok" });
+      const d = await fetchDashboard({ range, from, to, compare });
+      setData(d);
     } catch (err) {
       toast({ text: problemText(err), tone: "error" });
     } finally {
@@ -25,22 +60,54 @@ export function ReportsScreen() {
     }
   }
 
+  if (!canFull) {
+    return (
+      <div className="reports-page">
+        <header className="reports-header">
+          <h1>Reports</h1>
+        </header>
+        <p className="notice warning">
+          The full dashboard is for the doctor. Ask them for the clinic summary, or use Today for
+          today&apos;s queue.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="reports-page">
+    <div className="reports-page reports-page-wide">
       <header className="reports-header">
         <h1>Reports</h1>
-        <p className="reports-sample">Sample data</p>
+        <p className="reports-sample">Clinic totals</p>
       </header>
-      <p className="reports-lead">
-        Dashboard charts come next. You can refresh clinic totals for the last three days now.
-      </p>
-      {canFull ? (
+
+      <RangeControls
+        range={range}
+        from={from}
+        to={to}
+        compare={compare}
+        onRange={setRange}
+        onFrom={setFrom}
+        onTo={setTo}
+        onCompare={setCompare}
+      />
+
+      <div className="dash-toolbar">
         <button type="button" className="btn" disabled={busy} onClick={() => void onRecompute()}>
           {busy ? "Updating…" : "Recompute now"}
         </button>
-      ) : (
-        <p className="notice warning">Only the doctor can recompute full reports.</p>
-      )}
+        {loading ? <span className="muted">Loading…</span> : null}
+      </div>
+
+      {error ? <p className="notice error">{error}</p> : null}
+
+      {data ? (
+        <>
+          <DashboardKpis kpis={data.kpis} />
+          <DashboardCharts data={data} />
+          <AttentionList />
+        </>
+      ) : null}
     </div>
   );
 }

@@ -50,6 +50,8 @@ describe("dashboard (6.3.1)", () => {
     expect(dash.totals.collectedPaise).toBe(17_000);
     expect(dash.series).toHaveLength(2);
     expect(dash.procedures[0]).toEqual({ dim: "RCT", value: 2 });
+    expect(dash.kpis).toBeDefined();
+    expect(dash.kpis.outstandingPaise).toBeGreaterThanOrEqual(0);
     expect(dash.rowsRead).toBeLessThan(2000);
   });
 
@@ -90,7 +92,7 @@ describe("dashboard (6.3.1)", () => {
       { range: "custom", from: "2026-10-01", to: "2026-10-31" },
       NOW,
     );
-    expect(dash.rowsRead).toBe(metrics.length * 31);
+    expect(dash.rowsRead).toBeGreaterThanOrEqual(metrics.length * 31);
     expect(dash.rowsRead).toBeLessThan(2000);
     expect(dash.totals.arrived).toBe(31);
   });

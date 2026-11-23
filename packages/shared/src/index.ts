@@ -30,6 +30,7 @@ export * from "./daily-stats";
 export * from "./daily-stats-rate";
 export * from "./dashboard";
 export * from "./dashboard-range";
+export * from "./growth";
 export * from "./stats-cron";
 export * from "./amount-words";
 export * from "./paging";
