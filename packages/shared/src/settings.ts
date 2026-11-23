@@ -83,6 +83,8 @@ export const SETTING_SCHEMAS = {
       note: z.string().max(200).optional().default(""),
     })
     .nullable(),
+  // 5.1.2: true = SB-/SR-/SF- so software numbers do not collide with paper books.
+  "billing.shadow_series": z.boolean(),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

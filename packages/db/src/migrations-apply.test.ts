@@ -67,6 +67,7 @@ describe("migrations on an empty database (1.2.3)", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
     expect(rows.map((r) => r.key)).toEqual([
       "appointments.book_ahead_days",
+      "billing.shadow_series",
       "chart.view",
       "clinic.address",
       "clinic.holidays",

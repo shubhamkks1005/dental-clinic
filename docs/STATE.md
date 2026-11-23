@@ -5,6 +5,7 @@ PLAN: Phase 5 bills / payments / dues / receipts. Permissions: AUTH_PLAN 4f in p
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
+5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
@@ -232,7 +233,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0032–0036** with 0006–0031
+- Staging: apply migrations **0032–0037** with 0006–0031
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes

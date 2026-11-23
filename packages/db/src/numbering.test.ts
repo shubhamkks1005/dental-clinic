@@ -1,4 +1,4 @@
-import { newUlid } from "@clinic/shared";
+import { formatBillingNo, newUlid } from "@clinic/shared";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Db } from "./client";
@@ -80,6 +80,32 @@ describe("gap-free numbering (1.2.4)", () => {
     ]);
     const [row] = await db.select({ code: docs.code }).from(docs);
     expect(row?.code).toBe("P-000001");
+  });
+});
+
+describe("billing number series (5.1.2)", () => {
+  it("50 parallel bill counters get 1..50 with no gaps; format uses B- or SB-", async () => {
+    const period = "2026-27";
+    await Promise.all(
+      Array.from({ length: 50 }, async () => {
+        const { bump, value } = takeNumber(db, "bill", period, "system");
+        await db.batch([
+          bump,
+          db.insert(docs).values({
+            id: newUlid(),
+            period,
+            number: value,
+            code: "x",
+            note: "ok",
+          }),
+        ]);
+      }),
+    );
+    const nums = await numbers();
+    expect(nums).toEqual(Array.from({ length: 50 }, (_, i) => i + 1));
+    expect(counterValue("bill", period)).toBe(50);
+    expect(formatBillingNo("bill", period, 1, false)).toBe("B-2627-000001");
+    expect(formatBillingNo("bill", period, 50, true)).toBe("SB-2627-000050");
   });
 });
 

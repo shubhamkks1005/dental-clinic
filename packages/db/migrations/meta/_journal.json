@@ -260,6 +260,13 @@
       "when": 1795464000000,
       "tag": "0036_certificates",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "6",
+      "when": 1795450000000,
+      "tag": "0037_billing_shadow_series",
+      "breakpoints": true
     }
   ]
 }

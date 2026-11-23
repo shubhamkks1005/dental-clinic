@@ -343,6 +343,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (uses clinicWorkingIntervals; next 5 in 14 days)
 - src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
 - src/money.test.ts - grouping, paise, negative, refuses fractions
+- src/billing-numbers.ts - 5.1.2 formatBillingNo / shortFinancialYear (B/R/F or shadow S*)
+- src/billing-numbers.test.ts - series shape and shadow prefix
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, toMinutes/toHhmm, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ privacy_notice, book_ahead, stale_months, chart.view); isSettingKey, parseSettingValue
