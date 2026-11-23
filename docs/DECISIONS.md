@@ -222,3 +222,13 @@
 - 2026-11-24 - **Q1.3 Payments:** the receipt no longer opens a new tab by itself (pop-up blockers); a toast says "₹500 recorded. Receipt SR-... Print". Bill screen now holds the payment form and takes the patient's whole balance, oldest bill first, as the server already does - agent (Q1.3)
 - 2026-11-24 - **Q1.4 Missed:** "Missed" is the existing no_show status. It now needs a short reason, stored in the appointment's cancel_reason and the audit row (no migration). Cancel uses the existing /cancel route and its reason list (Other needs a note). Reschedule uses the existing reschedule route, so the chain is kept. Missed stays disabled until 15 minutes after the start (existing rule) - agent (Q1.4)
 - 2026-11-24 - **Q1.6 Visit conflict:** on a version conflict (409) autosave stops, the typed text stays in the form, the banner offers Copy my text and Reload visit. No automatic merge - agent (Q1.6)
+
+## Phase Q decisions D1 to D8 (2026-11-24, owner accepted the proposed defaults in docs/PHASE_Q.md; D1 refund rule still to be confirmed by the CA)
+- 2026-11-24 - **D1 Refund rule:** a refund re-opens the due amount. Refunding 500 on a paid bill makes the bill due 500 again and Outstanding goes up by 500; the statement lists payments and refunds; a bill with no net payment can be cancelled. Owner accepted; D1 refund rule still to be confirmed by the CA.
+- 2026-11-24 - **D2 Addendum:** an addendum cannot add a procedure; procedures must be added before Finalise (the dialog warns). Owner accepted.
+- 2026-11-24 - **D3 Gender:** no default; a choice is required (Male, Female, Other). Owner accepted.
+- 2026-11-24 - **D4 Receptionist rights:** the receptionist can only ask the doctor to cancel a bill; she cannot open Settings > Medicines or Billing. Owner accepted.
+- 2026-11-24 - **D5 Bill from a finalised visit:** issued directly; a draft only when "Review first" is chosen. Owner accepted.
+- 2026-11-24 - **D6 Reminders:** confirmation when booked; reminder created for 17:00 the day before and hidden until due. Owner accepted.
+- 2026-11-24 - **D7 Devices:** doctor and receptionist may use all three widths; phone and tablet fixed in Part 3 and Part 5. Owner accepted.
+- 2026-11-24 - **D8 Advance payments:** wanted, built later in Q3.1. Owner accepted.
