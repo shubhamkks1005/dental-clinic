@@ -455,6 +455,21 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "bills.create" },
   },
   {
+    method: "GET",
+    path: "/api/staff/day-close",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/day-close",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/day-close/reopen",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
+  {
     method: "POST",
     path: "/api/staff/refunds",
     access: { kind: "permission", action: "bills.adjust" },

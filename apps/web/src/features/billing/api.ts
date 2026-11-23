@@ -13,6 +13,44 @@ export type DuesRow = {
   lastCallOn: string | null;
 };
 
+export type DayCloseSummary = {
+  dayLocal: string;
+  modeTotals: Record<string, number>;
+  cashExpectedPaise: number;
+  digitalPaise: number;
+  totalPaise: number;
+  paymentCount: number;
+  closed: boolean;
+  close: {
+    id: string;
+    cashCountedPaise: number;
+    differencePaise: number;
+    note: string;
+    closedBy: string;
+    closedAt: string;
+  } | null;
+};
+
+export function getDayClose(dayLocal: string) {
+  return api<{ summary: DayCloseSummary }>(
+    `/api/staff/day-close?date=${encodeURIComponent(dayLocal)}`,
+  ).then((r) => r.summary);
+}
+
+export function closeDay(input: { dayLocal: string; cashCountedPaise: number; note?: string }) {
+  return api<{ summary: DayCloseSummary }>("/api/staff/day-close", {
+    method: "POST",
+    body: input,
+  }).then((r) => r.summary);
+}
+
+export function reopenDay(dayLocal: string, reason: string) {
+  return api<{ summary: DayCloseSummary }>("/api/staff/day-close/reopen", {
+    method: "POST",
+    body: { dayLocal, reason },
+  }).then((r) => r.summary);
+}
+
 export function listDues() {
   return api<{
     rows: DuesRow[];

@@ -38,6 +38,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "certificates",
       "consents",
       "counters",
+      "day_closes",
       "dues_calls",
       "files",
       "list_items",

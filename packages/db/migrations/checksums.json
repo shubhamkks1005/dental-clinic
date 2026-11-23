@@ -40,5 +40,6 @@
   "0038_bills.sql": "76e3a45a9f9eeb3e38a4fafae1ccbe162ad227b18ffdc626986cff43a3df4553",
   "0039_payments.sql": "02c44407183e7dbdfc737ec3b4cce0418d80703cabb7baa72f25c31f94accc6b",
   "0040_billing_gst_mode.sql": "34ded396d81e1137198d3a733144b995f75b4d475300542c50335873c88af43d",
-  "0041_dues_calls.sql": "4f0c9c935d63cf35f9da7915b99aaaa7f98a54ac7ab24bc3c87447364d09dba1"
+  "0041_dues_calls.sql": "4f0c9c935d63cf35f9da7915b99aaaa7f98a54ac7ab24bc3c87447364d09dba1",
+  "0042_day_closes.sql": "cfce6c0f72f0b4e2d59c24fb0c8436dd072ff127df0c93f14ab5cf7a0ac84bda"
 }

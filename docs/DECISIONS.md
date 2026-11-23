@@ -148,3 +148,4 @@
 - 2026-11-23 - **5.3.6 Discount approval:** Draft may carry unapproved discount+reason; issue requires discountApprovedBy. Receptionist requests; doctor approves via bills.adjust. No advertising (DCI). - agent (5.3.6)
 - 2026-11-23 - **5.3.7 Refund UI:** Doctor-only panel on patient Billing tab; lists refundable payments; reason+mode required. - agent (5.3.7)
 - 2026-11-23 - **5.3.8 Cancel UI:** Doctor cancels draft/issued unpaid bills with reason; paid bills must refund first; number retained. - agent (5.3.8)
+- 2026-11-23 - **5.3.9 Day close:** Close locks day_local for new payments unless lateEntry or doctor reopen (bills.adjust). Difference ≠ 0 needs a note. Split payments count into both modes. Mig 0042. - agent (5.3.9)

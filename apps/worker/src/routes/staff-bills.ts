@@ -3,8 +3,10 @@ import { Hono } from "hono";
 import {
   approveBillDiscount,
   cancelBill,
+  closeDay,
   createBill,
   createBillFromVisit,
+  dayCloseSummary,
   getBill,
   issueBill,
   listDues,
@@ -13,6 +15,7 @@ import {
   recordDuesCall,
   recordPayment,
   recordRefund,
+  reopenDay,
   requestBillDiscount,
 } from "../domain/bills";
 import { signedIn } from "../http";
@@ -105,6 +108,29 @@ staffBills.post("/payments", async (c) => {
   const result = await recordPayment(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ payment: result.payment }), 201);
+});
+
+staffBills.get("/day-close", async (c) => {
+  const day = c.req.query("date") ?? "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) {
+    return c.json(fail("invalid", "Pick a date as YYYY-MM-DD."), 400);
+  }
+  const result = await dayCloseSummary(signedIn(c).repos, day);
+  return c.json(ok({ summary: result.summary }));
+});
+
+staffBills.post("/day-close", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await closeDay(signedIn(c).repos, body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ summary: result.summary }), 201);
+});
+
+staffBills.post("/day-close/reopen", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await reopenDay(signedIn(c).repos, body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ summary: result.summary }));
 });
 
 staffBills.post("/refunds", async (c) => {

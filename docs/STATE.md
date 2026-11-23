@@ -15,6 +15,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
 5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.9 DONE locally (daily cash close by mode; counted cash; note if difference; lock day; late entry; doctor reopen; print). **Migration `0042_day_closes.sql` — owner applies.**
 5.3.8 DONE locally (doctor cancel UI on BillScreen; paid bills blocked; number kept). No migration.
 5.3.7 DONE locally (doctor refund UI on Billing tab; payments list + full refund path test). No migration.
 5.3.6 DONE locally (discount request + doctor approve; issue blocked until approved; receptionist cannot approve). No migration.
@@ -232,7 +233,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0041 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0042 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -252,7 +253,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0032–0041** with 0006–0031
+- Staging: apply migrations **0032–0042** with 0006–0031
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes

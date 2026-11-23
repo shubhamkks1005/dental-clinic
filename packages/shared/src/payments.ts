@@ -21,6 +21,8 @@ const recordPaymentSchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a date like 2026-11-23")
     .optional(),
+  /** 5.3.9: allow posting to a closed day as a late entry (notes tagged). */
+  lateEntry: z.boolean().optional().default(false),
 });
 
 export type RecordPaymentInput = z.input<typeof recordPaymentSchema>;

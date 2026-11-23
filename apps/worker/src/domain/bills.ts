@@ -1,10 +1,12 @@
 import type { Repos } from "@clinic/db";
 import {
   parseApproveBillDiscount,
+  parseCloseDay,
   parseCreateBill,
   parseDuesCall,
   parseRecordPayment,
   parseRecordRefund,
+  parseReopenDay,
   parseRequestBillDiscount,
 } from "@clinic/shared";
 
@@ -105,4 +107,23 @@ export async function approveBillDiscount(repos: Repos, id: string, body: unknow
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const bill = await repos.bills.approveDiscount(id, parsed.value);
   return { ok: true as const, bill };
+}
+
+export async function dayCloseSummary(repos: Repos, dayLocal: string) {
+  const summary = await repos.dayClose.summary(dayLocal);
+  return { ok: true as const, summary };
+}
+
+export async function closeDay(repos: Repos, body: unknown) {
+  const parsed = parseCloseDay(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const summary = await repos.dayClose.close(parsed.value);
+  return { ok: true as const, summary };
+}
+
+export async function reopenDay(repos: Repos, body: unknown) {
+  const parsed = parseReopenDay(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const summary = await repos.dayClose.reopen(parsed.value);
+  return { ok: true as const, summary };
 }

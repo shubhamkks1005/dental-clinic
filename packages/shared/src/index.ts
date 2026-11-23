@@ -23,6 +23,7 @@ export * from "./billing";
 export * from "./bill-discount";
 export * from "./payments";
 export * from "./dues";
+export * from "./day-close";
 export * from "./amount-words";
 export * from "./paging";
 export * from "./patient-age";

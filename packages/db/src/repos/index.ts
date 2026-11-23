@@ -49,6 +49,7 @@ import { billsFromVisitRepo } from "./bills-from-visit";
 import { billsDuesListRepo } from "./bills-dues-list";
 import { billsDiscountRepo } from "./bills-discount";
 import { duesCallsRepo } from "./dues-calls";
+import { dayCloseRepo } from "./day-close";
 import { paymentsCreateRepo } from "./payments-create";
 import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { paymentsListRepo } from "./payments-list";
@@ -129,6 +130,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...refundsCreateRepo(db, ctx),
     },
     duesCalls: duesCallsRepo(db, ctx),
+    dayClose: dayCloseRepo(db, ctx),
   };
 }
 

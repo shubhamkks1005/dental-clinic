@@ -237,6 +237,16 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/patients/:id/dues-calls" && method === "POST") {
     return JSON.stringify({ note: "Fake matrix call note" });
   }
+  if (path === "/api/staff/day-close" && method === "POST") {
+    return JSON.stringify({
+      dayLocal: "2026-11-23",
+      cashCountedPaise: 0,
+      note: "",
+    });
+  }
+  if (path === "/api/staff/day-close/reopen" && method === "POST") {
+    return JSON.stringify({ dayLocal: "2026-11-23", reason: "Matrix reopen" });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

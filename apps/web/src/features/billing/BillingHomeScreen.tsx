@@ -1,6 +1,7 @@
 import { formatRupees, type DueAgeBucket } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
+import { DailyClosePanel } from "./DailyClosePanel";
 import { listDues, recordDuesCall, type DuesRow } from "./api";
 
 const BUCKET_LABEL: Record<DueAgeBucket, string> = {
@@ -151,6 +152,8 @@ export function BillingHomeScreen() {
           Find a patient
         </Link>
       </p>
+
+      <DailyClosePanel />
     </section>
   );
 }

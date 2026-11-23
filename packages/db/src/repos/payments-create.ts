@@ -17,6 +17,7 @@ import { assertAllowed } from "../permissions";
 import { patients, paymentAllocations, payments, settings } from "../schema";
 import { nowUtcSql } from "../sql";
 import { openBillDues } from "./bills-dues";
+import { isDayClosed } from "./day-close";
 
 async function shadowSeries(db: Db): Promise<boolean> {
   const row = await db
@@ -93,6 +94,19 @@ export function paymentsCreateRepo(db: Db, ctx: Ctx) {
 
       const advancePaise = unallocatedPaise(amountPaise, allocations);
       const dayLocal = input.dayLocal ?? istDate(new Date());
+      const closed = await isDayClosed(db, dayLocal);
+      if (closed && !input.lateEntry) {
+        throw new InvalidError(
+          "This day is closed. Use a late entry or ask the doctor to reopen it.",
+        );
+      }
+      const baseNotes = input.notes ?? "";
+      const notes =
+        closed && input.lateEntry
+          ? baseNotes
+            ? `late entry · ${baseNotes}`
+            : "late entry"
+          : baseNotes;
       const period = financialYearOf(new Date());
       const shadow = await shadowSeries(db);
       const { bump, value } = takeNumber(db, "receipt", period, ctx.userId);
@@ -125,7 +139,7 @@ export function paymentsCreateRepo(db: Db, ctx: Ctx) {
           receivedAt: nowUtcSql,
           receivedBy: ctx.userId,
           dayLocal,
-          notes: input.notes ?? "",
+          notes,
           createdBy: ctx.userId,
           updatedBy: ctx.userId,
         }),
