@@ -39,3 +39,15 @@ describe("formatMoney and plural", () => {
     expect(plural(2, "person", "people")).toBe("2 people");
   });
 });
+
+describe("formatWaiting (Today rows)", () => {
+  it("reads in hours once it is long, not 623 min", async () => {
+    const { formatWaiting } = await import("./appointment-queue");
+    const now = new Date("2026-11-24T10:00:00Z");
+    const ago = (min: number) => new Date(now.getTime() - min * 60_000).toISOString();
+    expect(formatWaiting(ago(0), now)).toBe("Waiting under 1 min");
+    expect(formatWaiting(ago(1), now)).toBe("Waiting 1 min");
+    expect(formatWaiting(ago(12), now)).toBe("Waiting 12 min");
+    expect(formatWaiting(ago(623), now)).toBe("Waiting 10 h 23 min");
+  });
+});

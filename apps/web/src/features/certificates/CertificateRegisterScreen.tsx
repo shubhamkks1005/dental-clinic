@@ -1,4 +1,5 @@
-import { formatDisplayDate, istDate } from "@clinic/shared";
+import { statusWord } from "@clinic/shared";
+import { formatDate } from "../../ui/format";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { problemText } from "../../api/problem-text";
@@ -42,8 +43,8 @@ export function CertificateRegisterScreen() {
                 <strong>{c.certNo ?? "—"}</strong>
                 <span className="muted">
                   {" "}
-                  · {c.patientName} · {c.status}
-                  {c.finalisedAt ? ` · ${formatDisplayDate(istDate(new Date(c.finalisedAt)))}` : ""}
+                  · {c.patientName} · {statusWord("visit", c.status).label}
+                  {c.finalisedAt ? ` · ${formatDate(new Date(c.finalisedAt))}` : ""}
                 </span>
                 {canWrite && c.diagnosis ? (
                   <p className="muted small">Diagnosis: {c.diagnosis}</p>

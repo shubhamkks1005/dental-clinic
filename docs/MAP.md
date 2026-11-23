@@ -192,6 +192,7 @@
 - src/ui/OfflineBanner.tsx + src/ui/use-online.ts - "No internet connection. Don't close this page..." bar on every page while offline
 - src/api/session-end.ts (+ test) - startPageAfter401: staff page -> "/?signed_out=timeout" (timed out) or "/"; start page and portal never redirect
 - src/features/auth/ - staff sign-in screens: LandingPage (S20 Start: Clinic staff "Sign in with Google", Patients "Coming soon"; "signed out after a period of inactivity" notice; dev links only in Vite dev), AccessDenied (S21), ClinicBrand (public branding), RequireStaff + useMe (staff screens only after /me), UserCard ("Name · Role" + Sign out, 1.3.7) + user-card.css, api.ts, auth.css
+- src/features/history/history-status.ts (+ test) - history row status to shared words
 - src/features/library/ - placeholder Library page (doctor only) until Q2.13
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible

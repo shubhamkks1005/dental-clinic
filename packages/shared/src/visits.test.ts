@@ -14,7 +14,7 @@ import {
 describe("visits (3.2.1)", () => {
   it("lists draft, final, void", () => {
     expect([...VISIT_STATUSES]).toEqual(["draft", "final", "void"]);
-    expect(VISIT_STATUS_LABEL.final).toBe("Finalised");
+    expect(VISIT_STATUS_LABEL.final).toBe("Final");
   });
 
   it("accepts open body with optional appointment", () => {

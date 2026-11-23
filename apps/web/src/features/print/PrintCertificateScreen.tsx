@@ -1,6 +1,7 @@
 import {
   CERTIFICATE_DRAFT_BANNER,
   formatDisplayDate,
+  statusWord,
   istDate,
   registrationMissing,
 } from "@clinic/shared";
@@ -98,7 +99,7 @@ export function PrintCertificateScreen() {
         <div>
           <h1>Medical certificate</h1>
           <p className="muted">
-            {cert.certNo ?? "No number"} · {cert.status}
+            {cert.certNo ?? "No number"} · {statusWord("visit", cert.status).label}
           </p>
         </div>
         <div className="print-actions">

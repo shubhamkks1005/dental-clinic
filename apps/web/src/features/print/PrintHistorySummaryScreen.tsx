@@ -1,4 +1,4 @@
-import { istDate } from "@clinic/shared";
+import { formatDisplayDate, istDate, statusWord } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
@@ -143,8 +143,8 @@ export function PrintHistorySummaryScreen() {
             ) : (
               summary.visits.map((v) => (
                 <tr key={v.id}>
-                  <td>{v.visitDateLocal}</td>
-                  <td>{v.status}</td>
+                  <td>{formatDisplayDate(v.visitDateLocal)}</td>
+                  <td>{statusWord("visit", v.status).label}</td>
                   <td>
                     {[v.chiefComplaint, v.diagnoses.join("; ")].filter(Boolean).join(" · ") || "—"}
                   </td>
@@ -174,10 +174,10 @@ export function PrintHistorySummaryScreen() {
             ) : (
               summary.treatments.map((r) => (
                 <tr key={r.id}>
-                  <td>{r.createdOn}</td>
+                  <td>{formatDisplayDate(r.createdOn)}</td>
                   <td>{r.procedureLabel}</td>
                   <td>{r.toothFdi ?? "—"}</td>
-                  <td>{r.status}</td>
+                  <td>{statusWord("visit", r.status).label}</td>
                   <td>{r.estimateLabel}</td>
                 </tr>
               ))

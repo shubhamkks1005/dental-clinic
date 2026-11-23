@@ -18,7 +18,7 @@ const APPOINTMENT: Record<string, StatusWord> = {
 const VISIT: Record<string, StatusWord> = {
   draft: { label: "Draft", tone: "upcoming" },
   final: { label: "Final", tone: "done" },
-  void: { label: "Cancelled", tone: "upcoming", struck: true },
+  void: { label: "Void", tone: "upcoming", struck: true },
 };
 
 const BILL: Record<string, StatusWord> = {

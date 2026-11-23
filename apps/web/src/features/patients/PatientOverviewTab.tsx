@@ -1,4 +1,5 @@
-import { displayMobile, formatClockTime, formatDisplayDate } from "@clinic/shared";
+import { displayMobile, formatClockTime } from "@clinic/shared";
+import { formatDate } from "../../ui/format";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
@@ -66,7 +67,7 @@ export function PatientOverviewTab({
           <p className="muted">Checking…</p>
         ) : next ? (
           <p>
-            <strong>{formatDisplayDate(next.dateLocal)}</strong>, {formatClockTime(next.startMin)} ·{" "}
+            <strong>{formatDate(next.dateLocal)}</strong>, {formatClockTime(next.startMin)} ·{" "}
             {next.visitTypeLabel}
           </p>
         ) : (

@@ -4,6 +4,7 @@ import {
   medicineSnapshot,
   parseMedicineSetItems,
   prescriptionSafetyWarnings,
+  statusWord,
   type ListItem,
   type PrescriptionItemInput,
 } from "@clinic/shared";
@@ -458,7 +459,7 @@ export function VisitMedicinesPanel({ visitId, patientId, canWrite }: Props) {
 
       {rx && (
         <p className="muted small">
-          Status: {rx.status}
+          Status: {statusWord("visit", rx.status).label}
           {rx.rxNo ? ` · ${rx.rxNo}` : ""}
         </p>
       )}

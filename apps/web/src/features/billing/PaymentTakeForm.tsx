@@ -190,8 +190,8 @@ export function PaymentTakeForm({
           </label>
           {Number.isFinite(typedPaise) && typedPaise > 0 && Number.isFinite(splitPaise) ? (
             <p className="muted small" style={{ alignSelf: "end" }}>
-              {mode}: ₹{((typedPaise - splitPaise) / 100).toFixed(0)} · {splitMode}: ₹
-              {(splitPaise / 100).toFixed(0)}
+              {mode}: {formatRupees(typedPaise - splitPaise)} · {splitMode}:{" "}
+              {formatRupees(splitPaise)}
             </p>
           ) : null}
         </div>

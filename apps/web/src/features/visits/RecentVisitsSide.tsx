@@ -1,6 +1,6 @@
-import { VISIT_STATUS_LABEL } from "@clinic/shared";
 import { Link } from "react-router";
-import { StatusBadge } from "../../ui/StatusBadge";
+import { formatDate } from "../../ui/format";
+import { StatusLabel } from "../../ui/StatusLabel";
 import type { VisitRecent } from "./api";
 
 type Props = {
@@ -27,21 +27,15 @@ export function RecentVisitsSide({ visits, currentVisitId }: Props) {
               >
                 {current ? (
                   <span className="visit-side-link">
-                    <span className="visit-side-date">{row.visitDateLocal}</span>
-                    <StatusBadge
-                      tone={row.status === "draft" ? "upcoming" : "done"}
-                      label={VISIT_STATUS_LABEL[row.status]}
-                    />
+                    <span className="visit-side-date">{formatDate(row.visitDateLocal)}</span>
+                    <StatusLabel kind="visit" value={row.status} />
                     <span className="visit-side-summary">{summary}</span>
                     <span className="muted small">This visit</span>
                   </span>
                 ) : (
                   <Link className="visit-side-link" to={`/app/visits/${row.id}`}>
-                    <span className="visit-side-date">{row.visitDateLocal}</span>
-                    <StatusBadge
-                      tone={row.status === "draft" ? "upcoming" : "done"}
-                      label={VISIT_STATUS_LABEL[row.status]}
-                    />
+                    <span className="visit-side-date">{formatDate(row.visitDateLocal)}</span>
+                    <StatusLabel kind="visit" value={row.status} />
                     <span className="visit-side-summary">{summary}</span>
                   </Link>
                 )}

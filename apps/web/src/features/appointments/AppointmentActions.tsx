@@ -1,12 +1,12 @@
 import {
   formatClockTime,
-  formatDisplayDate,
   istDate,
   isAllowedStatusTransition,
   statusTransitionBlockReason,
   type AppointmentStatus,
 } from "@clinic/shared";
 import { useState, type ReactNode } from "react";
+import { formatDate } from "../../ui/format";
 import { Menu, type MenuItem } from "../../ui/Menu";
 import { useToast } from "../../ui/Toast";
 import { CancelMissedDialog } from "./CancelMissedDialog";
@@ -117,7 +117,7 @@ export function AppointmentActions({ row, onChanged, layout = "menu", children }
         onClose={() => setDialog(null)}
         onBooked={(slot) => {
           toast({
-            text: `Moved to ${formatDisplayDate(slot.dateLocal)}, ${formatClockTime(slot.startMin)}`,
+            text: `Moved to ${formatDate(slot.dateLocal)}, ${formatClockTime(slot.startMin)}`,
           });
           onChanged();
         }}

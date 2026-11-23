@@ -1,4 +1,4 @@
-import { formatRupees, istDate } from "@clinic/shared";
+import { formatRupees, istDate, statusWord } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
@@ -143,7 +143,7 @@ export function DailyClosePanel() {
                         <Link to={`/app/patients/${a.patientId}?tab=appointments`}>
                           {a.patientName}
                         </Link>{" "}
-                        · {a.visitTypeLabel} · {a.status.replace("_", " ")}
+                        · {a.visitTypeLabel} · {statusWord("appointment", a.status).label}
                       </li>
                     ))}
                   </ul>

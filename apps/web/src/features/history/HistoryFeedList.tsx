@@ -1,5 +1,7 @@
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { formatDate } from "../../ui/format";
+import { historyStatusWord } from "./history-status";
 import type { HistoryFeedEntry } from "./api";
 
 type Props = {
@@ -36,9 +38,14 @@ export function HistoryFeedList({ entries, nextCursor, loadingMore, onLoadMore }
           <li key={`${row.type}-${row.id}`}>
             <Link className="history-feed-row" to={row.href}>
               <span className="history-feed-meta">
-                <span className="history-feed-date">{row.at.slice(0, 10)}</span>
+                <span className="history-feed-date">{formatDate(new Date(row.at))}</span>
                 <StatusBadge tone="upcoming" label={TYPE_LABEL[row.type]} />
-                {row.status ? <StatusBadge tone="done" label={row.status} /> : null}
+                {row.status ? (
+                  <StatusBadge
+                    tone={historyStatusWord(row.type, row.status).tone}
+                    label={historyStatusWord(row.type, row.status).label}
+                  />
+                ) : null}
               </span>
               <span className="history-feed-summary">{row.summary}</span>
               {row.actorName ? <span className="small muted">{row.actorName}</span> : null}

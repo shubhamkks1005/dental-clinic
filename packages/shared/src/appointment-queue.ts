@@ -1,3 +1,4 @@
+import { formatDuration } from "./format";
 import type { AppointmentPriority } from "./appointments";
 
 export type QueueRow = {
@@ -37,6 +38,5 @@ export function formatWaiting(arrivedAt: string | null, now: Date): string | nul
   const m = waitingMinutes(arrivedAt, now);
   if (m === null) return null;
   if (m < 1) return "Waiting under 1 min";
-  if (m === 1) return "Waiting 1 min";
-  return `Waiting ${m} min`;
+  return `Waiting ${formatDuration(m)}`;
 }

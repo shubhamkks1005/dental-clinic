@@ -1,6 +1,7 @@
 import {
   ESTIMATE_DISCLAIMER,
   formatDisplayDate,
+  statusWord,
   formatRupees,
   planPhaseLabel,
 } from "@clinic/shared";
@@ -79,7 +80,7 @@ export function EstimateSheetBody({
                   <tr key={item.id}>
                     <td>{item.procedureLabel}</td>
                     <td>{item.toothFdi ?? "—"}</td>
-                    <td>{item.status}</td>
+                    <td>{statusWord("visit", item.status).label}</td>
                     <td className="estimate-amt">{formatRupees(item.estimatePaise)}</td>
                   </tr>
                 ))}

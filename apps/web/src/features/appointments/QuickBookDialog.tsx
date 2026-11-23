@@ -1,4 +1,5 @@
-import { formatClockTime, formatDisplayDate, istDate, type ListItem } from "@clinic/shared";
+import { formatClockTime, istDate, type ListItem } from "@clinic/shared";
+import { formatDate } from "../../ui/format";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
@@ -174,7 +175,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
         </label>
 
         <fieldset className="quick-book-slots" disabled={!visitTypeId}>
-          <legend>Free times on {formatDisplayDate(dateLocal)}</legend>
+          <legend>Free times on {formatDate(dateLocal)}</legend>
           {loading ? <p className="muted small">Looking for free times…</p> : null}
           {!loading && visitTypeId && daySlots.length === 0 ? (
             <p className="muted small">
@@ -249,7 +250,7 @@ function SlotButtons({
               aria-pressed={active}
               onClick={() => onPick(s)}
             >
-              {showDate ? `${formatDisplayDate(s.dateLocal)} · ` : ""}
+              {showDate ? `${formatDate(s.dateLocal)} · ` : ""}
               {formatClockTime(s.startMin)}
               {showDate ? `–${formatClockTime(s.endMin)}` : ""}
             </button>

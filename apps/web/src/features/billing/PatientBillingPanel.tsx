@@ -1,6 +1,8 @@
-import { formatRupees } from "@clinic/shared";
+import { billStatusKey, formatRupees } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
+import { formatDate } from "../../ui/format";
+import { StatusLabel } from "../../ui/StatusLabel";
 import {
   listPatientBills,
   listPatientPayments,
@@ -100,9 +102,13 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
                 <div className="stack gap-xs">
                   <Link to={`/app/bills/${b.id}`}>{b.billNo ?? "Draft bill"}</Link>
                   <span className="muted small">
-                    {b.billOn} · {b.status}
-                    {b.kind === "opening_balance" ? " · opening" : ""}
+                    {formatDate(b.billOn)}
+                    {b.kind === "opening_balance" ? " · Opening balance" : ""}
                   </span>
+                  <StatusLabel
+                    kind="bill"
+                    value={billStatusKey(b.status, b.totalPaise, b.totalPaise - b.duePaise)}
+                  />
                 </div>
                 <div className="stack gap-xs end">
                   <span>{formatRupees(b.totalPaise)}</span>

@@ -1,6 +1,8 @@
-import { amountInWords, formatRupees } from "@clinic/shared";
+import { amountInWords, billStatusKey, formatRupees } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
+import { formatDate } from "../../ui/format";
+import { StatusLabel } from "../../ui/StatusLabel";
 import { BillCancelPanel } from "./BillCancelPanel";
 import { BillDiscountPanel } from "./BillDiscountPanel";
 import { BillDraftItems } from "./BillDraftItems";
@@ -74,7 +76,11 @@ export function BillScreen() {
         <div className="stack gap-xs">
           <h1 className="title-md">{bill.billNo ?? "Draft bill"}</h1>
           <p className="muted">
-            {bill.billOn} · {bill.status}
+            {formatDate(bill.billOn)}{" "}
+            <StatusLabel
+              kind="bill"
+              value={billStatusKey(bill.status, bill.totalPaise, bill.paidPaise ?? 0)}
+            />
           </p>
         </div>
         <Link to={`/app/patients/${bill.patientId}?tab=billing`} className="btn secondary">

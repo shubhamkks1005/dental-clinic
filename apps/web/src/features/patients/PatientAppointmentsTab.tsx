@@ -1,20 +1,18 @@
-import { formatClockTime, formatDisplayDate } from "@clinic/shared";
+import { formatClockTime, statusWord } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ApiError } from "../../api/client";
+import { formatDate } from "../../ui/format";
+import { StatusLabel } from "../../ui/StatusLabel";
 import { AppointmentActions } from "../appointments";
 import { getAppointmentChain, listPatientAppointments, type PatientAppointmentRow } from "./api";
 import "./patient-appointments.css";
-
-function statusLabel(status: string): string {
-  return status.replaceAll("_", " ");
-}
 
 function chainSummary(chain: PatientAppointmentRow[]): string {
   return chain
     .map(
       (r) =>
-        `${formatDisplayDate(r.dateLocal)} ${formatClockTime(r.startMin)} (${statusLabel(r.status)})`,
+        `${formatDate(r.dateLocal)} ${formatClockTime(r.startMin)} (${statusWord("appointment", r.status).label})`,
     )
     .join(" → ");
 }
@@ -79,9 +77,9 @@ export function PatientAppointmentsTab({
             <li key={r.id} className="patient-appts-card">
               <div className="patient-appts-row">
                 <strong>
-                  {formatDisplayDate(r.dateLocal)} · {formatClockTime(r.startMin)}
+                  {formatDate(r.dateLocal)} · {formatClockTime(r.startMin)}
                 </strong>
-                <span className="patient-appts-status">{statusLabel(r.status)}</span>
+                <StatusLabel kind="appointment" value={r.status} />
                 <AppointmentActions
                   row={{
                     id: r.id,

@@ -1,19 +1,20 @@
 import type { AppointmentStatus } from "./appointments";
+import { statusWord, type StatusTone } from "./status-words";
 
-/** English status words for day/Today cards (never colour alone). */
+/** Words for appointment statuses: derived from the one status map (status-words.ts). */
 export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
-  scheduled: "Scheduled",
-  confirmed: "Confirmed",
-  arrived: "Arrived",
-  in_chair: "In chair",
-  completed: "Done",
-  cancelled: "Cancelled",
-  no_show: "No-show",
-  rescheduled: "Rescheduled",
+  scheduled: statusWord("appointment", "scheduled").label,
+  confirmed: statusWord("appointment", "confirmed").label,
+  arrived: statusWord("appointment", "arrived").label,
+  in_chair: statusWord("appointment", "in_chair").label,
+  completed: statusWord("appointment", "completed").label,
+  cancelled: statusWord("appointment", "cancelled").label,
+  no_show: statusWord("appointment", "no_show").label,
+  rescheduled: statusWord("appointment", "rescheduled").label,
 };
 
 /** Badge tones used by the staff UI (matches DESIGN.md status colours). */
-export type AppointmentStatusTone = "done" | "in-room" | "waiting" | "emergency" | "upcoming";
+export type AppointmentStatusTone = StatusTone;
 
 export function appointmentStatusTone(
   status: AppointmentStatus,
@@ -25,18 +26,5 @@ export function appointmentStatusTone(
   ) {
     return "emergency";
   }
-  switch (status) {
-    case "completed":
-      return "done";
-    case "in_chair":
-      return "in-room";
-    case "arrived":
-      return "waiting";
-    case "cancelled":
-    case "no_show":
-    case "rescheduled":
-      return "upcoming";
-    default:
-      return "upcoming";
-  }
+  return statusWord("appointment", status).tone;
 }

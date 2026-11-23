@@ -1,4 +1,4 @@
-import { MEDICINE_TIMING_LABEL, type MedicineTiming } from "@clinic/shared";
+import { MEDICINE_TIMING_LABEL, statusWord, type MedicineTiming } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
@@ -97,7 +97,7 @@ export function PrintPrescriptionScreen() {
         <div>
           <h1>Prescription</h1>
           <p className="muted">
-            {rx.rxNo ?? "No number"} · {rx.status}
+            {rx.rxNo ?? "No number"} · {statusWord("visit", rx.status).label}
           </p>
         </div>
         {regMissing && (

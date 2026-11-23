@@ -1,4 +1,4 @@
-import { formatRupees, istDate } from "@clinic/shared";
+import { formatRupees, istDate, statusWord } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
@@ -100,7 +100,7 @@ export function PrintStatementScreen() {
               <tr key={b.id}>
                 <td>{b.billOn}</td>
                 <td>{b.billNo ?? "Draft"}</td>
-                <td>{b.status}</td>
+                <td>{statusWord("bill", b.status).label}</td>
                 <td>{formatRupees(b.totalPaise)}</td>
                 <td>{b.duePaise > 0 ? formatRupees(b.duePaise) : "—"}</td>
               </tr>

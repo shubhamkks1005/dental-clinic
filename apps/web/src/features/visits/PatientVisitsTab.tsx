@@ -1,8 +1,8 @@
-import { VISIT_STATUS_LABEL } from "@clinic/shared";
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import { ApiError } from "../../api/client";
-import { StatusBadge } from "../../ui/StatusBadge";
+import { formatDate } from "../../ui/format";
+import { StatusLabel } from "../../ui/StatusLabel";
 import { listVisitTimeline, type VisitTimelineRow } from "./api";
 import "./visit-timeline.css";
 
@@ -103,11 +103,8 @@ export function PatientVisitsTab({ patientId }: Props) {
           {rows.map((row) => (
             <li key={row.id}>
               <Link className="visit-timeline-row" to={`/app/visits/${row.id}`}>
-                <span className="visit-timeline-date">{row.visitDateLocal}</span>
-                <StatusBadge
-                  tone={row.status === "draft" ? "upcoming" : "done"}
-                  label={VISIT_STATUS_LABEL[row.status]}
-                />
+                <span className="visit-timeline-date">{formatDate(row.visitDateLocal)}</span>
+                <StatusLabel kind="visit" value={row.status} />
                 <span className="visit-timeline-summary">
                   {row.chiefComplaint?.trim() || "No complaint noted"}
                 </span>

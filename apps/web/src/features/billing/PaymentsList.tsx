@@ -1,4 +1,5 @@
 import { formatRupees } from "@clinic/shared";
+import { formatDate } from "../../ui/format";
 import { Link } from "react-router";
 import type { PatientPaymentRow } from "./api";
 
@@ -12,7 +13,7 @@ export function PaymentsList({ payments }: { payments: PatientPaymentRow[] }) {
           <div className="stack gap-xs">
             <strong>{formatRupees(p.amountPaise)}</strong>
             <span className="muted small">
-              {p.dayLocal} · {p.mode}
+              {formatDate(p.dayLocal)} · {p.mode}
               {p.splitMode && p.splitPaise ? ` + ${p.splitMode} ${formatRupees(p.splitPaise)}` : ""}
               {p.reference ? ` · ref ${p.reference}` : ""}
             </span>

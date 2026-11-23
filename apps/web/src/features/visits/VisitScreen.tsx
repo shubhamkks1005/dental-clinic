@@ -1,4 +1,4 @@
-import { VISIT_STATUS_LABEL, type FdiTooth } from "@clinic/shared";
+import type { FdiTooth } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
@@ -8,7 +8,7 @@ import { PatientHistoryTab } from "../history";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitPlanPanel } from "../plan";
-import { StatusBadge } from "../../ui/StatusBadge";
+import { StatusLabel } from "../../ui/StatusLabel";
 import { Tabs } from "../../ui/Tabs";
 import { getVisit, listRecentVisits, type VisitRecent, type VisitSummary } from "./api";
 import { RecentVisitsSide } from "./RecentVisitsSide";
@@ -143,12 +143,7 @@ export function VisitScreen() {
           <VisitPatientStrip patient={patient} dateLocal={visit.visitDateLocal} />
           {visit.status === "void" ? <p className="muted small">Entered in error</p> : null}
         </div>
-        <StatusBadge
-          tone={
-            visit.status === "draft" ? "upcoming" : visit.status === "void" ? "emergency" : "done"
-          }
-          label={VISIT_STATUS_LABEL[visit.status]}
-        />
+        <StatusLabel kind="visit" value={visit.status} />
       </header>
 
       <VisitFinaliseBar visit={visit} canEdit={canEditClinical} onFinalised={setVisit} />

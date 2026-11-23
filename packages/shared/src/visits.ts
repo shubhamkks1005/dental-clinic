@@ -1,3 +1,4 @@
+import { statusWord } from "./status-words";
 import { z } from "zod";
 
 // 3.2.1 visit statuses. Finalised rows are locked; corrections are addenda (3.2.6 / 3.5.7).
@@ -5,9 +6,9 @@ export const VISIT_STATUSES = ["draft", "final", "void"] as const;
 export type VisitStatus = (typeof VISIT_STATUSES)[number];
 
 export const VISIT_STATUS_LABEL: Record<VisitStatus, string> = {
-  draft: "Draft",
-  final: "Finalised",
-  void: "Void",
+  draft: statusWord("visit", "draft").label,
+  final: statusWord("visit", "final").label,
+  void: statusWord("visit", "void").label,
 };
 
 // Optional vitals on the visit (integers; BP as systolic/diastolic mmHg).
