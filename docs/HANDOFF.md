@@ -6,13 +6,13 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
 - No Phase Q task is done yet. Nothing in the app code was changed by the audit.
-- Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
+- Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging). Part 2 and Part 3 so far added NO migration.
 
 ## Next task
-**Part 2 is done except Q1.1 (needs D2) and Q1.5 (needs D6), both skipped.** If the owner answers D2 / D6 / D1, do Q1.1, Q1.5 and Q0.7 first (Q0.7 before Q1.9). Otherwise next is **Part 3: Q1.7 to Q1.11, then Gate Q1.G** (Q1.8 needs D3, Q1.9 needs D4 and Q0.7, Q1.10 and Q1.11 need D7 / D4; take the unblocked ones, skip the rest). Older text below.
-**Part 1 (bugs and money safety): (Q0.1-Q0.6 and Gate Q0.G done; Q0.7 waits for D1)  Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
+**Part 3 is in progress (written 2026-11-24).** D1 to D8 are accepted (DECISIONS.md; D1 refund rule still to be confirmed by the CA). Done in Part 3 so far: Q1.7, Q1.8. **Next: Q1.9, then Q1.10, Q1.11, then update docs/ui-audit/runner/g01.mjs and d03.mjs (and the scripts that pick a procedure or gender: d06, g02, h01, a02, g08; gender now has no default and the procedure list starts empty) for the new behaviour, then Gate Q1.G.** Q1.9 needs Q0.7 (done) and D4 (accepted: the receptionist only asks the doctor to cancel a bill). Q1.10 and Q1.11 need D7 / D4 (accepted).
 
 ## Done in Phase Q
+- Part 2 repair and skipped tasks, 2026-11-24 (git log): "Part 2 repair" (360 px Today rows, Bill payment layout, calendar panel buttons, Missed test no longer depends on the clock), Q0.7 (refund re-opens the due, `paidByBill`), Q1.1 (visit to bill chain), Q1.5 (messages hygiene), Q1.6 rest (offline guard), Q1.7 (discount hand-off), Q1.8 (data and form rules). Browser specs: e2e/visit-to-bill, messages, data-rules, no-silent-failures, appointment-actions, core-loop (25 pass together).
 - Q1.6 No silent failures, 2026-11-24 (git log "Q1.6"). Timings: live sentence + Save disabled with reason; visit autosave stops on a 409 and shows a banner (text kept, Copy my text, Reload visit); reasons under disabled Book, Walk-in and Record payment buttons; offline banner says typed work is kept. Not done: disabling server actions offline. Test: e2e/no-silent-failures.spec.ts.
 - Q1.4 Cancel, Missed, Reschedule, 2026-11-24 (git log "Q1.4"). AppointmentActions "..." menu on Today rows, calendar panel and patient tab; Missed needs a reason (schema + repo, no migration); Close-day blockers name patients; drag hint added. Test: e2e/appointment-actions.spec.ts. NOTE: its Missed part is skipped before 00:20 IST (it moves a booking to 00:00 today with node:sqlite so the 15-minute rule allows it).
 - Q1.3 Receipts and payments list, 2026-11-24 (git log "Q1.3"). Toast with Print, PaymentsList on the patient Billing tab and on the Bill screen (which now has the payment form). Covered in e2e/core-loop.spec.ts.
@@ -29,7 +29,7 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 (nothing)
 
 ## Waiting on me (the owner). The AI must not guess these
-- **Skipped in Part 2:** Q1.1 (D2) and Q1.5 (D6).
+- Nothing blocks the AI now. D1 (CA) still needs the CA to confirm the refund rule.
 - D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.
 - Older items: STATE.md "Waiting on me" (staging steps, doctor confirmations, CA questions).
 
