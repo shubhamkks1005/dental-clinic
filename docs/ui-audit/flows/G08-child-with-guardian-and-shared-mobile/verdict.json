@@ -1,0 +1,24 @@
+{
+ "title": "An 8-year-old whose mother's phone is the contact: registration, booking, reminder",
+ "aim": "This is an orthodontic clinic with many children. Register a child who has no phone, enter the mother as guardian and as the owner of the contact mobile, ask for SMS consent, book him, and see whether the reminder can reach the mother. Also check how the profile shows who to call.",
+ "who": "Receptionist, laptop",
+ "pre": "Fresh local database. Child Kiddo Guardtest, age 8, 'No mobile' ticked with reason; guardian Sunita Guardtest, relation Mother, guardian mobile 9000099070, contact mobile belongs to Mother; privacy notice and SMS consent ticked; booked tomorrow 12:15 PM.",
+ "verdict": "Registration WORKS; the reminder is BROKEN for children",
+ "summary": "The form handles the case well: 'No mobile' opens a 'Why no mobile' box, the guardian fields sit under More details, and the profile shows 'No mobile' and 'Contact 90000 99070 (mother)'. But the reminder created for the child cannot be sent: Open WhatsApp says 'This patient has no mobile number for WhatsApp.' The system ignores the guardian's contact number it shows on the profile, so children whose parent's phone is the contact never get reminders.",
+ "problems": [
+  {"id":"G8-1","sev":"High","step":"23-25","text":"The reminder for the child ('Dear Kiddo, a reminder of your appointment ...') is in the Messages list but pressing Open WhatsApp fails with 'This patient has no mobile number for WhatsApp.' (HTTP 400). The profile of the same child says 'Contact 90000 99070 (mother)'.","why":"Children are exactly the patients whose parents need reminders. The record has the number and the consent, but the message cannot be sent. It also sits in the queue as if it could.","fix":"Send to the contact mobile when the patient has none, and address it 'Dear Sunita, a reminder for Kiddo's appointment ...'."},
+  {"id":"G8-2","sev":"Medium","step":"23","text":"The text says 'Dear Kiddo' even though the reader would be the mother.","why":"A message to a parent addressed to a child's first name reads wrong.","fix":"Use the guardian's first name when the contact owner is not 'Self'."},
+  {"id":"G8-3","sev":"Medium","step":"10","text":"For a child the guardian fields (name, relation, mobile, who the contact is) are inside the collapsed 'More details', although age under 18 requires a guardian (seen in A02: error appears at the bottom of the form).","why":"The required fields are hidden until the user clicks More details.","fix":"Open the guardian group automatically when age is under 18."},
+  {"id":"G8-4","sev":"Low","step":"10","text":"'Whose contact mobile' with options Self, Mother, Father, Spouse, Guardian, Other must be set by hand; entering a guardian mobile does not set it.","why":"One more field to forget; the profile would show 'Contact 90000 99070 (self)' if left on Self.","fix":"Default it to the guardian's relation when a guardian mobile is typed."}
+ ],
+ "good": [
+  "Ticking 'No mobile' immediately shows a 'Why no mobile' field (so the A02 doubt is answered: the reason box opens at once).",
+  "Profile header for the child: 'No mobile' and 'Contact 90000 99070 (mother)'.",
+  "The consent and the guardian are stored; saving worked with all fields."
+ ],
+ "notTested": [
+  "Two patients sharing the same contact mobile (siblings): which one a message is for.",
+  "A child who turns 18 (guardian no longer required).",
+  "Consent given by the guardian vs the patient: how it is recorded."
+ ]
+}

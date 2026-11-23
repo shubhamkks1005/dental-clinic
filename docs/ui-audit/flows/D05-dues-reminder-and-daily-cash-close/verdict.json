@@ -1,0 +1,26 @@
+{
+ "title": "End of day: chase unpaid dues, then count the cash and close the day",
+ "aim": "Do what the receptionist does at closing time. Part 1: use the dues list to leave a call note and send a payment reminder. Part 2: take a cash payment, try to close the day, clear the open appointments that block it, count the drawer with a difference, close, and then try to take another payment on the closed day. Check each message and how easy it is to know what to do next.",
+ "who": "Receptionist, laptop",
+ "pre": "Fresh local database. Dues list has 13 patients (₹13,500). Today has two stale rows from the seed: Manoj 10:00 AM 'Arrived' and Tara 10:30 AM 'In chair' (never finished). No payments yet today.",
+ "verdict": "WORKS well, with a few dangerous or unclear spots",
+ "summary": "Dues reminder and day close both work and give clear sentences: a payment-pending WhatsApp text with no amount, a required note when the counted cash differs, a closed-day result line with the difference, and a refusal of new payments on a closed day. The weak points: the blocking appointments are listed without patient names; Cancel on a Today row cancels at once with no question; and the 'late entry' that the closed-day message mentions cannot be found on screen.",
+ "problems": [
+  {"id":"D5-1","sev":"High","step":"22-24","text":"The Cancel button on a Today row cancels the appointment immediately: no confirm, no reason, no undo. The patient (an 'Arrived' patient who had been waiting) disappears from the list, the stat 'Arrived' drops to 0 and the page says '1 appointments today'. Cancel sits right next to 'In chair' on the same row.","why":"One mis-click removes a waiting patient from the queue. Cancelling is also not a no-show: the Call list stays empty, so the clinic does not know to call them back.","fix":"Ask 'Cancel Manoj's 10:00 AM appointment? Reason: [Patient cancelled / No-show / Other]' and put Cancel in a menu, away from In chair. Fix 'appointments' grammar."},
+  {"id":"D5-2","sev":"Medium","step":"16-17","text":"The Close day panel says '2 open appointments must be finished, marked no-show, or cancelled before close.' and lists '• Consultation · arrived' and '• Follow-up · in chair' without patient names. 'No-show' is not an action on the Today rows (only In chair, Cancel, Completed).","why":"The receptionist has to guess which appointments block the close, and the message offers an action (no-show) she cannot find.","fix":"List the names with a link to each row and add a No-show action."},
+  {"id":"D5-3","sev":"Medium","step":"42","text":"After closing, a new payment is refused: 'This day is closed. Use a late entry or ask the doctor to reopen it.' No 'late entry' option exists on the payment form and the form gives no 'ask the doctor' button.","why":"The sentence is clear but names a way out that the user cannot see.","fix":"Show a 'Record as late entry' choice with a reason, or a line 'Ask the doctor to reopen the day (Settings > ...)'."},
+  {"id":"D5-4","sev":"Low","step":"16, 35","text":"Plural grammar: '1 payments', '1 appointments today'.","why":"Small polish.","fix":"One plural helper."},
+  {"id":"D5-5","sev":"Medium","step":"3-5","text":"'Add call note' opens a single bare text field inside the dues row; the note's date and result are not shown anywhere afterwards in this list.","why":"The receptionist cannot see that someone already called, so two people may call the same patient.","fix":"Show 'Called today: will pay Friday' under the name."},
+  {"id":"D5-6","sev":"Low","step":"7","text":"The WhatsApp reminder opens WhatsApp at once for the first row clicked, with the text 'Dear Vikram, this is Align Dentistry. A payment is pending. Please call 0000000000 to arrange.' It is not listed in Messages.","why":"Text is correct and keeps to the privacy rule (no amount), but there is no record in Messages that it was sent. The clinic phone is still the sample 0000000000.","fix":"Log it in Messages as 'Opened'. Block when the clinic phone is not set."}
+ ],
+ "good": [
+  "The dues message follows the privacy rule: first name, clinic name, 'a payment is pending', phone. No rupee amount, no treatment.",
+  "A toast says 'WhatsApp opened with payment-pending text.'",
+  "Day close: 'Write a note explaining the cash difference.' is clear; after closing the line reads 'Closed. Counted ₹450 · Difference -₹50 · Gave change from own pocket' and 'Print day close' appears.",
+  "A payment on a closed day is refused with a sentence, and the dues balance stays unchanged."
+ ],
+ "notTested": [
+  "Print of the day close, the monthly CSV export (button seen, not run), reopening a closed day (doctor), UPI totals on the close panel.",
+  "A no-show appointment from a past date and how it appears in the call list."
+ ]
+}

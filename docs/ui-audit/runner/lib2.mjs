@@ -1,4 +1,4 @@
-import { open, BASE, VP } from "./lib.mjs";
+import { open, BASE, VP, measure } from "./lib.mjs";
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 const ROOT = process.env.FLOW_ROOT || "/Users/shubham.kumar/dental-clinic/docs/ui-audit/flows";
 export const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
@@ -33,6 +33,7 @@ export async function flow(spec, body) {
     async pick(loc, val, why) { typed++; await loc.first().selectOption(val, { timeout: 8000 }); return record("select", why, false); },
     async key(k, why) { await page.keyboard.press(k); return record("key " + k, why); },
     async as(r, why) { await page.goto(`${BASE}/api/staff/auth/dev-login?role=${r}`); return record("switch user to " + r, why || ("Sign in as " + r)); },
+    async m(why) { const r = await measure(page); const t = `MEASURE ${why}: horizontal scroll=${r.over ? "YES (" + r.scrollW + " > " + r.vw + ")" : "no"}; tap targets under 44px=${r.smallCount}${r.small.length ? " e.g. " + r.small.slice(0, 3).join(", ") : ""}`; steps.push({ n: ++n, action: "note", why: t, url: new URL(page.url()).pathname }); return r; },
     async look(why) { return record("look", why); },
     note(text) { steps.push({ n: ++n, action: "note", why: text, url: new URL(page.url()).pathname }); },
     async text() { return (await page.locator("main").innerText().catch(() => "")).replace(/\n+/g, " | "); },

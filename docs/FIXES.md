@@ -28,4 +28,8 @@ Backend stays as is; change it only where a point below says so.
 - **C4:** Booking without a note fails with "expected string, received null" (QuickBookDialog.tsx:100 sends null).
 - **H1:** top-bar Walk-in button has no click handler (TopBar.tsx).
 - **T1:** playwright.config.ts uses 127.0.0.1 but APP_ORIGIN is localhost:8787, so e2e writes get 403.
+- **Phone:** receptionist Today overflows at 360 px (441 px wide, row buttons hidden); Chart tab 774 px at 360 (AUDIT H15, H16).
+- **Money:** overpay accepted silently (H17), refund does not change Outstanding (H12), Cancel on Today has no confirm (H18).
+- **Messages:** moved appointment leaves old messages (H20), children get no reminder (H21), booking confirm only after cron.
+- **Settings:** closing before opening fails silently (H23).
 - Rest (page margins, unstyled Billing/Bill/Messages/Reports, phone "+" overlap, status words, dates): AUDIT.md H2-H10, M1-M14. Not scheduled until the owner picks them.

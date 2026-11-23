@@ -1,0 +1,41 @@
+import { flow } from "./lib2.mjs";
+await flow({ id: process.argv[2] || "E02-staff-add-change-role-deactivate", role: "doctor", vp: "laptop" }, async (c) => {
+  const p = c.page; const d = () => p.locator("dialog[open]");
+  const msg = async () => (await p.locator(".error-text, [role=alert], [role=status], .toast, dialog[open]").allInnerTexts()).join(" / ").replace(/\n+/g," ").slice(0, 320);
+  const rows = async () => ((await c.text()).match(/People who can sign in[\s\S]*/) || [""])[0].replace(/ \| /g, " | ").slice(0, 700);
+  await c.go("/app/settings/staff", "The doctor opens Settings > Staff to give a new receptionist access");
+  await c.click(p.getByRole("button", { name: "Add staff" }), "Click Add staff");
+  await c.look("Add staff form");
+  const form = p.locator("main form").last();
+  await c.type(p.getByLabel("Name", { exact: true }), "Test Reception", "Type the name");
+  await c.type(p.getByLabel(/Gmail address/), "not-an-email", "EDGE: type an invalid email");
+  await c.click(p.getByLabel("Receptionist"), "Choose the role Receptionist");
+  await c.click(p.getByRole("button", { name: "Add", exact: true }), "Submit with an invalid email");
+  c.note("Invalid email result: " + (await msg()));
+  await c.look("After submitting an invalid email");
+  await p.getByLabel(/Gmail address/).fill("test.reception@example.test");
+  await c.click(p.getByRole("button", { name: "Add", exact: true }), "Fix the email and submit");
+  c.note("Valid add result: " + (await msg())); await c.look("After adding the staff member");
+  c.note("Rows: " + await rows());
+  // Try to add same email again
+  await c.click(p.getByRole("button", { name: "Add staff" }), "Add staff again with the same email");
+  await c.type(p.getByLabel("Name", { exact: true }), "Another Person", "Name");
+  await p.getByLabel(/Gmail address/).fill("test.reception@example.test");
+  await c.click(p.getByLabel("Receptionist"), "Role");
+  await c.click(p.getByRole("button", { name: "Add", exact: true }), "Submit duplicate email");
+  c.note("Duplicate email result: " + (await msg())); await c.look("After duplicate email");
+  // Deactivate, reactivate, change role
+  await c.go("/app/settings/staff", "Now deactivate the new receptionist (she left the job)");
+  c.note("Deactivate buttons on screen: " + (await p.getByRole("button", { name: "Deactivate" }).count()) + " (the doctor's own row 'You' has none, so the doctor cannot lock themself out)");
+  await c.click(p.getByRole("button", { name: "Deactivate" }).first(), "Click Deactivate on Test Reception");
+  await c.look("Confirmation panel");
+  await c.click(p.getByRole("button", { name: "Deactivate", exact: true }).last(), "Confirm Deactivate");
+  await c.look("After deactivating");
+  c.note("Row now: " + ((await c.text()).match(/Test Reception[\s\S]{0,200}/) || [""])[0]);
+  await c.click(p.getByRole("button", { name: /Reactivate/ }), "Click Reactivate");
+  await c.look("After reactivating");
+  c.note("Reactivate result: " + (await msg()).slice(0, 200));
+  await c.click(p.getByRole("button", { name: "Change role" }), "Click Change role");
+  await c.look("Change role panel");
+  c.note("Change role panel: " + ((await c.text()).match(/Change role[\s\S]{0,300}/) || [""])[0]);
+});

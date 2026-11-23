@@ -1,0 +1,27 @@
+{
+ "title": "The doctor adds a receptionist, tries bad input, deactivates and reactivates her",
+ "aim": "Check the one screen that controls who can enter the clinic app: add a staff member with a wrong email, a right email and a repeated email; deactivate and reactivate; look at the role change. Check that the doctor cannot lock themself out and that every sentence tells the doctor what happens next.",
+ "who": "Doctor, laptop (Settings > Staff). Receptionist cannot open this screen (seen in the first audit: Page not found).",
+ "pre": "Fresh local database. Only the doctor 'Dev Doctor' is on the list.",
+ "verdict": "WORKS very well (this is the model screen for the rest of the app)",
+ "summary": "Every step gave a plain, correct sentence: invalid email, success with what to tell the new person, duplicate email with what to do, deactivate confirmation that says what happens to the person and the records, reactivate confirmation. The doctor's own row has no Deactivate button, so the doctor cannot remove themself. Only small things to improve.",
+ "problems": [
+  {"id":"E2-1","sev":"Low","step":"11","text":"The success sentence says 'Ask Test to open the clinic app...' using the first word of the typed name. For 'Test Reception' that reads like a person called Test.","why":"Slightly odd with two-word job titles; fine for real names.","fix":"Use the full name."},
+  {"id":"E2-2","sev":"Low","step":"13, 26","text":"Row actions 'Reset Google link' and the status line 'Google link reset: the next sign-in links it' use internal wording.","why":"A non-technical doctor will not know when to press it.","fix":"'Fix sign-in problem' with one sentence of help."},
+  {"id":"E2-3","sev":"Low","step":"30-32","text":"The Change role panel text was not captured by this run (the click opened something but no text was read). Not judged.","why":"-","fix":"Re-run with a screenshot of the panel."},
+  {"id":"E2-4","sev":"Low","step":"8","text":"The field is named 'Gmail address'. A Google Workspace address that is not Gmail may be refused or confusing. Not tested.","why":"Possible dead end for a staff member with a work Google account.","fix":"Label 'Google account email' and test a non-Gmail address."}
+ ],
+ "good": [
+  "Invalid email: 'That does not look like an email address. Check it and try again.'",
+  "Added: 'Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test.' tells the doctor exactly what to say.",
+  "Duplicate: 'This Gmail address is already on the staff list. If the person was deactivated, reactivate them.'",
+  "Deactivate: 'Deactivate Test? Test is signed out now and can't sign in until you reactivate them. Their records stay.' with Deactivate and Cancel.",
+  "Reactivate: 'Test can sign in again.' Status badges (Doctor/Receptionist, Active/Deactivated) and 'You' chip are clear and styled.",
+  "The doctor's own account has no Deactivate button."
+ ],
+ "notTested": [
+  "Whether a deactivated person is signed out at once (needs two sessions and real Google sign-in).",
+  "Role change of the only doctor, and a second doctor.",
+  "The Settings history of staff changes (audit log screen)."
+ ]
+}

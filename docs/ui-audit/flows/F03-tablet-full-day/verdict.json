@@ -1,0 +1,22 @@
+{
+ "title": "The same working day on a tablet (768 px)",
+ "aim": "Repeat the phone day (flow F02) at 768 px, the width of a small tablet or a narrow laptop window, and measure sideways scroll and tap targets on every screen. The project rule requires 768 px to work.",
+ "who": "Receptionist then Doctor, Chromium at 768 x 1024 with touch",
+ "pre": "Fresh local database. Same steps as F02.",
+ "verdict": "WORKS except the tooth chart",
+ "summary": "At 768 px every screen fits without sideways scroll except the doctor's Chart tab, which is 838 px wide (70 px too wide) and has 193 tap targets of about 35 by 9 px. The receptionist's Today page, which broke on the phone, is fine here. Tap targets on lists are small, as on the phone. The top tab row cut-off seen in the first audit (Reports and Settings off-screen) still applies; this run did not measure it as page overflow because it scrolls inside its own bar.",
+ "problems": [
+  {"id":"F3-1","sev":"High","step":"MEASURE note for Chart tab","text":"The Chart tab is 838 px wide at 768 px, so the page scrolls sideways; teeth and the 'W' buttons are about 35 by 9 px.","why":"A dentist using a tablet at the chair cannot tap the right tooth reliably.","fix":"Size the chart to the container width (two rows of teeth) with 44 px tap areas; see F2-2."},
+  {"id":"F3-2","sev":"Medium","step":"MEASURE notes for Book dialog, Calendar, Patients list, Dues list","text":"Same small tap targets as on the phone: calendar times 21 px high, patient names 21 px, dues links 17 px, checkboxes 13 px.","why":"Touch rule is 44 px.","fix":"Make rows the link; add padding."},
+  {"id":"F3-3","sev":"Medium","step":"-","text":"The top tab row at 768 px is cut off after 'Messages' (Reports and Settings hidden; seen in the first audit, screenshot today/receptionist-tablet.png).","why":"Reports and Settings need a swipe that nothing hints at.","fix":"Use the laptop sidebar from 768 px or a 'More' tab."}
+ ],
+ "good": [
+  "Receptionist Today fits and the buttons are reachable at 768 px.",
+  "New patient, booking, payment, visit notes, medicines, reports, settings all fit.",
+  "No sideways scroll anywhere except the chart."
+ ],
+ "notTested": [
+  "Landscape tablet, split-screen windows.",
+  "The visual check of each tablet screenshot (taken, not all reviewed); measurements are the evidence here."
+ ]
+}

@@ -1,0 +1,384 @@
+{
+ "spec": {
+  "id": "D06-discount-request-and-approval",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 10,
+  "typedFields": 1,
+  "pagesVisited": [
+   "/app",
+   "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  ],
+  "c1UnwrappedCalls": 3,
+  "failedRequests": [],
+  "stepCount": 30
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app",
+   "why": "SETUP: the doctor finishes a visit so that a draft bill exists",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-setup-the-doctor-finishes-a-visit-so-tha.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open the visit in chair (Tara)",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "02-open-the-visit-in-chair-tara.jpg"
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Chart tab",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "03-chart-tab.jpg"
+  },
+  {
+   "n": 4,
+   "action": "click",
+   "why": "Click tooth 36",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Add procedure (Scaling ₹1,500)",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Finalise visit",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Finalise this visit? | After finalise, notes become read-only. Warnings: No diagnosis is recorded yet. Procedures were added. Check the treatment plan is up to date. | Keep editing | Finalise"
+    ]
+   },
+   "shot": "06-finalise-visit.jpg"
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Confirm Finalise",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-confirm-finalise.jpg"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Create bill (a draft bill opens)",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-create-bill-a-draft-bill-opens.jpg"
+  },
+  {
+   "n": 9,
+   "action": "switch user to receptionist",
+   "why": "PART 1: the receptionist opens the same draft bill; the patient asks for a discount",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-part-1-the-receptionist-opens-the-same-d.jpg"
+  },
+  {
+   "n": 10,
+   "action": "open /app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "why": "Open the draft bill as receptionist",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-open-the-draft-bill-as-receptionist.jpg"
+  },
+  {
+   "n": 11,
+   "action": "look",
+   "why": "Draft bill as the receptionist sees it",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "11-draft-bill-as-the-receptionist-sees-it.jpg"
+  },
+  {
+   "n": 12,
+   "action": "note",
+   "why": "Receptionist's draft bill: Draft bill | 2026-11-23 · draft | Patient account | Item | QtyFee (₹) | List ₹1,500 | Add itemSave lines | Subtotal₹1,500 | Total₹1,500 | Rupees one thousand five hundred only | This is not a GST invoice (gst_mode off — DRAFT accountant). | Discount | Amount (₹)Reason | Hardship | Staff or family | Courtesy | Other | Request discount | Discounts are not advertised. Billing decision only (DCI). | Issue bill",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  },
+  {
+   "n": 13,
+   "action": "type",
+   "why": "Type discount amount 300",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "click",
+   "why": "Click Request discount",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "look",
+   "why": "After the receptionist requests a discount",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-after-the-receptionist-requests-a-discou.jpg"
+  },
+  {
+   "n": 16,
+   "action": "note",
+   "why": "After request:  | Draft bill | 2026-11-23 · draft | Patient account | Item | QtyFee (₹) | List ₹1,500 | Add itemSave lines | Subtotal₹1,500 | Discount-₹300 | Total₹1,200 | Rupees one thousand two hundred only | This is not a GST invoice (gst_mode off — DRAFT accountant). | Discount | ₹300 · Hardship · waiting for doctor approval | Amount (₹)Reason | Hardship | Staff or family | Courtesy | Other | Request discount |",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  },
+  {
+   "n": 17,
+   "action": "note",
+   "why": "EDGE: with the discount waiting, the receptionist sees an 'Issue bill' button: true (before the request she had one)",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  },
+  {
+   "n": 18,
+   "action": "switch user to doctor",
+   "why": "PART 2: the doctor looks for the request",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-part-2-the-doctor-looks-for-the-request.jpg"
+  },
+  {
+   "n": 19,
+   "action": "open /app",
+   "why": "Doctor Today: is there anything about a discount request?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 20,
+   "action": "look",
+   "why": "Doctor Today",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-doctor-today.jpg"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "Today mentions discount: false",
+   "url": "/app"
+  },
+  {
+   "n": 22,
+   "action": "open /app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "why": "Doctor opens the bill",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-doctor-opens-the-bill.jpg"
+  },
+  {
+   "n": 23,
+   "action": "look",
+   "why": "Doctor's view of the bill with a pending discount",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-doctor-s-view-of-the-bill-with-a-pending.jpg"
+  },
+  {
+   "n": 24,
+   "action": "note",
+   "why": "Doctor's bill: Draft bill | 2026-11-23 · draft | Patient account | Item | QtyFee (₹) | List ₹1,500 | Add itemSave lines | Subtotal₹1,500 | Discount-₹300 | Total₹1,200 | Rupees one thousand two hundred only | This is not a GST invoice (gst_mode off — DRAFT accountant). | Discount | ₹300 · Hardship · waiting for doctor approval | Approve discount | Amount (₹)Reason | Hardship | Staff or family | Courtesy | Other | Request discount | Discounts are not advertised. Billing decision only (DCI). | Issue billCancel bill",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  },
+  {
+   "n": 25,
+   "action": "click",
+   "why": "Doctor clicks Approve discount",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 26,
+   "action": "look",
+   "why": "After approval",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-after-approval.jpg"
+  },
+  {
+   "n": 27,
+   "action": "note",
+   "why": "After approve:  | Draft bill | 2026-11-23 · draft | Patient account | Item | QtyFee (₹) | List ₹1,500 | Add itemSave lines | Subtotal₹1,500 | Discount-₹300 | Total₹1,200 | Rupees one thousand two hundred only | This is not a GST invoice (gst_mode off — DRAFT accountant). | Discount | ₹300 · Hardship · approved | Amount (₹)Reason | Hardship | Staff or family | Courtesy | Other",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  },
+  {
+   "n": 28,
+   "action": "click",
+   "why": "Doctor clicks Issue bill",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "SB-2627-000025",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-doctor-clicks-issue-bill.jpg"
+  },
+  {
+   "n": 29,
+   "action": "look",
+   "why": "Issued bill with discount",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7",
+   "errors": [],
+   "visible": {
+    "h1": "SB-2627-000025",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "29-issued-bill-with-discount.jpg"
+  },
+  {
+   "n": 30,
+   "action": "note",
+   "why": "Issued: SB-2627-000025 | 2026-11-23 · issued | Patient account | Scaling · tooth 36₹1,500 | Subtotal₹1,500 | Discount-₹300 | Total₹1,200 | Rupees one thousand two hundred only | This is not a GST invoice (gst_mode off — DRAFT accountant). | Print billCancel bill",
+   "url": "/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7"
+  }
+ ]
+}

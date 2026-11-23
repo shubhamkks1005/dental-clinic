@@ -1,0 +1,70 @@
+{
+ "title": "A full working day on a phone (360 px): receptionist, then doctor",
+ "aim": "The rules say every screen must work at 360 px with no sideways scrolling and 44 px tap targets, and the owner may use the app from a phone. Do the day's real tasks on a 360 px phone: Today, new patient, booking, calendar, patient list and search, payment, dues, messages, then the doctor's visit, chart, medicines, reports, settings. On every screen measure sideways scroll and tap targets under 44 px.",
+ "who": "Receptionist then Doctor, Chromium at 360 x 780 with touch",
+ "pre": "Fresh local database. Clock about 10 PM Monday.",
+ "verdict": "BROKEN on two screens, usable but cramped elsewhere",
+ "summary": "Most screens fit. Two do not: the receptionist's Today page is wider than the phone (441 px on a 360 px screen) so the stat cards, the Next patient card and the row buttons 'In chair' and 'Cancel' are cut off or hidden behind the round '+' button; and the doctor's Chart tab is 774 px wide, so most of the tooth chart is off-screen and its 193 tap targets are about 32 by 8 px. Small tap targets are common on lists (patient names 21 px high, calendar times 21 px, dues links 17 px, checkboxes 13 px).",
+ "problems": [
+  {
+   "id": "F2-1",
+   "sev": "Critical",
+   "step": "2",
+   "text": "Receptionist Today at 360 px has sideways scroll (page 441 px wide). The 'Waiting' stat card and the 'Next patient' card run off the right edge, and in 'Today's list' the buttons ('In chair', 'Cancel') are cut off or sit under the round '+' button.",
+   "why": "On a phone the receptionist cannot mark a patient In chair or cancel. Today is the main screen. This breaks the project rule 'no horizontal scroll'.",
+   "fix": "Stack the stat cards in one column, make the Next patient card full width, move row actions under the name, and keep 80 px of bottom space for the '+' button.",
+   "evidence": "screenshots in this folder, step 1 (Today) and measurement note at step 2"
+  },
+  {
+   "id": "F2-2",
+   "sev": "High",
+   "step": "44",
+   "text": "Doctor's Chart tab at 360 px: the page is 774 px wide, only teeth 18 to 12 are visible, and the third drop-down 'Dentition' is cut off. 193 tap targets are smaller than 44 px; each tooth is about 32 by 8 px with a tiny 'W' button.",
+   "why": "A dentist on a phone or small tablet cannot reach the left side of the mouth or tap the right tooth.",
+   "fix": "Make the chart scroll inside its own box with a zoom, or show it as two rows of larger teeth; make the controls 44 px."
+  },
+  {
+   "id": "F2-3",
+   "sev": "High",
+   "step": "MEASURE notes for Book dialog and Calendar",
+   "text": "Calendar and Book dialog on the phone: 25 to 29 tap targets 21 px high ('Book at 10:45 AM' rows), and the Book dialog is taller than the phone screen with the time chips, 'Next free times' list and note. (Patient names in the calendar were already seen cut to 'M.' in the first audit.)",
+   "why": "Hard to pick the right time with a finger.",
+   "fix": "Larger rows, 8 time chips with 'More', Book button fixed at the bottom of the dialog."
+  },
+  {
+   "id": "F2-4",
+   "sev": "Medium",
+   "step": "MEASURE note for Patients list",
+   "text": "Patients list: names are 21 px high links; every card repeats the labels 'Patient no.' and 'Mobile'.",
+   "why": "Small target for the busiest list.",
+   "fix": "Whole card is the link, 56 px high."
+  },
+  {
+   "id": "F2-5",
+   "sev": "Medium",
+   "step": "MEASURE notes for Dues, New patient, Profile",
+   "text": "Dues list links 17 px high; consent checkboxes in New patient 13 px; 'Back to patients' link 17 px; '← Patients' / '← Today' links 17 px.",
+   "why": "All under the 44 px rule.",
+   "fix": "One 44 px minimum for links and checkboxes (padding around them)."
+  },
+  {
+   "id": "F2-6",
+   "sev": "Low",
+   "step": "screenshots of Today and Visit",
+   "text": "The round '+' button covers content on Today, Patients, Billing and the visit (first audit H7).",
+   "why": "Overlap hides row buttons.",
+   "fix": "Only on Today and Patients, with bottom padding."
+  }
+ ],
+ "good": [
+  "Doctor's Today, Visit (first tab), Medicines, Settings, Messages and More fit at 360 px with no sideways scroll.",
+  "The new-patient form is one column with big inputs and fits.",
+  "Bottom tab bar (Today, Patients, Calendar, Billing, More) is clear and reachable.",
+  "Booking, patient search and payment work with touch (the flow completed with 10 taps and 9 fields)."
+ ],
+ "notTested": [
+  "Real touch gestures (swipe, long press) and the on-screen keyboard covering the field being typed.",
+  "Landscape orientation, phone zoom 125%.",
+  "Portal on a phone (not built)."
+ ]
+}

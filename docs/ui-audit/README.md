@@ -10,7 +10,7 @@ Audit date: 2026-11-23. Method: the app was run locally (`wrangler dev`, fresh s
 5. When a finding is fixed, change its status in AUDIT.md in the same commit. Do not delete it.
 
 ## Flows (added later the same day)
-After the first page-by-page pass the owner asked for real end-to-end runs. Six are done and written up in `flows/`; they replace guesses in WORKFLOWS.md where they overlap, and they found three more blocking bugs (C3, C4 and the money balance in H12). Start with [flows/README.md](flows/README.md).
+After the first page-by-page pass the owner asked for real end-to-end runs. Eighteen are done and written up in `flows/`; they replace guesses in WORKFLOWS.md where they overlap, and they found three more blocking bugs (C3, C4 and the money balance in H12). Start with [flows/README.md](flows/README.md).
 
 ## Evidence labels
 - **[seen]**: observed in a real rendered page (screenshot or measurement from the browser run). A screenshot path is given when one is kept.
@@ -30,7 +30,7 @@ Critical = blocks a workflow or risks wrong data. High = major confusion or fric
 | [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) | What exists, where it is not used, recommended rules |
 | [DECISIONS_UI.md](DECISIONS_UI.md) | Approved rules, proposals awaiting the owner, things to avoid |
 | [REVIEW_CHECKLIST.md](REVIEW_CHECKLIST.md) | Checklist every UI change must pass |
-| [flows/](flows/README.md) | **Step-by-step runs in the browser** (6 done, 87 planned): aim, steps, screenshots, problems per flow |
+| [flows/](flows/README.md) | **Step-by-step runs in the browser** (18 done): aim, steps, screenshots, problems per flow |
 | `runner/` | The scripts that drove the browser, so a flow can be repeated |
 | `screenshots/` | 32 fake-data screenshots, by feature (about 3.4 MB) |
 

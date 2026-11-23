@@ -1,0 +1,26 @@
+{
+ "title": "Taking money: advance, split (cash + UPI), part payment, and typing mistakes",
+ "aim": "Test the receptionist's daily money screen on the cases that happen at the desk: a patient who wants to pay in advance, a payment split across two modes, an amount with paise, a negative or zero amount, and a slip of the finger that types ten times the due amount. Check what the screen allows, what it warns about, and whether the numbers afterwards make sense.",
+ "who": "Receptionist, laptop (Billing tab of the patient profile)",
+ "pre": "Fresh local database. Neha owes ₹2,500, Om ₹750, Kiran ₹250, Vikram ₹2,000. A brand-new patient (Adv Paytest) has no bill.",
+ "verdict": "WORKS for normal payments, DANGEROUS for mistakes, advance not possible on purpose",
+ "summary": "Split payment and part payment work and update the balance. The form accepts any amount above the due without a warning: ₹20,000 against ₹2,000 was recorded at once and turned into 'Advance ₹18,000'. A patient with nothing due has no payment form at all, so an advance cannot be taken on purpose (the only way to create one is to overpay by mistake). Zero and negative amounts are blocked, but the button just stays grey with no sentence saying why.",
+ "problems": [
+  {"id":"D3-1","sev":"High","step":"6-11","text":"For a patient with no bill (Outstanding ₹0) the Billing tab shows only 'No bills yet. Create one from a visit.' and no Take payment form. The form is hidden whenever nothing is due (PaymentTakeForm returns nothing when due is 0).","why":"The tester script (docs/TESTING.md task 3, 'Take an advance for a patient with no bill') cannot be done. Patients who want to pay before treatment cannot.","fix":"Show a 'Take advance' option when nothing is due, with a clear label and the same receipt."},
+  {"id":"D3-2","sev":"High","step":"34-39","text":"Typing ₹20,000 for a ₹2,000 due is accepted with no warning or confirmation. The header then reads 'Outstanding: ₹0 · Advance: ₹18,000'. A payment cannot be edited, only reversed by the doctor with a refund.","why":"One extra zero records ₹18,000 of cash that was never received, and the doctor has to correct it.","fix":"If amount is more than the due, ask 'This is ₹18,000 more than the due. Record the extra as advance?' with Cancel as the default."},
+  {"id":"D3-3","sev":"Medium","step":"30-32","text":"With a negative amount or 0 typed, 'Record payment' becomes grey and does nothing. No sentence says what is wrong.","why":"The user presses a dead button and does not know why.","fix":"Show 'Enter an amount above 0' under the field."},
+  {"id":"D3-4","sev":"Low","step":"21-26","text":"Paise are accepted (100.50 recorded; Outstanding becomes ₹649.50) but the rest of the app shows whole rupees (₹2,500). Money display switches style between screens.","why":"Inconsistent look; a ₹649.50 balance next to whole-rupee bills.","fix":"One money format: always show paise when not zero, or never."},
+  {"id":"D3-5","sev":"Medium","step":"13-19","text":"The split payment works (₹1,000 cash + ₹500 UPI, Outstanding ₹1,500) but the Billing tab shows no payment list or receipt afterwards, so the receptionist cannot confirm the two parts. (See AUDIT H13.)","why":"No way to read back what was just recorded.","fix":"Payments list under the bills list."}
+ ],
+ "good": [
+  "Split payment: ticking the box shows a second mode and second amount; both are recorded in one step.",
+  "Paise amounts are supported and the balance is exact.",
+  "Zero and negative amounts cannot be recorded.",
+  "The account header shows 'Advance' separately from 'Outstanding' when a patient has paid more."
+ ],
+ "notTested": [
+  "Whether the advance is applied automatically to the next bill ('Apply patient advance' checkbox on a draft bill) and the receipt for an advance.",
+  "Cheque, bank and card modes and the 'Reference' field rules.",
+  "Day close totals after split, over-payment and refund (flow D05)."
+ ]
+}

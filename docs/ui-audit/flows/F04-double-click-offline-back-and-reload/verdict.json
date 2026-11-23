@@ -1,0 +1,24 @@
+{
+ "title": "Real-life slips: double click, internet drops, Back button, leaving a half-filled form",
+ "aim": "Check what protects the clinic from everyday mistakes: a nervous double click on Record payment and on Save patient (could create two payments or two patients), the clinic's internet dropping, the browser Back button after saving, and leaving a half-filled form by clicking another menu item.",
+ "who": "Receptionist, laptop",
+ "pre": "Fresh local database. Neha Testcase owes ₹2,500.",
+ "verdict": "WORKS (best protected area of the app)",
+ "summary": "A double click on Record payment recorded one payment (₹2,500 to ₹2,400, not ₹2,300) and a double click on Save patient created one patient. An offline banner appears with a plain sentence. Leaving a half-filled form asks 'Leave without saving?'. The weak spot is what the screens do while offline: the sidebar click did nothing and the page stayed blank apart from the banner.",
+ "problems": [
+  {"id":"F4-1","sev":"Medium","step":"20-23","text":"While offline, clicking another menu item (Patients) does nothing visible and the Patients page content is empty; only the banner explains why.","why":"The user keeps clicking and may not link the empty screen to the banner. Typed work on the current page is safe, but nothing says that.","fix":"Keep the current screen and add 'Your work on this page is kept' to the banner; disable actions that need the server."},
+  {"id":"F4-2","sev":"Low","step":"32","text":"After saving a new patient and pressing the browser Back button the user lands on Today (/app), not on the empty New patient form or the patient list. No harm, but it was not obvious that the 'Patient saved' screen has no Back step.","why":"Mild surprise.","fix":"None needed; consider a link to the new patient's profile (see G01 P10)."}
+ ],
+ "good": [
+  "Double click on Record payment: only one ₹100 payment recorded (Outstanding ₹2,400).",
+  "Double click on Save patient: one patient created.",
+  "Offline banner: 'No internet connection. Don't close this page. Wait for the internet to come back, then try again.' and it goes away when the connection returns.",
+  "Half-filled form + menu click: dialog 'Leave without saving? Your changes on this page are not saved yet. If you leave now, they are lost.' with 'Stay on this page' and 'Leave'."
+ ],
+ "notTested": [
+  "Double click on Book appointment, Issue bill, Finalise (these also need duplicate protection).",
+  "Reload of the visit page while typing before the autosave ran (blocked by C1 in a real browser).",
+  "Session expiry in the middle of a form.",
+  "Submitting while offline and then reconnecting."
+ ]
+}

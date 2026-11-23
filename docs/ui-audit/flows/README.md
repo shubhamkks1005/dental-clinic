@@ -6,15 +6,33 @@ Labels: every line in a flow file was seen in the browser unless marked otherwis
 
 Read this first: the test clock was 8:45-10:00 PM IST on 23 Nov 2026, after clinic hours. All slots today were gone, so "the patient arrives today" was done with an emergency walk-in, and nothing real could be sent. Bug C1 (the app cannot open a visit) was repaired inside the test harness only so the doctor part could be reached.
 
-## Done (6)
+## Done (18)
 | Flow | What it covers | Result |
 |------|----------------|--------|
-| [G01](G01-first-patient-lifecycle.md) | New patient, booking, walk-in, doctor visit (chart, procedure, diagnosis, medicine), finalise, bill, payment, statement | BROKEN twice (C1, C3), confusing money steps |
-| [G02](G02-returning-patient-second-visit.md) | Returning patient, second visit from profile, new bill, one payment over two bills | Works, confusing about where money went |
-| [B02](B02-reschedule-or-cancel-a-future-booking.md) | Patient phones to cancel or move tomorrow's booking | No Cancel for future bookings; reschedule only by hidden drag |
-| [H01](H01-booking-confirm-and-reminder-messages.md) | Booking without note, confirm and reminder messages, Open WhatsApp | Booking without a note FAILS (C4); messages usable but noisy |
-| [A02](A02-register-edge-cases.md) | Child, no mobile, bad mobile, duplicate, long name, future date of birth | Works with confusing messages |
+| [G01](G01-first-patient-lifecycle.md) | New patient, booking, walk-in, visit, finalise, bill, payment, statement | BROKEN (C1, C3), confusing money steps |
+| [G02](G02-returning-patient-second-visit.md) | Returning patient, second visit, one payment over two bills | Works, money allocation not shown |
+| [G08](G08-child-with-guardian-and-shared-mobile.md) | Child with guardian, contact mobile, reminder | Registration works; reminder BROKEN for children |
+| [G10](G10-two-screens-same-record.md) | Same visit and same billing in two tabs | Typing can be lost; stale payment accepted |
+| [A02](A02-register-edge-cases.md) | Child, no mobile, bad mobile, duplicate, long name, future date | Works, confusing messages |
+| [B02](B02-reschedule-or-cancel-a-future-booking.md) | Cancel or move tomorrow's booking | No Cancel; reschedule only by hidden drag |
 | [D02](D02-refund-and-cancel-a-bill.md) | Wrong bill: payment, refund, cancel | Receptionist cannot fix; balance wrong after refund |
+| [D03](D03-payments-advance-split-part-and-mistakes.md) | Advance, split, part payment, typing mistakes | Works; overpay accepted silently; no advance on purpose |
+| [D05](D05-dues-reminder-and-daily-cash-close.md) | Dues reminder, day close | Works well; Cancel without confirm |
+| [D06](D06-discount-request-and-approval.md) | Discount request and approval | Works; doctor not told; total drops early |
+| [E01](E01-settings-timings-visit-type-medicine.md) | Timings, visit type, medicine | Works (best screens); one silent failure |
+| [E02](E02-staff-add-change-role-deactivate.md) | Add, deactivate, reactivate staff | Works very well (model screen) |
+| [F01](F01-receptionist-opens-doctor-only-pages.md) | Receptionist opens doctor pages and API by hand | Privacy rule holds |
+| [F02](F02-phone-full-day.md) | Whole day at 360 px | BROKEN on Today (receptionist) and Chart |
+| [F03](F03-tablet-full-day.md) | Whole day at 768 px | Works except Chart |
+| [F04](F04-double-click-offline-back-and-reload.md) | Double click, offline, Back, half-filled form | Works (well protected) |
+| [H01](H01-booking-confirm-and-reminder-messages.md) | Booking, confirm and reminder messages | Booking without note FAILS (C4) |
+| [H02](H02-messages-no-consent-no-mobile-and-reschedule.md) | Messages: no consent, no mobile, moved appointment | Consent rule holds; stale messages after a move |
 
-## Not run yet (planned list from the chat, 87 flows)
-The full plan has 93 flows in groups A to J. Not yet run: A1, A3 to A7 (find, edit patient, medical alert, archive), B1, B3 to B8, C1 to C10 except those inside G01/G02 (plan, addendum, files, consent print, certificate, a whole doctor day), D1, D3 to D10 (advance, split, discount approval, reprint receipt, dues reminders, day close), E (settings changes, staff), F (roles by URL, sign-out, phone and tablet full day, keyboard, offline), G03 to G15 (braces journey, emergency, no-show, correction, shared mobile, doctor holiday, two users at once, month end, day-0 setup, records request, consent life cycle, bad day), H2 to H11 (other message kinds, quiet hours, no consent), I (timings), J (data and print edge cases). Some of these were touched inside the six flows (see their "Not covered" lists).
+## Asked for but not done
+- **J1 data and print edge cases** (₹0 bill, 8-line prescription, 5,000 patients, A4/A5): not run.
+- **G5 no-show and call list:** not run as a flow. In D05 there was no No-show action on Today rows, so the Call list could not be filled.
+- **Keyboard-only use** (Tab, Enter, Esc) from F04: not tested; only double click, offline, Back and half-filled form were.
+- Everything in the chat plan that needs the C1, C3, C4 fixes or the refund rule: see the list below.
+
+## Not run yet (the remaining ~75 of the 93)
+Blocked until C1, C3, C4 are fixed: the doctor's full day, prescription issue and print, treatment plan / braces journey, addendum, certificate, past record and files, emergency walk-in start to payment. Blocked until a rule is decided: refund and bill cancel success, day close after refunds. Blocked until H11 (cancel future booking): cancel messages, no-show recall. Not built: portal, day-cancel wizard. The rest are variations of flows already run.

@@ -1,0 +1,29 @@
+{
+ "title": "The receptionist types the doctor's page addresses and API addresses by hand",
+ "aim": "The project rule is that the receptionist never sees clinical data, and that this is enforced in the server, not only by hiding menu items. Prove it: sign in as the receptionist, open 13 pages that belong to the doctor straight by their address, and call 7 server addresses directly. Record what is shown or refused and whether the refusal sentence helps.",
+ "who": "Doctor (to read real record ids), then Receptionist, laptop",
+ "pre": "Fresh local database. Neha Testcase has a finalised visit (no prescription in the seed, so the prescription print could only be tested with an id that does not exist).",
+ "verdict": "WORKS (privacy rule holds), with a few screens that open and then cannot be used",
+ "summary": "The server refuses every clinical read from the receptionist with HTTP 403 (visit, prescriptions, chart events) and the patient history feed returns only appointment, bill and consent entries, no visits or prescriptions. The pages show a plain sentence: 'You do not have permission to do this. Ask the doctor if you need it.' A few pages open fully for the receptionist although they are doctor tools or not in her menu (New medical certificate form, Style guide, doctor's medicine list in Settings).",
+ "problems": [
+  {"id":"F1-1","sev":"Medium","step":"13-14","text":"The receptionist can open the 'New medical certificate' form by address (/app/patients/:id/certificates/new). It shows an empty form (patient name, age, address, identification mark, reason, dates) that is not even filled with that patient. The patient overview tells her 'Doctor creates and finalises'.","why":"A form she cannot finish. If she types and saves, the server probably refuses (not tested), after she has typed medical reasons.","fix":"Show the same 'You do not have permission' page as for the visit."},
+  {"id":"F1-2","sev":"Low","step":"23-25","text":"The receptionist can read the doctor's Medicines list and Billing settings (Settings > Medicines, Settings > Billing). Edit controls were not seen on the medicine rows in the screenshot; billing settings not checked.","why":"The medicine list is clinic configuration, not patient data, so this is probably intended. It is not listed in the permission notes, so confirm with the doctor.","fix":"Decide and write it in AUTH_PLAN section 4f; hide the sections from the receptionist menu if not intended."},
+  {"id":"F1-3","sev":"Low","step":"29","text":"The developer 'Style guide' page opens for staff (and overflows at 360 px).","why":"Not harmful; it is a developer page in the staff app.","fix":"Show it only in local development."},
+  {"id":"F1-4","sev":"Low","step":"19","text":"Patient requests list (/app/requests) opens for the receptionist and shows each request. HANDOFF says view is allowed for both roles. Not checked whether the text of a request can contain health information.","why":"Needs a policy check, not a bug.","fix":"Doctor confirms the roles (already listed as waiting in STATE.md)."},
+  {"id":"F1-5","sev":"Low","step":"36-37","text":"Two server addresses (/api/staff/requests, /api/staff/staff) return 404 'This address does not exist' instead of 403 because the real addresses differ. They were guesses.","why":"Not a finding about the app; recorded so nobody reads the 404 as protection.","fix":"None."},
+  {"id":"F1-6","sev":"Low","step":"27","text":"Reports for the receptionist shows 'Collected -₹50' (a negative collected amount for today, from a seeded refund).","why":"A negative 'Collected' looks like an error to a receptionist; it comes from refunds being larger than payments today.","fix":"Show Payments and Refunds on two lines."}
+ ],
+ "good": [
+  "Server side enforcement is real: /api/staff/visits/:id, /visits/:id/prescriptions, /patients/:id/chart and /errors return HTTP 403 for the receptionist.",
+  "Patient history feed for the receptionist has only appointment, bill and consent entries.",
+  "Refusal wording is plain and consistent on pages and API: 'You do not have permission to do this. Ask the doctor if you need it.'",
+  "Reports for the receptionist is a small safe summary with 'The full dashboard is for the doctor.'",
+  "Consent print (allowed for the receptionist) works and prints."
+ ],
+ "notTested": [
+  "Submitting the certificate form as the receptionist.",
+  "Prescription print with a real prescription id (none in the seed).",
+  "The patient-facing portal (not built).",
+  "A deactivated or logged-out user opening a page (session expiry)."
+ ]
+}

@@ -1,0 +1,179 @@
+{
+ "spec": {
+  "id": "G10-two-screens-same-record",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 4,
+  "typedFields": 2,
+  "pagesVisited": [
+   "/app",
+   "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "/app/patients",
+   "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M"
+  ],
+  "c1UnwrappedCalls": 2,
+  "failedRequests": [],
+  "stepCount": 14
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app",
+   "why": "PART 1: the doctor has the same visit open in two browser tabs (A and B)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-part-1-the-doctor-has-the-same-visit-ope.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Tab A: open the visit",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "02-tab-a-open-the-visit.jpg"
+  },
+  {
+   "n": 3,
+   "action": "type",
+   "why": "Tab A: type the chief complaint",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [
+     "Not saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "note",
+   "why": "Tab A after 2 s: Saved",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ"
+  },
+  {
+   "n": 5,
+   "action": "note",
+   "why": "Tab B (opened before A typed) after typing and 2 s: Not saved — retrying",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ"
+  },
+  {
+   "n": 6,
+   "action": "note",
+   "why": "After reloading tab B the saved values are: complaint='Complaint typed in tab A', exam=''",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ"
+  },
+  {
+   "n": 7,
+   "action": "switch user to receptionist",
+   "why": "PART 2: the receptionist has Neha's Billing tab open in two tabs (both show ₹2,500 due)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-part-2-the-receptionist-has-neha-s-billi.jpg"
+  },
+  {
+   "n": 8,
+   "action": "open /app/patients",
+   "why": "Patients",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-patients.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Tab A: open Neha",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-tab-a-open-neha.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Tab A: Billing tab",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Tab A: type 2000",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Tab A: Record payment ₹2,000",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "note",
+   "why": "Tab A now: Outstanding: ₹500",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "Tab B (stale, still thought ₹2,500 was due) recorded ₹1,000: Outstanding: ₹0 · Advance: ₹500 | msg: ",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M"
+  }
+ ]
+}

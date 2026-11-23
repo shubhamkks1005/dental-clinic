@@ -1,0 +1,24 @@
+{
+ "title": "Two tabs on the same record: visit notes, and two payments on a stale balance",
+ "aim": "In a clinic two screens often show the same patient: the doctor leaves a visit open in two tabs, or the receptionist has the same billing page open twice, or the doctor and receptionist work on the same patient. Find out what happens to what is typed, what the user is told, and whether money can be recorded against an out-of-date balance.",
+ "who": "Doctor (two tabs of the same visit), then Receptionist (two tabs of the same patient's Billing tab), laptop",
+ "pre": "Fresh local database. Tara's visit is a draft. Neha owes ₹2,500. The second tab is opened BEFORE the first tab changes anything, so it holds old data. Bug C1 is repaired by the test harness on both tabs.",
+ "verdict": "CONFUSING and it can lose typing",
+ "summary": "Typing in a tab that holds an old copy of the visit never saves: a red chip 'Not saved — retrying' appears and keeps retrying, with no explanation. After a reload the text typed in that tab is gone. In the billing case a stale tab happily recorded ₹1,000 against ₹500 that was really due and silently created ₹500 of advance.",
+ "problems": [
+  {"id":"G10-1","sev":"High","step":"5-6","text":"Tab B (opened before tab A saved) typed 'Exam typed in tab B'. The chip says 'Not saved — retrying' and stays that way; the text remains in the box. Reloading the page shows the exam empty: the note is lost. No sentence says 'someone saved this visit in another tab, reload to get the latest'.","why":"A doctor can write several lines, believe the retry will work, finalise or leave, and lose the clinical note. The screen knows it cannot save but does not say why or how to fix it.","fix":"On a version conflict show: 'This visit was changed in another tab or by someone else. Your text is kept below. [Reload and merge]'. Never retry forever."},
+  {"id":"G10-2","sev":"High","step":"13-14","text":"Tab B showed ₹2,500 due; tab A had already recorded ₹2,000, leaving ₹500. Recording ₹1,000 in tab B was accepted at once: Outstanding became ₹0 with 'Advance ₹500'. No message said the balance had changed.","why":"Out-of-date screens create wrong advances and wrong cash totals; the receptionist does not notice.","fix":"The server should reject a payment above the current due unless 'extra as advance' is confirmed; show the fresh balance in the answer."},
+  {"id":"G10-3","sev":"Medium","step":"4","text":"The red chip 'Not saved — retrying' is small, sits above the first field and uses the same chip as 'Saved'.","why":"Easy to miss while typing lower down the page.","fix":"Make it a sticky banner when saving fails for more than 5 seconds."}
+ ],
+ "good": [
+  "The visit shows 'Saved' when it saves and a clear red 'Not saved' when it does not.",
+  "Typed text is not wiped from the box when saving fails.",
+  "The first tab saved fine and its text survived (complaint 'Complaint typed in tab A')."
+ ],
+ "notTested": [
+  "Doctor and receptionist editing the same patient details at the same time.",
+  "What happens to the retry when the connection returns.",
+  "Two tabs finalising the same visit, or issuing the same bill.",
+  "Two receptionists booking the same slot at the same moment."
+ ]
+}

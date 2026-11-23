@@ -1,0 +1,26 @@
+{
+ "title": "The patient asks for a discount: receptionist requests, doctor approves",
+ "aim": "The rule is that the receptionist cannot give a discount; only the doctor can. Test the hand-off: set up a draft bill, let the receptionist request a ₹300 discount, see what she can still do, find out how the doctor learns about the request, approve it, and issue the bill.",
+ "who": "Doctor (setup), Receptionist (request), Doctor (approve, issue), laptop",
+ "pre": "Fresh local database. The doctor finalises Tara's visit with one procedure (Scaling ₹1,500) and creates a draft bill. Setup uses the C1 repair in the test harness.",
+ "verdict": "WORKS, but the doctor is never told and the total changes before approval",
+ "summary": "The two-step rule is enforced: the receptionist can only request; the doctor sees an 'Approve discount' button; after approval the bill is issued with the discount (₹1,500 - ₹300 = ₹1,200). Weak points: the draft total already drops to ₹1,200 while the request is still 'waiting for doctor approval'; nothing on the doctor's Today or anywhere else says a request is waiting; and the screen is unstyled with internal text.",
+ "problems": [
+  {"id":"D6-1","sev":"High","step":"16, 21","text":"The doctor is not told. After the receptionist's request the doctor's Today page has no mention of a discount (checked: no 'discount' text anywhere). The doctor only finds the request by opening that specific bill.","why":"The patient waits at the desk while the receptionist walks to the doctor to say 'please open the bill'. The point of the approval step is lost.","fix":"Put 'Discount waiting: Tara Testcase ₹300' on the doctor's Today (and a count in the nav), with an Approve button."},
+  {"id":"D6-2","sev":"High","step":"16","text":"As soon as the receptionist presses Request discount, the draft bill shows 'Discount -₹300' and 'Total ₹1,200', while the line below still says 'waiting for doctor approval'.","why":"The receptionist may quote or even collect the lower total before the doctor said yes. The total should stay ₹1,500 until approval.","fix":"Show the requested discount in a separate line 'Requested (not approved): ₹300' and keep the total at ₹1,500."},
+  {"id":"D6-3","sev":"Medium","step":"17","text":"With the request waiting, the receptionist's 'Issue bill' button is still on screen; an attempt to click it in an earlier run timed out, so it is probably disabled, but nothing says why.","why":"A grey button without a reason.","fix":"Under the button: 'Waiting for the doctor to approve the discount.'"},
+  {"id":"D6-4","sev":"Medium","step":"13","text":"The draft bill screen is the unstyled one (bullets, bare inputs, bare select) and carries two internal sentences: 'This is not a GST invoice (gst_mode off — DRAFT accountant).' and 'Discounts are not advertised. Billing decision only (DCI).'","why":"Staff-facing screen with legal and developer notes the receptionist cannot act on.","fix":"Build to mockup S09; move the notes to Settings > Billing."},
+  {"id":"D6-5","sev":"Low","step":"27","text":"After 'Approve discount' there is no toast; the only change is the small line '₹300 · Hardship · approved'.","why":"The doctor cannot tell at a glance that it worked.","fix":"Toast 'Discount approved'."},
+  {"id":"D6-6","sev":"Low","step":"13","text":"Discount reason is a drop-down of four fixed reasons (Hardship, Staff or family, Courtesy, Other) with no space to write why when 'Other' is chosen.","why":"The audit trail has no explanation for 'Other'.","fix":"Show a text box when 'Other' is chosen."}
+ ],
+ "good": [
+  "The rule holds: the receptionist can request, only the doctor can approve (Approve discount appears only for the doctor).",
+  "The discount ends up on the issued bill: Subtotal ₹1,500, Discount -₹300, Total ₹1,200, number SB-2627-000025.",
+  "Reason is required and shown with the request ('₹300 · Hardship · waiting for doctor approval')."
+ ],
+ "notTested": [
+  "Rejecting a discount, a discount bigger than the bill, a discount on an issued bill.",
+  "Whether the receptionist can still edit items after requesting a discount.",
+  "The audit log entry for the approval."
+ ]
+}

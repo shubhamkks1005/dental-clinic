@@ -1,0 +1,27 @@
+{
+ "title": "The doctor changes settings: opening hours, a new visit type, a new medicine, and whether the rest of the app notices",
+ "aim": "Settings are the doctor's own controls (nothing is hard-coded). Test the three changes a clinic makes most: opening hours, a new visit type and a new medicine. For each, save the change and then go to the screen that uses it (booking dialog for hours and visit type, the visit's Medicines tab for the medicine). Also try a wrong value (closing before opening) to see how the form protects the clinic.",
+ "who": "Doctor (changes), then Receptionist (booking dialog) and Doctor again (visit)",
+ "pre": "Fresh local database. Monday opening hours 10:00 AM to 7:00 PM, lunch 1:30 to 2:30. Clock about 10 PM Monday, so with normal hours no time is free today.",
+ "verdict": "WORKS (the best part of the app), one silent failure",
+ "summary": "Settings changes save, show a clear toast, and reach the screens that use them straight away: with Monday closing at 11:30 PM the booking dialog offers times from 10:00 PM; the new visit type 'Retainer check' (20 minutes) shows in the booking dialog; the new medicine 'Ibuprofen' is found in a visit's medicine search. The Timings screen is the best-laid-out screen in the app. The one problem: a closing time before the opening time is not saved and nothing says so.",
+ "problems": [
+  {"id":"E1-1","sev":"High","step":"8-11","text":"Closing time set before opening time (07:00 against 10:00 AM): pressing Save does nothing. No request is sent, no message appears (checked for 6 seconds), and after reloading the old value is back. The Save button stays enabled the whole time.","why":"The doctor believes the hours are saved and the receptionist later finds no slots or the old hours. A form that fails silently is the worst kind.","fix":"Show a sentence next to the row: 'Closing time must be after opening time.' and scroll to it."},
+  {"id":"E1-2","sev":"Medium","step":"30","text":"The Medicines add form has 11 fields (name, brand, form, strength, default dose, frequency, days, timing, instruction, tags, category) all at the same weight and with only the name needed.","why":"Adding a medicine for the first time feels heavy; the doctor will type the name and leave the rest empty (as done here) or be put off.","fix":"Name and strength first; 'More details' for the rest."},
+  {"id":"E1-3","sev":"Medium","step":"22-26","text":"Settings lists (visit types, medicines) show every row with four buttons: Edit, an up arrow, a down arrow and Hide. The same row pattern for 8 to 30 items. A new item is added at the bottom of a long list; the add form sits below the list.","why":"The Add form is far down on long lists (medicines has dozens of rows). Up/down arrows are slow for long lists.","fix":"Put Add at the top; keep reorder to drag or a separate 'Reorder' mode."},
+  {"id":"E1-4","sev":"Low","step":"25","text":"A visit type of 20 minutes was accepted on a booking grid that moves every 15 minutes. The booking dialog offered starts every 15 minutes for it.","why":"Works, but overlapping 20-minute visits on a 15-minute grid may leave odd gaps. Not checked on the calendar.","fix":"Warn when the duration is not a multiple of the slot length."},
+  {"id":"E1-5","sev":"Low","step":"3","text":"Save is disabled until something changes (good) but gives no hint; after a change the button does not say what will be saved.","why":"Minor.","fix":"Show 'Unsaved changes' near Save."}
+ ],
+ "good": [
+  "Timings screen: one card per weekday with Opens, Closes, Lunch from and Lunch to, clear labels, time pickers; the layout is the best in the app.",
+  "A saved change gives a toast: 'Opening hours saved.' and '\"Retainer check\" added.'",
+  "Changes take effect at once on the booking dialog and the visit's medicine search, with no reload.",
+  "Everything the doctor edits is versioned (history panel exists on Settings screens; not opened in this run)."
+ ],
+ "notTested": [
+  "Holidays (add a holiday and try to book on it), the number-series and billing settings, Preferences, Consent templates, Privacy notice.",
+  "Editing or hiding an existing visit type or medicine that old records use.",
+  "The Setting history panel and rollback.",
+  "Closing the clinic on a day that already has appointments."
+ ]
+}

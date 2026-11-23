@@ -1,0 +1,693 @@
+{
+ "spec": {
+  "id": "E01-settings-timings-visit-type-medicine",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 10,
+  "typedFields": 9,
+  "pagesVisited": [
+   "/app/settings/timings",
+   "/app",
+   "/app/appointments",
+   "/app/settings/visit_types",
+   "/app/settings/medicines",
+   "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ"
+  ],
+  "c1UnwrappedCalls": 1,
+  "failedRequests": [],
+  "stepCount": 51
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/settings/timings",
+   "why": "PART 1: the doctor wants the clinic open late today (Monday) to see how timings change booking",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-part-1-the-doctor-wants-the-clinic-open-.jpg"
+  },
+  {
+   "n": 2,
+   "action": "look",
+   "why": "Timings screen",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-timings-screen.jpg"
+  },
+  {
+   "n": 3,
+   "action": "note",
+   "why": "Save button state before any change: disabled",
+   "url": "/app/settings/timings"
+  },
+  {
+   "n": 4,
+   "action": "look",
+   "why": "Monday closing time changed to 23:30",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "04-monday-closing-time-changed-to-23-30.jpg"
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Click Save",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Opening hours saved.\n×",
+     "Notifications Opening hours saved."
+    ],
+    "dialog": []
+   },
+   "shot": "05-click-save.jpg"
+  },
+  {
+   "n": 6,
+   "action": "note",
+   "why": "After save: Opening hours saved.\n× / Notifications Opening hours saved.",
+   "url": "/app/settings/timings"
+  },
+  {
+   "n": 7,
+   "action": "look",
+   "why": "After saving timings",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Opening hours saved.\n×",
+     "Notifications Opening hours saved."
+    ],
+    "dialog": []
+   },
+   "shot": "07-after-saving-timings.jpg"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "EDGE: set Monday closing 07:00 (before opening 10:00) and Save",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "Closing time must be after opening time.",
+     "Lunch must fit inside the opening hours."
+    ],
+    "toasts": [
+     "Opening hours saved.\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "08-edge-set-monday-closing-07-00-before-ope.jpg"
+  },
+  {
+   "n": 9,
+   "action": "note",
+   "why": "6 seconds after pressing Save with closing before opening: messages on screen = []",
+   "url": "/app/settings/timings"
+  },
+  {
+   "n": 10,
+   "action": "look",
+   "why": "Still no message",
+   "url": "/app/settings/timings",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "Closing time must be after opening time.",
+     "Lunch must fit inside the opening hours."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-still-no-message.jpg"
+  },
+  {
+   "n": 11,
+   "action": "note",
+   "why": "After reloading the page the Monday closing time is 23:30 (the 07:00 was not saved)",
+   "url": "/app/settings/timings"
+  },
+  {
+   "n": 12,
+   "action": "switch user to receptionist",
+   "why": "Switch to the receptionist",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "12-switch-to-the-receptionist.jpg"
+  },
+  {
+   "n": 13,
+   "action": "open /app/appointments",
+   "why": "Appointments",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "13-appointments.jpg"
+  },
+  {
+   "n": 14,
+   "action": "click",
+   "why": "Open Book dialog (today)",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Patient | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "14-open-book-dialog-today.jpg"
+  },
+  {
+   "n": 15,
+   "action": "type",
+   "why": "Type a patient name",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Patient | Neha Testcase | P-000014 | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   }
+  },
+  {
+   "n": 16,
+   "action": "click",
+   "why": "Pick the patient",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "16-pick-the-patient.jpg"
+  },
+  {
+   "n": 17,
+   "action": "select",
+   "why": "Choose Consultation",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | 10:00 PM | 10:15 PM | 10:30 PM | 10:45 PM | 11:00 PM | Next free times | 23/11/2026 · 10:00 "
+    ]
+   }
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "Free times today now that the clinic is open until 23:30",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | 10:00 PM | 10:15 PM | 10:30 PM | 10:45 PM | 11:00 PM | Next free times | 23/11/2026 · 10:00 "
+    ]
+   },
+   "shot": "18-free-times-today-now-that-the-clinic-is-.jpg"
+  },
+  {
+   "n": 19,
+   "action": "note",
+   "why": "Times offered today: 10:00 PM, 10:15 PM, 10:30 PM, 10:45 PM, 11:00 PM, 10:00 PM, 10:30 PM, 10:15 PM ...",
+   "url": "/app/appointments"
+  },
+  {
+   "n": 20,
+   "action": "switch user to doctor",
+   "why": "Back to the doctor",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-back-to-the-doctor.jpg"
+  },
+  {
+   "n": 21,
+   "action": "open /app/settings/visit_types",
+   "why": "PART 2: add a new visit type",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "21-part-2-add-a-new-visit-type.jpg"
+  },
+  {
+   "n": 22,
+   "action": "look",
+   "why": "Visit types list and add form",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-visit-types-list-and-add-form.jpg"
+  },
+  {
+   "n": 23,
+   "action": "type",
+   "why": "Type the name 'Retainer check'",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 24,
+   "action": "type",
+   "why": "Duration 20 minutes (slot grid is every 15 minutes)",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 25,
+   "action": "click",
+   "why": "Click Add",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "\"Retainer check\" added.\n×",
+     "Notifications \"Retainer check\" added."
+    ],
+    "dialog": []
+   },
+   "shot": "25-click-add.jpg"
+  },
+  {
+   "n": 26,
+   "action": "note",
+   "why": "After add: \"Retainer check\" added.\n× / Notifications \"Retainer check\" added.",
+   "url": "/app/settings/visit_types"
+  },
+  {
+   "n": 27,
+   "action": "look",
+   "why": "After adding the visit type",
+   "url": "/app/settings/visit_types",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "\"Retainer check\" added.\n×",
+     "Notifications \"Retainer check\" added."
+    ],
+    "dialog": []
+   },
+   "shot": "27-after-adding-the-visit-type.jpg"
+  },
+  {
+   "n": 28,
+   "action": "open /app/settings/medicines",
+   "why": "PART 3: add a medicine to the doctor's own list",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-part-3-add-a-medicine-to-the-doctor-s-ow.jpg"
+  },
+  {
+   "n": 29,
+   "action": "look",
+   "why": "Medicines list",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "29-medicines-list.jpg"
+  },
+  {
+   "n": 30,
+   "action": "note",
+   "why": "Add form fields: label, data.brand, data.form, data.strength, data.default_dose, data.default_frequency, data.default_days, data.timing, data.instruction, data.tags, data.category",
+   "url": "/app/settings/medicines"
+  },
+  {
+   "n": 31,
+   "action": "type",
+   "why": "Type the medicine name 'Ibuprofen'",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 32,
+   "action": "type",
+   "why": "Type strength 400 mg",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "click",
+   "why": "Click Add",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "Enter the form.",
+     "Enter the default dose.",
+     "Enter the default frequency.",
+     "Enter the default days."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "33-click-add.jpg"
+  },
+  {
+   "n": 34,
+   "action": "note",
+   "why": "After add medicine: ",
+   "url": "/app/settings/medicines"
+  },
+  {
+   "n": 35,
+   "action": "look",
+   "why": "After adding the medicine",
+   "url": "/app/settings/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "Enter the form.",
+     "Enter the default dose.",
+     "Enter the default frequency.",
+     "Enter the default days."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "35-after-adding-the-medicine.jpg"
+  },
+  {
+   "n": 36,
+   "action": "switch user to receptionist",
+   "why": "PART 4: do the new settings appear where they are used? Receptionist opens Book",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "36-part-4-do-the-new-settings-appear-where-.jpg"
+  },
+  {
+   "n": 37,
+   "action": "open /app/appointments",
+   "why": "Appointments",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "37-appointments.jpg"
+  },
+  {
+   "n": 38,
+   "action": "click",
+   "why": "Open Book",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Patient | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Retainer check | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "38-open-book.jpg"
+  },
+  {
+   "n": 39,
+   "action": "type",
+   "why": "Patient",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Patient | Neha Testcase | P-000014 | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Retainer check | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   }
+  },
+  {
+   "n": 40,
+   "action": "click",
+   "why": "Pick the patient",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Retainer check | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "40-pick-the-patient.jpg"
+  },
+  {
+   "n": 41,
+   "action": "note",
+   "why": "Visit types offered: Choose…, Consultation, Follow-up, Cleaning, RCT sitting, Extraction, Ortho adjustment, Emergency, Retainer check",
+   "url": "/app/appointments"
+  },
+  {
+   "n": 42,
+   "action": "select",
+   "why": "Choose the new visit type 'Retainer check' (20 minutes)",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Retainer check | Date | Free times on 23/11/2026 | 10:00 PM | 10:15 PM | 10:30 PM | 10:45 PM | 11:00 PM | Next free times | 23"
+    ]
+   }
+  },
+  {
+   "n": 43,
+   "action": "look",
+   "why": "Free times for a 20-minute visit type",
+   "url": "/app/appointments?book=1",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Neha Testcase · P-000014 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Retainer check | Date | Free times on 23/11/2026 | 10:00 PM | 10:15 PM | 10:30 PM | 10:45 PM | 11:00 PM | Next free times | 23"
+    ]
+   },
+   "shot": "43-free-times-for-a-20-minute-visit-type.jpg"
+  },
+  {
+   "n": 44,
+   "action": "note",
+   "why": "Times offered for the 20-minute type: 10:00 PM, 10:15 PM, 10:30 PM, 10:45 PM, 11:00 PM, 10:00 PM, 10:30 PM, 10:15 PM",
+   "url": "/app/appointments"
+  },
+  {
+   "n": 45,
+   "action": "switch user to doctor",
+   "why": "Doctor: does the new medicine appear in a visit?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "45-doctor-does-the-new-medicine-appear-in-a.jpg"
+  },
+  {
+   "n": 46,
+   "action": "open /app",
+   "why": "Doctor Today",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 47,
+   "action": "click",
+   "why": "Open a visit",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "47-open-a-visit.jpg"
+  },
+  {
+   "n": 48,
+   "action": "click",
+   "why": "Medicines tab",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "48-medicines-tab.jpg"
+  },
+  {
+   "n": 49,
+   "action": "type",
+   "why": "Search 'Ibu'",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 50,
+   "action": "look",
+   "why": "Is Ibuprofen found?",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ",
+   "errors": [],
+   "visible": {
+    "h1": "Tara Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "50-is-ibuprofen-found.jpg"
+  },
+  {
+   "n": 51,
+   "action": "note",
+   "why": "Ibuprofen found in the visit's search: true",
+   "url": "/app/visits/01M84FVM8RX59FPGK83NY5Q9YQ"
+  }
+ ]
+}

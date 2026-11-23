@@ -1,0 +1,683 @@
+{
+ "spec": {
+  "id": "H02-messages-no-consent-no-mobile-and-reschedule",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 17,
+  "typedFields": 17,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 50
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "Register Nocon Msgtest: NO SMS consent",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-register-nocon-msgtest-no-sms-consent.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-save-patient.jpg"
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "Save result: Patient saved | Nocon Msgtest · P-000031 | Book appointment | Walk-in now | Back to patients · Add another | ",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M84M39H1BSBBED4GV0A75TDV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nocon Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "08-book-appointment.jpg"
+  },
+  {
+   "n": 9,
+   "action": "select",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M84M39H1BSBBED4GV0A75TDV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nocon Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | No free time on this day. Pick another date or a time below. | Next free times | 24/11/2026 "
+    ]
+   }
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Pick 11:15 AM",
+   "url": "/app/appointments?patient=01M84M39H1BSBBED4GV0A75TDV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nocon Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 "
+    ]
+   },
+   "shot": "10-pick-11-15-am.jpg"
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Note",
+   "url": "/app/appointments?patient=01M84M39H1BSBBED4GV0A75TDV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nocon Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 "
+    ]
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Book",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for 24/11/2026, 11:15 AM\n×",
+     "Notifications Booked for 24/11/2026, 11:15 AM"
+    ],
+    "dialog": []
+   },
+   "shot": "12-book.jpg"
+  },
+  {
+   "n": 13,
+   "action": "open /app/patients/new",
+   "why": "Register Nomob Msgtest: SMS consent ticked, NO mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "13-register-nomob-msgtest-sms-consent-ticke.jpg"
+  },
+  {
+   "n": 14,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 16,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Tick No mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 18,
+   "action": "click",
+   "why": "Tick privacy",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 19,
+   "action": "click",
+   "why": "Tick SMS",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 20,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-save-patient.jpg"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "Save result: Patient saved | Nomob Msgtest · P-000032 | Book appointment | Walk-in now | Back to patients · Add another | ",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M84M3G778XYX1P9Y8EGKHD2P",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nomob Msgtest · P-000032 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "22-book-appointment.jpg"
+  },
+  {
+   "n": 23,
+   "action": "select",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M84M3G778XYX1P9Y8EGKHD2P",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nomob Msgtest · P-000032 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | No free time on this day. Pick another date or a time below. | Next free times | 24/11/2026 "
+    ]
+   }
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Pick 12:15 PM",
+   "url": "/app/appointments?patient=01M84M3G778XYX1P9Y8EGKHD2P",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nomob Msgtest · P-000032 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM"
+    ]
+   },
+   "shot": "24-pick-12-15-pm.jpg"
+  },
+  {
+   "n": 25,
+   "action": "type",
+   "why": "Note",
+   "url": "/app/appointments?patient=01M84M3G778XYX1P9Y8EGKHD2P",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Nomob Msgtest · P-000032 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM"
+    ]
+   }
+  },
+  {
+   "n": 26,
+   "action": "click",
+   "why": "Book",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for 24/11/2026, 12:15 PM\n×",
+     "Notifications Booked for 24/11/2026, 12:15 PM"
+    ],
+    "dialog": []
+   },
+   "shot": "26-book.jpg"
+  },
+  {
+   "n": 27,
+   "action": "open /app/patients/new",
+   "why": "Register Resch Msgtest: SMS consent ticked",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "27-register-resch-msgtest-sms-consent-ticke.jpg"
+  },
+  {
+   "n": 28,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 29,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 31,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [
+     "Possible match — check before saving:\n\nNocon Msgtest (P-000031) · 90000 99060 — Same name and similar age\nNomob Msgtest (P-000032) — Same name and similar age"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 32,
+   "action": "click",
+   "why": "Tick privacy",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [
+     "Possible match — check before saving:\n\nNocon Msgtest (P-000031) · 90000 99060 — Same name and similar age\nNomob Msgtest (P-000032) — Same name and similar age"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "click",
+   "why": "Tick SMS",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [
+     "Possible match — check before saving:\n\nNocon Msgtest (P-000031) · 90000 99060 — Same name and similar age\nNomob Msgtest (P-000032) — Same name and similar age"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 34,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "34-save-patient.jpg"
+  },
+  {
+   "n": 35,
+   "action": "note",
+   "why": "Save result: Patient saved | Resch Msgtest · P-000033 | Book appointment | Walk-in now | Back to patients · Add another | ",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 36,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M84M3PRKHZ595J5WPK0RQSAF",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Resch Msgtest · P-000033 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | What they said on the phone | Cancel | Book"
+    ]
+   },
+   "shot": "36-book-appointment.jpg"
+  },
+  {
+   "n": 37,
+   "action": "select",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M84M3PRKHZ595J5WPK0RQSAF",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Resch Msgtest · P-000033 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 23/11/2026 | No free time on this day. Pick another date or a time below. | Next free times | 24/11/2026 "
+    ]
+   }
+  },
+  {
+   "n": 38,
+   "action": "click",
+   "why": "Pick 3:00 PM",
+   "url": "/app/appointments?patient=01M84M3PRKHZ595J5WPK0RQSAF",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Resch Msgtest · P-000033 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:45 AM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM | 3:15 PM | 3:30 PM | 3:45 PM | "
+    ]
+   },
+   "shot": "38-pick-3-00-pm.jpg"
+  },
+  {
+   "n": 39,
+   "action": "type",
+   "why": "Note",
+   "url": "/app/appointments?patient=01M84M3PRKHZ595J5WPK0RQSAF",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Resch Msgtest · P-000033 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:45 AM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM | 3:15 PM | 3:30 PM | 3:45 PM | "
+    ]
+   }
+  },
+  {
+   "n": 40,
+   "action": "click",
+   "why": "Book",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for 24/11/2026, 3:00 PM\n×",
+     "Notifications Booked for 24/11/2026, 3:00 PM"
+    ],
+    "dialog": []
+   },
+   "shot": "40-book.jpg"
+  },
+  {
+   "n": 41,
+   "action": "open /app/messages",
+   "why": "Run the cron, then open Messages",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "41-run-the-cron-then-open-messages.jpg"
+  },
+  {
+   "n": 42,
+   "action": "note",
+   "why": "Messages for the patient WITHOUT consent: none created",
+   "url": "/app/messages"
+  },
+  {
+   "n": 43,
+   "action": "note",
+   "why": "Messages for the patient WITHOUT mobile: remind · needs_human | Dear Nomob, a reminder of your appointment at Align Dentistry tomorrow at 12:15 pm. To change it, call 0000000000.  // confirm · needs_human | Dear Nomob, your appointment at Align Dentistry is booked for Tuesday 24/11/2026, 12:15 pm. To change it, call 0000000000. ",
+   "url": "/app/messages"
+  },
+  {
+   "n": 44,
+   "action": "note",
+   "why": "Messages for the consenting patient: remind · needs_human | Dear Resch, a reminder of your appointment at Align Dentistry tomorrow at 3:00 pm. To change it, call 0000000000.  // confirm · needs_human | Dear Resch, your appointment at Align Dentistry is booked for Tuesday 24/11/2026, 3:00 pm. To change it, call 0000000000. ",
+   "url": "/app/messages"
+  },
+  {
+   "n": 45,
+   "action": "look",
+   "why": "Messages list after the cron",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "45-messages-list-after-the-cron.jpg"
+  },
+  {
+   "n": 46,
+   "action": "open /app/appointments?date=2026-11-24",
+   "why": "Move Resch's appointment from 11:45 to a later time by dragging",
+   "url": "/app/appointments?date=2026-11-24",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "46-move-resch-s-appointment-from-11-45-to-a.jpg"
+  },
+  {
+   "n": 47,
+   "action": "note",
+   "why": "Drag dialog: Move appointment? | Move Resch Msgtest to 4:15 PM on this day? | Cancel | Move",
+   "url": "/app/appointments"
+  },
+  {
+   "n": 48,
+   "action": "open /app/messages",
+   "why": "Messages after the appointment was moved and the cron ran again",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "48-messages-after-the-appointment-was-moved.jpg"
+  },
+  {
+   "n": 49,
+   "action": "note",
+   "why": "Messages for Resch after moving the appointment: remind · needs_human | Dear Resch, a reminder of your appointment at Align Dentistry tomorrow at 3:00 pm. To change it, call 0000000000.  // remind · needs_human | Dear Resch, a reminder of your appointment at Align Dentistry tomorrow at 4:15 pm. To change it, call 0000000000.  // confirm · needs_human | Dear Resch, your appointment at Align Dentistry is booked for Tuesday 24/11/2026, 3:00 pm. To change it, call 0000000000.  // confirm · needs_human | Dear Resch, your appointment at Align Dentistry is booked for Tuesday 24/11/2026, 4:15 pm. To change it, call 0000000000. ",
+   "url": "/app/messages"
+  },
+  {
+   "n": 50,
+   "action": "look",
+   "why": "Messages after reschedule",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "50-messages-after-reschedule.jpg"
+  }
+ ]
+}

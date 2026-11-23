@@ -1,0 +1,546 @@
+{
+ "spec": {
+  "id": "D05-dues-reminder-and-daily-cash-close",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 14,
+  "typedFields": 4,
+  "pagesVisited": [
+   "/app/billing",
+   "/app/patients",
+   "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "/app",
+   "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [
+   "400 /api/staff/day-close",
+   "400 /api/staff/payments"
+  ],
+  "stepCount": 42
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/billing",
+   "why": "PART 1: receptionist opens Billing to chase unpaid dues",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-part-1-receptionist-opens-billing-to-cha.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Click Add call note on the first patient",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "look",
+   "why": "Call note form opens inside the row",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "03-call-note-form-opens-inside-the-row.jpg"
+  },
+  {
+   "n": 4,
+   "action": "look",
+   "why": "Typed the note",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "04-typed-the-note.jpg"
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Save the call note",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Click WhatsApp reminder",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [
+     "WhatsApp opened with payment-pending text.\n×",
+     "Notifications WhatsApp opened with payment-pending text."
+    ],
+    "dialog": []
+   },
+   "shot": "06-click-whatsapp-reminder.jpg"
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "WhatsApp text: https://api.whatsapp.com/send/?phone=919000000121&text=Dear Vikram, this is Align Dentistry. A payment is pending. Please call 0000000000 to arrange.&type=phone_number&app_absent=0",
+   "url": "/app/billing"
+  },
+  {
+   "n": 8,
+   "action": "look",
+   "why": "After WhatsApp reminder: toast",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [
+     "WhatsApp opened with payment-pending text.\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "08-after-whatsapp-reminder-toast.jpg"
+  },
+  {
+   "n": 9,
+   "action": "open /app/patients",
+   "why": "PART 2 starts: first take one cash payment today so the day has money in it",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-part-2-starts-first-take-one-cash-paymen.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Open Neha Testcase",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-open-neha-testcase.jpg"
+  },
+  {
+   "n": 11,
+   "action": "click",
+   "why": "Billing tab",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "type",
+   "why": "Type 500",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "Record ₹500 cash",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "open /app/billing",
+   "why": "End of day: open the Daily cash close panel",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "14-end-of-day-open-the-daily-cash-close-pan.jpg"
+  },
+  {
+   "n": 15,
+   "action": "look",
+   "why": "Daily cash close panel, scrolled into view",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-daily-cash-close-panel-scrolled-into-vie.jpg"
+  },
+  {
+   "n": 16,
+   "action": "note",
+   "why": "Panel says: Daily cash close | Day | cash: ₹500 | Cash expected: ₹500 · Digital: ₹0 · 1 payments | 2 open appointments must be finished, marked no-show, or cancelled before close. | Consultation · arrived | Follow-up · in chair | Counted cash (₹)Note (required if difference ≠ 0)Close day",
+   "url": "/app/billing"
+  },
+  {
+   "n": 17,
+   "action": "note",
+   "why": "Close day is disabled",
+   "url": "/app/billing"
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "After trying to close with open appointments",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-after-trying-to-close-with-open-appointm.jpg"
+  },
+  {
+   "n": 19,
+   "action": "open /app",
+   "why": "Go to Today to finish the open appointments (one is 'Arrived', one 'In chair' from earlier)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "19-go-to-today-to-finish-the-open-appointme.jpg"
+  },
+  {
+   "n": 20,
+   "action": "look",
+   "why": "Today rows before cleanup",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-today-rows-before-cleanup.jpg"
+  },
+  {
+   "n": 21,
+   "action": "click",
+   "why": "Mark the in-chair patient Completed",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Cancel the patient who never came (Manoj, Arrived 10 AM)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 23,
+   "action": "look",
+   "why": "After Cancel click: what does it ask?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good evening, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-after-cancel-click-what-does-it-ask.jpg"
+  },
+  {
+   "n": 24,
+   "action": "note",
+   "why": "Dialog after Cancel: none",
+   "url": "/app"
+  },
+  {
+   "n": 25,
+   "action": "open /app/billing",
+   "why": "Back to Billing, panel again",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "25-back-to-billing-panel-again.jpg"
+  },
+  {
+   "n": 26,
+   "action": "look",
+   "why": "Panel after the appointments were finished",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-panel-after-the-appointments-were-finish.jpg"
+  },
+  {
+   "n": 27,
+   "action": "note",
+   "why": "Panel now says: Daily cash close | Day | cash: ₹500 | Cash expected: ₹500 · Digital: ₹0 · 1 payments | Counted cash (₹)Note (required if difference ≠ 0)Close day",
+   "url": "/app/billing"
+  },
+  {
+   "n": 28,
+   "action": "type",
+   "why": "Count the drawer: ₹450 (₹50 less than expected)",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 29,
+   "action": "click",
+   "why": "Click Close day with a difference and no note",
+   "url": "/app/billing",
+   "errors": [
+    "400 /api/staff/day-close"
+   ],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "look",
+   "why": "What does the panel say?",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "30-what-does-the-panel-say.jpg"
+  },
+  {
+   "n": 31,
+   "action": "note",
+   "why": "Message: Write a note explaining the cash difference. | panel: Cash expected: ₹500 · Digital: ₹0 · 1 payments | Counted cash (₹)Note (required if difference ≠ 0)Close day",
+   "url": "/app/billing"
+  },
+  {
+   "n": 32,
+   "action": "type",
+   "why": "Type a note",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "click",
+   "why": "Click Close day with the note",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 34,
+   "action": "look",
+   "why": "Day closed?",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "34-day-closed.jpg"
+  },
+  {
+   "n": 35,
+   "action": "note",
+   "why": "After close: Daily cash close | Day | cash: ₹500 | Cash expected: ₹500 · Digital: ₹0 · 1 payments | Closed. Counted ₹450 · Difference -₹50 · Gave change from own pocket | Print day close",
+   "url": "/app/billing"
+  },
+  {
+   "n": 36,
+   "action": "open /app/patients",
+   "why": "Now try to take another payment for today",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "36-now-try-to-take-another-payment-for-toda.jpg"
+  },
+  {
+   "n": 37,
+   "action": "click",
+   "why": "Open Om Testcase",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "37-open-om-testcase.jpg"
+  },
+  {
+   "n": 38,
+   "action": "click",
+   "why": "Billing tab",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 39,
+   "action": "type",
+   "why": "Type 100",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 40,
+   "action": "click",
+   "why": "Record ₹100 after the day is closed",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K",
+   "errors": [
+    "400 /api/staff/payments"
+   ],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 41,
+   "action": "look",
+   "why": "Result of a payment on a closed day",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "41-result-of-a-payment-on-a-closed-day.jpg"
+  },
+  {
+   "n": 42,
+   "action": "note",
+   "why": "Message: This day is closed. Use a late entry or ask the doctor to reopen it. | Outstanding: ₹750 ",
+   "url": "/app/patients/01M84FVD8QXGQPDH3EPNV07S4K"
+  }
+ ]
+}

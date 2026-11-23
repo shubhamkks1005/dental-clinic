@@ -1,0 +1,25 @@
+{
+ "title": "Messages for awkward patients: no SMS consent, no mobile number, and an appointment that is moved",
+ "aim": "The privacy rule says no message without SMS consent. Check that, then check two cases the clinic meets often: a patient with no mobile number, and an appointment that is moved after its confirm and reminder messages were already created. Look at what is queued and whether a wrong time could be sent to a patient.",
+ "who": "Receptionist, laptop. The 5-minute cron job was started by hand after the bookings.",
+ "pre": "Fresh local database. Three new patients, each booked for tomorrow: Nocon (no SMS consent), Nomob (consent ticked, 'No mobile' ticked), Resch (consent, mobile 9000099061, booked 3:00 PM). Resch is then moved to 4:15 PM by dragging on the calendar.",
+ "verdict": "RULE HOLDS for consent; BROKEN for moved appointments; CONFUSING for no mobile",
+ "summary": "Without SMS consent no message is created: the rule works. A patient with no mobile number still gets a confirm and a reminder in the queue. When an appointment is moved, the old confirm and reminder (3:00 pm) stay in the list next to the new ones (4:15 pm), and no 'reschedule' message is made, although a reschedule template exists. Staff can easily send the old, wrong time.",
+ "problems": [
+  {"id":"H2-1","sev":"High","step":"49","text":"After moving Resch's appointment from 3:00 PM to 4:15 PM the Messages list holds four messages: remind 3:00 pm, remind 4:15 pm, confirm 3:00 pm, confirm 4:15 pm. The two 3:00 pm messages are still there with 'Open WhatsApp'.","why":"A receptionist working down the list can send 'Your appointment is tomorrow at 3:00 pm' after the patient was moved to 4:15. The patient comes at the wrong time.","fix":"When an appointment is moved or cancelled, cancel its queued messages automatically (or mark them 'Out of date') and create one 'rescheduled' message."},
+  {"id":"H2-2","sev":"Medium","step":"47-49","text":"Moving an appointment produces a second 'confirm' ('is booked for Tuesday 24/11/2026, 4:15 pm'), not a 'reschedule' message. The reschedule template exists in Settings > Messages but was not used.","why":"The patient gets two 'booked' messages and is not told it was a change.","fix":"Use the reschedule template: 'Your appointment has moved to ...'."},
+  {"id":"H2-3","sev":"Medium","step":"43","text":"A patient with no mobile number ('No mobile' ticked, reason typed) and SMS consent ticked still gets a confirm and a reminder message, queued as 'Open WhatsApp'.","why":"No number, so the message cannot reach anyone. It clutters the list and a click on Open WhatsApp has no phone to open.","fix":"Do not create messages for patients without a mobile, or show 'No number: call or tell in person'. (The 'consent' tick should also be disabled when 'No mobile' is ticked.)"},
+  {"id":"H2-4","sev":"Low","step":"40-44","text":"The Messages list gives no clue which messages belong to which patient beyond 'Dear Resch'. With four messages per patient it is hard to see which to send.","why":"See H1-4 in flow H01.","fix":"Group by patient, newest first, and grey out outdated ones."}
+ ],
+ "good": [
+  "A patient without SMS reminders consent gets no message: the privacy rule is enforced in the queue.",
+  "The no-mobile registration is accepted with a reason; the form handled the 'No mobile' + reason combination.",
+  "The drag-move asks 'Move Resch Msgtest to 4:15 PM on this day?' before changing the time."
+ ],
+ "notTested": [
+  "Cancelling an appointment (no way to cancel a future one, flow B02) and its message.",
+  "Quiet hours (21:00-08:00): the cron produced messages at about 10:30 PM, so queueing is not blocked by quiet hours; sending is manual so the rule could not be seen.",
+  "Same-day reminder, recall, incomplete-treatment, dues messages created by the cron.",
+  "Editing a template in Settings > Messages."
+ ]
+}
