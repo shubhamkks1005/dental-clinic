@@ -7,6 +7,7 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
+  await page.getByLabel("Gender").selectOption("female");
   await page.getByLabel("Or age (years)").fill("31");
   await page.getByLabel("Mobile", { exact: true }).fill(`9001${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();
@@ -65,6 +66,7 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
   await page.getByLabel("Chief complaint").fill("Fake: scaling");
   await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
   const procedures = page.getByRole("region", { name: "Procedures" });
+  await procedures.getByLabel("Procedure").selectOption({ index: 1 });
   await procedures.getByRole("button", { name: "Add procedure" }).click();
   await expect(procedures.locator("li")).toHaveCount(1);
   await page.getByRole("button", { name: "Finalise visit" }).click();
@@ -88,6 +90,7 @@ test("discount request leaves the total alone until the doctor approves", async 
   await walkInInChair(page, name, stamp);
   await doctorOpensVisitOf(page, name);
   const procedures = page.getByRole("region", { name: "Procedures" });
+  await procedures.getByLabel("Procedure").selectOption({ index: 1 });
   await procedures.getByRole("button", { name: "Add procedure" }).click();
   await expect(procedures.locator("li")).toHaveCount(1);
   await page.getByRole("button", { name: "Finalise visit" }).click();

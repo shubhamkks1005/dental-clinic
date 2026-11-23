@@ -1,7 +1,8 @@
-import { displayMobile } from "@clinic/shared";
-import { useState } from "react";
+import { displayMobile, formatClockTime, formatDisplayDate } from "@clinic/shared";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
+import { getHistorySummary, type HistorySummary } from "../history";
 import { MedicalHistoryPanel } from "../medical-history";
 import type { PatientDetail } from "./api";
 import { ConsentsPanel } from "./ConsentsPanel";
@@ -28,6 +29,21 @@ export function PatientOverviewTab({
   const canWriteCert = me.permissions.includes("certificates.write");
   const canPrintCert = me.permissions.includes("certificates.print");
   const [editing, setEditing] = useState(false);
+  const [next, setNext] = useState<HistorySummary["nextAppointment"] | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    getHistorySummary(patient.id)
+      .then((s) => {
+        if (!cancelled) setNext(s.nextAppointment);
+      })
+      .catch(() => {
+        if (!cancelled) setNext(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [patient.id]);
 
   if (editing) {
     return (
@@ -46,7 +62,16 @@ export function PatientOverviewTab({
     <div className="patient-overview">
       <section className="patient-overview-next" aria-labelledby="next-appt-title">
         <h2 id="next-appt-title">Next appointment</h2>
-        <p className="muted">No upcoming appointment.</p>
+        {next === undefined ? (
+          <p className="muted">Checking…</p>
+        ) : next ? (
+          <p>
+            <strong>{formatDisplayDate(next.dateLocal)}</strong>, {formatClockTime(next.startMin)} ·{" "}
+            {next.visitTypeLabel}
+          </p>
+        ) : (
+          <p className="muted">No upcoming appointment.</p>
+        )}
         <Link
           className="btn btn-primary"
           to={`/app/appointments?patient=${encodeURIComponent(patient.id)}`}

@@ -17,6 +17,7 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(`Book Test ${stamp}`);
+  await page.getByLabel("Gender").selectOption("female");
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();

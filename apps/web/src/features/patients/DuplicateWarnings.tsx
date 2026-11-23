@@ -8,9 +8,25 @@ const REASON: Record<DuplicateWarning["reason"], string> = {
   secondary_mobile: "Matches another patient's other mobile",
 };
 
-// Soft only — never blocks save (2.1.7 / 2.2.1).
-export function DuplicateWarnings({ warnings }: { warnings: DuplicateWarning[] }) {
+// The list is soft; Save asks "Same person?" once (Q1.8) and the desk can still save as new.
+export function DuplicateWarnings({
+  warnings,
+  ask = false,
+  onSaveAsNew,
+  onOpenExisting,
+}: {
+  warnings: DuplicateWarning[];
+  /** Q1.8: Save was pressed with a possible match on screen: ask "Same person?". */
+  ask?: boolean;
+  onSaveAsNew?: () => void;
+  onOpenExisting?: () => void;
+}) {
   if (warnings.length === 0) return null;
+  // The strongest match first: same mobile and name, then another patient's other mobile.
+  const best =
+    warnings.find((w) => w.reason === "mobile_name") ??
+    warnings.find((w) => w.reason === "secondary_mobile") ??
+    warnings[0]!;
   return (
     <div className="notice notice-warning new-patient-dupes" role="status">
       <p>Possible match — check before saving:</p>
@@ -24,6 +40,25 @@ export function DuplicateWarnings({ warnings }: { warnings: DuplicateWarning[] }
           </li>
         ))}
       </ul>
+      {ask ? (
+        <div className="new-patient-same-person" role="alert">
+          <p>
+            <strong>Same person?</strong> Open the existing patient, or save this as a new patient.
+          </p>
+          <div className="form-actions">
+            <Link
+              className="btn btn-primary"
+              to={`/app/patients/${best.id}`}
+              onClick={onOpenExisting}
+            >
+              Open existing
+            </Link>
+            <button type="button" className="btn" onClick={onSaveAsNew}>
+              Save as new patient
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

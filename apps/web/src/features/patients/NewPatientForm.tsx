@@ -1,5 +1,6 @@
-import { parseDisplayDate } from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { ageYearsOn, istDate, MINOR_UNDER_YEARS, parseDisplayDate } from "@clinic/shared";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
@@ -28,8 +29,14 @@ export function NewPatientForm({ onCreated }: Props) {
   const [params] = useSearchParams();
   const presetName = params.get("name")?.trim() || "";
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [warnings, setWarnings] = useState<DuplicateWarning[]>([]);
+  // Q1.8: with a possible match on screen, Save asks "Same person?" once before it saves.
+  const [askSamePerson, setAskSamePerson] = useState(false);
+  const [saveAsNew, setSaveAsNew] = useState(false);
+  // Choosing "Open existing" is a deliberate leave: no "unsaved changes" question.
+  const [leaving, setLeaving] = useState(false);
 
   const {
     register,
@@ -47,6 +54,23 @@ export function NewPatientForm({ onCreated }: Props) {
   const noMobile = watch("noMobile");
   const ageYears = watch("ageYears");
   const birthDate = watch("birthDate");
+
+  const today = istDate(new Date());
+  const typedAge = ageYearsOn(
+    {
+      dateOfBirth: parseDisplayDate(birthDate ?? ""),
+      ageYearsAtReg: ageYears?.trim() ? Number(ageYears) : null,
+      registeredOn: today,
+    },
+    today,
+  );
+  // Q1.8: a child needs a guardian, so the guardian fields open by themselves (not hidden in More details).
+  const isMinorNow = typedAge !== null && typedAge < MINOR_UNDER_YEARS;
+
+  useEffect(() => {
+    setAskSamePerson(false);
+    setSaveAsNew(false);
+  }, [warnings]);
 
   useEffect(() => {
     if (noMobile || !fullName?.trim() || !mobile?.trim()) {
@@ -68,10 +92,15 @@ export function NewPatientForm({ onCreated }: Props) {
 
   return (
     <form
+      ref={formRef}
       className="form new-patient-form"
       noValidate
       onSubmit={handleSubmit(async (values) => {
         setFormError(null);
+        if (warnings.length > 0 && !saveAsNew) {
+          setAskSamePerson(true);
+          return;
+        }
         try {
           const patient = await createPatient(toCreateBody(values));
           onCreated(patient);
@@ -84,7 +113,7 @@ export function NewPatientForm({ onCreated }: Props) {
         }
       })}
     >
-      <UnsavedChangesGuard dirty={isDirty && !isSubmitting} />
+      <UnsavedChangesGuard dirty={isDirty && !isSubmitting && !leaving} />
 
       <div className="new-patient-code" aria-live="polite">
         <span className="new-patient-code-label">Patient no.</span>
@@ -100,6 +129,9 @@ export function NewPatientForm({ onCreated }: Props) {
       <Field label="Gender" error={errors.gender?.message}>
         {(p) => (
           <select className="input" {...p} {...register("gender")}>
+            <option value="" disabled>
+              Choose…
+            </option>
             <option value="female">Female</option>
             <option value="male">Male</option>
             <option value="other">Other</option>
@@ -130,25 +162,20 @@ export function NewPatientForm({ onCreated }: Props) {
         </Field>
       )}
 
-      <DuplicateWarnings warnings={warnings} />
+      <DuplicateWarnings
+        warnings={warnings}
+        ask={askSamePerson}
+        onOpenExisting={() => flushSync(() => setLeaving(true))}
+        onSaveAsNew={() => {
+          setSaveAsNew(true);
+          setAskSamePerson(false);
+          window.setTimeout(() => formRef.current?.requestSubmit(), 0);
+        }}
+      />
 
-      <button
-        type="button"
-        className="btn btn-ghost new-patient-more"
-        aria-expanded={detailsOpen}
-        onClick={() => setDetailsOpen((o) => !o)}
-      >
-        {detailsOpen ? "Hide extra details" : "More details"}
-      </button>
-
-      {detailsOpen && (
-        <div className="new-patient-details">
-          <Field label="Other mobile" error={errors.mobileSecondary?.message}>
-            {(p) => <MobileInput {...p} {...register("mobileSecondary")} />}
-          </Field>
-          <Field label="Area or address" error={errors.area?.message}>
-            {(p) => <input className="input" autoComplete="off" {...p} {...register("area")} />}
-          </Field>
+      {(isMinorNow || detailsOpen) && (
+        <fieldset className="new-patient-guardian">
+          <legend>Guardian{isMinorNow ? " (needed under 18)" : ""}</legend>
           <Field
             label="Guardian name"
             hint="Required under 18"
@@ -170,6 +197,26 @@ export function NewPatientForm({ onCreated }: Props) {
           </Field>
           <Field label="Guardian mobile" error={errors.guardianMobile?.message}>
             {(p) => <MobileInput {...p} {...register("guardianMobile")} />}
+          </Field>
+        </fieldset>
+      )}
+
+      <button
+        type="button"
+        className="btn btn-ghost new-patient-more"
+        aria-expanded={detailsOpen}
+        onClick={() => setDetailsOpen((o) => !o)}
+      >
+        {detailsOpen ? "Hide extra details" : "More details"}
+      </button>
+
+      {detailsOpen && (
+        <div className="new-patient-details">
+          <Field label="Other mobile" error={errors.mobileSecondary?.message}>
+            {(p) => <MobileInput {...p} {...register("mobileSecondary")} />}
+          </Field>
+          <Field label="Area or address" error={errors.area?.message}>
+            {(p) => <input className="input" autoComplete="off" {...p} {...register("area")} />}
           </Field>
           <Field
             label="Whose contact mobile"

@@ -21,6 +21,7 @@ export * from "./messaging";
 export * from "./ops-status";
 export * from "./patient-requests";
 export * from "./message-render";
+export * from "./appointment-next";
 export * from "./message-plan";
 export * from "./message-recipient";
 export * from "./money";

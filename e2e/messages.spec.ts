@@ -20,6 +20,7 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
+  await page.getByLabel("Gender").selectOption("female");
   await page.getByLabel("Or age (years)").fill("33");
   await page.getByLabel("Mobile", { exact: true }).fill(`9002${stamp}`);
   await page.getByLabel("Privacy notice shown").check();

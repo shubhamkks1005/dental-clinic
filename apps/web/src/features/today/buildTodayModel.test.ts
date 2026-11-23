@@ -159,4 +159,13 @@ describe("buildTodayModel (2.4.3)", () => {
     expect(link("a2")).toBe("/app/patients/p2?tab=billing");
     expect(link("a3")).toBeNull();
   });
+
+  it("Q1.8: open slots count only times from now until closing", () => {
+    const rows: DayAppointment[] = [];
+    const morning = buildTodayModel(rows, window, "2026-11-23T03:30:00.000Z"); // 09:00 IST
+    const afternoon = buildTodayModel(rows, window, "2026-11-23T08:30:00.000Z"); // 14:00 IST
+    const after = buildTodayModel(rows, window, "2026-11-23T14:30:00.000Z"); // 20:00 IST
+    expect(afternoon.openSlots).toBeLessThan(morning.openSlots);
+    expect(after.openSlots).toBe(0);
+  });
 });

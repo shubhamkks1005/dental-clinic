@@ -19,7 +19,8 @@ const blankToNull = z
 export const newPatientSchema = z
   .object({
     fullName: personNameField,
-    gender: z.enum(PATIENT_GENDERS, { message: "Pick female, male or other." }),
+    // D3: no default; the desk must choose.
+    gender: z.enum(PATIENT_GENDERS, { message: "Choose female, male or other." }),
     birthDate: z.string().optional(),
     ageYears: z.string().optional(),
     mobile: z.string().optional(),
@@ -162,7 +163,7 @@ export function defaultsFromPatient(p: PatientDetail): NewPatientFormValues {
 
 export const NEW_PATIENT_DEFAULTS: NewPatientFormValues = {
   fullName: "",
-  gender: "female",
+  gender: "" as unknown as NewPatientFormValues["gender"],
   birthDate: "",
   ageYears: "",
   mobile: "",

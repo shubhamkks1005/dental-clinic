@@ -14,6 +14,7 @@ function isoDate(daysAhead: number): string {
 async function registerPatient(page: Page, name: string, stamp: string) {
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
+  await page.getByLabel("Gender").selectOption("female");
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();

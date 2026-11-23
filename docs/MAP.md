@@ -510,3 +510,4 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - e2e/visit-to-bill.spec.ts: Q1.1 chain (warning, disabled Create bill with reason, bill with a procedure).
 - apps/web/src/ui/OfflineGuard.tsx: Q1.6 offline: blocks Save/primary buttons and in-app links with a reason, keeps the screen (html[data-offline] in ui.css). Test: e2e/no-silent-failures.spec.ts.
 - apps/web/src/features/billing/WaitingForYou.tsx: doctor Today "Waiting for you" (pending discounts, Approve). Repo: billsDiscount.listPendingDiscounts. Test: e2e/visit-to-bill.spec.ts.
+- packages/shared/src/appointment-next.ts (+ test): pickNextAppointment. e2e/data-rules.spec.ts: Q1.8 form rules.

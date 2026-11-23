@@ -31,6 +31,7 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
   await a.goto("/api/staff/auth/dev-login?role=receptionist");
   await a.goto("/app/patients/new");
   await a.getByLabel("Full name").fill(name);
+  await a.getByLabel("Gender").selectOption("female");
   await a.getByLabel("Or age (years)").fill("40");
   await a.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await a.getByRole("button", { name: "Save patient" }).click();

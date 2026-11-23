@@ -28,6 +28,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.goto("/api/staff/auth/dev-login?role=receptionist");
     await page.goto("/app/patients/new");
     await page.getByLabel("Full name").fill(name);
+    await page.getByLabel("Gender").selectOption("female");
     await page.getByLabel("Or age (years)").fill("27");
     await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
     await page.getByRole("button", { name: "Save patient" }).click();
@@ -61,7 +62,9 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
       .getByRole("button", { name: /^Tooth 36, permanent/ })
       .first()
       .click();
-    await page.getByRole("button", { name: "Add procedure" }).click();
+    const procedures = page.getByRole("region", { name: "Procedures" });
+    await procedures.getByLabel("Procedure").selectOption({ index: 1 });
+    await procedures.getByRole("button", { name: "Add procedure" }).click();
 
     await page.getByRole("tab", { name: "Today's visit", exact: true }).click();
     await page.getByPlaceholder(/Type to search or enter free text/).fill("Crowding");

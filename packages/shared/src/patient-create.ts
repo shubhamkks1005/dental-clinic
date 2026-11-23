@@ -143,6 +143,9 @@ function finishPatientFields(
   if (!dateOfBirth && ageYearsAtReg === null) {
     return { ok: false, message: "Enter the date of birth, or the age in years." };
   }
+  if (dateOfBirth && dateOfBirth > onDate) {
+    return { ok: false, message: "The date of birth is in the future." };
+  }
 
   const mobileRaw = d.mobile?.trim() || null;
   const noMobileReason = d.noMobileReason;

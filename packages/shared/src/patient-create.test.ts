@@ -77,4 +77,9 @@ describe("parseUpdatePatient (2.2.4)", () => {
     if (!r.ok) return;
     expect(r.value.version).toBe(3);
   });
+
+  it("Q1.8: a date of birth in the future has its own sentence", () => {
+    const r = parseCreatePatient(base({ dateOfBirth: "2030-01-01", ageYearsAtReg: null }), day);
+    expect(r).toEqual({ ok: false, message: "The date of birth is in the future." });
+  });
 });

@@ -46,8 +46,8 @@ export function VisitProcedures({
       .then((items) => {
         if (cancelled) return;
         const active = items.filter((i) => i.active);
+        // Q1.8: nothing is pre-selected, so Add cannot silently put a billable item on the visit.
         setList(active);
-        setListItemId((prev) => prev || active[0]?.id || "");
       })
       .catch(() => {
         /* ignore */
@@ -74,6 +74,7 @@ export function VisitProcedures({
       });
       onAdded(row);
       setNote("");
+      setListItemId("");
     } catch (err: unknown) {
       setError(
         err instanceof ApiError
@@ -124,6 +125,7 @@ export function VisitProcedures({
               onChange={(e) => setListItemId(e.target.value)}
               disabled={busy}
             >
+              <option value="">Choose a procedure…</option>
               {list.map((i) => (
                 <option key={i.id} value={i.id}>
                   {i.label}

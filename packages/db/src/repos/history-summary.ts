@@ -1,4 +1,4 @@
-import { istDate } from "@clinic/shared";
+import { istDate, NEXT_APPOINTMENT_STATUSES, pickNextAppointment } from "@clinic/shared";
 import { and, asc, count, eq, gte, inArray, isNull, max, min, ne } from "drizzle-orm";
 import { accessInsert } from "../audit";
 import type { Db } from "../client";
@@ -26,8 +26,6 @@ export type HistorySummary = {
   } | null;
 };
 
-const UPCOMING = ["scheduled", "confirmed", "arrived", "in_chair"] as const;
-
 // 3.5.11: pinned History strip. Views go to access_log (audit_log is create/update/delete only).
 export function historySummaryRepo(db: Db, ctx: Ctx) {
   return {
@@ -53,9 +51,10 @@ export function historySummaryRepo(db: Db, ctx: Ctx) {
         .get();
 
       const today = istDate(new Date());
-      const next = await db
+      const candidates = await db
         .select({
           id: appointments.id,
+          status: appointments.status,
           dateLocal: appointments.dateLocal,
           startMin: appointments.startMin,
           visitTypeLabel: appointments.visitTypeLabel,
@@ -66,12 +65,15 @@ export function historySummaryRepo(db: Db, ctx: Ctx) {
             eq(appointments.patientId, patientId),
             isNull(appointments.deletedAt),
             gte(appointments.dateLocal, today),
-            inArray(appointments.status, [...UPCOMING]),
+            inArray(appointments.status, [...NEXT_APPOINTMENT_STATUSES]),
           ),
         )
         .orderBy(asc(appointments.dateLocal), asc(appointments.startMin))
-        .limit(1)
-        .get();
+        .limit(20)
+        .all();
+
+      // Q1.8: the one shared rule (not started, in the future).
+      const next = pickNextAppointment(candidates, new Date());
 
       const alertRows = await db
         .select({ label: alerts.label, restricted: alerts.restricted })

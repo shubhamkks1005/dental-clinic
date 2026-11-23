@@ -4,6 +4,7 @@ import {
   displayMobile,
   emptySlotStarts,
   formatWaiting,
+  istMinutes,
   sortWaitingQueue,
   formatClockTime,
   type DayWindow,
@@ -123,7 +124,11 @@ export function buildTodayModel(
   const now = new Date(serverNow);
   const active = appointments.filter((a) => a.status !== "cancelled" && a.status !== "rescheduled");
   const busyForSlots = active.filter((a) => a.status !== "no_show");
-  const openSlots = window.closed ? 0 : emptySlotStarts(window, busyForSlots).length;
+  // Q1.8: only times from now until closing count; a slot that already passed cannot be booked.
+  const nowMin = istMinutes(now);
+  const openSlots = window.closed
+    ? 0
+    : emptySlotStarts(window, busyForSlots).filter((start) => start >= nowMin).length;
   const arrived = active.filter((a) => a.status === "arrived");
   const waitingSorted = sortWaitingQueue(
     arrived.map((a) => ({
