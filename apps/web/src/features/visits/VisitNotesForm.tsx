@@ -1,11 +1,9 @@
-import { expandQuickPhrase, type ListItem } from "@clinic/shared";
-import { useEffect, useMemo, useState } from "react";
+import type { ListItem } from "@clinic/shared";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import type { VisitSummary } from "./api";
-import { CopyButton } from "../../ui/CopyButton";
 import { SaveStatusChip } from "./SaveStatusChip";
-import { useVisitAutosave } from "./useVisitAutosave";
-import { notesAsText, type NotesSnapshot } from "./visit-autosave";
+import { useVisitNotes } from "./useVisitNotes";
+import { VisitConflictBanner } from "./VisitConflictBanner";
 
 type Props = {
   visit: VisitSummary;
@@ -14,62 +12,21 @@ type Props = {
   onSaved: (visit: VisitSummary) => void;
 };
 
-function fromVisit(v: VisitSummary): NotesSnapshot {
-  return {
-    chiefComplaint: v.chiefComplaint ?? "",
-    historyNote: v.historyNote ?? "",
-    examNote: v.examNote ?? "",
-    gumCondition: v.gumCondition ?? "",
-    advice: v.advice ?? "",
-    nextVisitNote: v.nextVisitNote ?? "",
-    bpSystolic: v.bpSystolic?.toString() ?? "",
-    bpDiastolic: v.bpDiastolic?.toString() ?? "",
-    pulse: v.pulse?.toString() ?? "",
-  };
-}
-
-/** 3.5.3 + 3.5.5: notes form with quick phrases and autosave. */
+/** 3.5.3 + 3.5.5: notes form with quick phrases and autosave (old tabbed layout). */
 export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
-  const [form, setForm] = useState(() => fromVisit(visit));
-  const [saved, setSaved] = useState(() => fromVisit(visit));
-  const [version, setVersion] = useState(visit.version);
-
-  useEffect(() => {
-    const snap = fromVisit(visit);
-    setForm(snap);
-    setSaved(snap);
-    setVersion(visit.version);
-  }, [visit.id]);
-
-  const phraseMap = useMemo(
-    () =>
-      phrases
-        .filter((p) => p.active)
-        .map((p) => ({
-          trigger: p.label,
-          text: String(p.data.text ?? ""),
-        }))
-        .filter((p) => p.text),
-    [phrases],
-  );
-
-  const { status, dirty } = useVisitAutosave({
-    visitId: visit.id,
-    version,
-    form,
-    saved,
-    enabled: !readOnly,
-    onVersion: setVersion,
-    onSaved: (next, snapshot) => {
-      setSaved(snapshot);
-      onSaved(next);
-    },
+  const { form, status, dirty, setField, setPhrase } = useVisitNotes({
+    visit,
+    phrases,
+    readOnly,
+    onSaved,
   });
-
-  function onPhraseField(key: keyof NotesSnapshot, raw: string) {
-    const { value } = expandQuickPhrase(raw, phraseMap);
-    setForm((f) => ({ ...f, [key]: value }));
-  }
+  const onPhraseField = setPhrase;
+  const setForm = (fn: (f: typeof form) => typeof form) => {
+    const next = fn(form);
+    for (const key of Object.keys(next) as Array<keyof typeof form>) {
+      if (next[key] !== form[key]) setField(key, next[key]);
+    }
+  };
 
   return (
     <form
@@ -82,20 +39,7 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
       <div className="visit-notes-actions">
         {!readOnly ? <SaveStatusChip status={status} /> : null}
       </div>
-      {status === "conflict" ? (
-        <div className="notice notice-error stack gap-sm" role="alert">
-          <p>
-            This visit was changed in another tab or by someone else. Your text is kept below. Copy
-            it, reload the visit, then add what is missing.
-          </p>
-          <div className="row wrap gap-sm">
-            <CopyButton text={notesAsText(form)} label="Copy my text" />
-            <button type="button" className="btn" onClick={() => window.location.reload()}>
-              Reload visit
-            </button>
-          </div>
-        </div>
-      ) : null}
+      {status === "conflict" ? <VisitConflictBanner form={form} /> : null}
       <label className="visit-field">
         <span>Chief complaint</span>
         <textarea
