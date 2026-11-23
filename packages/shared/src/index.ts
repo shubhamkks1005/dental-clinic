@@ -23,6 +23,7 @@ export * from "./patient-age";
 export * from "./patient-fields";
 export * from "./consents";
 export * from "./consent-templates";
+export * from "./consent-print";
 export * from "./day-view";
 export * from "./patient-contact";
 export * from "./patient-create";

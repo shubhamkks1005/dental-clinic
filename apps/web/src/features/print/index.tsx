@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router";
 import { NotFound } from "../../ui/PageMessage";
+import { PrintConsentScreen } from "./PrintConsentScreen";
 import { PrintDayListScreen } from "./PrintDayListScreen";
 import { PrintEstimateScreen } from "./PrintEstimateScreen";
 import { PrintPrescriptionScreen } from "./PrintPrescriptionScreen";
@@ -13,6 +14,7 @@ export function PrintRoutes() {
       <Route path="day" element={<PrintDayListScreen />} />
       <Route path="prescription/:id" element={<PrintPrescriptionScreen />} />
       <Route path="estimate/:patientId" element={<PrintEstimateScreen />} />
+      <Route path="consent/:patientId" element={<PrintConsentScreen />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

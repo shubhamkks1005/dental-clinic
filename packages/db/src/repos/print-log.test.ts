@@ -43,3 +43,20 @@ describe("print log estimate (4.4.1)", () => {
     ).rejects.toBeInstanceOf(ForbiddenError);
   });
 });
+
+describe("print log consent (4.4.2)", () => {
+  it("allows receptionist to record a consent form print", async () => {
+    const first = await repos(receptionist).printLog.record({
+      documentKind: "consent",
+      documentId: "patient-fake-1:extraction",
+      documentVersion: 1,
+    });
+    expect(first.isReprint).toBe(false);
+    const second = await repos(receptionist).printLog.record({
+      documentKind: "consent",
+      documentId: "patient-fake-1:extraction",
+      documentVersion: 1,
+    });
+    expect(second.isReprint).toBe(true);
+  });
+});

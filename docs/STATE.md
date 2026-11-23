@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.4.2.**
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.4.3.**
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.4.2 DONE locally (consent A4 from templates; extraction default; print_log; DRAFT lawyer body). No migration.
 4.4.1 DONE locally (estimate A4 from live plan; print_log; DRAFT lawyer disclaimer; valid 30 days). No migration.
 4.3.4 SKIPPED (Waiting: clinic printer test).
 4.3.1–4.3.5 DONE locally (letterhead settings; Rx print S13; print_log + Duplicate copy; reg empty blocks print). **Migrations `0034_clinic_letterhead_settings.sql`, `0035_print_log.sql` — owner applies.**
@@ -203,7 +204,7 @@ Waiting on me (owner):
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate print)
 - Staging: apply migrations **0032–0035** with 0006–0031
-- DRAFT lawyer: estimate disclaimer (4.4.1 ESTIMATE_DISCLAIMER), consent/certificate wording when those prints land
+- DRAFT lawyer: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate wording when 4.4.3 lands
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
 - **B2 keys as Worker secrets on staging** (`S3_KEY_ID` / `S3_APP_KEY` via `wrangler secret put`; endpoint/bucket/region already in wrangler staging vars) — then run `pnpm --filter @clinic/worker storage:check`

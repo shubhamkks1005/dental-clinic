@@ -1,5 +1,6 @@
 import { istDateTime, type ConsentRow } from "@clinic/shared";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { getPatientConsents } from "./api";
 import "./consents.css";
@@ -45,6 +46,11 @@ export function ConsentsPanel({ patientId }: { patientId: string }) {
     <section className="consents" aria-labelledby="consents-title">
       <h2 id="consents-title">Consents</h2>
       <p className="muted consents-lead">When, who recorded it, and which notice version.</p>
+      <p>
+        <Link to={`/app/print/consent/${encodeURIComponent(patientId)}?template=extraction`}>
+          Print consent form
+        </Link>
+      </p>
       {error && (
         <p className="notice notice-error" role="alert">
           {error}
