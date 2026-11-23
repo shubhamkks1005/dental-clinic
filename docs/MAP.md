@@ -196,6 +196,9 @@
 - packages/db settings-history.ts (+ test) + GET/POST settings/:key/history|restore - 6.5.2 restore previous value as new version
 - migrations/0046_audit_log_settings_history_idx.sql - 6.5.2 audit_log (table_name, row_id, created_at)
 - apps/web SettingHistoryPanel - 6.5.2 on Timings (clinic.timings + clinic.holidays)
+- packages/shared tunables.ts (+ test) + db tunables-guard.test.ts - 6.5.3 magic numbers → settings
+- migrations/0047_tunable_settings.sql - 6.5.3 seed no-show/refresh/storage/outreach/demand
+- apps/web TunablesPanel - 6.5.3 Clinic limits under Preferences
 - src/features/lists/ - 1.5.4 generic list editor: ListEditor (loads one list, add/edit/hide/show/move; toast + 409 reload; settings.write to edit), ItemRow, ItemForm (name + the list's own fields from LIST_DEFS), api.ts, lists.css (cards on phone, one line from 768px)
 - src/features/timings/ - 1.5.3 Settings > Timings: TimingsSettings (loads clinic.timings + clinic.holidays with versions; editable only with settings.write, read-only otherwise), WeekForm (react-hook-form + timingsSchema; DayRow per day: open, opens/closes, lunch; slot length, chairs; toast on save; 409 reloads; unsaved guard), HolidaysEditor (DD/MM/YYYY add, remove with ConfirmDialog), api.ts, timings.css
 - src/features/staff/ - Settings > Staff (1.3.6, doctor only): StaffSettings (list, notices, 409 reloads), AddStaffForm (name, Gmail, role; shared validation), StaffRow (badges, last sign-in in IST, actions hidden on your own row), StaffPanels (change role, reset Google link, deactivate confirm), RolePicker, api.ts, staff.css

@@ -2,6 +2,7 @@ import {
   isAllowedStatusTransition,
   istDate,
   statusTransitionBlockReason,
+  tunableDefault,
   type AppointmentStatus,
   type ChangeAppointmentStatusInput,
 } from "@clinic/shared";
@@ -11,8 +12,19 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments } from "../schema";
+import { appointments, settings } from "../schema";
 import { markFirstArrivedBatch } from "./patient-first-arrived";
+
+async function intSetting(db: Db, key: string, fallback: number): Promise<number> {
+  const row = await db
+    .select({ valueJson: settings.valueJson })
+    .from(settings)
+    .where(and(eq(settings.key, key), isNull(settings.deletedAt)))
+    .get();
+  if (!row) return fallback;
+  const n = JSON.parse(row.valueJson) as unknown;
+  return typeof n === "number" && Number.isFinite(n) ? n : fallback;
+}
 
 export type AppointmentStatusRow = {
   id: string;
@@ -54,10 +66,22 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       if (!isAllowedStatusTransition(from, to)) {
         throw new ConflictError("That status change is not allowed.");
       }
+      const noShowAfterMinutes = await intSetting(
+        db,
+        "appointments.no_show_after_minutes",
+        tunableDefault("appointments.no_show_after_minutes"),
+      );
+      const statusUndoHours = await intSetting(
+        db,
+        "appointments.status_undo_hours",
+        tunableDefault("appointments.status_undo_hours"),
+      );
       const block = statusTransitionBlockReason(from, to, {
         startAt: new Date(row.startAt),
         statusChangedAt: new Date(row.updatedAt),
         now,
+        noShowAfterMinutes,
+        statusUndoHours,
       });
       if (block) throw new InvalidError(block);
 

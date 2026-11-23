@@ -1,6 +1,8 @@
-/** Staff Today / Appointments poll while the tab is open (2.4.7). */
-export const AUTO_REFRESH_MS = 60_000;
+import { tunableDefault } from "@clinic/shared";
 
-export function shouldPollWhenVisible(visibilityState: string): boolean {
+/** 2.4.7 / 6.5.3: default poll interval from TUNABLES (settings override in screens). */
+export const AUTO_REFRESH_MS = tunableDefault("ui.auto_refresh_seconds") * 1000;
+
+export function shouldPollWhenVisible(visibilityState: DocumentVisibilityState): boolean {
   return visibilityState === "visible";
 }

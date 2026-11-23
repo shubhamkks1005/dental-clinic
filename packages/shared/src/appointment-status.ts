@@ -1,10 +1,10 @@
 import type { AppointmentStatus } from "./appointments";
+import { tunableDefault } from "./tunables";
 
-/** Minutes after start_at before no_show is allowed (PLAN 2.3.6; later a setting in 6.5.3). */
-export const NO_SHOW_AFTER_MINUTES = 15;
-
-/** How long cancelled/no_show may be corrected back to scheduled (PLAN 2.3.6). */
-export const STATUS_UNDO_HOURS = 24;
+/** @deprecated Prefer tunableDefault / settings — kept as alias for tests. */
+export const NO_SHOW_AFTER_MINUTES = tunableDefault("appointments.no_show_after_minutes");
+/** @deprecated Prefer tunableDefault / settings. */
+export const STATUS_UNDO_HOURS = tunableDefault("appointments.status_undo_hours");
 
 // One place for the status wheel. Anything else is refused (409/invalid).
 const NEXT: Record<AppointmentStatus, readonly AppointmentStatus[]> = {
@@ -43,6 +43,9 @@ export type StatusTransitionContext = {
   /** When status last became cancelled or no_show (for undo window). */
   statusChangedAt: Date;
   now: Date;
+  /** 6.5.3: from settings; defaults from TUNABLES. */
+  noShowAfterMinutes?: number;
+  statusUndoHours?: number;
 };
 
 /**
@@ -66,16 +69,18 @@ export function statusTransitionBlockReason(
   if (!isAllowedStatusTransition(from, to)) {
     return "That status change is not allowed.";
   }
+  const noShowMins = ctx.noShowAfterMinutes ?? NO_SHOW_AFTER_MINUTES;
+  const undoHours = ctx.statusUndoHours ?? STATUS_UNDO_HOURS;
   if (to === "no_show") {
-    const earliest = ctx.startAt.getTime() + NO_SHOW_AFTER_MINUTES * 60 * 1000;
+    const earliest = ctx.startAt.getTime() + noShowMins * 60 * 1000;
     if (ctx.now.getTime() < earliest) {
-      return `No-show can be marked only ${NO_SHOW_AFTER_MINUTES} minutes after the appointment start.`;
+      return `No-show can be marked only ${noShowMins} minutes after the appointment start.`;
     }
   }
   if ((from === "cancelled" || from === "no_show") && to === "scheduled") {
-    const deadline = ctx.statusChangedAt.getTime() + STATUS_UNDO_HOURS * 60 * 60 * 1000;
+    const deadline = ctx.statusChangedAt.getTime() + undoHours * 60 * 60 * 1000;
     if (ctx.now.getTime() > deadline) {
-      return `A cancelled or no-show visit can only be put back on the schedule within ${STATUS_UNDO_HOURS} hours.`;
+      return `A cancelled or no-show visit can only be put back on the schedule within ${undoHours} hours.`;
     }
   }
   return null;

@@ -45,5 +45,6 @@
   "0043_patient_first_arrived_on.sql": "006c38bca52756ac60df3d6de13334eb3f2dacf53f7f005f10a9d1b63aea2c90",
   "0044_daily_stats.sql": "47357330d39f3a0a7d01042d55bf9c093573d8365144608f77728dcd1ef884c5",
   "0045_outreach_contacts.sql": "7d4baef5c631c0179a5602430caa561dc465973486a3b14c27fb8423add5cc4a",
-  "0046_audit_log_settings_history_idx.sql": "514b1f2ed6c2e9a0aebbada25632f6044b8f55b7bdb8431b65b710490d9da20b"
+  "0046_audit_log_settings_history_idx.sql": "514b1f2ed6c2e9a0aebbada25632f6044b8f55b7bdb8431b65b710490d9da20b",
+  "0047_tunable_settings.sql": "52fb028c228ac2b0346fda23c1efddb6f2c32bf2b32a5b345807bcc8364c82f8"
 }

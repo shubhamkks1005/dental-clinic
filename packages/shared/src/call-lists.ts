@@ -1,12 +1,13 @@
 import { z } from "zod";
+import { tunableDefault } from "./tunables";
 
 export const CALL_LIST_KINDS = ["incomplete", "recall"] as const;
 export type CallListKind = (typeof CALL_LIST_KINDS)[number];
 
-/** Defaults until 6.5.3 moves them to settings. */
-export const INCOMPLETE_DAYS_DEFAULT = 30;
-export const RECALL_MIN_MONTHS_DEFAULT = 6;
-export const RECALL_MAX_MONTHS_DEFAULT = 9;
+/** 6.5.3: aliases of TUNABLES defaults (settings override at runtime). */
+export const INCOMPLETE_DAYS_DEFAULT = tunableDefault("outreach.incomplete_days");
+export const RECALL_MIN_MONTHS_DEFAULT = tunableDefault("outreach.recall_min_months");
+export const RECALL_MAX_MONTHS_DEFAULT = tunableDefault("outreach.recall_max_months");
 
 export const parseCallListKind = z.enum(CALL_LIST_KINDS);
 

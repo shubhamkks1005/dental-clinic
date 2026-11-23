@@ -3,10 +3,20 @@ import { chartViewSchema } from "./chart-view";
 import { consentTemplatesSchema } from "./consent-templates";
 import type { Parsed } from "./staff";
 import { holidaysSchema, timingsSchema } from "./timings";
+import { TUNABLES, type TunableKey } from "./tunables";
+
+function intTunable(key: TunableKey) {
+  const t = TUNABLES[key];
+  return z
+    .number({ error: "Enter a whole number." })
+    .int("Use a whole number.")
+    .min(t.min, `Use at least ${t.min}.`)
+    .max(t.max, `Use at most ${t.max}.`);
+}
 
 // 1.5.1: every setting the app knows, with its rule. A value that breaks the rule is never
 // saved. New settings (timings 1.5.3, lists 1.5.4, clinic details 1.5.2) add a line here and a
-// seed migration with the default.
+// seed migration with the default. Numeric clinic tunables (6.5.3) use TUNABLES for bounds.
 export const SETTING_SCHEMAS = {
   "patient_code.prefix": z
     .string({ error: "Enter the prefix as text." })
@@ -37,18 +47,19 @@ export const SETTING_SCHEMAS = {
     .trim()
     .min(1, "Enter the notice text.")
     .max(20000, "The notice is too long."),
-  // 2.3.5: how far ahead a normal booking may go (override with reason still allowed).
-  "appointments.book_ahead_days": z
-    .number({ error: "Enter a whole number." })
-    .int("Use a whole number.")
-    .min(1, "Use at least 1 day.")
-    .max(365, "Use at most 365 days."),
-  // 3.3.4: ask "Any change in medical history?" when last review is older than this.
-  "medical_history.stale_months": z
-    .number({ error: "Enter a whole number." })
-    .int("Use a whole number.")
-    .min(1, "Use at least 1 month.")
-    .max(36, "Use at most 36 months."),
+  // 2.3.5 / 6.5.3: book ahead, no-show delay, undo window.
+  "appointments.book_ahead_days": intTunable("appointments.book_ahead_days"),
+  "appointments.no_show_after_minutes": intTunable("appointments.no_show_after_minutes"),
+  "appointments.status_undo_hours": intTunable("appointments.status_undo_hours"),
+  // 3.3.4 / 6.5.3: medical history review cadence.
+  "medical_history.stale_months": intTunable("medical_history.stale_months"),
+  "ui.auto_refresh_seconds": intTunable("ui.auto_refresh_seconds"),
+  "files.storage_warn_gb": intTunable("files.storage_warn_gb"),
+  "files.storage_crit_gb": intTunable("files.storage_crit_gb"),
+  "outreach.incomplete_days": intTunable("outreach.incomplete_days"),
+  "outreach.recall_min_months": intTunable("outreach.recall_min_months"),
+  "outreach.recall_max_months": intTunable("outreach.recall_max_months"),
+  "records.demand_hours": intTunable("records.demand_hours"),
   // 3.4.3: facing + display notation in one setting (storage always FDI).
   "chart.view": chartViewSchema,
   // 3.8.1: treatment consent templates (English; DRAFT until lawyer/sister confirm).

@@ -77,6 +77,8 @@ describe("migrations on an empty database (1.2.3)", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
     expect(rows.map((r) => r.key)).toEqual([
       "appointments.book_ahead_days",
+      "appointments.no_show_after_minutes",
+      "appointments.status_undo_hours",
       "billing.gst_mode",
       "billing.shadow_series",
       "chart.view",
@@ -92,12 +94,19 @@ describe("migrations on an empty database (1.2.3)", () => {
       "doctor.qualifications",
       "doctor.registration_no",
       "doctor.speciality",
+      "files.storage_crit_gb",
+      "files.storage_warn_gb",
       "medical_history.stale_months",
       "medicines.list_reviewed",
+      "outreach.incomplete_days",
+      "outreach.recall_max_months",
+      "outreach.recall_min_months",
       "patient_code.digits",
       "patient_code.prefix",
       "privacy_notice.body",
       "privacy_notice.version",
+      "records.demand_hours",
+      "ui.auto_refresh_seconds",
     ]);
   });
 

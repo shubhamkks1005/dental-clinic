@@ -99,3 +99,24 @@ Rules:
 `pnpm wr secret put NAME --env staging` (or `--env production`; wrangler asks for the value with hidden input). Never put a
 secret in `wrangler.jsonc`, the repo, or chat. Local values go in `apps/worker/.dev.vars`.
 Add every secret to `docs/ACCOUNTS.md` (name and where it lives, never the value).
+
+## Clinic tunables (6.5.3)
+
+Numbers that used to be hard-coded live in Settings → Preferences → Clinic limits.
+Source of defaults and min/max: `packages/shared/src/tunables.ts` (seeded in D1).
+
+| Setting | Default | Min | Max |
+| ------- | ------- | --- | --- |
+| `appointments.book_ahead_days` | 90 | 1 | 365 |
+| `appointments.no_show_after_minutes` | 15 | 1 | 120 |
+| `appointments.status_undo_hours` | 24 | 1 | 72 |
+| `medical_history.stale_months` | 6 | 1 | 36 |
+| `ui.auto_refresh_seconds` | 60 | 15 | 300 |
+| `files.storage_warn_gb` | 7 | 1 | 20 |
+| `files.storage_crit_gb` | 9 | 1 | 20 |
+| `outreach.incomplete_days` | 30 | 1 | 365 |
+| `outreach.recall_min_months` | 6 | 1 | 24 |
+| `outreach.recall_max_months` | 9 | 1 | 36 |
+| `records.demand_hours` | 72 | 1 | 168 |
+
+A CI test (`tunables.guard.test.ts`) fails if the old hard-coded forms reappear outside the allow list.

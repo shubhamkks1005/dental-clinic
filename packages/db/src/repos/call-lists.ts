@@ -4,11 +4,9 @@ import {
   newUlid,
   parseCallListKind,
   parseOutreachContact,
+  tunableDefault,
   type CallListKind,
   type CallListRow,
-  INCOMPLETE_DAYS_DEFAULT,
-  RECALL_MAX_MONTHS_DEFAULT,
-  RECALL_MIN_MONTHS_DEFAULT,
 } from "@clinic/shared";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { auditInsert } from "../audit";
@@ -16,9 +14,20 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { outreachContacts, patients, planItems, visits } from "../schema";
+import { outreachContacts, patients, planItems, settings, visits } from "../schema";
 
-/** 6.3.7: incomplete treatment + recall call lists (doctor / reports.full). */
+async function intSetting(db: Db, key: string, fallback: number): Promise<number> {
+  const row = await db
+    .select({ valueJson: settings.valueJson })
+    .from(settings)
+    .where(and(eq(settings.key, key), isNull(settings.deletedAt)))
+    .get();
+  if (!row) return fallback;
+  const n = JSON.parse(row.valueJson) as unknown;
+  return typeof n === "number" && Number.isFinite(n) ? n : fallback;
+}
+
+/** 6.3.7 / 6.5.3: incomplete + recall call lists (thresholds from settings). */
 export function callListsRepo(db: Db, ctx: Ctx) {
   return {
     async list(kindRaw: string, now: Date = new Date()): Promise<CallListRow[]> {
@@ -26,8 +35,25 @@ export function callListsRepo(db: Db, ctx: Ctx) {
       const kind = parseCallListKind.safeParse(kindRaw);
       if (!kind.success) throw new InvalidError("Choose incomplete or recall.");
       const today = istDate(now);
-      if (kind.data === "incomplete") return listIncomplete(db, today);
-      return listRecall(db, today);
+      if (kind.data === "incomplete") {
+        const days = await intSetting(
+          db,
+          "outreach.incomplete_days",
+          tunableDefault("outreach.incomplete_days"),
+        );
+        return listIncomplete(db, today, days);
+      }
+      const minM = await intSetting(
+        db,
+        "outreach.recall_min_months",
+        tunableDefault("outreach.recall_min_months"),
+      );
+      const maxM = await intSetting(
+        db,
+        "outreach.recall_max_months",
+        tunableDefault("outreach.recall_max_months"),
+      );
+      return listRecall(db, today, minM, maxM);
     },
 
     async contact(
@@ -95,8 +121,12 @@ async function hiddenPatientIds(db: Db, kind: CallListKind): Promise<Set<string>
   return new Set(rows.map((r) => r.patientId));
 }
 
-async function listIncomplete(db: Db, today: string): Promise<CallListRow[]> {
-  const cutoff = addIstDays(today, -INCOMPLETE_DAYS_DEFAULT);
+async function listIncomplete(
+  db: Db,
+  today: string,
+  incompleteDays: number,
+): Promise<CallListRow[]> {
+  const cutoff = addIstDays(today, -incompleteDays);
   const hidden = await hiddenPatientIds(db, "incomplete");
   const rows = await db
     .select({
@@ -138,9 +168,14 @@ async function listIncomplete(db: Db, today: string): Promise<CallListRow[]> {
   return out;
 }
 
-async function listRecall(db: Db, today: string): Promise<CallListRow[]> {
-  const minOn = addIstDays(today, -RECALL_MAX_MONTHS_DEFAULT * 30);
-  const maxOn = addIstDays(today, -RECALL_MIN_MONTHS_DEFAULT * 30);
+async function listRecall(
+  db: Db,
+  today: string,
+  recallMinMonths: number,
+  recallMaxMonths: number,
+): Promise<CallListRow[]> {
+  const minOn = addIstDays(today, -recallMaxMonths * 30);
+  const maxOn = addIstDays(today, -recallMinMonths * 30);
   const hidden = await hiddenPatientIds(db, "recall");
   const lastVisits = await db
     .select({
