@@ -6,10 +6,10 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
 - No Phase Q task is done yet. Nothing in the app code was changed by the audit.
-- Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging). Part 2 and Part 3 so far added NO migration.
+- Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
-**Part 3 is in progress (written 2026-11-24).** D1 to D8 are accepted (DECISIONS.md; D1 refund rule still to be confirmed by the CA). Done in Part 3 so far: Q1.7, Q1.8. **Next: Q1.9, then Q1.10, Q1.11, then update docs/ui-audit/runner/g01.mjs and d03.mjs (and the scripts that pick a procedure or gender: d06, g02, h01, a02, g08; gender now has no default and the procedure list starts empty) for the new behaviour, then Gate Q1.G.** Q1.9 needs Q0.7 (done) and D4 (accepted: the receptionist only asks the doctor to cancel a bill). Q1.10 and Q1.11 need D7 / D4 (accepted).
+**Part 3 is in progress (written 2026-11-24).** D1 to D8 are accepted (DECISIONS.md; D1 refund rule still to be confirmed by the CA). Done in Part 3 so far: Q1.7, Q1.8, Q1.9. **Next: Q1.10, Q1.11, then update docs/ui-audit/runner/g01.mjs and d03.mjs (and the scripts that pick a procedure or gender: d06, g02, h01, a02, g08; gender now has no default and the procedure list starts empty) for the new behaviour, then Gate Q1.G.** Q1.9 needs Q0.7 (done) and D4 (accepted: the receptionist only asks the doctor to cancel a bill). Q1.10 and Q1.11 need D7 / D4 (accepted).
 
 ## Done in Phase Q
 - Part 2 repair and skipped tasks, 2026-11-24 (git log): "Part 2 repair" (360 px Today rows, Bill payment layout, calendar panel buttons, Missed test no longer depends on the clock), Q0.7 (refund re-opens the due, `paidByBill`), Q1.1 (visit to bill chain), Q1.5 (messages hygiene), Q1.6 rest (offline guard), Q1.7 (discount hand-off), Q1.8 (data and form rules). Browser specs: e2e/visit-to-bill, messages, data-rules, no-silent-failures, appointment-actions, core-loop (25 pass together).

@@ -1,4 +1,6 @@
+import { formatRupees } from "@clinic/shared";
 import { useState } from "react";
+import { Link } from "react-router";
 import { useMe } from "../auth";
 import { cancelBill, type BillDto } from "./api";
 
@@ -55,6 +57,12 @@ export function BillCancelPanel({
       <p className="muted small">
         Paid bills must be refunded first. The bill number stays visible as cancelled.
       </p>
+      {(bill.paidPaise ?? 0) > 0 ? (
+        <p className="notice notice-warning" role="status">
+          {formatRupees(bill.paidPaise ?? 0)} is still held on this bill.{" "}
+          <Link to={`/app/patients/${bill.patientId}?tab=billing`}>Refund first</Link>, then cancel.
+        </p>
+      ) : null}
       <label className="stack gap-xs">
         <span className="muted small">Reason</span>
         <input
@@ -65,7 +73,12 @@ export function BillCancelPanel({
         />
       </label>
       <div className="row wrap gap-sm">
-        <button type="button" className="btn" disabled={busy} onClick={() => void submit()}>
+        <button
+          type="button"
+          className="btn"
+          disabled={busy || (bill.paidPaise ?? 0) > 0}
+          onClick={() => void submit()}
+        >
           Confirm cancel
         </button>
         <button

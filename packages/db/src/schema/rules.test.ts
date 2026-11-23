@@ -54,6 +54,7 @@ describe("table rules (1.2.1)", () => {
       "alerts",
       "appointments",
       "audit_log",
+      "bill_cancel_requests",
       "bill_items",
       "bills",
       "certificates",

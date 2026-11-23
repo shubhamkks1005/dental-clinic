@@ -487,6 +487,26 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/bills/cancel-requests",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/bills/cancel-requests/:id/dismiss",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/bills/:id/cancel-request",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/bills/:id/cancel-request",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/bills/pending-discounts",
     access: { kind: "permission", action: "bills.adjust" },
   },

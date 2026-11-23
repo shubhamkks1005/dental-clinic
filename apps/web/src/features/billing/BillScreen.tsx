@@ -13,6 +13,7 @@ import {
   type PatientPaymentRow,
 } from "./api";
 import "./billing.css";
+import { BillCancelRequestPanel } from "./BillCancelRequestPanel";
 import { PaymentsList } from "./PaymentsList";
 import { PaymentTakeForm } from "./PaymentTakeForm";
 
@@ -55,6 +56,8 @@ export function BillScreen() {
       setBill(
         await issueBill(bill.id, bill.version, { applyAdvance: applyAdvance && advancePaise > 0 }),
       );
+      // The balance changed with the new bill: reload it so the payment form appears at once.
+      load();
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Could not issue bill.");
     } finally {
@@ -186,6 +189,7 @@ export function BillScreen() {
             Waiting for the doctor to approve the discount.
           </p>
         ) : null}
+        <BillCancelRequestPanel bill={bill} />
         <BillCancelPanel bill={bill} onUpdated={setBill} onError={setError} />
       </div>
     </section>

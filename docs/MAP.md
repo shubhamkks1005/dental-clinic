@@ -511,3 +511,5 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - apps/web/src/ui/OfflineGuard.tsx: Q1.6 offline: blocks Save/primary buttons and in-app links with a reason, keeps the screen (html[data-offline] in ui.css). Test: e2e/no-silent-failures.spec.ts.
 - apps/web/src/features/billing/WaitingForYou.tsx: doctor Today "Waiting for you" (pending discounts, Approve). Repo: billsDiscount.listPendingDiscounts. Test: e2e/visit-to-bill.spec.ts.
 - packages/shared/src/appointment-next.ts (+ test): pickNextAppointment. e2e/data-rules.spec.ts: Q1.8 form rules.
+- packages/db/src/schema/bill-cancel-requests.ts, migrations/0056_bill_cancel_requests.sql, repos/bills-cancel-request.ts (+ test): receptionist asks the doctor to cancel a bill (Q1.9). Web: features/billing/BillCancelRequestPanel.tsx, WaitingForYou.tsx (also lists these). Routes in staff-bills.ts (cancel-requests).
+- e2e/walk-in-button.spec.ts: Q1.9 top-bar Walk-in.

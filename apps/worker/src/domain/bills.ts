@@ -156,3 +156,27 @@ export async function reopenDay(repos: Repos, body: unknown) {
 export async function listPendingDiscounts(repos: Repos) {
   return { ok: true as const, pending: await repos.bills.listPendingDiscounts() };
 }
+
+/** Q1.9 (D4): receptionist asks the doctor to cancel an issued bill. */
+export async function requestBillCancelDomain(repos: Repos, billId: string, body: unknown) {
+  const reason =
+    typeof body === "object" &&
+    body !== null &&
+    typeof (body as { reason?: unknown }).reason === "string"
+      ? (body as { reason: string }).reason
+      : "";
+  return { ok: true as const, ...(await repos.bills.requestCancel(billId, reason)) };
+}
+
+export async function listCancelRequestsDomain(repos: Repos) {
+  return { ok: true as const, requests: await repos.bills.listOpenCancelRequests() };
+}
+
+export async function billCancelRequestDomain(repos: Repos, billId: string) {
+  return { ok: true as const, request: await repos.bills.openCancelRequestFor(billId) };
+}
+
+export async function dismissCancelRequestDomain(repos: Repos, id: string) {
+  await repos.bills.dismissCancelRequest(id);
+  return { ok: true as const };
+}

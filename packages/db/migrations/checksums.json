@@ -54,5 +54,6 @@
   "0052_error_log.sql": "f26a3d5dd6cf133ff4e452ea7833d6ca44846aa72579056a4a574dd36b86d09b",
   "0053_patient_requests.sql": "afce7879ff2f41217f95db0584671f09b74d784484b2d4ceee3cd4ec4ead5187",
   "0054_error_log_role_version.sql": "e8df9023c5128737c7c7daafbb7901550b1661081dd8faebcb13fcfbd2e8980a",
-  "0055_letterhead_settings.sql": "5866af97e1a9f09d39da82386f73ecb43bee339ba3272dfafd9427ec1a5c5a06"
+  "0055_letterhead_settings.sql": "5866af97e1a9f09d39da82386f73ecb43bee339ba3272dfafd9427ec1a5c5a06",
+  "0056_bill_cancel_requests.sql": "82bd4988338120da51f9e41fd245ab80337d442d3e3c1fa606422bd3833d838a"
 }

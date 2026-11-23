@@ -1,6 +1,6 @@
 import { addIstDays, istDate, istHour, istLongDate } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { icons } from "../../ui/icons";
 import { Logo } from "../../ui/Logo";
@@ -34,6 +34,13 @@ export function TodayScreen() {
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [walkInOpen, setWalkInOpen] = useState(false);
+  const [params, setParams] = useSearchParams();
+  // Q1.9: the top bar's Walk-in on another page lands here with ?walkin=1.
+  useEffect(() => {
+    if (params.get("walkin") !== "1") return;
+    setWalkInOpen(true);
+    setParams({}, { replace: true });
+  }, [params, setParams]);
   const [serverNow, setServerNow] = useState(() => new Date());
 
   const load = useCallback(() => {

@@ -24,6 +24,7 @@ export { printLog } from "./print-log";
 export { bills, billItems } from "./bills";
 export { payments, paymentAllocations, refunds } from "./payments";
 export { duesCalls } from "./dues-calls";
+export { billCancelRequests, BILL_CANCEL_REQUEST_STATUSES } from "./bill-cancel-requests";
 export { dayCloses } from "./day-closes";
 export { dailyStats, monthlyStats } from "./daily-stats";
 export { outreachContacts, OUTREACH_LIST_KINDS } from "./outreach-contacts";

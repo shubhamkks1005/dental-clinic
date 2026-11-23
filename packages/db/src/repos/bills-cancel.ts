@@ -4,7 +4,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { bills } from "../schema";
+import { billCancelRequests, bills } from "../schema";
 import { nowUtcSql } from "../sql";
 import { paidByBill } from "./bills-paid";
 import { billsGetRepo, type BillRow } from "./bills-get";
@@ -60,6 +60,11 @@ export function billsCancelRepo(db: Db, ctx: Ctx) {
           before: { status: row.status },
           after: { status: "cancelled", cancelReason: trimmed },
         }),
+        // Q1.9: a request to cancel this bill is answered by cancelling it.
+        db
+          .update(billCancelRequests)
+          .set({ status: "done", closedAt: nowUtcSql, closedBy: ctx.userId })
+          .where(and(eq(billCancelRequests.billId, id), eq(billCancelRequests.status, "open"))),
       ]);
       const updated = results[0] as { id: string }[];
       if (!updated.length) throw new ConflictError();

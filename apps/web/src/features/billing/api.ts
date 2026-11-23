@@ -115,6 +115,8 @@ export type BillDto = {
   cancelReason: string | null;
   version: number;
   items: BillItemDto[];
+  /** Money held on this bill: payments minus refunds. */
+  paidPaise?: number;
   payments?: {
     paymentId: string;
     amountPaise: number;
@@ -268,4 +270,40 @@ export function listPendingDiscounts() {
   return api<{ pending: PendingDiscount[] }>("/api/staff/bills/pending-discounts").then(
     (r) => r.pending,
   );
+}
+
+export type CancelRequest = {
+  id: string;
+  billId: string;
+  billNo: string | null;
+  patientId: string;
+  patientName: string;
+  reason: string;
+};
+
+/** Q1.9: the receptionist asks the doctor to cancel a wrong issued bill. */
+export function requestBillCancel(billId: string, reason: string) {
+  return api<{ id: string }>(`/api/staff/bills/${encodeURIComponent(billId)}/cancel-request`, {
+    method: "POST",
+    body: { reason },
+  });
+}
+
+export function listCancelRequests() {
+  return api<{ requests: CancelRequest[] }>("/api/staff/bills/cancel-requests").then(
+    (r) => r.requests,
+  );
+}
+
+export function getBillCancelRequest(billId: string) {
+  return api<{ request: { id: string; reason: string } | null }>(
+    `/api/staff/bills/${encodeURIComponent(billId)}/cancel-request`,
+  ).then((r) => r.request);
+}
+
+export function dismissCancelRequest(id: string) {
+  return api<{ ok: true }>(`/api/staff/bills/cancel-requests/${encodeURIComponent(id)}/dismiss`, {
+    method: "POST",
+    body: {},
+  });
 }

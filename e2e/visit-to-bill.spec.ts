@@ -139,3 +139,58 @@ test("discount request leaves the total alone until the doctor approves", async 
 
   expect(bad, bad.join("\n")).toEqual([]);
 });
+
+// Q1.9: the wrong-bill path. The desk asks, the doctor sees it, "Refund first" appears when paid.
+test("receptionist asks the doctor to cancel a bill; doctor is told to refund first", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const bad: string[] = [];
+  page.on("response", (r) => {
+    if (r.url().includes("/api/") && r.status() >= 400) bad.push(`${r.status()} ${r.url()}`);
+  });
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Wrong Bill ${stamp}`;
+  await walkInInChair(page, name, stamp);
+  await doctorOpensVisitOf(page, name);
+  const procedures = page.getByRole("region", { name: "Procedures" });
+  await procedures.getByLabel("Procedure").selectOption({ index: 1 });
+  await procedures.getByRole("button", { name: "Add procedure" }).click();
+  await expect(procedures.locator("li")).toHaveCount(1);
+  await page.getByRole("button", { name: "Finalise visit" }).click();
+  await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
+  await page.getByRole("button", { name: "Create bill" }).click();
+  await expect(page).toHaveURL(/\/app\/bills\//);
+  const billPath = new URL(page.url()).pathname;
+  await page.getByRole("button", { name: "Issue bill" }).click();
+  await expect(page.getByRole("button", { name: "Record payment" })).toBeVisible();
+
+  // Receptionist takes a part payment, then asks the doctor to cancel the bill.
+  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await page.goto(billPath);
+  await page
+    .getByLabel(/Amount/)
+    .first()
+    .fill("100");
+  await page.getByRole("button", { name: "Record payment" }).click();
+  await expect(page.locator(".toast-text", { hasText: /recorded/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Cancel bill" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Ask the doctor to cancel" }).click();
+  await page.getByLabel("Why is it wrong?").fill("Fake: wrong procedure");
+  await page.getByRole("button", { name: "Send request" }).click();
+  await expect(page.getByText(/You asked the doctor to cancel this bill/)).toBeVisible();
+
+  // Doctor: Waiting for you, then the cancel panel says to refund first.
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/app");
+  const waiting = page.getByRole("region", { name: "Waiting for you" });
+  await expect(waiting).toContainText(`Cancel bill`);
+  await expect(waiting).toContainText(name);
+  await waiting.locator("li", { hasText: name }).getByRole("link", { name: "Open bill" }).click();
+  await expect(page.getByText(/Reception asks to cancel this bill/)).toBeVisible();
+  await page.getByRole("button", { name: "Cancel bill" }).click();
+  await expect(page.getByRole("link", { name: "Refund first" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Confirm cancel" })).toBeDisabled();
+
+  expect(bad, bad.join("\n")).toEqual([]);
+});

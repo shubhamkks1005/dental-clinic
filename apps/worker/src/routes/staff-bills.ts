@@ -11,7 +11,11 @@ import {
   getBill,
   getPayment,
   issueBill,
+  billCancelRequestDomain,
+  dismissCancelRequestDomain,
+  listCancelRequestsDomain,
   listDues,
+  requestBillCancelDomain,
   listPendingDiscounts,
   listPatientBills,
   listPatientPayments,
@@ -62,6 +66,27 @@ staffBills.post("/bills", async (c) => {
 staffBills.get("/bills/pending-discounts", async (c) => {
   const result = await listPendingDiscounts(signedIn(c).repos);
   return c.json(ok({ pending: result.pending }));
+});
+
+staffBills.get("/bills/cancel-requests", async (c) => {
+  const result = await listCancelRequestsDomain(signedIn(c).repos);
+  return c.json(ok({ requests: result.requests }));
+});
+
+staffBills.post("/bills/cancel-requests/:id/dismiss", async (c) => {
+  await dismissCancelRequestDomain(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ ok: true }));
+});
+
+staffBills.get("/bills/:id/cancel-request", async (c) => {
+  const result = await billCancelRequestDomain(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ request: result.request }));
+});
+
+staffBills.post("/bills/:id/cancel-request", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await requestBillCancelDomain(signedIn(c).repos, c.req.param("id"), body);
+  return c.json(ok({ id: result.id }), 201);
 });
 
 staffBills.get("/bills/:id", async (c) => {

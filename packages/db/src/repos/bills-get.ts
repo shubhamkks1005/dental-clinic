@@ -1,3 +1,4 @@
+import { paidByBill } from "./bills-paid";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
@@ -47,6 +48,8 @@ export type BillRow = {
   issuedBy: string | null;
   version: number;
   items: BillItemRow[];
+  /** Q1.9: money held on this bill (payments minus refunds). */
+  paidPaise: number;
   /** Payments allocated to this bill (for print). */
   payments: {
     paymentId: string;
@@ -143,7 +146,9 @@ export function billsGetRepo(db: Db, ctx: Ctx) {
         .where(and(eq(paymentAllocations.billId, id), isNull(paymentAllocations.deletedAt)))
         .all();
 
-      return { ...row, items: itemsWithList, payments: payRows };
+      // Q1.9: money really held on this bill (payments minus refunds), for "Refund first".
+      const paidPaise = (await paidByBill(db, [id])).get(id) ?? 0;
+      return { ...row, items: itemsWithList, payments: payRows, paidPaise };
     },
   };
 }
