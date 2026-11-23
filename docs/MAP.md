@@ -537,3 +537,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - Removed: CallList.tsx, DoctorDayList.tsx, IncompleteVisitsWidget.tsx, incomplete-visits-label.*.
 - apps/web ui/page/TodoRows.tsx + todo.css: one "Waiting for you" line (kind, who, note, action). features/billing/WaitingForYou.tsx now builds lines from discounts and cancel requests and takes `extra` lines.
 
+## Q2.6 Patients list and profile (2026-11-24)
+- apps/web features/patients: patient-list-columns.tsx (columns Name, Patient no., Mobile, Last visit, Next appointment, Due; PatientCard = phone whole-card link), PatientsScreen.tsx (filter chips All, New this month, Balance due, Not seen in 6 months, Archived; "+ New patient: <typed>" on a phone), PatientProfileHeader.tsx (one contact line, role actions), PatientOverviewTab.tsx (cards Next appointment, Balance due, Last visit, then Details), PatientProfileScreen.tsx (always opens on Overview unless ?tab=). e2e/patients-list-profile.spec.ts.
+- apps/web ui/table: DataTable `renderCard` (own phone card).
+- packages/db repos/patients.ts: list rows carry lastVisitOn and nextAppointment (shared pickNextAppointment rule), `onlyIds`, Not seen in 6 months now looks at visits. apps/worker domain/patients.ts: duePaise per row, filter=balance_due (biggest 90 dues). No migration.
+

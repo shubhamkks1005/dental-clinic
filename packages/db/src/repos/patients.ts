@@ -1,6 +1,8 @@
 import {
   istDate,
+  NEXT_APPOINTMENT_STATUSES,
   pageWindow,
+  pickNextAppointment,
   searchWords,
   tokenRangeEnd,
   type Page,
@@ -11,7 +13,7 @@ import { and, asc, desc, eq, gte, inArray, isNull, lt, or, sql, type SQL } from 
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
-import { patients, patientSearch } from "../schema";
+import { appointments, patients, patientSearch, visits } from "../schema";
 
 export type PatientListRow = {
   id: string;
@@ -24,6 +26,10 @@ export type PatientListRow = {
   createdAt: string;
   mobile: string | null;
   status: "active" | "archived";
+  /** Q2.6: day of the latest visit that is not entered in error (a date only, nothing clinical). */
+  lastVisitOn: string | null;
+  /** Q2.6: the one shared "next appointment" rule (appointment-next.ts). */
+  nextAppointment: { dateLocal: string; startMin: number } | null;
 };
 
 const SORTABLE = ["full_name", "code", "created_at"] as const;
@@ -39,6 +45,8 @@ export type PatientListOptions = {
   /** Default active (2.1.8): archived hidden unless asked for. */
   status?: PatientListStatus;
   filter?: PatientListFilter | null;
+  /** Only these patients (the Balance due filter passes the ids that owe money). */
+  onlyIds?: string[];
   /** Clock for month / 6-month bounds (tests inject a fixed instant). */
   now?: Date;
 };
@@ -63,6 +71,7 @@ export function patientsRepo(db: Db, ctx: Ctx) {
           ? undefined
           : eq(patients.status, status === "archived" ? "archived" : "active"),
         idFilter ? inArray(patients.id, idFilter) : undefined,
+        options.onlyIds ? inArray(patients.id, options.onlyIds) : undefined,
         filterClause(options.filter ?? null, now),
       );
       const { limit, offset } = pageWindow(query);
@@ -94,11 +103,18 @@ export function patientsRepo(db: Db, ctx: Ctx) {
           .all(),
       ]);
 
+      const extra = await visitAndNext(
+        db,
+        rows.map((r) => r.id),
+        now,
+      );
       return {
         rows: rows.map((r) => ({
           ...r,
           gender: r.gender as PatientGender,
           status: r.status as "active" | "archived",
+          lastVisitOn: extra.last.get(r.id) ?? null,
+          nextAppointment: extra.next.get(r.id) ?? null,
         })),
         total: Number(totalRow?.n ?? 0),
         page: query.page,
@@ -173,10 +189,71 @@ function filterClause(filter: PatientListFilter | null, now: Date): SQL | undefi
     return gte(patients.createdAt, istMonthStartUtcIso(now));
   }
   if (filter === "inactive_6m") {
-    // Until 2.3 appointments: treat "not visited" as registered more than 6 months ago.
-    return lt(patients.createdAt, monthsAgoUtcIso(now, 6));
+    // Q2.6: registered more than 6 months ago and no visit (not entered in error) since then.
+    const cutoff = istDate(new Date(monthsAgoUtcIso(now, 6)));
+    return and(
+      lt(patients.createdAt, monthsAgoUtcIso(now, 6)),
+      sql`not exists (select 1 from ${visits} where ${visits.patientId} = ${patients.id} and ${visits.deletedAt} is null and ${visits.status} != 'void' and ${visits.visitDateLocal} >= ${cutoff})`,
+    );
   }
   return undefined;
+}
+
+/** Last visit day and next appointment for the patients on one page (two small queries). */
+async function visitAndNext(db: Db, allIds: string[], now: Date) {
+  const last = new Map<string, string>();
+  const next = new Map<string, { dateLocal: string; startMin: number }>();
+  // D1 takes at most 100 bound values per query: work in chunks.
+  for (let i = 0; i < allIds.length; i += 40) {
+    await visitAndNextChunk(db, allIds.slice(i, i + 40), now, last, next);
+  }
+  return { last, next };
+}
+
+async function visitAndNextChunk(
+  db: Db,
+  ids: string[],
+  now: Date,
+  last: Map<string, string>,
+  next: Map<string, { dateLocal: string; startMin: number }>,
+) {
+  const lastRows = await db
+    .select({ patientId: visits.patientId, day: sql<string>`max(${visits.visitDateLocal})` })
+    .from(visits)
+    .where(
+      and(
+        inArray(visits.patientId, ids),
+        isNull(visits.deletedAt),
+        sql`${visits.status} != 'void'`,
+      ),
+    )
+    .groupBy(visits.patientId)
+    .all();
+  for (const r of lastRows) last.set(r.patientId, r.day);
+
+  const apptRows = await db
+    .select({
+      patientId: appointments.patientId,
+      status: appointments.status,
+      dateLocal: appointments.dateLocal,
+      startMin: appointments.startMin,
+    })
+    .from(appointments)
+    .where(
+      and(
+        inArray(appointments.patientId, ids),
+        isNull(appointments.deletedAt),
+        gte(appointments.dateLocal, istDate(now)),
+        inArray(appointments.status, [...NEXT_APPOINTMENT_STATUSES]),
+      ),
+    )
+    .all();
+  const byPatient = new Map<string, typeof apptRows>();
+  for (const a of apptRows) byPatient.set(a.patientId, [...(byPatient.get(a.patientId) ?? []), a]);
+  for (const [id, list] of byPatient) {
+    const pick = pickNextAppointment(list, now);
+    if (pick) next.set(id, { dateLocal: pick.dateLocal, startMin: pick.startMin });
+  }
 }
 
 /** UTC ISO of IST calendar month start (00:00 IST on the 1st). */

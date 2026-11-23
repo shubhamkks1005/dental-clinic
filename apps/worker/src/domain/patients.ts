@@ -19,17 +19,40 @@ import {
   type ParamReader,
 } from "@clinic/shared";
 
-// Patients list (1.1.7 / 2.1.6 / 2.1.8 / 2.2.5 filters).
-export function listPatients(repos: Repos, params: ParamReader): Promise<Page<PatientListRow>> {
+/** A list row plus what the patient still owes (Q2.6). */
+export type PatientListItem = PatientListRow & { duePaise: number };
+
+/** The Balance due filter looks at the biggest dues first; D1 allows 100 values per query. */
+const BALANCE_DUE_MAX = 90;
+
+// Patients list (1.1.7 / 2.1.6 / 2.1.8 / 2.2.5 filters, Q2.6 last visit, next appointment, due).
+export async function listPatients(
+  repos: Repos,
+  params: ParamReader,
+): Promise<Page<PatientListItem>> {
   const query = parsePageQuery(params, PATIENT_LIST_SORTABLE);
   const status = parseListStatus(params.get("status"));
-  const filter = parseListFilter(params.get("filter"));
-  return repos.patients.list(query, { status, filter });
-}
-
-function parseListFilter(raw: string | null): PatientListFilter | null {
-  if (raw === "new_month" || raw === "inactive_6m") return raw;
-  return null;
+  const raw = params.get("filter");
+  const filter = raw === "new_month" || raw === "inactive_6m" ? (raw as PatientListFilter) : null;
+  let onlyIds: string[] | undefined;
+  if (raw === "balance_due") {
+    const dues = await repos.bills.listDues();
+    onlyIds = [...dues.rows]
+      .sort((a, b) => b.duePaise - a.duePaise)
+      .slice(0, BALANCE_DUE_MAX)
+      .map((r) => r.patientId);
+    if (onlyIds.length === 0)
+      return { rows: [], total: 0, page: query.page, pageSize: query.pageSize };
+  }
+  const page = await repos.patients.list(query, { status, filter, onlyIds });
+  const dues = new Map<string, number>();
+  const ids = page.rows.map((r) => r.id);
+  for (let i = 0; i < ids.length; i += 40) {
+    for (const [id, due] of await repos.bills.duesForPatients(ids.slice(i, i + 40))) {
+      dues.set(id, due);
+    }
+  }
+  return { ...page, rows: page.rows.map((r) => ({ ...r, duePaise: dues.get(r.id) ?? 0 })) };
 }
 
 // 2.2.2 profile.

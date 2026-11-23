@@ -46,3 +46,9 @@
 .consents-withdrawn {
   color: #9a3412;
 }
+
+.consents-print-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

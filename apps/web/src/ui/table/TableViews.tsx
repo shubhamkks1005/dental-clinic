@@ -1,4 +1,5 @@
 import { lastPage, type Page, type PageQuery } from "@clinic/shared";
+import type { ReactNode } from "react";
 import { ariaSort, rangeText, toggleSort } from "./table-query";
 import type { Column } from "./types";
 
@@ -60,21 +61,31 @@ export function TableView<T>({ caption, columns, rows, rowKey, query, onQuery }:
 }
 
 // Phone: one card per row; the first column is the card title.
-export function CardView<T>({ caption, columns, rows, rowKey }: ViewProps<T>) {
+export function CardView<T>({
+  caption,
+  columns,
+  rows,
+  rowKey,
+  renderCard,
+}: ViewProps<T> & { renderCard?: (row: T) => ReactNode }) {
   const [title, ...rest] = columns;
   return (
     <ul className="dt-cards" aria-label={caption}>
-      {rows.map((row) => (
-        <li key={rowKey(row)} className="dt-card">
-          {title && <p className="dt-card-title">{title.render(row)}</p>}
-          {rest.map((c) => (
-            <p key={c.key} className="dt-card-line">
-              <span className="small muted">{c.label}</span>
-              <span>{c.render(row)}</span>
-            </p>
-          ))}
-        </li>
-      ))}
+      {rows.map((row) =>
+        renderCard ? (
+          <li key={rowKey(row)}>{renderCard(row)}</li>
+        ) : (
+          <li key={rowKey(row)} className="dt-card">
+            {title && <p className="dt-card-title">{title.render(row)}</p>}
+            {rest.map((c) => (
+              <p key={c.key} className="dt-card-line">
+                <span className="small muted">{c.label}</span>
+                <span>{c.render(row)}</span>
+              </p>
+            ))}
+          </li>
+        ),
+      )}
     </ul>
   );
 }

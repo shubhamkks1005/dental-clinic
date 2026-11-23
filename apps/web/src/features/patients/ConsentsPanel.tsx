@@ -47,7 +47,10 @@ export function ConsentsPanel({ patientId }: { patientId: string }) {
       <h2 id="consents-title">Consents</h2>
       <p className="muted consents-lead">When, who recorded it, and which notice version.</p>
       <p>
-        <Link to={`/app/print/consent/${encodeURIComponent(patientId)}?template=extraction`}>
+        <Link
+          className="consents-print-link"
+          to={`/app/print/consent/${encodeURIComponent(patientId)}?template=extraction`}
+        >
           Print consent form
         </Link>
       </p>

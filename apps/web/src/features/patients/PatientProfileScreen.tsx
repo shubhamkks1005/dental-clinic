@@ -8,7 +8,7 @@ import { VisitChartPanel } from "../chart";
 import { PatientBillingPanel } from "../billing";
 import { PatientFilesTab } from "../files";
 import { PatientMessagesTab } from "../messages";
-import { PatientHistoryTab, getHistorySummary } from "../history";
+import { PatientHistoryTab } from "../history";
 import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
 import { PatientOverviewTab } from "./PatientOverviewTab";
@@ -31,32 +31,18 @@ export function PatientProfileScreen() {
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState("overview");
-  const [defaultTabReady, setDefaultTabReady] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     let cancelled = false;
     setError(null);
     setPatient(null);
-    setDefaultTabReady(false);
     getPatient(id)
-      .then(async (row) => {
+      .then((row) => {
         if (cancelled) return;
         setPatient(row);
-        // ?tab= (links from the visit screen) wins; else a returning patient opens on History (3.5.11).
-        if (wantedTab) {
-          setTab(wantedTab);
-          setDefaultTabReady(true);
-          return;
-        }
-        try {
-          const summary = await getHistorySummary(row.id);
-          if (!cancelled && summary.totalVisits > 0) setTab("history");
-        } catch {
-          // Keep overview if summary fails; History tab still loads on click.
-        } finally {
-          if (!cancelled) setDefaultTabReady(true);
-        }
+        // Q2.6: a patient always opens on Overview, unless a link asks for a tab (?tab=).
+        setTab(wantedTab ?? "overview");
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -88,7 +74,7 @@ export function PatientProfileScreen() {
     );
   }
 
-  if (!patient || !defaultTabReady) {
+  if (!patient) {
     return <p className="muted">Loading…</p>;
   }
 
@@ -109,6 +95,7 @@ export function PatientProfileScreen() {
             canViewClinical={canViewClinical}
             canEditClinical={canEditClinical}
             onPatientChange={setPatient}
+            onTakePayment={() => setTab("billing")}
           />
         ) : t.id === "history" ? (
           <PatientHistoryTab patientId={patient.id} />
@@ -140,6 +127,7 @@ export function PatientProfileScreen() {
         canViewClinical={canViewClinical}
         canSeeFlags={canSeeFlags}
         canEditClinical={canEditClinical}
+        onTakePayment={() => setTab("billing")}
       />
       <Tabs label="Patient sections" tabs={tabs} value={tab} onChange={setTab} />
     </div>

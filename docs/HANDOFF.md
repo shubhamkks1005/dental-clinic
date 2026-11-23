@@ -5,17 +5,20 @@ Written: 2026-11-24 (after Gate A). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 ## Where we are
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
-- Phase Q Parts 1 to 3 are done (see "Done in Phase Q").
+- Phase Q Parts 1 to 4 are done (see "Done in Phase Q").
 - Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
-**Part 4 is IN PROGRESS: Q2.1, Q2.2, Q2.3 done (2026-11-24, commits cd8b87a, 6414116, e5a630a). Next: Q2.4 Visit on one screen** (PLAN.md block "Q2.4 Visit ek screen par", design Visit.dc.html + PhoneVisit.dc.html), then Q2.5 (both Today screens, Main/DoctorToday/PhoneToday), then Q2.6 (Patients list and profile, PDF S02/S04, PhoneProfile/PhonePatients).
-- Tools ready: ui/page (PageContainer is applied by StaffShell, PageHeader, Card, ListRow, EmptyState), StatusLabel + shared statusWord/billStatusKey, formatDate/formatMoney/formatDuration/plural. Shots go in docs/ui-audit/screenshots/redesign/<task>/ (scripts: shots.mjs and frame.mjs idea = open lib.mjs, goto, screenshot; measure() in lib.mjs gives sideways scroll and small targets).
-- Q2.4 start point: features/visits/VisitScreen.tsx (tabs in visit-tabs.ts), VisitMedicinesPanel.tsx is 462 lines (split first). Keep autosave, version-conflict banner and finalise domain unchanged. Done when g01.mjs doctor part has no tab switch, e2e core-loop passes, 360/768/1366 checked.
-- Known gaps for Q2.5: Today hero still has its own inset (title at x 72/48), the stat card says "Arrived" (design says Waiting, and counts must not include in-chair), action buttons still say Arrived/Completed (design: Send in / Done), "+" button shows on every phone screen (Q2.11 limits it).
-- e2e specs run in file-name order and some need bills made by core-loop (data-billing-hub.spec.ts). Run `pnpm exec playwright test` (38 pass). macOS has no `timeout` command.
+**Part 4 is DONE (2026-11-24): Q2.1 to Q2.6.** Next: **Part 5, starting at Q2.7** (calendar and booking, designs Calendar.dc.html, PhoneCalendar.dc.html, PhoneBook.dc.html), then Q2.8 to Q2.13 and Q4.1 in docs/PHASE_Q.md order. Part 4 has no gate of its own; the Part 5 gate is Gate B if PHASE_Q.md names one.
+- Tools ready: ui/page (PageHeader, Card, ListRow, EmptyState, TodoRows), StatusLabel, formatDate/formatMoney/plural, DataTable `renderCard`, shared pickNextAppointment. Screenshots go in docs/ui-audit/screenshots/redesign/<task>/.
+- Gaps left from Part 4 (not blockers): Today "Waiting for you" has no "Prescription not issued" line (needs a small endpoint listing draft prescriptions); the round "+" still shows on every phone screen except the visit (Q2.11 limits it); the visit chart's own controls (Chart as of, Apply condition, Dentition) take a lot of height above the teeth; procedure chips cannot be removed (no remove API); runner d02.mjs still fails at its later step "Open the bill again" (stale since Q2.3, not a Today problem); Today "+ New patient" shows in the doctor's top bar though the design has none.
+- Runner notes: g01.mjs now has NO tab switch in the doctor part (9 clicks Open visit to Create bill; whole chain 27 clicks). d05.mjs: its one failed request is the deliberate payment on a closed day (answer: "This day is closed. Use a late entry or ask the doctor to reopen it.", an expected refusal, not a bug). Library is doctor-only: the receptionist sees no Library item and gets "Not available for your role" at /app/library (checked in a browser).
+- e2e specs run in file-name order and some need bills made by core-loop (data-billing-hub.spec.ts). Run `pnpm exec playwright test` (40 pass). macOS has no `timeout` command. Stop any dev server on port 8787 before running Playwright (it reuses a running server and its database).
 
 ## Done in Phase Q
+- Q2.6 Patients list and profile, 2026-11-24 (git log "Q2.6"). Last visit / Next appointment / Due, new filters, phone cards, profile on Overview with role actions. Next: Part 5, Q2.7.
+- Q2.5 Both Today screens, 2026-11-24 (git log "Q2.5"). One main button per row, stat strip, To follow up, doctor Now / Next / Waiting for you.
+- Q2.4 Visit on one screen, 2026-11-24 (git log "Q2.4 step 1/2/3"). Tabs Visit / Plan / History / Files; sticky Finalise bar; old tabbed code deleted; VisitMedicinesPanel split.
 - Q2.1 Foundation, 2026-11-24 (git log "Q2.1"). ui/page/*, StatusLabel, shared status-words + format, 8-item sidebar, one gutter. Test: e2e/frame.spec.ts. Next in Part 4: Q2.2.
 - Q2.2 Words and formats, 2026-11-24 (git log "Q2.2"). Shared status map drives APPOINTMENT_STATUS_LABEL and VISIT_STATUS_LABEL; StatusLabel on visits, bills, appointments; formatDate on screens. Next in Part 4: Q2.3.
 - Q2.3 Billing hub and Bill, 2026-11-24 (git log "Q2.3"). D5 built (Create bill issues; Review first = draft). Next in Part 4: Q2.4.
@@ -36,7 +39,7 @@ Written: 2026-11-24 (after Gate A). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 (nothing)
 
 ## Waiting on me (the owner). The AI must not guess these
-- Q2.1: should the receptionist see Library? (built doctor-only, see DECISIONS.md).
+- Q2.1: should the receptionist see Library? Built doctor-only as decided (D4); nothing to do unless the owner changes it.
 - Nothing blocks the AI now. D1 (CA) still needs the CA to confirm the refund rule.
 - D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.
 - Older items: STATE.md "Waiting on me" (staging steps, doctor confirmations, CA questions).

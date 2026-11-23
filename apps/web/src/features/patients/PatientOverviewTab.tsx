@@ -1,5 +1,5 @@
 import { displayMobile, formatClockTime } from "@clinic/shared";
-import { formatDate } from "../../ui/format";
+import { formatDate, formatMoney, plural } from "../../ui/format";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
@@ -16,6 +16,8 @@ type Props = {
   canViewClinical: boolean;
   canEditClinical: boolean;
   onPatientChange: (patient: PatientDetail) => void;
+  /** Opens the Billing tab (the Balance card button). */
+  onTakePayment: () => void;
 };
 
 // Overview: next appointment, details (or edit), medical history (doctor), consents.
@@ -25,21 +27,23 @@ export function PatientOverviewTab({
   canViewClinical,
   canEditClinical,
   onPatientChange,
+  onTakePayment,
 }: Props) {
   const me = useMe();
   const canWriteCert = me.permissions.includes("certificates.write");
   const canPrintCert = me.permissions.includes("certificates.print");
   const [editing, setEditing] = useState(false);
-  const [next, setNext] = useState<HistorySummary["nextAppointment"] | undefined>(undefined);
+  const [summary, setSummary] = useState<HistorySummary | null | undefined>(undefined);
+  const canTakePayment = me.permissions.includes("bills.create");
 
   useEffect(() => {
     let cancelled = false;
     getHistorySummary(patient.id)
       .then((s) => {
-        if (!cancelled) setNext(s.nextAppointment);
+        if (!cancelled) setSummary(s);
       })
       .catch(() => {
-        if (!cancelled) setNext(null);
+        if (!cancelled) setSummary(null);
       });
     return () => {
       cancelled = true;
@@ -61,25 +65,60 @@ export function PatientOverviewTab({
 
   return (
     <div className="patient-overview">
-      <section className="patient-overview-next" aria-labelledby="next-appt-title">
-        <h2 id="next-appt-title">Next appointment</h2>
-        {next === undefined ? (
-          <p className="muted">Checking…</p>
-        ) : next ? (
-          <p>
-            <strong>{formatDate(next.dateLocal)}</strong>, {formatClockTime(next.startMin)} ·{" "}
-            {next.visitTypeLabel}
-          </p>
-        ) : (
-          <p className="muted">No upcoming appointment.</p>
-        )}
-        <Link
-          className="btn btn-primary"
-          to={`/app/appointments?patient=${encodeURIComponent(patient.id)}`}
-        >
-          Book appointment
-        </Link>
-      </section>
+      <div className="patient-overview-cards">
+        <section className="card patient-card-block" aria-labelledby="next-appt-title">
+          <h2 id="next-appt-title" className="patient-card-label">
+            Next appointment
+          </h2>
+          {summary === undefined ? (
+            <p className="muted">Checking…</p>
+          ) : summary?.nextAppointment ? (
+            <>
+              <p className="patient-card-big">
+                {formatDate(summary.nextAppointment.dateLocal)},{" "}
+                {formatClockTime(summary.nextAppointment.startMin)}
+              </p>
+              <p className="muted small">{summary.nextAppointment.visitTypeLabel}</p>
+            </>
+          ) : (
+            <p className="muted">No upcoming appointment.</p>
+          )}
+        </section>
+        <section className="card patient-card-block" aria-labelledby="balance-title">
+          <h2 id="balance-title" className="patient-card-label">
+            Balance due
+          </h2>
+          {summary === undefined ? (
+            <p className="muted">Checking…</p>
+          ) : (
+            <>
+              <p className="patient-card-big">{formatMoney(summary?.outstandingDuePaise ?? 0)}</p>
+              {canTakePayment && (summary?.outstandingDuePaise ?? 0) > 0 ? (
+                <button type="button" className="btn btn-primary" onClick={onTakePayment}>
+                  Take payment
+                </button>
+              ) : (
+                <p className="muted small">Nothing to pay.</p>
+              )}
+            </>
+          )}
+        </section>
+        <section className="card patient-card-block" aria-labelledby="last-visit-title">
+          <h2 id="last-visit-title" className="patient-card-label">
+            Last visit
+          </h2>
+          {summary === undefined ? (
+            <p className="muted">Checking…</p>
+          ) : summary?.lastVisitDate ? (
+            <>
+              <p className="patient-card-big">{formatDate(summary.lastVisitDate)}</p>
+              <p className="muted small">{plural(summary.totalVisits, "visit")} so far</p>
+            </>
+          ) : (
+            <p className="muted">No visits yet.</p>
+          )}
+        </section>
+      </div>
 
       <section className="patient-overview-details" aria-labelledby="details-title">
         <div className="patient-overview-details-head">

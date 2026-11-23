@@ -2,7 +2,7 @@ import { firstPage } from "@clinic/shared";
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
 import { ForbiddenError } from "../errors";
-import { patientSearch, patients } from "../schema";
+import { appointments, patientSearch, patients, visits } from "../schema";
 import { rebuildPatientSearchStatements } from "../search/patient-tokens";
 import { testDb } from "../testing";
 import { patientsRepo } from "./patients";
@@ -87,6 +87,84 @@ describe("patientsRepo.list (1.1.7 / 2.1.6)", () => {
       now,
     });
     expect(quiet.rows.map((r) => r.code)).toEqual(["P-000011"]);
+  });
+});
+
+describe("patientsRepo.list Q2.6: last visit, next appointment, not seen", () => {
+  const now = new Date("2026-11-22T12:00:00.000Z"); // 17:30 IST on 22 Nov 2026
+  const who = { createdBy: "t", updatedBy: "t" };
+  const visit = (
+    id: string,
+    patientId: string,
+    day: string,
+    status: "draft" | "final" | "void",
+  ) => ({
+    id,
+    patientId,
+    doctorId: "doc-1",
+    visitDateLocal: day,
+    status,
+    ...who,
+  });
+  const appt = (id: string, patientId: string, day: string, startMin: number, status: string) => ({
+    id,
+    patientId,
+    chairId: "c1",
+    visitTypeId: "vt",
+    visitTypeLabel: "Consultation",
+    startAt: `${day}T05:00:00.000Z`,
+    dateLocal: day,
+    startMin,
+    endMin: startMin + 30,
+    status: status as "scheduled",
+    source: "phone" as const,
+    ...who,
+  });
+
+  beforeEach(async () => {
+    sqlite.exec(
+      "DELETE FROM patient_search; DELETE FROM visits; DELETE FROM appointments; DELETE FROM patients;",
+    );
+    const old = "2025-01-01T10:00:00.000Z";
+    await db.insert(patients).values([
+      { ...row("p1", "P-000021", "Recent Visit", "male", 40, "+919000000021"), createdAt: old },
+      { ...row("p2", "P-000022", "Long Gone", "male", 40, "+919000000022"), createdAt: old },
+      { ...row("p3", "P-000023", "Only Void", "male", 40, "+919000000023"), createdAt: old },
+    ]);
+    await db
+      .insert(visits)
+      .values([
+        visit("v1", "p1", "2026-10-01", "final"),
+        visit("v2", "p1", "2026-08-01", "final"),
+        visit("v3", "p2", "2025-12-01", "final"),
+        visit("v4", "p3", "2026-11-01", "void"),
+      ]);
+    await db.insert(appointments).values([
+      appt("a1", "p1", "2026-11-22", 10 * 60, "scheduled"), // earlier today: already started
+      appt("a2", "p1", "2026-11-25", 11 * 60, "confirmed"),
+      appt("a3", "p1", "2026-11-24", 9 * 60, "cancelled"),
+      appt("a4", "p2", "2026-11-22", 20 * 60, "scheduled"), // later today
+    ]);
+  });
+
+  it("gives the latest real visit day and the next appointment by the one shared rule", async () => {
+    const page = await patientsRepo(db, doctor).list(firstPage(), { now });
+    const by = (code: string) => page.rows.find((r) => r.code === code);
+    expect(by("P-000021")?.lastVisitOn).toBe("2026-10-01");
+    expect(by("P-000021")?.nextAppointment).toEqual({ dateLocal: "2026-11-25", startMin: 660 });
+    expect(by("P-000022")?.nextAppointment).toEqual({ dateLocal: "2026-11-22", startMin: 1200 });
+    expect(by("P-000023")?.lastVisitOn).toBeNull();
+    expect(by("P-000023")?.nextAppointment).toBeNull();
+  });
+
+  it("Not seen in 6 months looks at visits, ignores a visit entered in error", async () => {
+    const quiet = await patientsRepo(db, doctor).list(firstPage(), { filter: "inactive_6m", now });
+    expect(quiet.rows.map((r) => r.code).sort()).toEqual(["P-000022", "P-000023"]);
+  });
+
+  it("onlyIds limits the list (Balance due filter)", async () => {
+    const page = await patientsRepo(db, doctor).list(firstPage(), { onlyIds: ["p2"], now });
+    expect(page.rows.map((r) => r.code)).toEqual(["P-000022"]);
   });
 });
 

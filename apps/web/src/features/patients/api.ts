@@ -12,6 +12,12 @@ export type PatientListRow = {
   createdAt: string;
   mobile: string | null;
   status: "active" | "archived";
+  /** Q2.6: day of the latest visit (not entered in error), a date only. */
+  /** The three below come from the list endpoint only (search and booking leave them out). */
+  lastVisitOn?: string | null;
+  nextAppointment?: { dateLocal: string; startMin: number } | null;
+  /** Still to pay, in paise (0 = nothing). */
+  duePaise?: number;
 };
 
 export type CreatedPatient = {
@@ -65,7 +71,7 @@ export type DuplicateWarning = {
   reason: "mobile_name" | "name_age" | "secondary_mobile";
 };
 
-export type PatientListFilter = "new_month" | "inactive_6m";
+export type PatientListFilter = "new_month" | "inactive_6m" | "balance_due";
 
 export function listPatients(
   query: PageQuery,

@@ -1,4 +1,5 @@
 import type { Page, PageQuery } from "@clinic/shared";
+import type { ReactNode } from "react";
 import { TableFilter } from "./TableFilter";
 import { CardView, TablePager, TableView } from "./TableViews";
 import type { Column, TableStatus } from "./types";
@@ -15,6 +16,8 @@ type Props<T> = {
   rowKey: (row: T) => string;
   status: TableStatus;
   onRetry: () => void;
+  /** Phone: draw a row as your own card (for example a whole-card link) instead of title and lines. */
+  renderCard?: (row: T) => ReactNode;
 };
 
 // 1.4.5 data table kit: the server sorts, filters and pages (packages/shared/src/paging.ts); this
@@ -46,7 +49,7 @@ export function DataTable<T>(props: Props<T>) {
       ) : (
         <>
           <TableView {...view} />
-          <CardView {...view} />
+          <CardView {...view} renderCard={props.renderCard} />
           <TablePager page={page} query={query} onQuery={onQuery} />
         </>
       )}

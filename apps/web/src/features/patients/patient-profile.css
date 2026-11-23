@@ -109,3 +109,57 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.patient-profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-top: var(--s3);
+}
+
+.patient-profile-actions .btn {
+  min-height: 44px;
+}
+
+.patient-overview-cards {
+  display: grid;
+  gap: var(--s3);
+}
+
+.patient-card-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s2);
+  padding: var(--s4);
+}
+
+.patient-card-block p,
+.patient-card-block h2 {
+  margin: 0;
+}
+
+.patient-card-big {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .patient-overview-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.patient-card-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.patient-profile-back a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

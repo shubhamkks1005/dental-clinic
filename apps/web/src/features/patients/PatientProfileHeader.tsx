@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { useMe } from "../auth";
 import { ProfileAlerts } from "../medical-history";
 import { openOrReuseVisit } from "../visits/open-visit";
 import type { PatientDetail } from "./api";
@@ -19,7 +20,17 @@ type HeaderProps = {
   canViewClinical: boolean;
   canSeeFlags: boolean;
   canEditClinical?: boolean;
+  /** Receptionist: jump to the Billing tab, where payment is taken. */
+  onTakePayment: () => void;
 };
+
+// One contact line: the patient's own mobile, or who to call ("Contact: Sunita (mother)").
+function contactLine(p: PatientDetail): string {
+  if (p.mobile) return displayMobile(p.mobile);
+  if (!p.contactMobile) return "No mobile";
+  const who = p.guardianName ?? displayMobile(p.contactMobile);
+  return `Contact: ${who}${p.contactRelation ? ` (${p.contactRelation})` : ""}`;
+}
 
 // S04 / S17 header: name, age, gender, code, mobile, contact (2.2.8); alerts 3.3.2; New visit 3.5.1.
 export function PatientProfileHeader({
@@ -27,7 +38,11 @@ export function PatientProfileHeader({
   canViewClinical,
   canSeeFlags,
   canEditClinical = false,
+  onTakePayment,
 }: HeaderProps) {
+  const { permissions } = useMe();
+  const canBook = permissions.includes("appointments.manage");
+  const canTakePayment = !canEditClinical && permissions.includes("bills.create");
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,11 +82,6 @@ export function PatientProfileHeader({
       <div className="patient-profile-title-row">
         <h1>{patient.fullName}</h1>
         {patient.status === "archived" && <StatusBadge tone="upcoming" label="Archived" />}
-        {canEditClinical ? (
-          <button type="button" className="btn btn-primary" disabled={busy} onClick={onNewVisit}>
-            {busy ? "Opening…" : "New visit"}
-          </button>
-        ) : null}
       </div>
       {error ? (
         <p className="notice notice-error" role="alert">
@@ -81,19 +91,30 @@ export function PatientProfileHeader({
       <p className="muted patient-profile-meta">{meta}</p>
       <div className="patient-profile-chips">
         <PatientNoChip patientNo={patient.code} />
-        <span className="patient-profile-mobile">
-          {patient.mobile ? displayMobile(patient.mobile) : "No mobile"}
-        </span>
+        <span className="patient-profile-mobile">{contactLine(patient)}</span>
       </div>
-      {patient.contactMobile && (
+      {patient.sameMobileCount > 0 && (
         <p className="muted patient-profile-contact">
-          Contact {displayMobile(patient.contactMobile)}
-          {patient.contactRelation ? ` (${patient.contactRelation})` : ""}
-          {patient.sameMobileCount > 0
-            ? ` · ${patient.sameMobileCount} other${patient.sameMobileCount === 1 ? "" : "s"} on this number`
-            : ""}
+          {patient.sameMobileCount} other{patient.sameMobileCount === 1 ? "" : "s"} on this number
         </p>
       )}
+      <div className="patient-profile-actions">
+        {canEditClinical ? (
+          <button type="button" className="btn btn-primary" disabled={busy} onClick={onNewVisit}>
+            {busy ? "Opening…" : "New visit"}
+          </button>
+        ) : null}
+        {canTakePayment ? (
+          <button type="button" className="btn btn-primary" onClick={onTakePayment}>
+            Take payment
+          </button>
+        ) : null}
+        {canBook ? (
+          <Link className="btn" to={`/app/appointments?patient=${encodeURIComponent(patient.id)}`}>
+            Book
+          </Link>
+        ) : null}
+      </div>
       <ProfileAlerts
         patientId={patient.id}
         canViewClinical={canViewClinical}
