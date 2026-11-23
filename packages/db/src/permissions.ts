@@ -17,6 +17,9 @@ export const PERMISSIONS = {
   "prescriptions.write": ["doctor"],
   // Print and reprint of an issued prescription (4.2.6).
   "prescriptions.print": ["doctor", "receptionist"],
+  // 4.4.3 medical certificates: doctor writes/finalises; receptionist prints only.
+  "certificates.write": ["doctor"],
+  "certificates.print": ["doctor", "receptionist"],
   "appointments.manage": ["doctor", "receptionist"],
   "bills.create": ["doctor", "receptionist"],
   // Discount, refund, bill cancel (5.3.7, 5.3.8).

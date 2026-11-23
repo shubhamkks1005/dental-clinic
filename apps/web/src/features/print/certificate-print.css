@@ -1,0 +1,32 @@
+.cert-print-title {
+  margin: 0 0 var(--s3);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.cert-print-banner {
+  margin: 0 0 var(--s4);
+  padding: var(--s2);
+  border: 1px solid #222;
+  font-size: 0.85rem;
+}
+
+.cert-print-meta {
+  margin: 0 0 var(--s4);
+}
+
+.cert-print-doctor {
+  margin-top: var(--s6);
+  display: grid;
+  gap: var(--s3);
+}
+
+@media print {
+  .cert-print-banner {
+    border-color: #000;
+  }
+
+  .cert-print-doctor {
+    page-break-inside: avoid;
+  }
+}

@@ -6,6 +6,7 @@ export const HISTORY_ENTRY_TYPES = [
   "visit",
   "treatment",
   "prescription",
+  "certificate",
   "file",
   "medical_change",
   "consent",

@@ -23,15 +23,17 @@ export function historyTypesForRole(role: Role): readonly HistoryEntryType[] {
       "visit",
       "treatment",
       "prescription",
+      "certificate",
       "file",
       "medical_change",
       "consent",
       "amendment",
     ];
   }
-  // Receptionist: no clinical notes/dx; issued Rx listed for print only.
+  // Receptionist: no clinical notes/dx; issued Rx/certs listed for print only.
   const base: HistoryEntryType[] = ["appointment", "consent", "file"];
   if (isAllowed(role, "prescriptions.print")) base.push("prescription");
+  if (isAllowed(role, "certificates.print")) base.push("certificate");
   return base;
 }
 

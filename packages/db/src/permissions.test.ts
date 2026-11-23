@@ -36,6 +36,7 @@ describe("permission table per role (1.3.4)", () => {
       "patients.edit",
       "clinical.alert_flag",
       "prescriptions.print",
+      "certificates.print",
       "appointments.manage",
       "bills.create",
       "files.documents",

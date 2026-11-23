@@ -36,6 +36,9 @@ import { prescriptionsDraftRepo } from "./prescriptions-draft";
 import { prescriptionsGetRepo } from "./prescriptions-get";
 import { prescriptionsIssueRepo } from "./prescriptions-issue";
 import { printLogRepo } from "./print-log";
+import { certificatesGetRepo } from "./certificates-get";
+import { certificatesWriteRepo } from "./certificates-write";
+import { certificatesFinaliseRepo } from "./certificates-finalise";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -87,6 +90,11 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...prescriptionsIssueRepo(db, ctx),
     },
     printLog: printLogRepo(db, ctx),
+    certificates: {
+      ...certificatesGetRepo(db, ctx),
+      ...certificatesWriteRepo(db, ctx),
+      ...certificatesFinaliseRepo(db, ctx),
+    },
   };
 }
 

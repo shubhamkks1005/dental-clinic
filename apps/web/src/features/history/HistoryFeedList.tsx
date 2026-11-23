@@ -14,6 +14,7 @@ const TYPE_LABEL: Record<HistoryFeedEntry["type"], string> = {
   visit: "Visit",
   treatment: "Treatment",
   prescription: "Prescription",
+  certificate: "Certificate",
   file: "File",
   medical_change: "Medical",
   consent: "Consent",

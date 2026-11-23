@@ -66,6 +66,7 @@ Each stage must keep working if later stages do not exist yet (a source with no 
 | 1 | 3 | 3.5.14 | M | 3 | Receptionist API filter + permission tests |
 | 1 | 3 | 3.5.15 | S | 1 | Archived patient history viewable; extend 2.1.8 acceptance + test |
 | 2 | 4 | 4.2.8 | M | 3 | Prescriptions in feed; open and reprint with original date |
+| 2 | 4 | 4.4.3 | L | 6 | Certificates in feed; open and reprint; receptionist cert_no only |
 | 3 | 5 | 5.3.16 | M | 3 | Bills, payments, refunds, advances, dues in feed |
 | 4 | 6 | 6.7.1 | M | 3 | Filters polish: chips, date range, tooth filter, text search |
 | 4 | 6 | 6.7.2 | M | 3 | Print history summary A4 (doctor only) |

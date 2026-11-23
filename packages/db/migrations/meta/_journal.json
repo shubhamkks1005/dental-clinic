@@ -253,6 +253,13 @@
       "when": 1795463000000,
       "tag": "0035_print_log",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1795464000000,
+      "tag": "0036_certificates",
+      "breakpoints": true
     }
   ]
 }

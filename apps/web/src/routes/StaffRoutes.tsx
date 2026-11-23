@@ -12,6 +12,7 @@ import { PrintRoutes } from "../features/print";
 import { SettingsScreen } from "../features/settings";
 import { StyleGuideScreen } from "../features/style-guide";
 import { AppointmentsScreen } from "../features/appointments";
+import { CertificateRegisterScreen, NewCertificateScreen } from "../features/certificates";
 import { TodayScreen } from "../features/today";
 import { VisitScreen } from "../features/visits";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
@@ -54,7 +55,9 @@ function ShellRoutes() {
         <Route path="patients" element={<PatientsScreen />} />
         <Route path="patients/new" element={<NewPatientScreen />} />
         <Route path="patients/:id/consents" element={<PatientConsentsScreen />} />
+        <Route path="patients/:id/certificates/new" element={<NewCertificateScreen />} />
         <Route path="patients/:id" element={<PatientProfileScreen />} />
+        <Route path="certificates" element={<CertificateRegisterScreen />} />
         <Route path="visits/:id" element={<VisitScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />

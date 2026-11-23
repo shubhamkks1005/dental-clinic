@@ -7,6 +7,7 @@ const RECEPTIONIST = [
   "patients.edit",
   "clinical.alert_flag",
   "prescriptions.print",
+  "certificates.print",
   "appointments.manage",
   "bills.create",
   "files.documents",

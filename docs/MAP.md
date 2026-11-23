@@ -127,7 +127,8 @@
 - src/api/client.ts - the one typed API client (ApiError with status, code, message and the short errorId from X-Request-Id; adds x-clinic-request on non-GET; same-origin cookies; a 401 on a staff page sends the browser to the start page)
 - src/api/problem-text.ts (+ test) - problemText(err): the one failure sentence for staff; adds "Error ID: XXXXXXXX" for server faults (5xx, bad reply); no reply = "Cannot reach the clinic server..."
 - src/ui/print/ - 1.4.8 print framework: PrintLayout (A5/A4 via CSS named pages, page margin 0 so no browser URL/date lines; header band from ClinicHeader per S13, or "blank" space of the same height for letterhead paper; footer), print-title.ts (+ test; document title = PDF file name), types.ts (ClinicHeader, PaperSize, HeaderMode), print.css (@media print hides toolbar, banner, toasts)
-- src/features/print/ - /app/print/* without the app frame (PrintRoutes). PrintSampleScreen (1.4.8 S13 sample Rx); PrintDayListScreen (2.4.4 A4 day list); PrintPrescriptionScreen (4.3.3); PrintEstimateScreen (4.4.1); PrintConsentScreen (4.4.2); sample-print-data.ts (FAKE clinic header until 1.5.2); prescription.css, estimate-print.css, consent-print.css, day-list-print.css, print-screen.css
+- src/features/print/ - /app/print/* without the app frame (PrintRoutes). PrintSampleScreen (1.4.8 S13 sample Rx); PrintDayListScreen (2.4.4 A4 day list); PrintPrescriptionScreen (4.3.3); PrintEstimateScreen (4.4.1); PrintConsentScreen (4.4.2); PrintCertificateScreen (4.4.3); sample-print-data.ts (FAKE clinic header until 1.5.2); *-print.css, print-screen.css
+- src/features/certificates/ - 4.4.3 register + new certificate form; API wrappers
 - src/ui/Toast.tsx + toast.css - 1.4.6 Radix toasts: ToastProvider (mounted in App.tsx) + useToast()({ text, tone }); errors stay 10 s and are announced at once; above the phone tab bar, bottom right from 768px
 - src/ui/ConfirmDialog.tsx - 1.4.6 confirm dialog on Dialog role=alertdialog; Cancel first so it has the focus
 - src/ui/UnsavedChangesGuard.tsx - 1.4.6 <UnsavedChangesGuard dirty /> : in-app navigation asks "Leave without saving?" (react-router useBlocker), tab close/reload uses the browser's own question
@@ -158,6 +159,7 @@
 - src/repos/history-feed*.ts (+ test) - 3.5.12–14 merge feed; role sources (receptionist: appointments/consents/scan+consent files only); cursor
 - packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
+- migrations/0036_certificates.sql - 4.4.3 medical certificates table
 - migrations/0031_consent_templates.sql - 3.8.1–3.8.2 consent.templates setting + consents visit/plan/template columns
 - migrations/0030_files_upload_meta.sql - 3.7.2 original_filename, caption, tooth_fdi, taken_on, thumb_key
 - src/repos/files.ts - 3.7.2 file metadata insert/list/get/soft-delete/usage; kind permissions

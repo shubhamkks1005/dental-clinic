@@ -180,6 +180,25 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/print-log" && method === "POST") {
     return JSON.stringify({ documentKind: "day_list", documentId: "day-2026-11-23" });
   }
+  if (path === "/api/staff/certificates" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      patientName: "Fake Matrix Patient",
+      patientAge: "30 yrs",
+      patientAddress: "Test Area",
+      identificationMark: "Mole",
+      signMethod: "signature",
+      reason: "Rest",
+      fromOn: "2026-11-20",
+      toOn: "2026-11-22",
+    });
+  }
+  if (path === "/api/staff/certificates/:id" && method === "PATCH") {
+    return JSON.stringify({ version: 1, reason: "Rest updated" });
+  }
+  if (path === "/api/staff/certificates/:id/finalise" && method === "POST") {
+    return JSON.stringify({ version: 1 });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

@@ -1,6 +1,7 @@
 import { displayMobile } from "@clinic/shared";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useMe } from "../auth";
 import { MedicalHistoryPanel } from "../medical-history";
 import type { PatientDetail } from "./api";
 import { ConsentsPanel } from "./ConsentsPanel";
@@ -23,6 +24,9 @@ export function PatientOverviewTab({
   canEditClinical,
   onPatientChange,
 }: Props) {
+  const me = useMe();
+  const canWriteCert = me.permissions.includes("certificates.write");
+  const canPrintCert = me.permissions.includes("certificates.print");
   const [editing, setEditing] = useState(false);
 
   if (editing) {
@@ -90,6 +94,28 @@ export function PatientOverviewTab({
           gender={patient.gender}
           canEdit={canEditClinical}
         />
+      )}
+
+      {(canWriteCert || canPrintCert) && (
+        <section className="card">
+          <h2>Medical certificates</h2>
+          <p className="muted">Print from the register. Doctor creates and finalises.</p>
+          <p className="row-actions">
+            {canWriteCert ? (
+              <Link
+                className="btn"
+                to={`/app/patients/${encodeURIComponent(patient.id)}/certificates/new`}
+              >
+                New certificate
+              </Link>
+            ) : null}
+            {canPrintCert ? (
+              <Link className="btn" to="/app/certificates">
+                Certificate register
+              </Link>
+            ) : null}
+          </p>
+        </section>
       )}
 
       <ConsentsPanel patientId={patient.id} />

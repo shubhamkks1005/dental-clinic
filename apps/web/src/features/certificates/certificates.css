@@ -1,0 +1,47 @@
+.certificates-register,
+.certificates-new {
+  display: grid;
+  gap: var(--s4);
+  padding: var(--s4);
+}
+
+.cert-register-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s3);
+}
+
+.cert-register-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s3);
+  border: 1px solid var(--border, #ddd);
+  border-radius: var(--radius, 8px);
+}
+
+.cert-form {
+  display: grid;
+  gap: var(--s3);
+  max-width: 36rem;
+}
+
+.cert-dates {
+  display: grid;
+  gap: var(--s3);
+}
+
+@media (min-width: 768px) {
+  .certificates-register,
+  .certificates-new {
+    padding: var(--s6);
+  }
+
+  .cert-dates {
+    grid-template-columns: 1fr 1fr;
+  }
+}

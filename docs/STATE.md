@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.4.3.**
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.4.6.**
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.4.3 DONE locally (certificates + register + print; history feed; receptionist no diagnosis; gap-free MC-FY-####). **Migration `0036_certificates.sql` — owner applies.**
 4.4.2 DONE locally (consent A4 from templates; extraction default; print_log; DRAFT lawyer body). No migration.
 4.4.1 DONE locally (estimate A4 from live plan; print_log; DRAFT lawyer disclaimer; valid 30 days). No migration.
 4.3.4 SKIPPED (Waiting: clinic printer test).
@@ -185,7 +186,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0035 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0036 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -202,9 +203,9 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
-- **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate print)
-- Staging: apply migrations **0032–0035** with 0006–0031
-- DRAFT lawyer: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate wording when 4.4.3 lands
+- **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
+- Staging: apply migrations **0032–0036** with 0006–0031
+- DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
 - **B2 keys as Worker secrets on staging** (`S3_KEY_ID` / `S3_APP_KEY` via `wrangler secret put`; endpoint/bucket/region already in wrangler staging vars) — then run `pnpm --filter @clinic/worker storage:check`

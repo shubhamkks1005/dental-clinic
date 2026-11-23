@@ -17,6 +17,7 @@ import { historyFileKindsForRole } from "./history-feed-visibility";
 import { treatmentHistorySource } from "./history-feed-treatments";
 import { visitHistorySource } from "./history-feed-visits";
 import { prescriptionHistorySource } from "./history-feed-prescriptions";
+import { certificateHistorySource } from "./history-feed-certificates";
 
 function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
   const fileKinds = historyFileKindsForRole(ctx.role);
@@ -28,6 +29,9 @@ function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
   if (isAllowed(ctx.role, "prescriptions.print") && !isAllowed(ctx.role, "clinical.view")) {
     base.push(prescriptionHistorySource(db, { includeMedicines: false }));
   }
+  if (isAllowed(ctx.role, "certificates.print") && !isAllowed(ctx.role, "clinical.view")) {
+    base.push(certificateHistorySource(db, { includeClinical: false }));
+  }
   if (!isAllowed(ctx.role, "clinical.view")) return base;
   return [
     ...base,
@@ -36,6 +40,7 @@ function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
     medicalChangeHistorySource(db),
     amendmentHistorySource(db),
     prescriptionHistorySource(db, { includeMedicines: true }),
+    certificateHistorySource(db, { includeClinical: true }),
   ];
 }
 
