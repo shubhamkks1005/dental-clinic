@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: Phase 4 gate.**
+Phase: 4 complete (gate below). Phase 3 leftovers stay under Before real patients / Waiting. **Do not start Phase 5 until owner says so.**
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+Skipped this round (baad me): 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
@@ -124,6 +125,27 @@ Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not s
 4. Check at 360 / 768 / 1366 (horizontal scroll inside board OK on phone).
 
 
+
+## Phase 4 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist API (Rx print-only; cert print-only; no diagnosis on cert GET; estimate clinical.view) | **passed** (permissions, certificates, print-log, history-feed, route-matrix) |
+| Master list change does not rewrite issued Rx | **passed** (4.2.1 snapshot test) |
+| Empty `doctor.registration_no` blocks Rx print + certificate finalise | **passed** (4.3.2/4.4.3 tests) |
+| Reprint → Duplicate copy + print_log | **passed** (4.3.5 / print-log tests) |
+| English print (estimate, consent, certificate, blank×20, Rx sample) | **passed** (code + 4.5.1 text snapshots) |
+| Certificate gap-free `MC-{FY}-####` | **passed** (4.4.3) |
+| Medicines list audit record in Settings | **passed** (4.5.4) |
+| Fake-data-only scan | **passed** (seeds/tests Fake*; staff-admin prompt example only) |
+| Print regression 1–8 medicines in CI (`pnpm test:e2e`) | **passed with exception** — text snapshots committed; pixel screenshots deferred (DECISIONS 4.5.1) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check still open |
+| Keyboard use | **passed with exception** — existing patterns; full clinic keyboard pass Waiting |
+| Sister 10 fake Rx on clinic printer (4.5.2) / estimate·consent·cert haan | **waiting** |
+| Clinic printer (4.3.4) | **waiting** |
+
+**Phase 4 gate: passed with exceptions** (do not start Phase 5 until Waiting items that block real patients are cleared / owner says go).
 
 ## Phase 3 gate (from PLAN.md)
 
