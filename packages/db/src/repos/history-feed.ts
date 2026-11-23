@@ -1,4 +1,10 @@
-import { decodeHistoryCursor, HISTORY_FEED_PAGE_SIZE, type HistoryCursor } from "@clinic/shared";
+import {
+  decodeHistoryCursor,
+  HISTORY_FEED_PAGE_SIZE,
+  resolveHistoryFeedFilters,
+  type HistoryCursor,
+  type HistoryFeedQuery,
+} from "@clinic/shared";
 import { and, eq, isNull } from "drizzle-orm";
 import { accessInsert } from "../audit";
 import type { Db } from "../client";
@@ -49,14 +55,23 @@ function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
   ];
 }
 
-// 3.5.12–3.5.14: merged feed; receptionist sources exclude clinical types (API filter).
+function sourcesMatchingTypes(
+  sources: HistorySource[],
+  types: readonly string[] | null,
+): HistorySource[] {
+  if (!types) return sources;
+  const want = new Set(types);
+  return sources.filter((s) => s.types.some((t) => want.has(t)));
+}
+
+// 3.5.12–3.5.14 / 6.7.1: merged feed; receptionist sources exclude clinical types (API filter).
 export function historyFeedRepo(db: Db, ctx: Ctx) {
   const sources = sourcesForCtx(db, ctx);
 
   return {
     async listFeed(
       patientId: string,
-      opts?: { cursor?: string | null; limit?: number },
+      opts?: { cursor?: string | null; limit?: number } & Partial<HistoryFeedQuery>,
     ): Promise<HistoryFeedPage> {
       assertAllowed(ctx, "patients.view");
       const patient = await db
@@ -74,10 +89,30 @@ export function historyFeedRepo(db: Db, ctx: Ctx) {
         }
       }
 
-      const page = await mergeHistorySources(sources, {
+      const filters = resolveHistoryFeedFilters({
+        chip: opts?.chip,
+        from: opts?.from,
+        to: opts?.to,
+        tooth: opts?.tooth,
+        q: opts?.q,
+      });
+
+      // Empty type intersection (e.g. Bills chip + tooth) → no sources.
+      if (filters.types && filters.types.length === 0) {
+        await accessInsert(db, ctx, {
+          action: "view",
+          resource: "patient_history",
+          resourceId: patientId,
+          detail: after ? "history feed page" : "history feed",
+        });
+        return { entries: [], nextCursor: null };
+      }
+
+      const page = await mergeHistorySources(sourcesMatchingTypes(sources, filters.types), {
         patientId,
         limit: opts?.limit ?? HISTORY_FEED_PAGE_SIZE,
         after,
+        filters,
       });
 
       await accessInsert(db, ctx, {

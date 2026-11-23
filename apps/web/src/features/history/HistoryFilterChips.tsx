@@ -1,26 +1,34 @@
-/** 3.5.11: filter chip strip placeholder; polish in 6.7.1. */
-const CHIPS = [
-  "All",
-  "Visits",
-  "Treatments",
-  "Prescriptions",
-  "Bills",
-  "Files",
-  "Appointments",
-] as const;
+import type { HistoryFilterChip } from "@clinic/shared";
+import { HISTORY_FILTER_CHIPS } from "@clinic/shared";
 
-export function HistoryFilterChips() {
+const CHIP_LABEL: Record<HistoryFilterChip, string> = {
+  all: "All",
+  visits: "Visits",
+  treatments: "Treatments",
+  prescriptions: "Prescriptions",
+  bills: "Bills",
+  files: "Files",
+  appointments: "Appointments",
+};
+
+type Props = {
+  chip: HistoryFilterChip;
+  onChip: (chip: HistoryFilterChip) => void;
+};
+
+/** 6.7.1: History type chips (S04/S17). Never hide the pinned summary. */
+export function HistoryFilterChips({ chip, onChip }: Props) {
   return (
-    <div className="history-filters" role="group" aria-label="History filters">
-      {CHIPS.map((label) => (
+    <div className="history-filters" role="group" aria-label="History type">
+      {HISTORY_FILTER_CHIPS.map((id) => (
         <button
-          key={label}
+          key={id}
           type="button"
-          className={label === "All" ? "btn btn-compact is-active" : "btn btn-compact"}
-          disabled={label !== "All"}
-          aria-pressed={label === "All"}
+          className={id === chip ? "btn btn-compact is-active" : "btn btn-compact"}
+          aria-pressed={id === chip}
+          onClick={() => onChip(id)}
         >
-          {label}
+          {CHIP_LABEL[id]}
         </button>
       ))}
     </div>

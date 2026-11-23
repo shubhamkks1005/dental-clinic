@@ -1,4 +1,4 @@
-import { encodeHistoryCursor, type HistoryCursor } from "@clinic/shared";
+import { encodeHistoryCursor, type HistoryCursor, type HistoryFeedFilters } from "@clinic/shared";
 import type { HistoryFeedEntry, HistoryFeedPage, HistorySource } from "./history-feed-types";
 
 function newer(a: HistoryFeedEntry, b: HistoryFeedEntry): number {
@@ -6,15 +6,27 @@ function newer(a: HistoryFeedEntry, b: HistoryFeedEntry): number {
   return a.id < b.id ? 1 : a.id > b.id ? -1 : 0;
 }
 
-/** Merge source pages newest-first and build the next cursor (3.5.12). */
+/** Merge source pages newest-first and build the next cursor (3.5.12 / 6.7.1). */
 export async function mergeHistorySources(
   sources: HistorySource[],
-  opts: { patientId: string; limit: number; after: HistoryCursor | null },
+  opts: {
+    patientId: string;
+    limit: number;
+    after: HistoryCursor | null;
+    filters?: HistoryFeedFilters;
+  },
 ): Promise<HistoryFeedPage> {
   const limit = Math.min(Math.max(opts.limit, 1), 50);
   const take = limit + 1;
   const batches = await Promise.all(
-    sources.map((s) => s.list({ patientId: opts.patientId, take, after: opts.after })),
+    sources.map((s) =>
+      s.list({
+        patientId: opts.patientId,
+        take,
+        after: opts.after,
+        filters: opts.filters,
+      }),
+    ),
   );
   const merged = batches.flat().sort(newer);
   const page = merged.slice(0, limit);

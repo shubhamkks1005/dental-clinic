@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { visitAddenda, visits } from "../schema";
+import { historyAtBounds } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterClause(after: HistorySourceQuery["after"]) {
@@ -14,6 +15,7 @@ function afterClause(after: HistorySourceQuery["after"]) {
 /** 3.5.13: visit amendments / entered-in-error as separate feed rows. */
 export function amendmentHistorySource(db: Db): HistorySource {
   return {
+    types: ["amendment"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -32,6 +34,7 @@ export function amendmentHistorySource(db: Db): HistorySource {
             isNull(visits.deletedAt),
             isNull(visitAddenda.deletedAt),
             afterClause(q.after),
+            historyAtBounds(visitAddenda.recordedAt, q.filters),
           ),
         )
         .orderBy(desc(visitAddenda.recordedAt), desc(visitAddenda.id))

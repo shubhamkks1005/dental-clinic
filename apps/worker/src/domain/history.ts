@@ -12,6 +12,11 @@ export async function listHistoryFeed(repos: Repos, patientId: string, query: un
   const page = await repos.history.listFeed(patientId, {
     cursor: parsed.value.cursor,
     limit: parsed.value.limit,
+    chip: parsed.value.chip,
+    from: parsed.value.from,
+    to: parsed.value.to,
+    tooth: parsed.value.tooth,
+    q: parsed.value.q,
   });
   return { ok: true as const, ...page };
 }

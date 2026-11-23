@@ -2,6 +2,7 @@ import { formatRupees } from "@clinic/shared";
 import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { bills, payments, refunds, users } from "../schema";
+import { historyAtBounds } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterAt(col: typeof bills.createdAt, after: HistorySourceQuery["after"]) {
@@ -12,6 +13,7 @@ function afterAt(col: typeof bills.createdAt, after: HistorySourceQuery["after"]
 /** 5.3.16: bills in History (cancelled still listed). Receptionist sees money, not clinical labels beyond procedure names on the bill. */
 export function billHistorySource(db: Db): HistorySource {
   return {
+    types: ["bill"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -31,6 +33,7 @@ export function billHistorySource(db: Db): HistorySource {
             eq(bills.patientId, q.patientId),
             isNull(bills.deletedAt),
             afterAt(bills.createdAt, q.after),
+            historyAtBounds(bills.createdAt, q.filters),
           ),
         )
         .orderBy(desc(bills.createdAt), desc(bills.id))
@@ -58,6 +61,7 @@ export function billHistorySource(db: Db): HistorySource {
 
 export function paymentHistorySource(db: Db): HistorySource {
   return {
+    types: ["payment"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -80,6 +84,7 @@ export function paymentHistorySource(db: Db): HistorySource {
                   and(eq(payments.receivedAt, q.after.at), lt(payments.id, q.after.id)),
                 )
               : undefined,
+            historyAtBounds(payments.receivedAt, q.filters),
           ),
         )
         .orderBy(desc(payments.receivedAt), desc(payments.id))
@@ -101,6 +106,7 @@ export function paymentHistorySource(db: Db): HistorySource {
 
 export function refundHistorySource(db: Db): HistorySource {
   return {
+    types: ["refund"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -123,6 +129,7 @@ export function refundHistorySource(db: Db): HistorySource {
                   and(eq(refunds.approvedAt, q.after.at), lt(refunds.id, q.after.id)),
                 )
               : undefined,
+            historyAtBounds(refunds.approvedAt, q.filters),
           ),
         )
         .orderBy(desc(refunds.approvedAt), desc(refunds.id))

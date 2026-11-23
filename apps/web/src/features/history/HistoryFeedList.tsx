@@ -22,6 +22,7 @@ const TYPE_LABEL: Record<HistoryFeedEntry["type"], string> = {
   medical_change: "Medical",
   consent: "Consent",
   amendment: "Amendment",
+  past_record: "Added later",
 };
 
 /** 3.5.12: merged history rows + load more. */

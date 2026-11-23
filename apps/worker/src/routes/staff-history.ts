@@ -12,11 +12,16 @@ staffHistory.get("/patients/:id/history/summary", async (c) => {
   return c.json(ok({ summary: result.summary }));
 });
 
-// 3.5.12: merged newest-first feed with cursor pagination.
+// 3.5.12 / 6.7.1: merged newest-first feed with cursor pagination + filters.
 staffHistory.get("/patients/:id/history", async (c) => {
   const result = await listHistoryFeed(signedIn(c).repos, c.req.param("id"), {
     cursor: c.req.query("cursor"),
     limit: c.req.query("limit"),
+    chip: c.req.query("chip"),
+    from: c.req.query("from"),
+    to: c.req.query("to"),
+    tooth: c.req.query("tooth"),
+    q: c.req.query("q"),
   });
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ entries: result.entries, nextCursor: result.nextCursor }));

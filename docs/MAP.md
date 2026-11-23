@@ -176,10 +176,10 @@
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/files/ - 3.7.3–3.7.4 prepareImage + PatientFilesTab (grid, viewer, upload; S04/S17)
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11
-- src/features/history/ - 3.5.11–12 PatientHistoryTab + summary strip + HistoryFeedList + filter stubs (S04/S17)
+- src/features/history/ - 3.5.11–12 / 6.7.1 PatientHistoryTab + summary strip + HistoryFeedList + HistoryFilterChips/Extras (S04/S17)
 - src/repos/history-summary.ts (+ test) - 3.5.11 pinned strip; access_log view; receptionist alert labels empty
-- src/repos/history-feed*.ts (+ test) - 3.5.12–14 merge feed; role sources (receptionist: appointments/consents/scan+consent files only); cursor
-- packages/shared/src/history-feed.ts (+ test) - cursor encode/decode + feed query parse
+- src/repos/history-feed*.ts (+ test) - 3.5.12–14 / 6.7.1 merge feed; chip/date/tooth/q filters; role sources; cursor
+- packages/shared/src/history-feed.ts (+ test) - cursor + 6.7.1 chip/date/tooth/q query parse + resolveHistoryFeedFilters
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
 - migrations/0036_certificates.sql - 4.4.3 medical certificates table
 - migrations/0031_consent_templates.sql - 3.8.1–3.8.2 consent.templates setting + consents visit/plan/template columns

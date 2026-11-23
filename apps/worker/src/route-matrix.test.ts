@@ -72,6 +72,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path.endsWith("/archive")) {
     return JSON.stringify({ reason: "Matrix archive reason", version: 1 });
   }
+  if (path === "/api/staff/settings/:key/restore") {
+    return JSON.stringify({ auditId: "01M86AUDITMATRIX00000001", version: 1 });
+  }
   if (path.endsWith("/restore")) {
     return JSON.stringify({ version: 1 });
   }

@@ -1,6 +1,7 @@
 import { and, desc, eq, inArray, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { medicalHistory } from "../schema";
+import { historyAtBounds } from "./history-feed-bounds";
 import { summariseMedicalChange } from "./history-feed-medical-diff";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
@@ -15,6 +16,7 @@ function afterClause(after: HistorySourceQuery["after"]) {
 /** 3.5.13: medical history / allergy version changes. */
 export function medicalChangeHistorySource(db: Db): HistorySource {
   return {
+    types: ["medical_change"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -30,6 +32,7 @@ export function medicalChangeHistorySource(db: Db): HistorySource {
             eq(medicalHistory.patientId, q.patientId),
             isNull(medicalHistory.deletedAt),
             afterClause(q.after),
+            historyAtBounds(medicalHistory.recordedAt, q.filters),
           ),
         )
         .orderBy(desc(medicalHistory.recordedAt), desc(medicalHistory.id))

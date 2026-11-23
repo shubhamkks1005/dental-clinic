@@ -1,6 +1,7 @@
-import { and, asc, desc, eq, inArray, isNull, lt, ne, or } from "drizzle-orm";
+import { and, asc, desc, eq, exists, inArray, isNull, like, lt, ne, or, sql } from "drizzle-orm";
 import type { Db } from "../client";
-import { users, visitDiagnoses, visits } from "../schema";
+import { users, visitDiagnoses, visitProcedures, visits } from "../schema";
+import { historyAtBounds, historyLikePattern } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterClause(after: HistorySourceQuery["after"]) {
@@ -11,10 +12,64 @@ function afterClause(after: HistorySourceQuery["after"]) {
   );
 }
 
-/** 3.5.12 / 3.5.13: visits with complaint, diagnosis, doctor, draft|finalised. */
+/** 3.5.12 / 3.5.13 / 6.7.1: visits with complaint, diagnosis, doctor, draft|finalised. */
 export function visitHistorySource(db: Db): HistorySource {
   return {
+    types: ["visit"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
+      const f = q.filters;
+      const tooth = f?.tooth ?? null;
+      const textQ = f?.q ?? null;
+
+      const toothExists =
+        tooth != null
+          ? or(
+              exists(
+                db
+                  .select({ x: sql`1` })
+                  .from(visitDiagnoses)
+                  .where(
+                    and(
+                      eq(visitDiagnoses.visitId, visits.id),
+                      eq(visitDiagnoses.toothFdi, tooth),
+                      isNull(visitDiagnoses.deletedAt),
+                    ),
+                  ),
+              ),
+              exists(
+                db
+                  .select({ x: sql`1` })
+                  .from(visitProcedures)
+                  .where(
+                    and(
+                      eq(visitProcedures.visitId, visits.id),
+                      eq(visitProcedures.toothFdi, tooth),
+                      isNull(visitProcedures.deletedAt),
+                    ),
+                  ),
+              ),
+            )
+          : undefined;
+
+      const textExists =
+        textQ != null
+          ? or(
+              like(visits.chiefComplaint, historyLikePattern(textQ)),
+              exists(
+                db
+                  .select({ x: sql`1` })
+                  .from(visitDiagnoses)
+                  .where(
+                    and(
+                      eq(visitDiagnoses.visitId, visits.id),
+                      like(visitDiagnoses.label, historyLikePattern(textQ)),
+                      isNull(visitDiagnoses.deletedAt),
+                    ),
+                  ),
+              ),
+            )
+          : undefined;
+
       const rows = await db
         .select({
           id: visits.id,
@@ -32,6 +87,9 @@ export function visitHistorySource(db: Db): HistorySource {
             isNull(visits.deletedAt),
             ne(visits.status, "void"),
             afterClause(q.after),
+            historyAtBounds(visits.createdAt, f),
+            toothExists,
+            textExists,
           ),
         )
         .orderBy(desc(visits.createdAt), desc(visits.id))

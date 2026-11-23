@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { consents } from "../schema";
+import { historyAtBounds } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -23,6 +24,7 @@ function afterClause(after: HistorySourceQuery["after"]) {
 /** 3.5.13: consents given or withdrawn. */
 export function consentHistorySource(db: Db): HistorySource {
   return {
+    types: ["consent"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -38,6 +40,7 @@ export function consentHistorySource(db: Db): HistorySource {
             eq(consents.patientId, q.patientId),
             isNull(consents.deletedAt),
             afterClause(q.after),
+            historyAtBounds(consents.givenAt, q.filters),
           ),
         )
         .orderBy(desc(consents.givenAt), desc(consents.id))

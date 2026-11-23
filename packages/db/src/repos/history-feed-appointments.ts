@@ -1,6 +1,7 @@
 import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { appointments } from "../schema";
+import { historyAtBounds } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterClause(after: HistorySourceQuery["after"]) {
@@ -13,6 +14,7 @@ function afterClause(after: HistorySourceQuery["after"]) {
 
 export function appointmentHistorySource(db: Db): HistorySource {
   return {
+    types: ["appointment"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
       const rows = await db
         .select({
@@ -30,6 +32,7 @@ export function appointmentHistorySource(db: Db): HistorySource {
             eq(appointments.patientId, q.patientId),
             isNull(appointments.deletedAt),
             afterClause(q.after),
+            historyAtBounds(appointments.startAt, q.filters),
           ),
         )
         .orderBy(desc(appointments.startAt), desc(appointments.id))

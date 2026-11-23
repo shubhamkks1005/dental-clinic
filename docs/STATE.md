@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 6 in progress (settings hub → history polish). Owner said go; Phase 5 gate leftovers stay under Waiting.
+Phase: 6 in progress (history polish 6.7.x). Owner said go; Phase 5 gate leftovers stay under Waiting.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
 Phase 3/4/5 leftovers stay under Before real patients / Waiting; not redone.
 PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
@@ -35,6 +35,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.6.1 DONE locally (dashboard rowsRead &lt;2000 already asserted in dashboard.test 6.3.1). No migration.
 6.6.2 SKIPPED / Waiting (sister sign-off on dashboard layout/defs — needs 6.1.1).
 6.6.3 SKIPPED / Waiting (top-5 fixes after 6.6.2).
+6.7.1 DONE locally (History chips + date/tooth/q filters; summary always loaded; filter tests). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**

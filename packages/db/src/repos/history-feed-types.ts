@@ -1,4 +1,4 @@
-import type { HistoryCursor, HistoryEntryType } from "@clinic/shared";
+import type { HistoryCursor, HistoryEntryType, HistoryFeedFilters } from "@clinic/shared";
 
 /** One merged history row (3.5.12). */
 export type HistoryFeedEntry = {
@@ -22,8 +22,12 @@ export type HistorySourceQuery = {
   /** Fetch this many from each source before merge. */
   take: number;
   after: HistoryCursor | null;
+  /** 6.7.1 optional filters (sources apply what they support). */
+  filters?: HistoryFeedFilters;
 };
 
 export type HistorySource = {
+  /** Entry type(s) this source emits — used to skip sources for chip/tooth/q. */
+  types: readonly HistoryEntryType[];
   list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]>;
 };

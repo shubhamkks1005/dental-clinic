@@ -1,7 +1,8 @@
 import { formatRupees } from "@clinic/shared";
-import { and, desc, eq, isNull, lt, or } from "drizzle-orm";
+import { and, desc, eq, isNull, like, lt, or } from "drizzle-orm";
 import type { Db } from "../client";
 import { planItems } from "../schema";
+import { historyAtBounds, historyLikePattern } from "./history-feed-bounds";
 import type { HistoryFeedEntry, HistorySource, HistorySourceQuery } from "./history-feed-types";
 
 function afterClause(after: HistorySourceQuery["after"]) {
@@ -12,10 +13,12 @@ function afterClause(after: HistorySourceQuery["after"]) {
   );
 }
 
-/** 3.5.13: treatment plan items in the merged history feed. */
+/** 3.5.13 / 6.7.1: treatment plan items in the merged history feed. */
 export function treatmentHistorySource(db: Db): HistorySource {
   return {
+    types: ["treatment"],
     async list(q: HistorySourceQuery): Promise<HistoryFeedEntry[]> {
+      const f = q.filters;
       const rows = await db
         .select({
           id: planItems.id,
@@ -32,6 +35,9 @@ export function treatmentHistorySource(db: Db): HistorySource {
             eq(planItems.patientId, q.patientId),
             isNull(planItems.deletedAt),
             afterClause(q.after),
+            historyAtBounds(planItems.createdAt, f),
+            f?.tooth != null ? eq(planItems.toothFdi, f.tooth) : undefined,
+            f?.q ? like(planItems.procedureLabel, historyLikePattern(f.q)) : undefined,
           ),
         )
         .orderBy(desc(planItems.createdAt), desc(planItems.id))
