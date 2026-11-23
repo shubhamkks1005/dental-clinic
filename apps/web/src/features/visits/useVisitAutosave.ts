@@ -45,6 +45,8 @@ export function useVisitAutosave({
   const inflight = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Q1.6: after a version conflict stop trying; the doctor reloads and merges by hand.
+  const conflict = useRef(false);
 
   versionRef.current = version;
   formRef.current = form;
@@ -59,7 +61,7 @@ export function useVisitAutosave({
   dirtyRef.current = dirty;
 
   async function flush() {
-    if (!enabledRef.current || inflight.current) return;
+    if (!enabledRef.current || inflight.current || conflict.current) return;
     const snapshot = { ...formRef.current };
     const patch = diffVisitNotes(versionRef.current, snapshot, savedRef.current);
     if (!patch) {
@@ -90,10 +92,12 @@ export function useVisitAutosave({
       onSavedRef.current(next, snapshot);
       setStatus(diffVisitNotes(next.version, formRef.current, snapshot) ? "dirty" : "saved");
     } catch (err: unknown) {
-      setStatus("error");
       if (err instanceof ApiError && err.status === 409) {
-        // Version conflict — retry after pause; doctor may need to reload.
+        conflict.current = true;
+        setStatus("conflict");
+        return;
       }
+      setStatus("error");
       if (retryTimer.current) clearTimeout(retryTimer.current);
       retryTimer.current = setTimeout(() => {
         void flush();
@@ -108,11 +112,11 @@ export function useVisitAutosave({
 
   useEffect(() => {
     if (!enabled) return;
-    if (!dirty) {
+    if (!dirty && !conflict.current) {
       setStatus("saved");
       return;
     }
-    setStatus((s) => (s === "saving" ? s : "dirty"));
+    setStatus((s) => (s === "saving" || s === "conflict" ? s : "dirty"));
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       void flushRef.current();

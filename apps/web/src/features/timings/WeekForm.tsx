@@ -1,4 +1,11 @@
-import { DAY_KEYS, SLOT_LENGTHS, timingsSchema, type Timings } from "@clinic/shared";
+import {
+  DAY_KEYS,
+  DAY_NAMES,
+  SLOT_LENGTHS,
+  timingsSchema,
+  type DayKey,
+  type Timings,
+} from "@clinic/shared";
 import { useForm } from "react-hook-form";
 import { ApiError } from "../../api/client";
 import { problemText } from "../../api/problem-text";
@@ -7,6 +14,16 @@ import { useToast } from "../../ui/Toast";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { saveSetting, type Versioned } from "./api";
 import { DayRow } from "./DayRow";
+
+/** The first thing that stops a save, in words ("Monday: Closing time must be after opening time."). */
+function firstProblem(values: Timings): string | null {
+  const parsed = timingsSchema.safeParse(values);
+  if (parsed.success) return null;
+  const issue = parsed.error.issues[0];
+  if (!issue) return null;
+  const day = issue.path[0] === "week" ? (issue.path[1] as DayKey) : null;
+  return day && DAY_NAMES[day] ? `${DAY_NAMES[day]}: ${issue.message}` : issue.message;
+}
 
 // Opening hours, slot length and chairs (1.5.3). The doctor edits; others see it read-only.
 export function WeekForm({
@@ -24,7 +41,13 @@ export function WeekForm({
     handleSubmit,
     watch,
     formState: { errors, isDirty, isSubmitting },
-  } = useForm<Timings>({ resolver: zodResolver(timingsSchema), defaultValues: initial.value });
+  } = useForm<Timings>({
+    resolver: zodResolver(timingsSchema),
+    defaultValues: initial.value,
+    // Q1.6: say what is wrong as soon as it is wrong, not only after Save.
+    mode: "onChange",
+  });
+  const problem = firstProblem(watch());
 
   const save = handleSubmit(async (value) => {
     try {
@@ -87,9 +110,18 @@ export function WeekForm({
       </fieldset>
       {canEdit ? (
         <div className="form-actions timings-actions">
-          <button type="submit" className="btn btn-primary" disabled={isSubmitting || !isDirty}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isSubmitting || !isDirty || problem !== null}
+          >
             {isSubmitting ? "Saving..." : "Save opening hours"}
           </button>
+          {problem ? (
+            <p className="field-error" role="status">
+              Cannot save yet. {problem}
+            </p>
+          ) : null}
         </div>
       ) : (
         <p className="small muted timings-actions">Only the doctor can change the timings.</p>

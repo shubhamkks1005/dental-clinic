@@ -3,7 +3,7 @@ import type { VisitPatchBody } from "./api";
 export const AUTOSAVE_DEBOUNCE_MS = 1500;
 export const AUTOSAVE_MIN_INTERVAL_MS = 5000;
 
-export type SaveStatus = "saved" | "saving" | "dirty" | "error";
+export type SaveStatus = "saved" | "saving" | "dirty" | "error" | "conflict";
 
 export type NotesSnapshot = {
   chiefComplaint: string;
@@ -72,6 +72,22 @@ export function diffVisitNotes(
   return changed ? patch : null;
 }
 
+/** One text for the whole visit, so the doctor can copy it before reloading (Q1.6). */
+export function notesAsText(n: NotesSnapshot): string {
+  const lines: [string, string][] = [
+    ["Chief complaint", n.chiefComplaint],
+    ["History", n.historyNote],
+    ["Exam", n.examNote],
+    ["Gums", n.gumCondition],
+    ["Advice", n.advice],
+    ["Next visit", n.nextVisitNote],
+  ];
+  return lines
+    .filter(([, v]) => v.trim())
+    .map(([k, v]) => `${k}: ${v.trim()}`)
+    .join("\n");
+}
+
 export function saveStatusLabel(status: SaveStatus): string {
   switch (status) {
     case "saved":
@@ -82,5 +98,7 @@ export function saveStatusLabel(status: SaveStatus): string {
       return "Not saved";
     case "error":
       return "Not saved — retrying";
+    case "conflict":
+      return "Not saved — changed elsewhere";
   }
 }

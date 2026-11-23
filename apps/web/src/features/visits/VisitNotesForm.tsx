@@ -2,9 +2,10 @@ import { expandQuickPhrase, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useState } from "react";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import type { VisitSummary } from "./api";
+import { CopyButton } from "../../ui/CopyButton";
 import { SaveStatusChip } from "./SaveStatusChip";
 import { useVisitAutosave } from "./useVisitAutosave";
-import type { NotesSnapshot } from "./visit-autosave";
+import { notesAsText, type NotesSnapshot } from "./visit-autosave";
 
 type Props = {
   visit: VisitSummary;
@@ -81,6 +82,20 @@ export function VisitNotesForm({ visit, phrases, readOnly, onSaved }: Props) {
       <div className="visit-notes-actions">
         {!readOnly ? <SaveStatusChip status={status} /> : null}
       </div>
+      {status === "conflict" ? (
+        <div className="notice notice-error stack gap-sm" role="alert">
+          <p>
+            This visit was changed in another tab or by someone else. Your text is kept below. Copy
+            it, reload the visit, then add what is missing.
+          </p>
+          <div className="row wrap gap-sm">
+            <CopyButton text={notesAsText(form)} label="Copy my text" />
+            <button type="button" className="btn" onClick={() => window.location.reload()}>
+              Reload visit
+            </button>
+          </div>
+        </div>
+      ) : null}
       <label className="visit-field">
         <span>Chief complaint</span>
         <textarea

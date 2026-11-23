@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffVisitNotes, saveStatusLabel, type NotesSnapshot } from "./visit-autosave";
+import { diffVisitNotes, notesAsText, saveStatusLabel, type NotesSnapshot } from "./visit-autosave";
 
 const base: NotesSnapshot = {
   chiefComplaint: "",
@@ -38,6 +38,11 @@ describe("saveStatusLabel (3.5.5 / 3.10.2)", () => {
     expect(saveStatusLabel("saving")).toBe("Saving…");
     expect(saveStatusLabel("dirty")).toBe("Not saved");
     expect(saveStatusLabel("error")).toBe("Not saved — retrying");
+    expect(saveStatusLabel("conflict")).toBe("Not saved — changed elsewhere");
+  });
+
+  it("notesAsText keeps what was typed, skipping empty fields (Q1.6)", () => {
+    expect(notesAsText({ ...base, examNote: "Crowding", advice: "  " })).toBe("Exam: Crowding");
   });
 });
 
