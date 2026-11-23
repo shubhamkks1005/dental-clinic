@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.5.1.**
+Phase: 4 in progress. Phase 3 gate: passed with exceptions (leftovers stay under Before real patients / Waiting). **Next: 4.5.4.**
 PLAN: Phase 4 prescriptions / medicines / certificates / print. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
 4.4.3 DONE locally (certificates + register + print; history feed; receptionist no diagnosis; gap-free MC-FY-####). **Migration `0036_certificates.sql` — owner applies.**
 4.4.2 DONE locally (consent A4 from templates; extraction default; print_log; DRAFT lawyer body). No migration.

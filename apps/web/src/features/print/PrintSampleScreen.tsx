@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { PrintLayout, printTitle, type HeaderMode, type PaperSize } from "../../ui/print";
 import { PrescriptionFooter, PrescriptionSample } from "./PrescriptionSample";
 import { SAMPLE_CLINIC, SAMPLE_RX } from "./sample-print-data";
+import { parseMedicineLineCount, sampleRxWithMedicineCount } from "./sample-rx-count";
 import "./prescription.css";
 import "./print-screen.css";
 
 // 1.4.8: the printer check page (S13 layout, sample data). Opens without the app frame; only
-// the sheet prints.
+// the sheet prints. 4.5.1: ?lines=1..8 for print regression screenshots.
 export function PrintSampleScreen() {
+  const [params] = useSearchParams();
+  const lineCount = parseMedicineLineCount(params.get("lines"));
+  const rx = lineCount ? sampleRxWithMedicineCount(lineCount) : SAMPLE_RX;
   const [size, setSize] = useState<PaperSize>("A5");
   const [header, setHeader] = useState<HeaderMode>("print");
 
   useEffect(() => {
     const before = document.title;
-    document.title = printTitle("Prescription", SAMPLE_RX.patientNo, SAMPLE_RX.date);
+    document.title = printTitle("Prescription", rx.patientNo, rx.date);
     return () => {
       document.title = before;
     };
-  }, []);
+  }, [rx.date, rx.patientNo]);
 
   return (
     <main className="print-screen">
@@ -67,7 +71,7 @@ export function PrintSampleScreen() {
           clinic={SAMPLE_CLINIC}
           footer={<PrescriptionFooter doctorName={SAMPLE_CLINIC.doctorName} />}
         >
-          <PrescriptionSample rx={SAMPLE_RX} />
+          <PrescriptionSample rx={rx} />
         </PrintLayout>
       </div>
     </main>

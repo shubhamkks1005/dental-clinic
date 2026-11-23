@@ -29,8 +29,9 @@
 - .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown
 - scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
 - scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
-- playwright.config.ts - 1.7.3 Chromium smoke; webServer builds web + local wrangler on 8787
+- playwright.config.ts - 1.7.3 Chromium smoke + 4.5.1 print regression; webServer builds web + local wrangler on 8787
 - e2e/staff-smoke.spec.ts - landing, doctor Staff settings, receptionist denied Staff (dev-login stub)
+- e2e/print-regression.spec.ts - 4.5.1 sample Rx text snapshots (1..8 medicines); snapshots in e2e/*-snapshots/
 
 ## Root
 - package.json - root scripts + shared dev tools (typescript 6.0, eslint, typescript-eslint, prettier, vitest); packageManager pins pnpm 12.21.0
