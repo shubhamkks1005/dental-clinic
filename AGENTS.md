@@ -5,9 +5,9 @@ Staff app + read-only patient portal. NO public website in this repo.
 The human owner is a developer who gives you tasks; the doctor (his sister) is not technical.
 
 ## Start of every session (do this first, nothing else)
-1. Read docs/STATE.md (where we are, next task) and docs/MAP.md (what each file does).
+1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), and docs/MAP.md (what each file does).
 2. Do NOT read the whole codebase. Find files with search (grep/ripgrep), then read only the lines you need.
-3. If the task needs a decision that is not in docs/SPEC.md or docs/DECISIONS.md, ASK the owner. Never guess clinical, legal, tax or money rules.
+3. If the task needs a decision that is not in docs/SPEC.md or docs/DECISIONS.md, ASK the owner. Never guess clinical, legal, tax or money rules. (When following RUN_PROMPT.md, prefer writing the choice in DECISIONS.md and continuing unless it is a real blocker.)
 
 ## How to work
 - One task at a time, by its id from docs/PLAN.md (example: 1.2.3). Do not start other tasks.
