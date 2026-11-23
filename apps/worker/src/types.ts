@@ -17,6 +17,10 @@ export type Bindings = Env & {
   __testStorage?: import("./adapters/storage").StorageAdapter;
   /** 9.1.10 signed ops status webhook (GitHub Actions). */
   OPS_WEBHOOK_SECRET?: string;
+  /** 9.2.1 Cloudflare GraphQL analytics (Account Analytics Read). */
+  CLOUDFLARE_ANALYTICS_TOKEN?: string;
+  /** 9.2.1 Healthchecks fail ping when quota high. */
+  HEALTHCHECKS_QUOTA_URL?: string;
 };
 
 // Set by the session middleware. session/ctx/repos exist only on signed-in routes.
