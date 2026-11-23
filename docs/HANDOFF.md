@@ -9,9 +9,11 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
 
 ## Next task
-**Part 1 (bugs and money safety): (Q0.1-Q0.6 done)  Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
+**NOW: Part 2 (the daily workflow): Q1.1 to Q1.6** (Part 1 is finished except Q0.7, which needs D1; if the owner answers D1, do Q0.7 first). Older text below.
+**Part 1 (bugs and money safety): (Q0.1-Q0.6 and Gate Q0.G done; Q0.7 waits for D1)  Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
 
 ## Done in Phase Q
+- Q0.G Gate P0: passed with exceptions, 2026-11-23 (details in STATE.md).
 - Q0.6 Payment safety, 2026-11-23 (git log "Q0.6"). Server refuses an amount above the due unless allowAdvance:true (message has the fresh balance); Full balance/Half only fill the field; confirm "Change amount / Record as advance"; 0 or negative shows a sentence; form resets to Cash. Existing tests that relied on silent advances got allowAdvance. Design: Bill.dc.html payment card. Not built: take advance when nothing is due (Q3.1, D8) - the form is hidden when nothing is due, as before.
 - Q0.5 Core-loop browser test, 2026-11-23 (git log "Q0.5"). Statement asserted: bill 1,500, receipts 500 + 1,000, Outstanding 0. Fails when the Q0.2 fix is reverted. Booking tomorrow is in e2e/booking.spec.ts, not in this file.
 - Q0.4 Booking without a note (C4), 2026-11-23 (git log "Q0.4"). Dialog sends undefined; shared test for empty note; e2e/booking.spec.ts fails with the old code. Only QuickBookDialog had the pattern.

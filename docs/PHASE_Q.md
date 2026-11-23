@@ -49,7 +49,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q0.5 | Core-loop browser test | Done (see git log "Q0.5") |
 | Q0.6 | Payment safety | Done (see git log "Q0.6") |
 | Q0.7 | Refund rule and balances | BLOCKED (decision D1) |
-| Q0.G | Gate P0 | Todo |
+| Q0.G | Gate P0 | Passed with exception (Q0.7 open, see STATE.md) |
 | Q1.1 | Visit to bill chain, minimal | Todo (needs decision D2 for the addendum part) |
 | Q1.2 | Ready to bill on receptionist Today | Todo |
 | Q1.3 | Receipts and payments list | Todo |
