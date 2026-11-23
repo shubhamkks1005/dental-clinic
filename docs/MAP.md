@@ -341,8 +341,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/appointment-reschedule.ts - parseRescheduleAppointment
 - src/booking-rules.ts (+ test) - 2.3.5 bookingRuleViolations + clinicWorkingIntervals (past/closed/lunch/ahead)
 - src/free-slots.ts (+ test) - 2.3.3 findFreeSlots / slotSearchEarliest (uses clinicWorkingIntervals; next 5 in 14 days)
-- src/money.ts - formatRupees(paise): the one money display format (₹, Indian grouping, paise only if non-zero)
-- src/money.test.ts - grouping, paise, negative, refuses fractions
+- src/money.ts - 5.1.3 money helpers: formatRupees, percent discount half-up, round-off, allocate, cap/cash warn
+- src/money.test.ts - format + 5.1.3 rounding / allocation / cap tests
 - src/billing-numbers.ts - 5.1.2 formatBillingNo / shortFinancialYear (B/R/F or shadow S*)
 - src/billing-numbers.test.ts - series shape and shadow prefix
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
