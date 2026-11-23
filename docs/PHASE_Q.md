@@ -208,6 +208,7 @@ Re-run flows G01, G02, G08, H01, H02, D02, D03, D05, D06, F02 with the scripts i
 ---
 
 ## 3. PHASE Q2: redesign (build the screens in `docs/design/proposal/`)
+**Phone is part of every task below.** Each Q2 task builds the laptop screen AND its phone screen (the `Phone*.dc.html` files; the table is in `docs/design/proposal/README.md`). A task is done only when the screen also passes at 360 px: no sideways scroll, targets of 44 px or more, the action under the name, bottom tabs and the "+" button as drawn. Run `docs/ui-audit/runner/f02.mjs` (phone) and `f03` (tablet 768) for the screens touched.
 Each task: read the design file, rebuild with shared components, run the matching flow script, check 360, 768 and 1366 px, save a few screenshots under `docs/ui-audit/screenshots/<feature>/` only if they change a finding, tick REVIEW_CHECKLIST.
 
 | Task | Build | Design file | Issues | Depends on |
@@ -222,7 +223,7 @@ Each task: read the design file, rebuild with shared components, run the matchin
 | Q2.8 | Messages page | `Messages.dc.html` | PA-U09, PA-L11, PA-N04 | Q1.5 |
 | Q2.9 | New patient form changes and consent card | PDF S03, S16 | PA-L10, PA-N05, PA-U08 | Q1.8 |
 | Q2.10 | Lint rule against raw `<input>/<select>/<textarea>` in `features/`; migrate remaining screens in batches | n/a | PA-D03, PA-D06 | Q2.1 |
-| Q2.11 | Phone and tablet chrome: sidebar from 768 px, "+" only on Today and Patients, tab bars with a fade, 44 px targets | n/a | PA-F14, PA-F15, PA-F16, PA-F18 | Q2.1 |
+| Q2.11 | Phone and tablet chrome: sidebar from 768 px, bottom tabs and "More" page, "+" only on Today and Patients, tab bars with a fade, 44 px targets | `PhoneTabs.dc.html`, `PhoneMore.dc.html` | PA-F14, PA-F15, PA-F16, PA-F18 | Q2.1 |
 | Q2.12 | Reports: four numbers and "Things to watch" first, charts collapsed with a "Not enough data yet" state | PDF S10 | PA-U15, PA-N01, PA-B13 | Q2.1 |
 | Q2.13 | **Settings redesign (4 groups, 8 items, setup progress card, live prescription preview) and the new Library page** (Medicines first, then Medicine sets, Procedures and fees, Visit types, Diagnoses, Quick phrases, More). Add "Add to my list" inside the visit's medicine search | `Settings.dc.html`, `Library.dc.html`, `LibraryAdd.dc.html` | PA-U12, PA-U13, PA-D10, PA-N02 | Q2.1 |
 

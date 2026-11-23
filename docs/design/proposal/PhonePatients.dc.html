@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Patients</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.fchip{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C}
+.mut{color:#5B6B7B}
+.pn{background:#E6EEFA;color:#163C80;font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 28px 28px;padding:18px 20px 44px"><div style="font-size:12px;color:#CFDDF5">Patients</div><div style="font-size:22px;font-weight:700;color:#fff;margin-top:2px">Find or add</div></div>
+  <div style="margin:-26px 16px 0;height:52px;border-radius:14px;background:#fff;border:2px solid #1E4FA3;box-shadow:0 0 0 3px #CFDDF5;display:flex;align-items:center;gap:10px;padding:0 14px;font-size:16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F2A5C" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>sharma</div>
+  <div style="padding:14px 16px 0;display:flex;gap:8px;overflow:hidden"><span class="fchip" style="background:#0F2A5C;color:#fff;border-color:#0F2A5C">All</span><span class="fchip">New this month</span><span class="fchip">Balance due</span><span class="fchip">Not seen 6 mo</span></div>
+  <div style="padding:14px 16px 8px;font-size:13px;font-weight:600;color:#334155">4 patients found</div>
+  <div style="padding:0 16px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+      <div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:12px;min-height:44px">
+        <div style="width:44px;height:44px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none">{{r.ini}}</div>
+        <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{r.name}}</div><div class="mut" style="font-size:13px">{{r.sub}}</div></div>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end"><span class="pn">{{r.pn}}</span><sc-if value="{{r.due}}" hint-placeholder-val="{{ false }}"><span class="chip" style="height:22px;background:#FEF3C7;color:#78350F">{{r.due}}</span></sc-if></div>
+      </div>
+    </sc-for>
+    <div style="border:2px dashed #1E4FA3;border-radius:16px;min-height:56px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#1E4FA3">+ New patient: sharma</div>
+  </div>
+  <button aria-label="New patient" style="position:absolute;right:16px;bottom:84px;width:56px;height:56px;border-radius:18px;border:0;background:#1E4FA3;color:#fff;font-size:28px;box-shadow:0 6px 18px rgba(30,79,163,.4)">+</button>
+  <div style="position:absolute;left:0;bottom:0"><dc-import name="PhoneTabs" active="Patients" hint-size="390px,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const r = (ini, name, sub, pn, due = '') => ({ ini, name, sub, pn, due });
+    return { rows: [r('RS', 'Rahul Sharma', '34 yrs, Male · 98xxx xx210', 'P-000412', 'Due ₹8,000'), r('PS', 'Priya Sharma', '27 yrs, Female · 97xxx xx884', 'P-000876'), r('SS', 'Sunil Sharma', '52 yrs, Male · 99xxx xx105', 'P-000231'), r('AS', 'Anita Sharma', '45 yrs, Female · 91xxx xx660', 'P-000540')] };
+  }
+}
+</script>
+</body>
+</html>

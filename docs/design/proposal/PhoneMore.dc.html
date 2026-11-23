@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, More</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px;overflow:hidden}
+.it{display:flex;align-items:center;gap:14px;min-height:58px;padding:0 16px;border-top:1px solid #EEF2F5;font-size:16px;font-weight:600;color:#0F2A5C}
+.it:first-child{border-top:0}
+.ic{width:36px;height:36px;border-radius:10px;background:#E6EEFA;color:#163C80;display:flex;align-items:center;justify-content:center;flex:none}
+.mut{color:#5B6B7B}
+.badge{margin-left:auto;background:#C8202A;color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 28px 28px;padding:16px 20px 22px"><div style="font-size:24px;font-weight:700;color:#fff">More</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:12px"><div style="width:44px;height:44px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;display:flex;align-items:center;justify-content:center">PS</div><div><div style="font-size:15px;font-weight:600;color:#fff">Priya Singh</div><div style="font-size:12px;color:#CFDDF5">Receptionist</div></div></div></div>
+  <div style="padding:14px 16px 0;display:flex;flex-direction:column;gap:14px">
+    <div class="card">
+      <sc-for list="{{items}}" as="i" hint-placeholder-count="6"><div class="it"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{i.icon}}"/></svg></span>{{i.label}}<sc-if value="{{i.badge}}" hint-placeholder-val="{{ false }}"><span class="badge">{{i.badge}}</span></sc-if><span class="mut" style="margin-left:auto;font-size:20px;{{i.hide}}">&#8250;</span></div></sc-for>
+    </div>
+    <div class="card" style="padding:14px 16px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em" class="mut">HELP</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px"><div><div style="font-size:13px" class="mut">Last Error ID</div><div style="font-size:16px;font-weight:700">0FD6C599</div></div><button style="height:40px;padding:0 16px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:13px;font-weight:700">Copy</button></div></div>
+    <button style="height:52px;border-radius:14px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:15px;font-weight:700">Sign out</button>
+  </div>
+  <div style="position:absolute;left:0;bottom:0"><dc-import name="PhoneTabs" active="More" hint-size="390px,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const i = (label, icon, badge = '') => ({ label, icon, badge, hide: badge ? 'display:none' : '' });
+    return { items: [
+      i('Messages', 'M4 5h16v11H9l-5 4z', '5'), i('Reports', 'M5 20V10M12 20V4M19 20v-7'),
+      i('Library', 'M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3V4zM5 17a3 3 0 013-3h10M9 8h5'),
+      i('Settings', 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 15v4'),
+      i('Patient requests', 'M6 3h9l4 4v14H6zM9 12h7M9 16h7', '2')
+    ] };
+  }
+}
+</script>
+</body>
+</html>

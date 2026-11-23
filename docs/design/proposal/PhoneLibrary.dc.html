@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Library</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.seg{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C}
+.mut{color:#5B6B7B}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 24px 24px;padding:14px 20px 18px"><div style="font-size:12px;color:#CFDDF5">&#8249; More</div><div style="font-size:24px;font-weight:700;color:#fff;margin-top:4px">Library</div><div style="font-size:13px;color:#CFDDF5;margin-top:2px">Your own lists. Old prescriptions stay as issued.</div></div>
+  <div style="padding:12px 16px 0;display:flex;gap:8px;overflow:hidden"><span class="seg" style="background:#0F2A5C;color:#fff;border-color:#0F2A5C">Medicines</span><span class="seg">Sets</span><span class="seg">Procedures</span><span class="seg">Visit types</span><span class="seg">Diagnoses</span></div>
+  <div style="margin:12px 16px 0;height:48px;border-radius:12px;background:#fff;border:1px solid #CBD6E0;display:flex;align-items:center;padding:0 14px;font-size:15px;color:#8A97A5">Search medicines</div>
+  <div style="padding:10px 16px 0;display:flex;gap:8px"><span class="seg" style="height:36px;background:#E6EEFA;border-color:#B9CCEA;color:#163C80">All 24</span><span class="seg" style="height:36px">Needs review 21</span><span class="seg" style="height:36px">Hidden 2</span></div>
+  <div style="padding:12px 16px 0;display:flex;flex-direction:column;gap:8px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+      <div class="card" style="padding:12px 14px;display:flex;align-items:center;gap:10px;min-height:56px;{{r.row}}">
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{r.name}}</div><div class="mut" style="font-size:12px">{{r.sub}}</div></div>
+        <span class="chip" style="{{r.chip}}">{{r.status}}</span>
+        <span style="font-size:20px;color:#5B6B7B">&#8250;</span>
+      </div>
+    </sc-for>
+  </div>
+  <button style="position:absolute;right:16px;bottom:84px;height:52px;padding:0 22px;border-radius:26px;border:0;background:#1E4FA3;color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 18px rgba(30,79,163,.4)">+ Add medicine</button>
+  <div style="position:absolute;left:0;bottom:0"><dc-import name="PhoneTabs" active="More" hint-size="390px,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const rv = 'background:#FEF3C7;color:#78350F', ok = 'background:#DCFCE7;color:#14532D', hid = 'background:#EDF1F4;color:#334155';
+    const r = (name, sub, status, chip, row = '') => ({ name, sub, status, chip, row });
+    return { rows: [r('Amoxicillin', 'Capsule 500 mg · 1-0-1 · 5 days', 'Review', rv), r('Ibuprofen', 'Tablet 400 mg · 1-0-1 · 3 days', 'Active', ok), r('Metronidazole', 'Tablet 400 mg · 1-0-1 · 5 days', 'Active', ok), r('Chlorhexidine mouthwash', '0.2% · 0-0-1 · 7 days', 'Active', ok), r('Azithromycin', 'Tablet 500 mg · 1-0-0 · 3 days', 'Review', rv), r('Ciprofloxacin', 'Not used since August', 'Hidden', hid, 'opacity:.6')] };
+  }
+}
+</script>
+</body>
+</html>

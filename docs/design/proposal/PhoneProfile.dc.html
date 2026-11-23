@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Patient profile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:48px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:15px;font-weight:700;flex:1}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:#5B6B7B}
+.mut{color:#5B6B7B}
+.tabc{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C}
+.kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #EEF2F5;font-size:14px}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 28px 28px;padding:14px 20px 18px;color:#fff">
+    <div style="font-size:12px;color:#CFDDF5">&#8249; Patients</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:8px"><div style="width:56px;height:56px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center">RS</div><div><div style="font-size:22px;font-weight:700">Rahul Sharma</div><div style="font-size:13px;color:#DBE4F3">34 yrs · Male · 98765 43210</div></div></div>
+    <div style="margin-top:10px"><span style="background:#E6EEFA;color:#163C80;font-weight:700;font-size:12px;border-radius:999px;padding:4px 12px">P-000412</span></div>
+  </div>
+  <div style="padding:14px 16px 0;display:flex;gap:10px"><button class="btn btn-p">Take payment</button><button class="btn">Book</button></div>
+  <div style="padding:10px 16px 0;display:flex;gap:6px"><span class="chip" style="background:#FFE4D6;color:#9A3412">Allergy: penicillin</span><span class="chip" style="background:#FEF3C7;color:#78350F">Diabetic</span></div>
+  <div style="padding:12px 16px 0;display:flex;gap:8px;overflow:hidden"><span class="tabc" style="background:#0F2A5C;color:#fff;border-color:#0F2A5C">Overview</span><span class="tabc">Visits</span><span class="tabc">Billing</span><span class="tabc">Appointments</span><span class="tabc">Files</span></div>
+  <div style="padding:12px 16px 0;display:flex;flex-direction:column;gap:10px">
+    <div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><div><div class="lbl">NEXT APPOINTMENT</div><div style="font-size:17px;font-weight:700;margin-top:3px">Sat 22 Nov · 11:00</div><div class="mut" style="font-size:13px">Braces adjustment · Waiting 12 min</div></div><button class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C;font-size:13px">Reschedule</button></div>
+    <div class="card" style="padding:14px 16px"><div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div class="lbl">BALANCE DUE</div><div style="font-size:26px;font-weight:700;margin-top:2px">₹8,000</div></div><div class="mut" style="font-size:12px;text-align:right">Paid ₹37,000<br>of ₹45,000</div></div><div style="height:8px;border-radius:99px;background:#E3E9EE;margin-top:10px;overflow:hidden"><div style="width:82%;height:100%;background:#1E4FA3"></div></div><div class="mut" style="font-size:12px;margin-top:8px">Next instalment 20 Dec · ₹4,000</div></div>
+    <div class="card" style="padding:12px 16px"><div class="lbl" style="margin-bottom:4px">CONTACT</div><div class="kv"><span class="mut">Mobile</span><b>98765 43210</b></div><div class="kv" style="border-bottom:0"><span class="mut">Reminders</span><b>On (WhatsApp)</b></div></div>
+  </div>
+  <div style="position:absolute;left:0;bottom:0"><dc-import name="PhoneTabs" active="Patients" hint-size="390px,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

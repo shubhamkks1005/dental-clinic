@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Book appointment</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.btn{height:50px;border-radius:12px;border:1px solid #1E4FA3;background:#1E4FA3;color:#fff;font-size:15px;font-weight:700;width:100%}
+.pill{height:44px;padding:0 16px;border-radius:999px;border:1px solid #D5DEE6;background:#fff;font-size:14px;font-weight:600;color:#0F2A5C}
+.pill-on{background:#0F2A5C;border-color:#0F2A5C;color:#fff}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:#5B6B7B;margin-bottom:8px}
+.mut{color:#5B6B7B}
+.slot{height:46px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;font-size:14px;font-weight:600;color:#0F2A5C}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 24px 24px;padding:14px 20px 20px"><div style="font-size:12px;color:#CFDDF5">&#8249; Back</div><div style="font-size:24px;font-weight:700;color:#fff;margin-top:4px">Book appointment</div></div>
+  <div style="padding:14px 16px;display:flex;flex-direction:column;gap:16px;height:610px;overflow:hidden;box-sizing:border-box">
+    <div style="background:#fff;border:1px solid #E3E9EE;border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;display:flex;align-items:center;justify-content:center">RS</div><div style="flex:1"><div style="font-size:16px;font-weight:600">Rahul Sharma</div><div class="mut" style="font-size:12px">P-000412 · 34 yrs</div></div><span style="font-size:13px;font-weight:700;color:#1E4FA3">Change</span></div>
+    <div><div class="lbl">VISIT TYPE</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill">Consultation</button><button class="pill">Follow-up</button><button class="pill pill-on">Braces adjustment</button><button class="pill">Cleaning</button><button class="pill">More</button></div></div>
+    <div><div class="lbl">DATE</div><div style="display:flex;gap:8px;overflow:hidden"><sc-for list="{{days}}" as="d" hint-placeholder-count="6"><div style="{{d.style}};flex:none;width:52px;height:68px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="font-size:11px;font-weight:600">{{d.dow}}</span><span style="font-size:19px;font-weight:700">{{d.n}}</span></div></sc-for></div></div>
+    <div><div class="lbl">FREE TIMES, SAT 29 NOV</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><sc-for list="{{slots}}" as="s" hint-placeholder-count="9"><button class="slot" style="{{s.style}}">{{s.t}}</button></sc-for></div><div style="font-size:13px;font-weight:600;color:#1E4FA3;margin-top:10px">More times &#8250;</div></div>
+    <div><div class="lbl">NOTE (OPTIONAL)</div><div style="height:48px;border:1px solid #CBD6E0;border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:15px;color:#8A97A5">Wire change planned</div></div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E3E9EE;padding:12px 16px 18px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px"><span class="mut">Sat 29 Nov, 11:00 · 20 min · Chair 1</span><span style="font-weight:600;color:#14532D">Confirmation will be sent</span></div><button class="btn">Confirm booking</button></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'background:#0F2A5C;color:#fff', off = 'background:#fff;color:#0F2A5C;border:1px solid #D5DEE6';
+    const days = [['Tue', 24], ['Wed', 25], ['Thu', 26], ['Fri', 27], ['Sat', 28], ['Sun', 29], ['Mon', 30]].map(([dow, n]) => ({ dow, n, style: n === 29 ? on : off }));
+    const times = ['10:00', '10:40', '11:00', '11:20', '11:40', '12:20', '12:40', '2:00 pm', '2:20 pm'];
+    const slots = times.map((t) => ({ t, style: t === '11:00' ? 'background:#0F2A5C;color:#fff;border-color:#0F2A5C' : '' }));
+    return { days, slots };
+  }
+}
+</script>
+</body>
+</html>

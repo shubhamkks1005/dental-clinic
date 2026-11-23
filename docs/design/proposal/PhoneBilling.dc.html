@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Billing dues</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.seg{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C}
+.btn{height:44px;border-radius:12px;border:1px solid #1E4FA3;background:#1E4FA3;color:#fff;font-size:14px;font-weight:700;flex:1}
+.ib{width:44px;height:44px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;display:flex;align-items:center;justify-content:center;flex:none}
+.mut{color:#5B6B7B}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 28px 28px;padding:16px 20px 52px"><div style="font-size:12px;color:#CFDDF5">Billing</div><div style="font-size:22px;font-weight:700;color:#fff">Who owes money</div></div>
+  <div style="margin:-34px 16px 0;border-radius:16px;background:#fff;border:1px solid #E3E9EE;padding:14px 16px;box-shadow:0 6px 18px rgba(15,42,92,.08)">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div class="mut" style="font-size:12px;font-weight:600">TOTAL DUE · 34 patients</div><div style="font-size:28px;font-weight:700">₹1,12,500</div></div><div style="font-size:12px;text-align:right" class="mut">over 60 days<br><b style="color:#9A3412;font-size:15px">₹8,000</b></div></div>
+    <div style="display:flex;height:8px;border-radius:99px;overflow:hidden;margin-top:10px"><div style="width:77%;background:#2E9E57"></div><div style="width:16%;background:#D58A1A"></div><div style="width:7%;background:#D9622B"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px" class="mut"><span>0-30 days</span><span>31-60</span><span>60+</span></div>
+  </div>
+  <div style="padding:12px 16px 0;display:flex;gap:8px;overflow:hidden"><span class="seg">Today</span><span class="seg" style="background:#0F2A5C;color:#fff;border-color:#0F2A5C">Dues</span><span class="seg">Bills</span><span class="seg">Day close</span></div>
+  <div style="padding:12px 16px 0;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+      <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px"><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">{{r.name}}</div><div class="mut" style="font-size:12px">{{r.pn}} · {{r.note}}</div></div><div style="text-align:right"><div style="font-size:18px;font-weight:700">{{r.due}}</div><span class="chip" style="{{r.age}}">{{r.days}}</span></div></div>
+        <div style="display:flex;gap:8px"><button class="btn">Take payment</button><button class="ib" aria-label="Add call note"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 4h4l2 5-2.500 1.500a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg></button><button class="ib" aria-label="WhatsApp reminder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg></button></div>
+      </div>
+    </sc-for>
+  </div>
+  <div style="position:absolute;left:0;bottom:0"><dc-import name="PhoneTabs" active="Billing" hint-size="390px,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const a3 = 'background:#FFE4D6;color:#9A3412', a1 = 'background:#DCFCE7;color:#14532D', a2 = 'background:#FEF3C7;color:#78350F';
+    const r = (name, pn, note, due, days, age) => ({ name, pn, note, due, days, age });
+    return { rows: [r('Sunita Devi', 'P-000098', 'called 21 Nov', '₹12,000', '74 days', a3), r('Rahul Sharma', 'P-000412', 'instalment 20 Dec', '₹8,000', '12 days', a1), r('Kavita Rao', 'P-000902', 'not called yet', '₹5,500', '41 days', a2)] };
+  }
+}
+</script>
+</body>
+</html>

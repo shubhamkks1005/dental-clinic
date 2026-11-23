@@ -24,6 +24,26 @@ These files cannot be opened directly in a browser (they need the design tool's 
 | `LibraryAdd.dc.html` | Library with the "Add medicine" drawer open (name, strength, form; more details collapsed; tip about adding from inside a visit) | 1366 | Q2.13 |
 | `canvas.json` | Positions and titles of the boards (reference only) | | |
 
+## Phone designs (390 px). Every screen must also work on a phone
+Phone is not an afterthought: each Phase Q UI task builds BOTH the laptop and the phone version, and is done only when the screen works at 360 px with no sideways scroll and 44 px targets, as drawn here. Shared bottom tabs: `PhoneTabs.dc.html` (Today, Patients, Calendar, Billing, More; Messages, Reports, Library and Settings live under More). The round "+" exists only on Today and Patients (with 80 px of free space under the list). Pages reached from More show a "‹ More" back link in the header.
+| File | Phone screen | Built by task |
+|---|---|---|
+| `PhoneToday.dc.html` | Today: stat chips, Next patient, cards with the action under the name | Q1.10, Q2.5 |
+| `PhonePatients.dc.html` | Patients and search (S15 plus Balance due filter, due tag, English "New patient: name") | Q2.6 |
+| `PhoneNewPatient.dc.html` | New patient (S16): big fields, gender buttons, duplicate warning, sticky Save and book / Save and check in | Q2.9 |
+| `PhoneProfile.dc.html` | Patient profile (S17 extended): Take payment and Book buttons, alerts, tab chips, next appointment, balance, contact | Q2.6 |
+| `PhoneBook.dc.html` | Book appointment: patient, visit type chips, date strip, free-time grid, note, sticky Confirm booking | Q2.7 |
+| `PhoneCalendar.dc.html` | Calendar day as a list with full names (no grid on phone) | Q2.7 |
+| `PhoneBilling.dc.html` | Billing, Dues: total with ageing bar, rows with Take payment, call note, WhatsApp | Q2.3 |
+| `PhoneBill.dc.html` | Bill and payment: items, payment card, payments list with Print receipt, receipt toast, sticky Record payment | Q0.6, Q1.3, Q2.3 |
+| `PhoneVisit.dc.html` | Visit: chart scrolls inside its card, sticky Finalise bar | Q1.10, Q2.4 |
+| `PhoneMessages.dc.html` | Messages grouped by patient, guardian messages, No number card | Q1.5, Q2.8 |
+| `PhoneReports.dc.html` | Reports: four numbers, things to watch, collapsed charts | Q2.12 |
+| `PhoneLibrary.dc.html` | Library: tab chips, search, rows, floating Add medicine | Q2.13 |
+| `PhoneSettings.dc.html` | Settings: setup progress and 4 grouped lists | Q2.13 |
+| `PhoneMore.dc.html` | More: user, Messages, Reports, Library, Settings, Patient requests, Error ID, Sign out | Q2.11 |
+Phone screens still without a design: portal pages, certificates, prescription and bill print previews, dialogs and states, Day close and Bills tabs. For those, copy the closest phone screen here and say so.
+
 ## Screens that have a design only in the PDF (follow the PDF)
 S02 Patients list, S03 New patient, S04 Patient profile (Overview), S06 Treatment plan, S07 Book appointment, S10 Reports, S11 Messages (replaced by `Messages.dc.html`), S12 Settings (replaced by `Settings.dc.html`), S13 Prescription print, S14-S17 phone screens, S18-S19 portal. Known differences to fix when you build them (the app is not required to copy these words): the PDF has the Hinglish text "New patient banao" (use "New patient: <name>") and an "SMS phone" battery card on Messages (omit; messaging is manual WhatsApp).
 
