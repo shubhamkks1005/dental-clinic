@@ -14,6 +14,7 @@ await flow({ id: process.argv[2] || "G02-returning-patient-second-visit", role: 
   await c.look("Chart: does it show the earlier finding on tooth 16?");
   await c.click(p.getByRole("button", { name: /^Tooth 46, permanent/ }), "Click tooth 46");
   await c.pick(p.locator("select:has(option:text-is('Extraction (₹2,500)'))"), { label: "Extraction (₹2,500)" }, "Choose the procedure Extraction");
+  await c.pick(p.getByRole("region", { name: "Procedures" }).last().getByLabel("Procedure"), { index: 1 }, "Choose the first procedure (the list starts empty)");
   await c.click(p.getByRole("button", { name: "Add procedure" }), "Click Add procedure");
   await c.look("Procedure added to the visit");
   await c.click(p.getByRole("button", { name: "Finalise visit" }), "Click Finalise visit (no prescription this time)");

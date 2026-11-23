@@ -1,4 +1,5 @@
 import { flow } from "./lib2.mjs";
+const TOMORROW = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10); // computed, so the script works on any day
 const vp = process.argv[3] || "phone";
 await flow({ id: process.argv[2] || "F02-phone-full-day", role: "receptionist", vp }, async (c) => {
   const p = c.page; const d = () => p.locator("dialog[open]");
@@ -8,11 +9,11 @@ await flow({ id: process.argv[2] || "F02-phone-full-day", role: "receptionist", 
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient"); await c.m("Patient saved screen");
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Book appointment");
   await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Consultation");
-  await d().getByLabel("Date").fill("2026-11-24"); await p.waitForTimeout(1200); await c.look("Book dialog with times (phone)"); await c.m("Book dialog");
+  await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200); await c.look("Book dialog with times (phone)"); await c.m("Book dialog");
   await c.click(d().getByRole("button", { name: "11:15 AM", exact: true }), "Pick 11:15 AM");
   await c.type(d().getByLabel(/What they said/), "Phone test", "Note");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Book");
-  await c.m("Appointments after booking"); await c.go("/app/appointments?date=2026-11-24", "Calendar tomorrow on the phone"); await c.m("Calendar");
+  await c.m("Appointments after booking"); await c.go(`/app/appointments?date=${TOMORROW}`, "Calendar tomorrow on the phone"); await c.m("Calendar");
   await c.go("/app/patients", "Patients list"); await c.m("Patients list");
   await c.type(p.getByPlaceholder(/Search by name|mobile|patient code/).last(), "Neha", "Search Neha"); await p.waitForTimeout(900); await c.look("Search result on the phone");
   await c.click(p.getByRole("link", { name: "Neha Testcase" }).first(), "Open Neha");

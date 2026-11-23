@@ -8,6 +8,7 @@ await flow({ id: process.argv[2] || "D06-discount-request-and-approval", role: "
   await c.click(p.getByRole("button", { name: "Open visit" }).or(p.getByRole("link", { name: "Open visit" })).first(), "Open the visit in chair (Tara)");
   await c.click(p.getByRole("tab", { name: "Chart", exact: true }), "Chart tab");
   await c.click(p.getByRole("button", { name: /^Tooth 36, permanent/ }), "Click tooth 36");
+  await c.pick(p.getByRole("region", { name: "Procedures" }).last().getByLabel("Procedure"), { index: 1 }, "Choose the first procedure (the list starts empty)");
   await c.click(p.getByRole("button", { name: "Add procedure" }), "Add procedure (Scaling ₹1,500)");
   await c.click(p.getByRole("button", { name: "Finalise visit" }), "Finalise visit");
   await c.click(d().getByRole("button", { name: "Finalise" }), "Confirm Finalise");

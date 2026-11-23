@@ -1,4 +1,5 @@
 import { flow } from "./lib2.mjs";
+const TOMORROW = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10); // computed, so the script works on any day
 await flow({ id: process.argv[2] || "H01-booking-confirm-and-reminder-messages", role: "receptionist", vp: "laptop" }, async (c) => {
   const p = c.page; const d = () => p.locator("dialog[open]");
   await c.go("/app/patients/new", "Receptionist registers a patient WITH sms consent");
@@ -11,7 +12,7 @@ await flow({ id: process.argv[2] || "H01-booking-confirm-and-reminder-messages",
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Book appointment");
   await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Consultation");
-  await d().getByLabel("Date").fill("2026-11-24"); await p.waitForTimeout(1200);
+  await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
   await c.click(d().getByRole("button", { name: "11:15 AM", exact: true }), "Pick 11:15 AM tomorrow");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Click Book WITHOUT typing the optional note");
   await c.type(d().getByLabel(/What they said/), "First visit", "Now type a note (the field says optional)");

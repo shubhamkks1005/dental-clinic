@@ -1,4 +1,5 @@
 import { flow } from "./lib2.mjs";
+const TOMORROW = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10); // computed, so the script works on any day
 const NAME = "Riya Flowtest", MOB = "9000099001";
 await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "receptionist", vp: "laptop" }, async (c) => {
   const p = c.page; const d = () => p.locator("dialog[open]");
@@ -15,7 +16,7 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   // ---- Receptionist: phone booking for tomorrow ----
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Click Book appointment on the saved screen");
   await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose visit type Consultation");
-  await d().getByLabel("Date").fill("2026-11-24"); await p.waitForTimeout(1200);
+  await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
   await c.look("Date set to tomorrow: free times appear");
   await c.click(d().getByRole("button", { name: "11:15 AM", exact: true }), "Pick the 11:15 AM time");
   await c.type(d().getByLabel(/What they said/), "Wants to check teeth alignment", "Type the phone note");
@@ -41,7 +42,9 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await p.waitForTimeout(1800);
   await c.click(p.getByRole("tab", { name: "Chart", exact: true }), "Open the Chart tab");
   await c.click(p.getByRole("button", { name: /^Tooth 36, permanent/ }), "Click tooth 36 on the chart");
-  await c.click(p.getByRole("button", { name: "Add procedure" }), "Click Add procedure (Scaling is pre-selected)");
+  // Q1.8: the procedure list starts empty, so choose one first (Add stays off until then).
+  await c.pick(p.getByRole("region", { name: "Procedures" }).last().getByLabel("Procedure"), { index: 1 }, "Choose the first procedure in the list");
+  await c.click(p.getByRole("button", { name: "Add procedure" }), "Click Add procedure");
   await c.click(p.getByRole("tab", { name: "Today's visit", exact: true }), "Back to the first tab to add a diagnosis");
   await c.type(p.getByPlaceholder(/Type to search or enter free text/), "Crowding", "Type diagnosis");
   await c.click(p.getByRole("button", { name: "Add", exact: true }), "Click Add (diagnosis)");
@@ -76,8 +79,11 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   console.log("bill page:", (await c.text()).slice(0, 500));
   await c.go("/app/patients/" + pid, "Go back to the patient profile (the bill page has no link back to the patient except Patient account)");
   await c.click(p.getByRole("tab", { name: "Billing", exact: true }), "Billing tab again");
-  await c.click(p.getByRole("button", { name: "Full balance" }), "Click Full balance (it records the payment straight away, no confirm)");
-  await c.look("After Full balance: form gone, bill still says issued");
+  // Q0.6: Full balance only fills the Amount box; the payment is recorded by Record payment.
+  await c.click(p.getByRole("button", { name: "Full balance" }), "Click Full balance (it only fills the Amount box now)");
+  await c.look("After Full balance: the Amount box holds the balance, nothing is recorded yet");
+  await c.click(p.getByRole("button", { name: "Record payment" }), "Click Record payment for the full balance");
+  await c.look("After the second payment: the toast has Print, the bill is paid");
   console.log("after 2nd pay:", (await c.text()).slice(0, 400));
   await c.go("/app/print/statement/" + pid, "Open the patient statement print page");
   console.log("statement:", (await p.locator("body").innerText()).replace(/\n+/g, " | ").slice(0, 700));

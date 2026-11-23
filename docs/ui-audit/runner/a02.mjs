@@ -31,7 +31,9 @@ await flow({ id: process.argv[2] || "A02-register-edge-cases", role: "receptioni
   await c.type(p.locator("input[type=tel]").first(), "9000000128", "Same mobile as an existing patient"); await p.waitForTimeout(1500);
   await c.look("Is there a duplicate warning before saving?");
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save");
-  await c.look("What happened on Save with a duplicate?");
+  await c.look("Q1.8: Save asks Same person? before it saves");
+  note("Asked 'Same person?': " + ((await p.getByText("Same person?").count()) > 0) + " | saved already: " + ((await p.getByRole("heading", { name: "Patient saved" }).count()) > 0));
+  await c.click(p.getByRole("button", { name: "Save as new patient" }), "Choose Save as new patient");
   note("Result duplicate: " + (await err() || (await c.text()).slice(0, 200)));
   // 5 Long name + special characters
   await fresh("CASE 5: very long name with special characters");

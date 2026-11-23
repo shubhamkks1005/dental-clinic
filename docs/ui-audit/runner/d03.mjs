@@ -30,13 +30,19 @@ await flow({ id: process.argv[2] || "D03-payments-advance-split-part-and-mistake
   const btn = p.getByRole("button", { name: "Record payment" });
   c.note("Record payment enabled for -50? " + (await btn.isEnabled()));
   await p.getByLabel(/Amount/).first().fill("0");
-  c.note("Record payment enabled for 0? " + (await btn.isEnabled()));
+  c.note("Record payment enabled for 0? " + (await btn.isEnabled()) + " | sentence: " + (await err()) + " | " + ((await c.text()).match(/Enter an amount above 0[^|]*/) || [""])[0]);
   await c.look("Form with 0 typed");
   // 5 overpay
   await open("Vikram Testcase", "CASE 5: Vikram owes ₹2,000; a slip of the finger types 20000");
   await c.type(p.getByLabel(/Amount/).first(), "20000", "Type 20000");
   await c.click(p.getByRole("button", { name: "Record payment" }), "Record payment of ₹20,000 against ₹2,000 due");
-  await c.look("Result of paying ten times the due");
+  await c.look("Q0.6: the screen asks before recording more than the balance");
+  c.note("Asked first (nothing recorded yet): " + (await out()) + " | " + (await err()) + " | confirm shown: " + ((await p.getByRole("button", { name: "Record as advance" }).count()) > 0));
+  await c.click(p.getByRole("button", { name: "Change amount" }), "Choose Change amount: nothing is recorded");
+  c.note("After Change amount: " + (await out()));
+  await c.type(p.getByLabel(/Amount/).first(), "2000", "Type the right amount, 2000");
+  await c.click(p.getByRole("button", { name: "Record payment" }), "Record ₹2,000");
+  await c.look("After the right payment");
   c.note("Header now says: " + (await out()) + " | msg: " + (await err()));
   const id = p.url().split("/").pop();
   await c.go("/app/print/statement/" + id, "Open the printed statement for Vikram");
