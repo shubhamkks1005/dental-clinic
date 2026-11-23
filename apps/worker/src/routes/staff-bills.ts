@@ -1,4 +1,4 @@
-import { fail, ok } from "@clinic/shared";
+import { fail, istDate, ok } from "@clinic/shared";
 import { Hono } from "hono";
 import {
   approveBillDiscount,
@@ -111,10 +111,9 @@ staffBills.post("/payments", async (c) => {
 });
 
 staffBills.get("/day-close", async (c) => {
-  const day = c.req.query("date") ?? "";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) {
-    return c.json(fail("invalid", "Pick a date as YYYY-MM-DD."), 400);
-  }
+  const raw = c.req.query("date") ?? "";
+  // Default today so permission is checked in the repo even without ?date= (route matrix).
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : istDate(new Date());
   const result = await dayCloseSummary(signedIn(c).repos, day);
   return c.json(ok({ summary: result.summary }));
 });
