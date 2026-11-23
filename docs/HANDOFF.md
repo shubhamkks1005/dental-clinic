@@ -15,7 +15,7 @@ Written: 2026-11-23 (Phase 6 mid — 6.2.x done). Read RUN_PROMPT.md, STATE.md, 
 | 6.2.2 | `19665b3` | daily_stats/monthly_stats + mig 0044 |
 | 6.2.3 | `ecc5d89` | cron + recompute API + S10 button |
 | 6.2.4 | `3e6999b` | day-close incomplete appt block |
-| 6.2.5 | (pending this commit) | edge number tests + noshow_* |
+| 6.2.5 | `16ddb23` | edge number tests + noshow_* |
 
 ## Skipped / Waiting
 6.1.1 (sister); 5.4.2; 5.5.2–5.5.4; baad me Phase 6: 6.3.9, 6.3.10, 6.4.3, 6.4.4.
