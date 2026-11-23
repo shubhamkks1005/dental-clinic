@@ -10,7 +10,7 @@ This file is complete on its own. Also follow AGENTS.md stack/data/privacy rules
 - Fake data only, no real patient data and no real money figures from real patients anywhere.
 - Keep files small (about 200 lines is a smell, 300 means split). Tests go in separate test files.
 - Run pnpm check before every commit. If it fails, fix it before moving on.
-- If a migration is new, list it clearly for me, do not apply it to staging yourself. Number migrations in order, never reuse a number (check the highest existing number in packages/db/migrations; as of now the next free number is 0051).
+- If a migration is new, list it clearly for me, do not apply it to staging yourself. Number migrations in order, never reuse a number (check the highest existing number in packages/db/migrations; the next free number is in HANDOFF.md). After adding a migration run `pnpm db:lock`.
 - Update STATE.md after each task.
 - Follow the screen designs (S-numbers) named in each task.
 - Do not stop to ask me questions. If something is unclear, take the most reasonable choice that matches the plan, write it in DECISIONS.md, and carry on. Stop only for a real blocker (needs my account, a card, a lawyer, an accountant, or a secret). If a task is blocked, skip it, list it in STATE.md under "Waiting on me", and continue.
@@ -28,3 +28,29 @@ This file is complete on its own. Also follow AGENTS.md stack/data/privacy rules
 - When context is nearly full, update docs/HANDOFF.md first, then stop.
 - When all tasks of the current phase are done, run that phase's gate checklist (tests, role matrix incl. receptionist API tests, concurrency tests where relevant, print checks, responsive at 360/768/1366, keyboard use, fake-data-only scan), write the result in STATE.md as "passed" or "passed with exceptions" with the list, and stop. Do not start the next phase until I say so.
 - At the end give me a final table: task, commit hash, tests, and anything waiting on me. Also list every new migration number to apply on staging.
+
+## EXTRA STANDING RULES
+- Never push, deploy or apply migrations (local or staging). Hand the owner the exact commands instead.
+- Never print or write secrets. When the owner must type one, use the typed-secret pattern: `read -rs VAR` then pass `$VAR`. No personal email address in any committed file.
+- Fake data only (fake names, obviously fake phone numbers).
+- The receptionist never sees clinical data. Enforce in the API and prove it with tests.
+- Soft delete only, except operational data (messages, error log, sessions) as decided in docs/RETENTION.md.
+- Audit all views and changes of patient, clinical and money data.
+- Money is integer paise.
+- Layers: web -> worker route -> domain -> db. No skipping.
+- Undecided law, consent, retention or tax text is marked DRAFT or "waiting on doctor/CA".
+- New migration: take the next free number, then run `pnpm db:lock`.
+- Public routes need a rate limit and a body-size cap. Every new table needs a growth cap (purge rule or row limit).
+- Find files through docs/MAP.md and grep. Never read whole folders or the whole PLAN.md (grep for the task ID, read that block only).
+- Tests first. Show only command output tails.
+- One agent, no subagents.
+
+## END-OF-RUN DOCS CHECKLIST
+1. STATE.md: status, commit hash, date, "Waiting on me", "Before real patients".
+2. PLAN.md only if it tracks status.
+3. MAP.md: every new or moved file.
+4. DECISIONS.md: every choice made.
+5. HANDOFF.md: done; half done with exact next step; waiting on humans; next task; commands the owner must run by hand.
+6. Fix any stale doc.
+7. Keep STATE.md and HANDOFF.md under 150 lines; move old history to docs/archive/.
+8. Final grep: no doc calls a finished task pending; every new file is in MAP.md.
