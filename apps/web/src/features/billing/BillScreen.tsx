@@ -1,6 +1,7 @@
 import { amountInWords, formatRupees } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
+import { BillCancelPanel } from "./BillCancelPanel";
 import { BillDiscountPanel } from "./BillDiscountPanel";
 import { getBill, issueBill, listPatientBills, type BillDto } from "./api";
 
@@ -129,11 +130,12 @@ export function BillScreen() {
           >
             Issue bill
           </button>
-        ) : (
+        ) : bill.status === "issued" ? (
           <Link className="btn" to={`/app/print/bill/${bill.id}`} target="_blank" rel="noreferrer">
             Print bill
           </Link>
-        )}
+        ) : null}
+        <BillCancelPanel bill={bill} onUpdated={setBill} onError={setError} />
       </div>
     </section>
   );

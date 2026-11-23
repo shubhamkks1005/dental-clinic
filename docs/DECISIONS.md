@@ -147,3 +147,4 @@
 - 2026-11-23 - **5.3.5 Apply advance:** On issue, optional applyAdvance allocates oldest unallocated payment leftovers onto the new bill (no new payment row). - agent (5.3.5)
 - 2026-11-23 - **5.3.6 Discount approval:** Draft may carry unapproved discount+reason; issue requires discountApprovedBy. Receptionist requests; doctor approves via bills.adjust. No advertising (DCI). - agent (5.3.6)
 - 2026-11-23 - **5.3.7 Refund UI:** Doctor-only panel on patient Billing tab; lists refundable payments; reason+mode required. - agent (5.3.7)
+- 2026-11-23 - **5.3.8 Cancel UI:** Doctor cancels draft/issued unpaid bills with reason; paid bills must refund first; number retained. - agent (5.3.8)
