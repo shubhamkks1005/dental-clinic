@@ -189,8 +189,9 @@ export function VisitMedicinesPanel({ visitId, patientId, canWrite }: Props) {
     }
   }
 
-  async function saveMeta() {
-    if (!rx || locked) return;
+  // Returns the saved prescription (new version) or null when nothing was saved.
+  async function saveMeta(): Promise<PrescriptionDto | null> {
+    if (!rx || locked) return null;
     setBusy(true);
     try {
       const saved = await patchPrescription(rx.id, {
@@ -200,8 +201,10 @@ export function VisitMedicinesPanel({ visitId, patientId, canWrite }: Props) {
         weightKg: weightKg ? Number.parseInt(weightKg, 10) : null,
       });
       setRx(saved);
+      return saved;
     } catch (err) {
       setProblem(problemText(err));
+      return null;
     } finally {
       setBusy(false);
     }
@@ -211,8 +214,10 @@ export function VisitMedicinesPanel({ visitId, patientId, canWrite }: Props) {
     if (!rx || locked) return;
     setBusy(true);
     try {
-      await saveMeta();
-      const issued = await issuePrescription(rx.id, rx.version);
+      // Saving raises the version: issue with the saved one, not the stale rx (C3).
+      const saved = await saveMeta();
+      if (!saved) return;
+      const issued = await issuePrescription(saved.id, saved.version);
       setRx(issued);
       setLines(toLines(issued));
     } catch (err) {

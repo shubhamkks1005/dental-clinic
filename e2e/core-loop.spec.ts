@@ -69,7 +69,17 @@ test.describe("core loop (Q0.2+)", () => {
 
     await page.getByRole("tab", { name: "Medicines", exact: true }).click();
     await page.getByPlaceholder(/Search medicine/).fill("Amox");
-    await page.keyboard.press("Enter");
+    await page.getByRole("button", { name: /^Amoxicillin 500 mg/ }).click();
+    await expect(page.getByRole("table")).toContainText("Amoxicillin");
+    // Q0.3: Issue must not answer 409 (it used the stale version); reload still shows it issued.
+    await page.getByRole("button", { name: "Issue", exact: true }).click();
+    await expect(page.getByRole("link", { name: "Print" })).toBeVisible();
+    await page.reload();
+    await page.getByRole("tab", { name: "Medicines", exact: true }).click();
+    await expect(page.getByRole("link", { name: "Print" })).toBeVisible();
+    await page.getByRole("link", { name: "Print" }).click();
+    await expect(page).toHaveURL(/\/app\/print\/prescription\//);
+    await page.goBack();
 
     await page.getByRole("button", { name: "Finalise visit" }).click();
     await dialog.getByRole("button", { name: "Finalise" }).click();

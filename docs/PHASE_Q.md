@@ -44,7 +44,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 |---|---|---|
 | Q0.1 | Browser tests can run | Done (see git log "Q0.1") |
 | Q0.2 | Fix double JSON encoding (C1) | Done (see git log "Q0.2") |
-| Q0.3 | Prescription Issue works (C3) | Todo |
+| Q0.3 | Prescription Issue works (C3) | Done (see git log "Q0.3") |
 | Q0.4 | Booking without a note works (C4) | Todo |
 | Q0.5 | Core-loop browser test | Todo |
 | Q0.6 | Payment safety | Todo |
