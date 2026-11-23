@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import type { PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxStatus } from "../prescriptions";
 import { getList } from "../lists";
+import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import type { VisitRecent, VisitSummary } from "./api";
 import { useVisitNotes } from "./useVisitNotes";
 import { VisitAddenda } from "./VisitAddenda";
@@ -54,6 +55,7 @@ export function VisitOneScreen(props: Props) {
 
   return (
     <div className="v1-screen">
+      {!readOnly && <UnsavedChangesGuard dirty={notes.dirty} />}
       {isDraft ? (
         <p className="v1-draft-banner">
           This visit is a draft. After you finalise it, it is locked and can only be corrected with

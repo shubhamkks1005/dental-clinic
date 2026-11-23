@@ -1,0 +1,898 @@
+{
+ "spec": {
+  "id": "G01-q24",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 27,
+  "typedFields": 14,
+  "pagesVisited": [
+   "/app",
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages",
+   "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "/app/bills/01M8559RM2HEGEZC2AQ6P4A6EK",
+   "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "/app/print/statement/01M85596ZRZMCCWNMAH9T4SHHJ"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 60
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app",
+   "why": "Receptionist starts on Today",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-receptionist-starts-on-today.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Click + New patient in the top bar",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-click-new-patient-in-the-top-bar.jpg"
+  },
+  {
+   "n": 3,
+   "action": "type",
+   "why": "Type the name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "select",
+   "why": "Choose gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Type age (date of birth not known)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "type",
+   "why": "Type mobile number",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Tick Privacy notice shown",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Tick SMS reminders allowed",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Click Save patient (result: Patient saved screen)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-click-save-patient-result-patient-saved-.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Click Book appointment on the saved screen",
+   "url": "/app/appointments?patient=01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on Tue 24 Nov | What they said on the phone | Choose a visit type. | Cancel | Book"
+    ]
+   },
+   "shot": "10-click-book-appointment-on-the-saved-scre.jpg"
+  },
+  {
+   "n": 11,
+   "action": "select",
+   "why": "Choose visit type Consultation",
+   "url": "/app/appointments?patient=01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on Tue 24 Nov | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 "
+    ]
+   }
+  },
+  {
+   "n": 12,
+   "action": "look",
+   "why": "Date set to tomorrow: free times appear",
+   "url": "/app/appointments?patient=01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on Wed 25 Nov | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM"
+    ]
+   },
+   "shot": "12-date-set-to-tomorrow-free-times-appear.jpg"
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "Pick the first free time",
+   "url": "/app/appointments?patient=01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on Wed 25 Nov | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM"
+    ]
+   }
+  },
+  {
+   "n": 14,
+   "action": "type",
+   "why": "Type the phone note",
+   "url": "/app/appointments?patient=01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on Wed 25 Nov | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM"
+    ]
+   }
+  },
+  {
+   "n": 15,
+   "action": "click",
+   "why": "Click Book (result: toast, calendar opens on that date)",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for Wed 25 Nov, 11:45 AM\n×",
+     "Notifications Booked for Wed 25 Nov, 11:45 AM"
+    ],
+    "dialog": []
+   },
+   "shot": "15-click-book-result-toast-calendar-opens-o.jpg"
+  },
+  {
+   "n": 16,
+   "action": "open /app/messages",
+   "why": "Open Messages to look for the confirm message",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "16-open-messages-to-look-for-the-confirm-me.jpg"
+  },
+  {
+   "n": 17,
+   "action": "open /app",
+   "why": "Back on Today. Tomorrow's booking is not in today's list",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "17-back-on-today-tomorrow-s-booking-is-not-.jpg"
+  },
+  {
+   "n": 18,
+   "action": "click",
+   "why": "Click Walk-in on Today",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Walk-in | Patient | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Emergency (may overbook) | Choose a patient first. | Cancel | Add walk-in"
+    ]
+   },
+   "shot": "18-click-walk-in-on-today.jpg"
+  },
+  {
+   "n": 19,
+   "action": "type",
+   "why": "Type patient name",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Walk-in | Patient | Riya Flowtest | P-000031 | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Emergency (may overbook) | Choose a patient first. | Cancel | Add walk-in"
+    ]
+   }
+  },
+  {
+   "n": 20,
+   "action": "click",
+   "why": "Pick the patient from the list",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Walk-in | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Emergency (may overbook) | Choose a visit type. | Cancel | Add walk-in"
+    ]
+   },
+   "shot": "20-pick-the-patient-from-the-list.jpg"
+  },
+  {
+   "n": 21,
+   "action": "select",
+   "why": "Choose Consultation",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Walk-in | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Emergency (may overbook) | Cancel | Add walk-in"
+    ]
+   }
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Tick Emergency (may overbook)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Walk-in | Riya Flowtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Emergency (may overbook) | Cancel | Add walk-in"
+    ]
+   }
+  },
+  {
+   "n": 23,
+   "action": "click",
+   "why": "Click Add walk-in again with Emergency ticked",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-click-add-walk-in-again-with-emergency-t.jpg"
+  },
+  {
+   "n": 24,
+   "action": "look",
+   "why": "Today list after the walk-in",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "24-today-list-after-the-walk-in.jpg"
+  },
+  {
+   "n": 25,
+   "action": "click",
+   "why": "Click In chair on Riya's row",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 26,
+   "action": "switch user to doctor",
+   "why": "Switch to the doctor",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Doctor clicks Open visit on Riya's row",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "27-doctor-clicks-open-visit-on-riya-s-row.jpg"
+  },
+  {
+   "n": 28,
+   "action": "type",
+   "why": "Type complaint",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Not saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 29,
+   "action": "type",
+   "why": "Type findings",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Not saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "click",
+   "why": "Click tooth 36 on the chart",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "30-click-tooth-36-on-the-chart.jpg"
+  },
+  {
+   "n": 31,
+   "action": "click",
+   "why": "Click the first procedure chip",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 32,
+   "action": "click",
+   "why": "Click + Add (diagnosis)",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "type",
+   "why": "Type diagnosis",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 34,
+   "action": "click",
+   "why": "Click Add (diagnosis)",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 35,
+   "action": "type",
+   "why": "Search Amox",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 36,
+   "action": "key Enter",
+   "why": "Press Enter to add Amoxicillin",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 37,
+   "action": "click",
+   "why": "Click Issue (prescription)",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 38,
+   "action": "look",
+   "why": "After Issue: error shown",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "38-after-issue-error-shown.jpg"
+  },
+  {
+   "n": 39,
+   "action": "click",
+   "why": "Click Finalise visit",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": [
+     "Finalise this visit? | After finalise, notes become read-only. An addendum can add a note but not a procedure. Warnings: Procedures were added. Check the treatment plan is up to date. | Keep editing | Finalise"
+    ]
+   },
+   "shot": "39-click-finalise-visit.jpg"
+  },
+  {
+   "n": 40,
+   "action": "click",
+   "why": "Confirm Finalise in the dialog",
+   "url": "/app/visits/01M8559HK0XGM3QAFYZ24XTXHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "40-confirm-finalise-in-the-dialog.jpg"
+  },
+  {
+   "n": 41,
+   "action": "click",
+   "why": "Click Create bill",
+   "url": "/app/bills/01M8559RM2HEGEZC2AQ6P4A6EK",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000025",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "41-click-create-bill.jpg"
+  },
+  {
+   "n": 42,
+   "action": "note",
+   "why": "D5: Create bill issues the bill at once; there is no Issue step.",
+   "url": "/app/bills/01M8559RM2HEGEZC2AQ6P4A6EK"
+  },
+  {
+   "n": 43,
+   "action": "switch user to receptionist",
+   "why": "Switch to the receptionist to take payment",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "43-switch-to-the-receptionist-to-take-payme.jpg"
+  },
+  {
+   "n": 44,
+   "action": "look",
+   "why": "Receptionist Today after the doctor finalised: is there a cue that Riya is ready to bill?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "44-receptionist-today-after-the-doctor-fina.jpg"
+  },
+  {
+   "n": 45,
+   "action": "type",
+   "why": "Search Riya in the top bar",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 46,
+   "action": "look",
+   "why": "Search results dropdown",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "46-search-results-dropdown.jpg"
+  },
+  {
+   "n": 47,
+   "action": "key Enter",
+   "why": "Press Enter on the first result",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "47-press-enter-on-the-first-result.jpg"
+  },
+  {
+   "n": 48,
+   "action": "click",
+   "why": "Open the Billing tab of Riya",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 49,
+   "action": "type",
+   "why": "Type amount 500",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 50,
+   "action": "click",
+   "why": "Click Record payment",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000019 Print\n×",
+     "Notifications ₹500 recorded. Receipt SR-2627-000019 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "50-click-record-payment.jpg"
+  },
+  {
+   "n": 51,
+   "action": "look",
+   "why": "After Record payment: balance changed, is there a toast or receipt?",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000019 Print\n×",
+     "Notifications ₹500 recorded. Receipt SR-2627-000019 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "51-after-record-payment-balance-changed-is-.jpg"
+  },
+  {
+   "n": 52,
+   "action": "click",
+   "why": "Open the bill to look for a receipt",
+   "url": "/app/bills/01M8559RM2HEGEZC2AQ6P4A6EK",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000025",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000019 Print\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "52-open-the-bill-to-look-for-a-receipt.jpg"
+  },
+  {
+   "n": 53,
+   "action": "open /app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "why": "Go back to the patient profile (the bill page has no link back to the patient except Patient account)",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "53-go-back-to-the-patient-profile-the-bill-.jpg"
+  },
+  {
+   "n": 54,
+   "action": "click",
+   "why": "Billing tab again",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 55,
+   "action": "click",
+   "why": "Click Full balance (it only fills the Amount box now)",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 56,
+   "action": "look",
+   "why": "After Full balance: the Amount box holds the balance, nothing is recorded yet",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "56-after-full-balance-the-amount-box-holds-.jpg"
+  },
+  {
+   "n": 57,
+   "action": "click",
+   "why": "Click Record payment for the full balance",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "₹1,000 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹1,000 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "57-click-record-payment-for-the-full-balanc.jpg"
+  },
+  {
+   "n": 58,
+   "action": "look",
+   "why": "After the second payment: the toast has Print, the bill is paid",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [
+     "₹1,000 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹1,000 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "58-after-the-second-payment-the-toast-has-p.jpg"
+  },
+  {
+   "n": 59,
+   "action": "open /app/print/statement/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "why": "Open the patient statement print page",
+   "url": "/app/print/statement/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Account statement",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "59-open-the-patient-statement-print-page.jpg"
+  },
+  {
+   "n": 60,
+   "action": "open /app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "why": "Open the patient profile (History tab) to see what the record looks like now",
+   "url": "/app/patients/01M85596ZRZMCCWNMAH9T4SHHJ",
+   "errors": [],
+   "visible": {
+    "h1": "Riya Flowtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "60-open-the-patient-profile-history-tab-to-.jpg"
+  }
+ ]
+}

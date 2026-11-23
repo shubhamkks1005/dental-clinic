@@ -53,32 +53,34 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
       .or(page.getByRole("button", { name: "Open visit" }))
       .last()
       .click();
-    await page.getByLabel("Chief complaint").fill("Wants alignment check");
-    await page.getByLabel("Exam").fill("Crowding lower anterior");
+    await page.getByLabel("Complaint").fill("Wants alignment check");
+    await page.getByLabel("Findings").fill("Crowding lower anterior");
     await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
 
-    await page.getByRole("tab", { name: "Chart", exact: true }).click();
     await page
       .getByRole("button", { name: /^Tooth 36, permanent/ })
       .first()
       .click();
-    const procedures = page.getByRole("region", { name: "Procedures" });
-    await procedures.getByLabel("Procedure").selectOption({ index: 1 });
-    await procedures.getByRole("button", { name: "Add procedure" }).click();
+    // Q2.4: chart, procedure chips, diagnosis and medicines are all on the one Visit screen.
+    const procedures = page.getByRole("group", { name: "Procedures done" });
+    await procedures.getByRole("button").first().click();
+    await expect(procedures.locator(".v1-pill.is-on")).toHaveCount(1);
 
-    await page.getByRole("tab", { name: "Today's visit", exact: true }).click();
+    await page
+      .getByRole("group", { name: "Diagnosis" })
+      .getByRole("button", { name: "+ Add" })
+      .click();
     await page.getByPlaceholder(/Type to search or enter free text/).fill("Crowding");
     await page.getByRole("button", { name: "Add", exact: true }).click();
+    await expect(page.getByRole("group", { name: "Diagnosis" })).toContainText("Crowding");
 
-    await page.getByRole("tab", { name: "Medicines", exact: true }).click();
     await page.getByPlaceholder(/Search medicine/).fill("Amox");
     await page.getByRole("button", { name: /^Amoxicillin 500 mg/ }).click();
-    await expect(page.getByRole("table")).toContainText("Amoxicillin");
+    await expect(page.getByRole("region", { name: "Medicines" })).toContainText("Amoxicillin");
     // Q0.3: Issue must not answer 409 (it used the stale version); reload still shows it issued.
     await page.getByRole("button", { name: "Issue", exact: true }).click();
     await expect(page.getByRole("link", { name: "Print" })).toBeVisible();
     await page.reload();
-    await page.getByRole("tab", { name: "Medicines", exact: true }).click();
     await expect(page.getByRole("link", { name: "Print" })).toBeVisible();
     await page.getByRole("link", { name: "Print" }).click();
     await expect(page).toHaveURL(/\/app\/print\/prescription\//);

@@ -10,6 +10,12 @@
   font-size: 14px;
 }
 
+.visit-back a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 .visit-head {
   display: flex;
   flex-wrap: wrap;

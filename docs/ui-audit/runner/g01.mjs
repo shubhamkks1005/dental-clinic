@@ -37,18 +37,15 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   // ---- Doctor ----
   await c.as("doctor", "Switch to the doctor");
   await c.click(p.getByRole("link", { name: "Open visit" }).or(p.getByRole("button", { name: "Open visit" })).last(), "Doctor clicks Open visit on Riya's row");
-  await c.type(p.getByLabel("Chief complaint"), "Wants alignment check, mild crowding lower front", "Type chief complaint");
-  await c.type(p.getByLabel("Exam"), "Crowding lower anterior, no caries seen", "Type exam");
+  // Q2.4: the whole doctor chain is on ONE screen, no tab switch.
+  await c.type(p.getByLabel("Complaint"), "Wants alignment check, mild crowding lower front", "Type complaint");
+  await c.type(p.getByLabel("Findings"), "Crowding lower anterior, no caries seen", "Type findings");
   await p.waitForTimeout(1800);
-  await c.click(p.getByRole("tab", { name: "Chart", exact: true }), "Open the Chart tab");
   await c.click(p.getByRole("button", { name: /^Tooth 36, permanent/ }), "Click tooth 36 on the chart");
-  // Q1.8: the procedure list starts empty, so choose one first (Add stays off until then).
-  await c.pick(p.getByRole("region", { name: "Procedures" }).last().getByLabel("Procedure"), { index: 1 }, "Choose the first procedure in the list");
-  await c.click(p.getByRole("button", { name: "Add procedure" }), "Click Add procedure");
-  await c.click(p.getByRole("tab", { name: "Today's visit", exact: true }), "Back to the first tab to add a diagnosis");
+  await c.click(p.getByRole("group", { name: "Procedures done" }).getByRole("button").first(), "Click the first procedure chip");
+  await c.click(p.getByRole("group", { name: "Diagnosis" }).getByRole("button", { name: "+ Add" }), "Click + Add (diagnosis)");
   await c.type(p.getByPlaceholder(/Type to search or enter free text/), "Crowding", "Type diagnosis");
   await c.click(p.getByRole("button", { name: "Add", exact: true }), "Click Add (diagnosis)");
-  await c.click(p.getByRole("tab", { name: "Medicines", exact: true }), "Open the Medicines tab");
   await c.type(p.getByPlaceholder(/Search medicine/), "Amox", "Search Amox");
   await c.key("Enter", "Press Enter to add Amoxicillin");
   await c.click(p.getByRole("button", { name: "Issue" }), "Click Issue (prescription)");

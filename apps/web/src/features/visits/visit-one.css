@@ -183,6 +183,7 @@
 .v1-date input {
   position: absolute;
   inset: 0;
+  height: 44px;
   opacity: 0;
   width: 100%;
   cursor: pointer;
@@ -363,4 +364,9 @@
   .v1-grid {
     grid-template-columns: minmax(0, 1fr) 360px;
   }
+}
+
+/* The round "+" would cover Finalise; the design shows it only on Today and Patients. */
+body:has(.v1-bar) .shell-fab {
+  display: none;
 }
