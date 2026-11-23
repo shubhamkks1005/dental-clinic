@@ -26,6 +26,7 @@ import { visitDiagnosesRepo } from "./visit-diagnoses";
 import { visitProceduresRepo } from "./visit-procedures";
 import { filesRepo } from "./files";
 import { historyFeedRepo } from "./history-feed";
+import { historyPrintSummaryRepo } from "./history-print-summary";
 import { historySummaryRepo } from "./history-summary";
 import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
@@ -108,6 +109,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     history: {
       ...historySummaryRepo(db, ctx),
       ...historyFeedRepo(db, ctx),
+      ...historyPrintSummaryRepo(db, ctx),
     },
     files: filesRepo(db, ctx),
     prescriptions: {

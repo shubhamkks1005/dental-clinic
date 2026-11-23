@@ -129,6 +129,18 @@ describe("staff history (3.5.11 / 3.5.12)", () => {
     expect(docBody.data.entries.some((e) => e.type === "visit")).toBe(true);
   });
 
+  it("print summary is doctor-only (6.7.2)", async () => {
+    const doc = await get("doc@example.test", "/api/staff/patients/p-hist/history/print-summary");
+    expect(doc.status).toBe(200);
+    const body = (await doc.json()) as {
+      data: { summary: { patient: { code: string }; visits: unknown[]; treatments: unknown[] } };
+    };
+    expect(body.data.summary.patient.code).toBe("P-000101");
+
+    const rec = await get("rec@example.test", "/api/staff/patients/p-hist/history/print-summary");
+    expect(rec.status).toBe(403);
+  });
+
   it("archived patient history remains viewable (3.5.15)", async () => {
     sqlite
       .prepare(

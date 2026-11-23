@@ -1,6 +1,6 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
-import { getHistorySummary, listHistoryFeed } from "../domain/history";
+import { getHistoryPrintSummary, getHistorySummary, listHistoryFeed } from "../domain/history";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -9,6 +9,12 @@ export const staffHistory = new Hono<AppEnv>();
 // 3.5.11: History tab pinned summary.
 staffHistory.get("/patients/:id/history/summary", async (c) => {
   const result = await getHistorySummary(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ summary: result.summary }));
+});
+
+// 6.7.2: doctor-only A4 print payload (must be before /history so :id/history is not greedy).
+staffHistory.get("/patients/:id/history/print-summary", async (c) => {
+  const result = await getHistoryPrintSummary(signedIn(c).repos, c.req.param("id"));
   return c.json(ok({ summary: result.summary }));
 });
 

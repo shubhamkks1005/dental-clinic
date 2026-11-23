@@ -2,6 +2,7 @@ import type { HistoryFilterChip } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ApiError } from "../../api/client";
+import { useMe } from "../auth";
 import {
   getHistorySummary,
   listHistoryFeed,
@@ -26,6 +27,8 @@ function parseTooth(raw: string): number | undefined {
 
 /** 3.5.11–3.5.12 / 6.7.1: History tab with summary + filtered feed (S04/S17). */
 export function PatientHistoryTab({ patientId }: Props) {
+  const { permissions } = useMe();
+  const canPrintSummary = permissions.includes("clinical.view");
   const [summary, setSummary] = useState<HistorySummary | null>(null);
   const [entries, setEntries] = useState<HistoryFeedEntry[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -151,6 +154,16 @@ export function PatientHistoryTab({ patientId }: Props) {
   return (
     <div className="patient-history">
       <HistorySummaryStrip summary={summary} patientId={patientId} />
+      {canPrintSummary ? (
+        <p className="history-print-link">
+          <Link
+            className="btn btn-compact"
+            to={`/app/print/history-summary/${encodeURIComponent(patientId)}`}
+          >
+            Print history summary
+          </Link>
+        </p>
+      ) : null}
       <HistoryFilterChips chip={chip} onChip={setChip} />
       <HistoryFilterExtras
         from={fromDraft}

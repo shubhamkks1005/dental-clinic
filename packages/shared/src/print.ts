@@ -9,6 +9,7 @@ export const PRINT_DOCUMENT_KINDS = [
   "day_list",
   "bill",
   "receipt",
+  "history_summary",
 ] as const;
 export type PrintDocumentKind = (typeof PRINT_DOCUMENT_KINDS)[number];
 

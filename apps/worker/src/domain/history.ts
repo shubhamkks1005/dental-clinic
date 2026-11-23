@@ -20,3 +20,8 @@ export async function listHistoryFeed(repos: Repos, patientId: string, query: un
   });
   return { ok: true as const, ...page };
 }
+
+export async function getHistoryPrintSummary(repos: Repos, patientId: string) {
+  const summary = await repos.history.getPrintSummary(patientId);
+  return { ok: true as const, summary };
+}

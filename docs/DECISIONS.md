@@ -177,3 +177,4 @@
 - 2026-11-23 - **6.4.2 stats CSV:** GET /api/staff/stats/export?from&to → date_local,metric,dim,value from daily_stats. reports.full. - agent
 - 2026-11-23 - **6.4.3 / 6.4.4 skipped (baad me):** Brevo monthly email; YoY chart. - agent
 - 2026-11-23 - **6.7.1 history filters:** Chip → entry types; from/to are IST calendar days → UTC bounds; tooth = FDI on visit dx/px, plan_items, files; q = case-insensitive substring on procedure label + chief complaint/diagnosis. Filters never touch pinned summary (separate endpoint). Bills chip + tooth → empty. - agent
+- 2026-11-23 - **6.7.2 history print:** GET `/history/print-summary` needs clinical.view; A4 English tables; allergies = active alert labels; print_log kind `history_summary`. - agent

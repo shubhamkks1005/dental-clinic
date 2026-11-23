@@ -36,6 +36,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.6.2 SKIPPED / Waiting (sister sign-off on dashboard layout/defs — needs 6.1.1).
 6.6.3 SKIPPED / Waiting (top-5 fixes after 6.6.2).
 6.7.1 DONE locally (History chips + date/tooth/q filters; summary always loaded; filter tests). No migration.
+6.7.2 DONE locally (A4 history print summary doctor-only; receptionist 403; print_log history_summary). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
