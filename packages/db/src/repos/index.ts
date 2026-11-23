@@ -54,6 +54,8 @@ import { duesCallsRepo } from "./dues-calls";
 import { dayCloseRepo } from "./day-close";
 import { dailyStatsRepo } from "./daily-stats";
 import { dashboardRepo } from "./dashboard";
+import { callListsRepo } from "./call-lists";
+import { todaySummaryRepo } from "./today-summary";
 import { paymentsCreateRepo } from "./payments-create";
 import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { paymentsListRepo } from "./payments-list";
@@ -141,6 +143,8 @@ export function createRepos(db: Db, ctx: Ctx) {
     dayClose: dayCloseRepo(db, ctx),
     dailyStats: dailyStatsRepo(db, ctx),
     dashboard: dashboardRepo(db, ctx),
+    callLists: callListsRepo(db, ctx),
+    todaySummary: todaySummaryRepo(db, ctx),
   };
 }
 

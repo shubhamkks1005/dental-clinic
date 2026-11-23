@@ -45,6 +45,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "list_items",
       "medical_history",
       "monthly_stats",
+      "outreach_contacts",
       "patient_search",
       "patients",
       "payment_allocations",

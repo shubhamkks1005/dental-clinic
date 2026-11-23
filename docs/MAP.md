@@ -165,7 +165,10 @@
 - apps/worker src/domain/dashboard.ts - 6.3.1 getDashboard + cache-control constant
 - packages/shared/src/dashboard-range.ts (+ test) - 6.3.1/6.3.4 range presets → IST from/to + grain
 - packages/shared/src/dashboard.ts - 6.3.1 prepared payload types + fold cells → series/totals
-- packages/db/src/repos/dashboard.ts (+ test) - 6.3.1 load daily_stats/monthly_stats + live today; rowsRead
+- packages/db/src/repos/dashboard.ts (+ test) - 6.3.1/6.3.6 load stats + busyHeat + kpis; rowsRead
+- packages/db/src/repos/call-lists.ts (+ test) - 6.3.7 incomplete/recall lists + outreach contact
+- packages/db/src/repos/today-summary.ts (+ test) - 6.3.8 reports.today summary
+- packages/db/src/schema/outreach-contacts.ts + migrations/0045_outreach_contacts.sql - 6.3.7
 - apps/web/src/ui/charts/ - 6.3.2 SVG charts (Bar/Stacked/Line/Heatmap/Kpi/Spark + ChartFrame table toggle); chart-math/keys tests
 - apps/web/src/features/style-guide/ChartDemos.tsx - 6.3.2 FAKE chart demos on style-guide
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts

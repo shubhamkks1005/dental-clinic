@@ -34,13 +34,19 @@ describe("dashboard API (6.3.1)", () => {
     expect(body.data.rowsRead).toBeLessThan(2000);
   });
 
-  it("refuses the receptionist (full dashboard is reports.full)", async () => {
-    const res = await app.request(
+  it("refuses the receptionist on the full dashboard but allows today summary", async () => {
+    const full = await app.request(
       `${ORIGIN}/api/staff/dashboard?range=today`,
       { headers: { cookie: receptionist } },
       env,
     );
-    expect(res.status).toBe(403);
+    expect(full.status).toBe(403);
+    const today = await app.request(
+      `${ORIGIN}/api/staff/dashboard/today-summary`,
+      { headers: { cookie: receptionist } },
+      env,
+    );
+    expect(today.status).toBe(200);
   });
 
   it("rejects a bad custom range with a plain sentence", async () => {

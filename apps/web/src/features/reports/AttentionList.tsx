@@ -9,7 +9,7 @@ export function AttentionList() {
         <li>
           <Link to="/app/billing">Outstanding dues over 60 days</Link> — open Billing → Dues
         </li>
-        <li>Incomplete treatment and recall lists — coming next (call lists)</li>
+        <li>Incomplete treatment and recall — see Call lists above</li>
         <li>
           <Link to="/app">Incomplete visits</Link> — drafts on Today
         </li>

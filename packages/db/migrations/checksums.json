@@ -43,5 +43,6 @@
   "0041_dues_calls.sql": "4f0c9c935d63cf35f9da7915b99aaaa7f98a54ac7ab24bc3c87447364d09dba1",
   "0042_day_closes.sql": "cfce6c0f72f0b4e2d59c24fb0c8436dd072ff127df0c93f14ab5cf7a0ac84bda",
   "0043_patient_first_arrived_on.sql": "006c38bca52756ac60df3d6de13334eb3f2dacf53f7f005f10a9d1b63aea2c90",
-  "0044_daily_stats.sql": "47357330d39f3a0a7d01042d55bf9c093573d8365144608f77728dcd1ef884c5"
+  "0044_daily_stats.sql": "47357330d39f3a0a7d01042d55bf9c093573d8365144608f77728dcd1ef884c5",
+  "0045_outreach_contacts.sql": "7d4baef5c631c0179a5602430caa561dc465973486a3b14c27fb8423add5cc4a"
 }

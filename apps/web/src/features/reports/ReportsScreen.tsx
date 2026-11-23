@@ -4,17 +4,20 @@ import { problemText } from "../../api/problem-text";
 import { useMe } from "../auth";
 import { useToast } from "../../ui/Toast";
 import { AttentionList } from "./AttentionList";
+import { CallListsPanel } from "./CallListsPanel";
 import { fetchDashboard, recomputeStats } from "./api";
 import { DashboardCharts } from "./DashboardCharts";
 import { DashboardKpis } from "./DashboardKpis";
 import { RangeControls } from "./RangeControls";
+import { TodaySummaryCard } from "./TodaySummaryCard";
 import "./reports.css";
 
-/** S10 Reports / doctor dashboard (6.3.3–6.3.5). */
+/** S10 Reports / doctor dashboard (6.3.3–6.3.8). */
 export function ReportsScreen() {
   const { permissions } = useMe();
   const toast = useToast();
   const canFull = permissions.includes("reports.full");
+  const canToday = permissions.includes("reports.today");
   const [range, setRange] = useState<DashboardRangePreset>("this_month");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -66,9 +69,9 @@ export function ReportsScreen() {
         <header className="reports-header">
           <h1>Reports</h1>
         </header>
+        {canToday ? <TodaySummaryCard /> : null}
         <p className="notice warning">
-          The full dashboard is for the doctor. Ask them for the clinic summary, or use Today for
-          today&apos;s queue.
+          The full dashboard is for the doctor. You can use Today for the live queue.
         </p>
       </div>
     );
@@ -105,6 +108,7 @@ export function ReportsScreen() {
         <>
           <DashboardKpis kpis={data.kpis} />
           <DashboardCharts data={data} />
+          <CallListsPanel />
           <AttentionList />
         </>
       ) : null}
