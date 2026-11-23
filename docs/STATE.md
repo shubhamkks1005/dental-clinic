@@ -30,6 +30,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.3.15 DONE locally (Plan tab estimate/billed/paid; over-estimate flag). No migration.
 5.4.1 DONE locally (weekly workflow + SQL integrity script; intentional over-alloc test). Waiting: HEALTHCHECKS_BILLING_URL + staging export secrets for live alarm. No migration.
 5.4.2 SKIPPED / Waiting (needs 2.5.1 domain events).
+5.5.1 DONE locally (money property loops + 50 parallel bill issue + refund cap; day-close lock covered by 5.3.9 tests; no SQL triggers — repo locks). No migration.
 5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.

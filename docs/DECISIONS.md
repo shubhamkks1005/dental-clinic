@@ -157,3 +157,4 @@
 - 2026-11-23 - **5.3.15 plan money:** billed/paid from issued bill_items.plan_item_id; paid pro-rated by line/bill total. UI flags billed > estimate. - agent (5.3.15)
 - 2026-11-23 - **5.4.1 billing integrity:** weekly GH Action exports staging D1 and runs scripts/billing-integrity/check.mjs (SQL aggregates). Healthchecks via HEALTHCHECKS_BILLING_URL. - agent (5.4.1)
 - 2026-11-23 - **5.4.2 deferred:** billing domain events wait on 2.5.1. - agent
+- 2026-11-23 - **5.5.1 money tests:** property-style loops (seeded PRNG, no fast-check dep); 50 parallel bill issue; refund overpay blocked. Day-close lock already in day-close.test. No DB triggers. - agent (5.5.1)
