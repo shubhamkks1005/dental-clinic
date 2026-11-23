@@ -65,11 +65,11 @@ export function PrintPrescriptionScreen() {
     try {
       const recorded = await api<{ isReprint: boolean }>("/api/staff/print-log", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           documentKind: "prescription",
           documentId: rx.id,
           documentVersion: rx.version,
-        }),
+        },
       });
       setDuplicate(recorded.isReprint);
       if (recorded.isReprint) setDupDate(new Date().toISOString().slice(0, 10));

@@ -47,7 +47,7 @@ export function createPlanItem(body: {
 }) {
   return api<{ item: PlanItemRow }>("/api/staff/plan-items", {
     method: "POST",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.item);
 }
 
@@ -57,7 +57,7 @@ export function changePlanEstimate(
 ) {
   return api<{ item: PlanItemRow }>(`/api/staff/plan-items/${encodeURIComponent(id)}/estimate`, {
     method: "PATCH",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.item);
 }
 
@@ -71,6 +71,6 @@ export function setPlanDecision(
 ) {
   return api<{ item: PlanItemRow }>(`/api/staff/plan-items/${encodeURIComponent(id)}/decision`, {
     method: "PATCH",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.item);
 }

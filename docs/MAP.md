@@ -62,6 +62,8 @@
 - scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
 - scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
 - playwright.config.ts - 1.7.3 Chromium smoke + 4.5.1 print regression; webServer builds web + local wrangler on 8787
+- e2e/core-loop.spec.ts - Q0.2+: receptionist registers + walk-in + In chair, doctor writes visit and finalises; fails on any API 4xx/5xx (grows in Q0.3, Q0.5)
+- apps/web/src/api/client.test.ts - api() refuses a pre-stringified body (C1 guard)
 - e2e/write-smoke.spec.ts - Q0.1: receptionist creates a patient through the form (proves browser writes pass the CSRF origin)
 - e2e/staff-smoke.spec.ts - landing, doctor Staff settings, receptionist denied Staff (dev-login stub)
 - e2e/print-regression.spec.ts - 4.5.1 sample Rx text snapshots (1..8 medicines); snapshots in e2e/*-snapshots/

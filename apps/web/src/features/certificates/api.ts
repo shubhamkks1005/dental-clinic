@@ -53,14 +53,14 @@ export function createCertificate(body: {
 }) {
   return api<{ certificate: CertificateDto }>("/api/staff/certificates", {
     method: "POST",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.certificate);
 }
 
 export function finaliseCertificate(id: string, version: number) {
   return api<{ certificate: CertificateDto }>(
     `/api/staff/certificates/${encodeURIComponent(id)}/finalise`,
-    { method: "POST", body: JSON.stringify({ version }) },
+    { method: "POST", body: { version } },
   ).then((r) => r.certificate);
 }
 

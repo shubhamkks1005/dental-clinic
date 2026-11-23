@@ -97,7 +97,7 @@ export function openVisit(body: {
 }) {
   return api<{ visit: VisitOpened }>("/api/staff/visits", {
     method: "POST",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.visit);
 }
 
@@ -110,7 +110,7 @@ export function getVisit(id: string) {
 export function patchVisit(id: string, body: VisitPatchBody) {
   return api<{ visit: VisitSummary }>(`/api/staff/visits/${encodeURIComponent(id)}`, {
     method: "PATCH",
-    body: JSON.stringify(body),
+    body: body,
   }).then((r) => r.visit);
 }
 
@@ -120,7 +120,7 @@ export function addVisitDiagnosis(
 ) {
   return api<{ diagnosis: VisitDiagnosis }>(
     `/api/staff/visits/${encodeURIComponent(visitId)}/diagnoses`,
-    { method: "POST", body: JSON.stringify(body) },
+    { method: "POST", body: body },
   ).then((r) => r.diagnosis);
 }
 
@@ -135,7 +135,7 @@ export function addVisitProcedure(
 ) {
   return api<{ procedure: VisitProcedure }>(
     `/api/staff/visits/${encodeURIComponent(visitId)}/procedures`,
-    { method: "POST", body: JSON.stringify(body) },
+    { method: "POST", body: body },
   ).then((r) => r.procedure);
 }
 
@@ -144,7 +144,7 @@ export function finaliseVisit(id: string, version: number) {
     visit: { id: string; status: string; snapshotHash: string | null; version: number };
   }>(`/api/staff/visits/${encodeURIComponent(id)}/finalise`, {
     method: "POST",
-    body: JSON.stringify({ version }),
+    body: { version },
   }).then((r) => r.visit);
 }
 
@@ -154,7 +154,7 @@ export function addVisitAddendum(
 ) {
   return api<{ addendum: VisitAddendum }>(
     `/api/staff/visits/${encodeURIComponent(visitId)}/addenda`,
-    { method: "POST", body: JSON.stringify(body) },
+    { method: "POST", body: body },
   ).then((r) => r.addendum);
 }
 

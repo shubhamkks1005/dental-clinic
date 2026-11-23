@@ -78,10 +78,10 @@ export function PrintHistorySummaryScreen() {
     try {
       const recorded = await api<{ isReprint: boolean }>("/api/staff/print-log", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           documentKind: "history_summary",
           documentId: patientId,
-        }),
+        },
       });
       setDuplicate(recorded.isReprint);
       if (recorded.isReprint) setDupDate(istDate(new Date()));

@@ -63,11 +63,11 @@ export function PrintCertificateScreen() {
     try {
       const recorded = await api<{ isReprint: boolean }>("/api/staff/print-log", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           documentKind: "certificate",
           documentId: cert.id,
           documentVersion: cert.version,
-        }),
+        },
       });
       setDuplicate(recorded.isReprint);
       if (recorded.isReprint) setDupDate(istDate(new Date()));

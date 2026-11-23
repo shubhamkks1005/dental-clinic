@@ -69,6 +69,6 @@ export function createPastRecord(
 ) {
   return api<{ record: { id: string } }>(
     `/api/staff/patients/${encodeURIComponent(patientId)}/history/past-records`,
-    { method: "POST", body: JSON.stringify(body) },
+    { method: "POST", body: body },
   ).then((r) => r.record);
 }

@@ -35,14 +35,14 @@ export function addChartEvent(
 ) {
   return api<{ eventId: string; chart: PatientChart }>(
     `/api/staff/patients/${patientId}/chart/events`,
-    { method: "POST", body: JSON.stringify(body) },
+    { method: "POST", body: body },
   );
 }
 
 export function openDraftVisit(patientId: string, visitDateLocal: string) {
   return api<{ visit: { id: string; status: string } }>("/api/staff/visits", {
     method: "POST",
-    body: JSON.stringify({ patientId, visitDateLocal }),
+    body: { patientId, visitDateLocal },
   }).then((r) => r.visit);
 }
 

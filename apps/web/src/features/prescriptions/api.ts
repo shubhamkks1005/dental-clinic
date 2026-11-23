@@ -44,12 +44,12 @@ export async function createPrescription(body: {
 }): Promise<PrescriptionDto> {
   const res = await api<{ prescription: PrescriptionDto }>("/api/staff/prescriptions", {
     method: "POST",
-    body: JSON.stringify({
+    body: {
       dentistDispensed: false,
       dentistDispensedNote: "",
       advice: body.advice ?? "",
       ...body,
-    }),
+    },
   });
   return res.prescription;
 }
@@ -61,7 +61,7 @@ export async function replaceItems(
 ): Promise<PrescriptionDto> {
   const res = await api<{ prescription: PrescriptionDto }>(`/api/staff/prescriptions/${id}/items`, {
     method: "PUT",
-    body: JSON.stringify({ version, items }),
+    body: { version, items },
   });
   return res.prescription;
 }
@@ -72,7 +72,7 @@ export async function patchPrescription(
 ): Promise<PrescriptionDto> {
   const res = await api<{ prescription: PrescriptionDto }>(`/api/staff/prescriptions/${id}`, {
     method: "PATCH",
-    body: JSON.stringify(body),
+    body: body,
   });
   return res.prescription;
 }
@@ -80,7 +80,7 @@ export async function patchPrescription(
 export async function issuePrescription(id: string, version: number): Promise<PrescriptionDto> {
   const res = await api<{ prescription: PrescriptionDto }>(`/api/staff/prescriptions/${id}/issue`, {
     method: "POST",
-    body: JSON.stringify({ version }),
+    body: { version },
   });
   return res.prescription;
 }
@@ -101,7 +101,7 @@ export async function copyPreviousPrescription(
     "/api/staff/prescriptions/copy-previous",
     {
       method: "POST",
-      body: JSON.stringify({ patientId, visitId: visitId ?? null }),
+      body: { patientId, visitId: visitId ?? null },
     },
   );
   return res.prescription;

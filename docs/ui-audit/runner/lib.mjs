@@ -13,14 +13,7 @@ export async function open(role, vp) {
   const issues = { console: [], failed: [] };
   page.on("console", (m) => { if (["error", "warning"].includes(m.type())) issues.console.push(m.type() + ": " + m.text().slice(0, 200)); });
   page.on("response", (r) => { if (r.status() >= 400) issues.failed.push(r.status() + " " + r.url().replace(BASE, "")); });
-  // HARNESS ONLY: undo the app's double JSON encoding (see AUDIT: critical bug) so later screens can be explored.
-  issues.unwrapped = 0;
-  await page.route("**/api/staff/**", async (route) => {
-    const req = route.request();
-    const d = req.postData();
-    if (req.method() !== "GET" && d) { try { const v = JSON.parse(d); if (typeof v === "string") { issues.unwrapped++; return route.continue({ postData: v }); } } catch {} }
-    return route.continue();
-  });
+  issues.unwrapped = 0; // kept so lib2 metrics still print; always 0 now that C1 is fixed
   if (role) await page.goto(`${BASE}/api/staff/auth/dev-login?role=${role}`);
   return { browser, ctx, page, issues };
 }

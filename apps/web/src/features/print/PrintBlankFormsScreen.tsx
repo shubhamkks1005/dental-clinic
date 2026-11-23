@@ -34,11 +34,11 @@ export function PrintBlankFormsScreen() {
     try {
       await api("/api/staff/print-log", {
         method: "POST",
-        body: JSON.stringify({
+        body: {
           documentKind: "blank_form",
           documentId: `${kind}:${istDate(new Date())}`,
           copies: BLANK_FORM_COPY_COUNT,
-        }),
+        },
       });
       window.print();
     } catch (err) {

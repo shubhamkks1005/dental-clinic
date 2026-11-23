@@ -22,6 +22,11 @@ export async function api<T>(
   path: string,
   init: { method?: Method; body?: unknown } = {},
 ): Promise<T> {
+  // Developer guard: the body is stringified below, once. A string here means a caller
+  // stringified first and the Worker would reject it as "expected object, received string" (C1).
+  if (typeof init.body === "string") {
+    throw new Error(`api(${path}): pass a plain object as body, not a JSON string`);
+  }
   const method = init.method ?? "GET";
   const headers: Record<string, string> = { accept: "application/json" };
   // The Worker's CSRF guard requires this header on every state-changing call.
