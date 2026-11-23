@@ -125,6 +125,12 @@ export function TodayScreen() {
               model.longestWaitMin === null ? "none waiting" : `longest ${model.longestWaitMin} min`
             }
           />
+          <StatCard
+            label="Ready to bill"
+            value={String(model.readyToBillCount)}
+            note={model.readyToBillCount === 0 ? "nothing to collect" : "visit done, not paid"}
+            good={model.readyToBillCount === 0}
+          />
         </div>
       ) : null}
 
@@ -165,7 +171,7 @@ export function TodayScreen() {
             />
           </div>
           <div className="today-main">
-            <TodayList rows={model.rows} busyId={busyId} onStatus={onStatus} />
+            <TodayList rows={model.rows} busyId={busyId} onStatus={onStatus} onChanged={load} />
           </div>
           <div className="today-calls">
             <CallList items={model.callList} />

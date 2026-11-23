@@ -89,6 +89,11 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
           Emergency (may overbook)
         </label>
         {error ? <p className="field-error">{error}</p> : null}
+        {!patient || !visitTypeId ? (
+          <p className="muted small">
+            {!patient ? "Choose a patient first." : "Choose a visit type."}
+          </p>
+        ) : null}
         <div className="dialog-actions">
           <button type="button" className="btn" onClick={onClose}>
             Cancel

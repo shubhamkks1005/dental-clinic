@@ -15,6 +15,7 @@ import { statusActionButtons } from "./statusActions";
 export type TodayListRow = {
   id: string;
   patientId: string;
+  visitTypeId: string;
   time: string;
   name: string;
   patientCode: string;
@@ -27,6 +28,8 @@ export type TodayListRow = {
   hasRestrictedAlert: boolean;
   hasDue: boolean;
   duePaise: number | null;
+  /** Q1.2: where "Take payment" goes (bill if one exists, else the patient's Billing tab); null = not ready. */
+  payLink: string | null;
   /** Raw appointment status (statusLabel can say "Waiting 5 min"). */
   status: DayAppointment["status"];
   actions: { status: DayAppointment["status"]; label: string }[];
@@ -41,6 +44,8 @@ export type TodayModel = {
   openSlots: number;
   arrivedCount: number;
   waitingCount: number;
+  /** Q1.2: finalised visits not yet fully paid (receptionist). */
+  readyToBillCount: number;
   longestWaitMin: number | null;
   next: {
     id: string;
@@ -70,11 +75,19 @@ function initials(name: string): string {
   return (a + b).toUpperCase();
 }
 
+function payLink(a: DayAppointment): string | null {
+  if (!a.readyToBill) return null;
+  return a.readyToBill.billId
+    ? `/app/bills/${a.readyToBill.billId}`
+    : `/app/patients/${a.patientId}?tab=billing`;
+}
+
 function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow {
   const waiting = a.status === "arrived" ? formatWaiting(a.arrivedAt, now) : null;
   return {
     id: a.id,
     patientId: a.patientId,
+    visitTypeId: a.visitTypeId,
     time: formatClockTime(a.startMin),
     name: a.patientName,
     patientCode: a.patientCode,
@@ -87,6 +100,7 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     hasRestrictedAlert: a.alertFlags?.hasRestricted ?? false,
     hasDue: a.hasDue ?? false,
     duePaise: a.duePaise ?? null,
+    payLink: payLink(a),
     status: a.status,
     actions: statusActionButtons(a.status, {
       startAt: new Date(a.startAt),
@@ -156,6 +170,7 @@ export function buildTodayModel(
     openSlots,
     arrivedCount: arrived.length + active.filter((a) => a.status === "in_chair").length,
     waitingCount: arrived.length,
+    readyToBillCount: rows.filter((r) => r.payLink !== null).length,
     longestWaitMin,
     next: nextAppt
       ? {

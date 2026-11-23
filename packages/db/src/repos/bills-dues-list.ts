@@ -4,6 +4,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
 import { bills, duesCalls, patients, paymentAllocations } from "../schema";
+import { readyToBillByAppointment } from "./bills-ready";
 
 export type DuesListRow = {
   patientId: string;
@@ -175,6 +176,11 @@ export function billsDuesListRepo(db: Db, ctx: Ctx) {
     async duesForPatients(patientIds: string[]): Promise<Map<string, number>> {
       assertAllowed(ctx, "bills.create");
       return duesByPatientIds(db, patientIds);
+    },
+
+    async readyToBill(appointmentIds: string[]) {
+      assertAllowed(ctx, "bills.create");
+      return readyToBillByAppointment(db, appointmentIds);
     },
   };
 }

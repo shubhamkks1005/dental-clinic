@@ -110,12 +110,22 @@ export async function listDayAppointments(
     dues = new Map();
   }
   const showDueAmount = role === "receptionist";
+  // Q1.2: finalised visit not yet fully paid. Desk only (it is about money).
+  let ready = new Map<string, { visitId: string; billId: string | null }>();
+  if (showDueAmount) {
+    try {
+      ready = await repos.bills.readyToBill(appointments.map((a) => a.id));
+    } catch {
+      ready = new Map();
+    }
+  }
   const withFlags = appointments.map((a) => {
     const duePaise = dues.get(a.patientId) ?? 0;
     return {
       ...a,
       alertFlags: flags.get(a.patientId) ?? { hasAlert: false, hasRestricted: false },
       hasDue: duePaise > 0,
+      readyToBill: ready.has(a.id) ? { billId: ready.get(a.id)!.billId } : null,
       duePaise: showDueAmount && duePaise > 0 ? duePaise : null,
     };
   });

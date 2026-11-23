@@ -142,4 +142,21 @@ describe("buildTodayModel (2.4.3)", () => {
       expect(model.doctorNow).toBeNull();
     });
   });
+
+  it("counts ready-to-bill rows and links to the bill, or the Billing tab when there is none (Q1.2)", () => {
+    const model = buildTodayModel(
+      [
+        appt({ id: "a1", status: "in_chair", readyToBill: { billId: "b1" } }),
+        appt({ id: "a2", status: "in_chair", patientId: "p2", readyToBill: { billId: null } }),
+        appt({ id: "a3", status: "scheduled", patientId: "p3" }),
+      ],
+      window,
+      "2026-11-23T04:40:00.000Z",
+    );
+    expect(model.readyToBillCount).toBe(2);
+    const link = (id: string) => model.rows.find((r) => r.id === id)?.payLink;
+    expect(link("a1")).toBe("/app/bills/b1");
+    expect(link("a2")).toBe("/app/patients/p2?tab=billing");
+    expect(link("a3")).toBeNull();
+  });
 });

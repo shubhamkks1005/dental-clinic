@@ -1,4 +1,9 @@
-import type { AppointmentPriority, AppointmentStatus, DayWindow } from "@clinic/shared";
+import type {
+  AppointmentPriority,
+  AppointmentStatus,
+  CancelReasonCode,
+  DayWindow,
+} from "@clinic/shared";
 import { api } from "../../api/client";
 
 export type DayAppointment = {
@@ -27,6 +32,8 @@ export type DayAppointment = {
   /** 5.3.4: unpaid balance mark; duePaise only for receptionist. */
   hasDue?: boolean;
   duePaise?: number | null;
+  /** Q1.2 (receptionist only): visit is finalised and not fully paid; billId null = no bill yet. */
+  readyToBill?: { billId: string | null } | null;
 };
 
 export type DayAppointmentsReply = {
@@ -78,4 +85,21 @@ export function bookAppointment(body: {
   overrideReason?: string | null;
 }): Promise<{ appointment: DayAppointment }> {
   return api("/api/staff/appointments", { method: "POST", body });
+}
+
+export function cancelAppointment(
+  id: string,
+  body: { version: number; reason: CancelReasonCode; detail?: string },
+): Promise<void> {
+  return api(`/api/staff/appointments/${encodeURIComponent(id)}/cancel`, {
+    method: "POST",
+    body,
+  }).then(() => undefined);
+}
+
+export function markMissed(id: string, version: number, reason: string): Promise<void> {
+  return api(`/api/staff/appointments/${encodeURIComponent(id)}/status`, {
+    method: "PATCH",
+    body: { status: "no_show", version, cancelReason: reason },
+  }).then(() => undefined);
 }

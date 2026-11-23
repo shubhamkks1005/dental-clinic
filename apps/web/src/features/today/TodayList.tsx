@@ -1,6 +1,7 @@
 import { formatRupees, type AppointmentStatus } from "@clinic/shared";
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
+import { AppointmentActions } from "../appointments";
 import { AlertsStrip } from "../medical-history";
 import type { TodayListRow } from "./buildTodayModel";
 
@@ -8,9 +9,10 @@ type Props = {
   rows: TodayListRow[];
   busyId: string | null;
   onStatus: (id: string, status: AppointmentStatus, version: number) => void;
+  onChanged: () => void;
 };
 
-export function TodayList({ rows, busyId, onStatus }: Props) {
+export function TodayList({ rows, busyId, onStatus, onChanged }: Props) {
   return (
     <section className="today-list" aria-labelledby="today-list-title">
       <div className="today-list-head">
@@ -56,9 +58,15 @@ export function TodayList({ rows, busyId, onStatus }: Props) {
               </span>
               <StatusBadge tone={row.tone} label={row.statusLabel} />
               <span className="today-actions">
+                {row.payLink ? (
+                  <Link className="btn btn-primary btn-compact today-action" to={row.payLink}>
+                    Take payment
+                  </Link>
+                ) : null}
                 {row.actions
-                  .filter((a) => a.status !== "rescheduled")
-                  .slice(0, 2)
+                  // Cancel, Missed and Reschedule live in the "..." menu: they need a reason or a new time.
+                  .filter((a) => !["rescheduled", "cancelled", "no_show"].includes(a.status))
+                  .slice(0, row.payLink ? 1 : 2)
                   .map((a) => (
                     <button
                       key={a.status}
@@ -70,6 +78,19 @@ export function TodayList({ rows, busyId, onStatus }: Props) {
                       {a.label}
                     </button>
                   ))}
+                <AppointmentActions
+                  row={{
+                    id: row.id,
+                    patientId: row.patientId,
+                    patientName: row.name,
+                    visitTypeId: row.visitTypeId,
+                    status: row.status,
+                    version: row.version,
+                    startAt: row.startAt,
+                    updatedAt: row.updatedAt,
+                  }}
+                  onChanged={onChanged}
+                />
               </span>
             </li>
           ))}
