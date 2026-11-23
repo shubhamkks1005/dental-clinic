@@ -17,7 +17,7 @@ Written: 2026-11-23 (Phase 6 mid — through 6.4.2). Read RUN_PROMPT.md, STATE.m
 | 6.3.3–5 | `1d5eb62` | Doctor S10 UI, ranges, growth |
 | 6.3.6 | `41168c0` | Busy heatmap |
 | 6.3.7–8 | `b7107b3` | Call lists + today summary; mig **0045** |
-| 6.4.1–2 | (pending) | Monthly print + stats CSV |
+| 6.4.1–2 | `b40309c` | Monthly print + stats CSV |
 
 ## Skipped / Waiting
 6.1.1; 6.3.9; 6.3.10; 6.4.3; 6.4.4; 5.4.2; 5.5.2–5.5.4; prior 3.x/4.x in STATE.
