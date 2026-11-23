@@ -45,6 +45,7 @@ export * from "./tooth-chart-api";
 export * from "./dentition";
 export * from "./medical-history";
 export * from "./plan-items";
+export * from "./estimate-print";
 export * from "./history-feed";
 export * from "./files";
 export * from "./storage-usage";

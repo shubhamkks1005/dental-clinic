@@ -1,5 +1,6 @@
 import { formatRupees, planPhaseLabel } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { listPlanItems, type PlanItem } from "./api";
 import { PlanAddForm } from "./PlanAddForm";
@@ -53,6 +54,12 @@ export function VisitPlanPanel({ patientId, visitId, canEdit, toothFdi }: Props)
       <p className="plan-total">
         Plan total: <strong>{formatRupees(totalPaise)}</strong>
         {loading ? " · Loading…" : ` · ${items.length} item${items.length === 1 ? "" : "s"}`}
+        {canEdit ? (
+          <>
+            {" · "}
+            <Link to={`/app/print/estimate/${encodeURIComponent(patientId)}`}>Print estimate</Link>
+          </>
+        ) : null}
       </p>
       {error ? <p className="form-error">{error}</p> : null}
       {phases.map((phase) => {

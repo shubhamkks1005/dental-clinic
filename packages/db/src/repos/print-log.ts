@@ -19,6 +19,9 @@ export type PrintLogRow = {
 
 function actionForKind(kind: PrintDocumentKind): Action {
   if (kind === "prescription") return "prescriptions.print";
+  // Estimate sheet is clinical (plan) — doctor only (AUTH_PLAN 4f).
+  if (kind === "estimate") return "clinical.view";
+  // Certificate print permission refined in 4.4.3 (write vs print).
   if (kind === "certificate") return "clinical.edit";
   return "patients.view";
 }

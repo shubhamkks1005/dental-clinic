@@ -1,2 +1,2 @@
 export { VisitPlanPanel } from "./VisitPlanPanel";
-export type { PlanItem, PlanItemRow } from "./api";
+export { listPlanItems, type PlanItem, type PlanItemRow } from "./api";

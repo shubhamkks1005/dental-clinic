@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import { NotFound } from "../../ui/PageMessage";
 import { PrintDayListScreen } from "./PrintDayListScreen";
+import { PrintEstimateScreen } from "./PrintEstimateScreen";
 import { PrintPrescriptionScreen } from "./PrintPrescriptionScreen";
 import { PrintSampleScreen } from "./PrintSampleScreen";
 
@@ -11,6 +12,7 @@ export function PrintRoutes() {
       <Route path="sample" element={<PrintSampleScreen />} />
       <Route path="day" element={<PrintDayListScreen />} />
       <Route path="prescription/:id" element={<PrintPrescriptionScreen />} />
+      <Route path="estimate/:patientId" element={<PrintEstimateScreen />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
