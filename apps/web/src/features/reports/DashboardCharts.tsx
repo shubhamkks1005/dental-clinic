@@ -1,6 +1,6 @@
 import type { DashboardPayload } from "@clinic/shared";
 import { formatRupees } from "@clinic/shared";
-import { BarChart, LineChart, StackedBarChart } from "../../ui/charts";
+import { BarChart, Heatmap, LineChart, StackedBarChart } from "../../ui/charts";
 
 type Props = { data: DashboardPayload };
 
@@ -43,6 +43,9 @@ export function DashboardCharts({ data }: Props) {
       {appt.length > 0 ? <BarChart title="Appointment status" data={appt} /> : null}
       {procedures.length > 0 ? <BarChart title="Top procedures" data={procedures} /> : null}
       {referrals.length > 0 ? <BarChart title="Top referral sources" data={referrals} /> : null}
+      {data.busyHeat.length > 0 ? (
+        <Heatmap title="Busy hours (arrived)" cells={data.busyHeat} />
+      ) : null}
       {data.compareTotals ? (
         <p className="dash-compare-note muted">
           Previous period: {data.compareTotals.arrived} arrived,{" "}

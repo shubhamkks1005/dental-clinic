@@ -123,6 +123,39 @@ describe("dashboard (6.3.1)", () => {
     expect(dash.totals.newPatients).toBe(1);
   });
 
+  it("busy heatmap highlights the busiest hour (6.3.6)", async () => {
+    for (const [id, hour, n] of [
+      ["h1", 10, 1],
+      ["h2", 11, 5],
+      ["h3", 12, 1],
+    ] as const) {
+      for (let i = 0; i < n; i++) {
+        const pid = `ph-${id}-${i}`;
+        t.sqlite
+          .prepare(
+            `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
+             VALUES (?, 'system', 'system', ?, 'Fake Heat', 'female', 30, ?, 'active')`,
+          )
+          .run(pid, `P-H${id}${i}`, `+91910000${id}${i}`.slice(0, 13));
+        t.sqlite
+          .prepare(
+            `INSERT INTO appointments (
+               id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+               start_at, date_local, start_min, end_min, status, source, priority, overbook
+             ) VALUES (?, 'system', 'system', ?, '1', 'vt1', 'Consultation',
+               '2026-11-17T04:30:00.000Z', '2026-11-17', ?, ?, 'arrived', 'phone', 'normal', 0)`,
+          )
+          .run(`${id}-${i}`, pid, hour * 60, hour * 60 + 30);
+      }
+    }
+    const dash = await repos().dashboard.get(
+      { range: "custom", from: "2026-11-17", to: "2026-11-17" },
+      NOW,
+    );
+    const top = [...dash.busyHeat].sort((a, b) => b.value - a.value)[0];
+    expect(top).toMatchObject({ col: "11", value: 5 });
+  });
+
   it("receptionist cannot open the full dashboard", async () => {
     await expect(repos(receptionist).dashboard.get({ range: "today" }, NOW)).rejects.toBeInstanceOf(
       ForbiddenError,

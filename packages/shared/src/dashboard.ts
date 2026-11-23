@@ -47,6 +47,8 @@ export type DashboardPayload = {
   referrals: DashboardDimTotal[];
   collectedByMode: DashboardDimTotal[];
   kpis: DashboardKpis;
+  /** 6.3.6: weekday × hour arrived counts for the selected range. */
+  busyHeat: { row: string; col: string; value: number }[];
   /** Rows returned from stats tables (+ live today aggregates counted as 1 each). */
   rowsRead: number;
 };
@@ -72,6 +74,7 @@ export function buildDashboardFromCells(
   compareCells: StatCell[],
   rowsRead: number,
   kpis: DashboardKpis,
+  busyHeat: { row: string; col: string; value: number }[] = [],
 ): DashboardPayload {
   const { series, totals, apptStatus, procedures, referrals, collectedByMode } = foldCells(cells);
   const compareTotals =
@@ -86,6 +89,7 @@ export function buildDashboardFromCells(
     referrals: topN(referrals, 6),
     collectedByMode: topN(collectedByMode, 10),
     kpis,
+    busyHeat,
     rowsRead,
   };
 }

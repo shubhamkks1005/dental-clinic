@@ -17,6 +17,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.3.3 DONE locally (S10 doctor dashboard: 4 KPI tiles, charts from /dashboard, attention stubs). No migration.
 6.3.4 DONE locally (range chips today/7d/this_month/last_month/12m/custom + compare). No migration.
 6.3.5 DONE locally (growthNote/growthView thin-data rule; KPI notes always show counts). No migration.
+6.3.6 DONE locally (busyHeat weekday×hour on dashboard from arrived appts; heatmap on S10). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**

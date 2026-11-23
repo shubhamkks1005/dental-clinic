@@ -15,8 +15,10 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { bills, dailyStats, monthlyStats, paymentAllocations } from "../schema";
+import { appointments, bills, dailyStats, monthlyStats, paymentAllocations } from "../schema";
 import { computeDayStatRows, computeMonthStatRows } from "./daily-stats-queries";
+
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
 /** 6.3.1 / 6.3.3: prepared dashboard arrays + fixed top-4 KPIs. */
 export function dashboardRepo(db: Db, ctx: Ctx) {
@@ -42,12 +44,14 @@ async function loadPayload(
     compare = await loadCells(db, range.compareFrom, range.compareTo, range.grain, today);
   }
   const kpis = await loadKpis(db, today);
+  const heat = await loadBusyHeat(db, range.from, range.to);
   return buildDashboardFromCells(
     range,
     primary.cells,
     compare.cells,
-    primary.rowsRead + compare.rowsRead + kpis.rowsRead,
+    primary.rowsRead + compare.rowsRead + kpis.rowsRead + heat.rowsRead,
     kpis.value,
+    heat.cells,
   );
 }
 
@@ -87,6 +91,40 @@ async function loadKpis(
       outstandingPaise: outstanding,
     },
   };
+}
+
+/** 6.3.6: arrived appointments by IST weekday × hour (start_min). */
+async function loadBusyHeat(
+  db: Db,
+  from: string,
+  to: string,
+): Promise<{ cells: { row: string; col: string; value: number }[]; rowsRead: number }> {
+  const rows = await db
+    .select({
+      dow: sql<number>`cast(strftime('%w', ${appointments.dateLocal}) as integer)`,
+      hour: sql<number>`cast(${appointments.startMin} / 60 as integer)`,
+      value: sql<number>`count(*)`,
+    })
+    .from(appointments)
+    .where(
+      and(
+        gte(appointments.dateLocal, from),
+        lte(appointments.dateLocal, to),
+        isNull(appointments.deletedAt),
+        sql`${appointments.status} in ('arrived', 'in_chair', 'completed')`,
+      ),
+    )
+    .groupBy(
+      sql`strftime('%w', ${appointments.dateLocal})`,
+      sql`cast(${appointments.startMin} / 60 as integer)`,
+    )
+    .all();
+  const cells = rows.map((r) => ({
+    row: DOW[Number(r.dow) ?? 0] ?? "Sun",
+    col: String(Number(r.hour)),
+    value: Number(r.value ?? 0),
+  }));
+  return { cells, rowsRead: cells.length };
 }
 
 /** Clinic-wide outstanding (issued − allocated). One aggregate row. */
