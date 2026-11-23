@@ -6,7 +6,7 @@ import type { PatientPaymentRow } from "./api";
 export function PaymentsList({ payments }: { payments: PatientPaymentRow[] }) {
   if (payments.length === 0) return <p className="muted">No payments yet.</p>;
   return (
-    <ul className="stack gap-sm list-plain" aria-label="Payments">
+    <ul className="pay-list stack gap-sm list-plain" aria-label="Payments">
       {payments.map((p) => (
         <li key={p.id} className="surface card-pad row wrap gap-sm space-between">
           <div className="stack gap-xs">

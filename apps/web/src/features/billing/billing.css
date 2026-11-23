@@ -1,0 +1,96 @@
+/* Bill and payment layout (Bill.dc.html). The shared utility names (stack, row, surface...) are
+   not defined globally yet (Q2.1), so they are defined here, only for the bill and payment parts. */
+.bill-screen,
+.pay-form,
+.pay-list {
+  --gap: var(--s3);
+}
+
+.bill-screen .stack,
+.pay-form.stack,
+.pay-form .stack,
+.pay-list .stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.bill-screen .row,
+.pay-form .row,
+.pay-list .row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.bill-screen .wrap,
+.pay-form .wrap,
+.pay-list .wrap {
+  flex-wrap: wrap;
+}
+
+.bill-screen .space-between,
+.pay-list .space-between {
+  justify-content: space-between;
+}
+
+.bill-screen .list-plain,
+.pay-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bill-screen .surface,
+.pay-form.surface,
+.pay-list .surface {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.bill-screen .card-pad,
+.pay-form.card-pad,
+.pay-list .card-pad {
+  padding: var(--s4);
+}
+
+.bill-screen.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  max-width: 760px;
+  padding: var(--s4);
+}
+
+.bill-screen .title-sm {
+  font-size: 16px;
+}
+
+.pay-form .label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Amount, then the Full balance and Half chips right beside it; they only fill the field. */
+.pay-form .pay-amount-row {
+  align-items: flex-end;
+}
+
+.pay-form input,
+.pay-form select {
+  min-height: 48px;
+  padding: 0 var(--s3);
+  border: 1px solid #cbd6e0;
+  border-radius: var(--radius-control);
+  background: #fff;
+  font-size: 16px;
+}
+
+.pay-form .pay-chips .btn {
+  min-height: 44px;
+  border-radius: 999px;
+}

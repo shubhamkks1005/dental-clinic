@@ -12,6 +12,7 @@ import {
   type BillDto,
   type PatientPaymentRow,
 } from "./api";
+import "./billing.css";
 import { PaymentsList } from "./PaymentsList";
 import { PaymentTakeForm } from "./PaymentTakeForm";
 
@@ -65,7 +66,7 @@ export function BillScreen() {
   if (!bill) return <p className="error-text">{error}</p>;
 
   return (
-    <section className="stack gap-md" aria-label="Bill">
+    <section className="bill-screen stack gap-md" aria-label="Bill">
       <header className="row wrap gap-sm space-between align-center">
         <div className="stack gap-xs">
           <h1 className="title-md">{bill.billNo ?? "Draft bill"}</h1>

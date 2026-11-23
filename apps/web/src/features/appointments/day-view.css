@@ -256,3 +256,11 @@
     font-size: 26px;
   }
 }
+
+/* Calendar.dc.html: cancel and missed sit under a short line, below Reschedule and Open profile. */
+.day-details-cancel {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+}

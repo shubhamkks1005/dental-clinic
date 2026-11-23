@@ -130,6 +130,7 @@ export function TodayScreen() {
             value={String(model.readyToBillCount)}
             note={model.readyToBillCount === 0 ? "nothing to collect" : "visit done, not paid"}
             good={model.readyToBillCount === 0}
+            className={model.readyToBillCount > 0 ? "stat-ready" : ""}
           />
         </div>
       ) : null}

@@ -6,7 +6,7 @@ import {
   statusTransitionBlockReason,
   type AppointmentStatus,
 } from "@clinic/shared";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Menu, type MenuItem } from "../../ui/Menu";
 import { useToast } from "../../ui/Toast";
 import { CancelMissedDialog } from "./CancelMissedDialog";
@@ -23,11 +23,18 @@ export type ActionableAppointment = {
   updatedAt: string;
 };
 
-type Props = { row: ActionableAppointment; onChanged: () => void };
+type Props = {
+  row: ActionableAppointment;
+  onChanged: () => void;
+  /** "panel" (calendar side panel, Calendar.dc.html): Reschedule as the main button, `children`
+   * (Open profile) under it, then Cancel and Missed as plain buttons. Default: one "..." menu. */
+  layout?: "menu" | "panel";
+  children?: ReactNode;
+};
 
 // Q1.4: one "..." menu for Reschedule, Cancel and Missed, used on Today, the calendar panel and
 // the patient's Appointments tab. It owns its dialogs so each screen only places it.
-export function AppointmentActions({ row, onChanged }: Props) {
+export function AppointmentActions({ row, onChanged, layout = "menu", children }: Props) {
   const toast = useToast();
   const [dialog, setDialog] = useState<"cancel" | "missed" | "reschedule" | null>(null);
 
@@ -53,11 +60,41 @@ export function AppointmentActions({ row, onChanged }: Props) {
       onSelect: () => setDialog("missed"),
     });
   }
-  if (items.length === 0) return null;
+  if (items.length === 0) return layout === "panel" ? <>{children}</> : null;
+
+  const reschedule = items.find((i) => i.label === "Reschedule");
+  const others = items.filter((i) => i !== reschedule);
 
   return (
     <>
-      <Menu label={`More actions for ${row.patientName}`} trigger="..." items={items} />
+      {layout === "panel" ? (
+        <>
+          {reschedule ? (
+            <button type="button" className="btn btn-primary" onClick={reschedule.onSelect}>
+              Reschedule
+            </button>
+          ) : null}
+          {children}
+          {others.length > 0 ? (
+            <div className="day-details-cancel">
+              <p className="small muted">Cancel or mark as missed (a reason is needed):</p>
+              {others.map((i) => (
+                <button
+                  key={i.label}
+                  type="button"
+                  className="btn"
+                  disabled={i.disabled}
+                  onClick={i.onSelect}
+                >
+                  {i.label === "Cancel" ? "Cancel appointment" : i.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <Menu label={`More actions for ${row.patientName}`} trigger="..." items={items} />
+      )}
       <CancelMissedDialog
         open={dialog === "cancel" || dialog === "missed"}
         mode={dialog === "missed" ? "missed" : "cancel"}

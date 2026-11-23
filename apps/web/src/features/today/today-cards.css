@@ -36,6 +36,28 @@
   font-weight: 700;
 }
 
+/* Phone (360 px): time, name and status on the first line, the actions on their own line
+   under the name (PhoneToday.dc.html), so nothing is pushed off screen. */
+.today-row {
+  flex-wrap: wrap;
+}
+
+.today-row .today-time {
+  width: 5em;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.today-row .today-actions {
+  flex: 1 1 100%;
+  flex-wrap: nowrap;
+}
+
+.today-row .today-action {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .today-who,
 .call-row > span:last-child {
   display: flex;
@@ -122,8 +144,37 @@
   }
 
   .today-row {
+    flex-wrap: nowrap;
     border: 0;
     border-top: 1px solid var(--border);
     border-radius: 0;
   }
+
+  .today-row .today-time {
+    width: 5.5em;
+  }
+
+  .today-row .today-actions {
+    flex: none;
+    flex-wrap: wrap;
+  }
+
+  .today-row .today-action {
+    flex: none;
+  }
+}
+
+/* Main.dc.html: the Ready to bill card and its rows are tinted blue so money to collect stands out. */
+.stat-ready {
+  background: var(--blue-soft);
+  border-color: #b9cce9;
+}
+
+.stat-ready .muted,
+.stat-ready .stat-value {
+  color: var(--blue-hover);
+}
+
+.today-row-ready {
+  background: #f5f8fd;
 }

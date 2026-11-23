@@ -48,16 +48,18 @@ export function DayDetails({ row, onClose, onChanged }: Props) {
           </div>
         ) : null}
       </dl>
-      <Link className="btn" to={`/app/patients/${encodeURIComponent(row.patientId)}`}>
-        Open profile
-      </Link>
       <AppointmentActions
+        layout="panel"
         row={row}
         onChanged={() => {
           onChanged();
           onClose();
         }}
-      />
+      >
+        <Link className="btn" to={`/app/patients/${encodeURIComponent(row.patientId)}`}>
+          Open profile
+        </Link>
+      </AppointmentActions>
     </aside>
   );
 }

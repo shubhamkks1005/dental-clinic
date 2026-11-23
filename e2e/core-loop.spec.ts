@@ -94,6 +94,14 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     const row = page.locator("li.today-row", { hasText: name });
     await expect(row.getByRole("link", { name: "Take payment" })).toBeVisible();
     await expect(page.locator(".stat", { hasText: "Ready to bill" })).toContainText("visit done");
+    // Phone (360 px): no sideways scroll and the Take payment button sits inside the screen.
+    await page.setViewportSize({ width: 360, height: 780 });
+    const box = await row.getByRole("link", { name: "Take payment" }).boundingBox();
+    expect(box && box.x >= 0 && box.x + box.width <= 360).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      360,
+    );
+    await page.setViewportSize({ width: 1280, height: 900 });
     await row.getByRole("link", { name: "Take payment" }).click();
     await expect(page).toHaveURL(/\/app\/bills\//);
     await expect(page.getByRole("button", { name: "Record payment" })).toBeVisible();

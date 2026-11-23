@@ -26,7 +26,10 @@ export function TodayList({ rows, busyId, onStatus, onChanged }: Props) {
       ) : (
         <ul>
           {rows.map((row) => (
-            <li key={row.id} className={`today-row${row.highlighted ? " today-row-next" : ""}`}>
+            <li
+              key={row.id}
+              className={`today-row${row.highlighted ? " today-row-next" : ""}${row.payLink ? " today-row-ready" : ""}`}
+            >
               <span className="today-time">{row.time}</span>
               <span className="today-who">
                 <span className="today-name">

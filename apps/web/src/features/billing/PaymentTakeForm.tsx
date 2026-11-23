@@ -1,3 +1,4 @@
+import "./billing.css";
 import { formatRupees } from "@clinic/shared";
 import { useState } from "react";
 import { useToast } from "../../ui/Toast";
@@ -78,9 +79,9 @@ export function PaymentTakeForm({
   if (duePaise <= 0) return null;
 
   return (
-    <div className="stack gap-sm card-pad surface">
+    <div className="pay-form stack gap-sm card-pad surface">
       <p className="label">Take payment</p>
-      <div className="row wrap gap-sm">
+      <div className="row wrap gap-sm pay-amount-row">
         <label className="stack gap-xs">
           <span className="muted small">Amount (₹)</span>
           <input
@@ -97,6 +98,30 @@ export function PaymentTakeForm({
             style={{ minHeight: 44, minWidth: 120 }}
           />
         </label>
+        <div className="row gap-sm pay-chips">
+          <button
+            type="button"
+            className="btn secondary"
+            disabled={saving || duePaise <= 0}
+            onClick={() => {
+              setAmountRupees(rupeeText(duePaise));
+              setConfirmAdvance(false);
+            }}
+          >
+            Full balance
+          </button>
+          <button
+            type="button"
+            className="btn secondary"
+            disabled={saving || duePaise <= 0}
+            onClick={() => {
+              setAmountRupees(rupeeText(Math.floor(duePaise / 2)));
+              setConfirmAdvance(false);
+            }}
+          >
+            Half
+          </button>
+        </div>
         <label className="stack gap-xs">
           <span className="muted small">Mode</span>
           <select
@@ -175,33 +200,11 @@ export function PaymentTakeForm({
       <div className="row wrap gap-sm">
         <button
           type="button"
-          className="btn"
+          className="btn btn-primary"
           disabled={saving || !Number.isFinite(typedPaise) || typedPaise <= 0}
           onClick={onRecordClick}
         >
           Record payment
-        </button>
-        <button
-          type="button"
-          className="btn secondary"
-          disabled={saving || duePaise <= 0}
-          onClick={() => {
-            setAmountRupees(rupeeText(duePaise));
-            setConfirmAdvance(false);
-          }}
-        >
-          Full balance
-        </button>
-        <button
-          type="button"
-          className="btn secondary"
-          disabled={saving || duePaise <= 0}
-          onClick={() => {
-            setAmountRupees(rupeeText(Math.floor(duePaise / 2)));
-            setConfirmAdvance(false);
-          }}
-        >
-          Half
         </button>
       </div>
       {confirmAdvance ? (
