@@ -1,5 +1,6 @@
 import { formatRupees } from "@clinic/shared";
 import { useState } from "react";
+import { useToast } from "../../ui/Toast";
 import { recordPayment } from "./api";
 
 const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
@@ -20,6 +21,7 @@ export function PaymentTakeForm({
   onDone: () => void;
   onError: (message: string) => void;
 }) {
+  const toast = useToast();
   const [amountRupees, setAmountRupees] = useState("");
   const [mode, setMode] = useState<(typeof MODES)[number]>("cash");
   const [splitOn, setSplitOn] = useState(false);
@@ -55,6 +57,10 @@ export function PaymentTakeForm({
         ...(allowAdvance ? { allowAdvance: true } : {}),
         ...(splitOn && splitMode !== mode && splitPaise > 0 ? { splitMode, splitPaise } : {}),
       });
+      toast({
+        text: `${formatRupees(paise)} recorded.${pay.receiptNo ? ` Receipt ${pay.receiptNo}` : ""}`,
+        link: { label: "Print", href: `/app/print/receipt/${encodeURIComponent(pay.id)}` },
+      });
       setAmountRupees("");
       setSplitRupees("");
       setReference("");
@@ -62,7 +68,6 @@ export function PaymentTakeForm({
       setSplitOn(false);
       setSplitMode("upi");
       onDone();
-      window.open(`/app/print/receipt/${encodeURIComponent(pay.id)}`, "_blank", "noopener");
     } catch (e: unknown) {
       onError(e instanceof Error ? e.message : "Payment failed.");
     } finally {
@@ -118,6 +123,7 @@ export function PaymentTakeForm({
         </label>
       </div>
 
+      {!amountTyped ? <p className="muted small">Enter the amount to record a payment.</p> : null}
       {amountInvalid ? (
         <p className="notice notice-error" role="alert">
           Enter an amount above 0.

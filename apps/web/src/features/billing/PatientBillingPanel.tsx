@@ -1,7 +1,13 @@
 import { formatRupees } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
-import { listPatientBills, type PatientBillRow } from "./api";
+import {
+  listPatientBills,
+  listPatientPayments,
+  type PatientBillRow,
+  type PatientPaymentRow,
+} from "./api";
+import { PaymentsList } from "./PaymentsList";
 import { PaymentTakeForm } from "./PaymentTakeForm";
 import { RefundPanel } from "./RefundPanel";
 
@@ -10,10 +16,16 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
   const [bills, setBills] = useState<PatientBillRow[]>([]);
   const [due, setDue] = useState(0);
   const [advance, setAdvance] = useState(0);
+  const [payments, setPayments] = useState<PatientPaymentRow[]>([]);
   const [filter, setFilter] = useState<"all" | "issued" | "cancelled" | "draft">("all");
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
+    listPatientPayments(patientId)
+      .then(setPayments)
+      .catch((e: unknown) => {
+        setError(e instanceof Error ? e.message : "Could not load payments.");
+      });
     listPatientBills(patientId)
       .then((r) => {
         setBills(r.bills);
@@ -102,6 +114,9 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
             ))}
         </ul>
       )}
+
+      <h3 className="title-sm">Payments</h3>
+      <PaymentsList payments={payments} />
     </section>
   );
 }

@@ -1,21 +1,32 @@
 import { amountInWords, formatRupees } from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { BillCancelPanel } from "./BillCancelPanel";
 import { BillDiscountPanel } from "./BillDiscountPanel";
 import { BillDraftItems } from "./BillDraftItems";
-import { getBill, issueBill, listPatientBills, type BillDto } from "./api";
+import {
+  getBill,
+  issueBill,
+  listPatientBills,
+  listPatientPayments,
+  type BillDto,
+  type PatientPaymentRow,
+} from "./api";
+import { PaymentsList } from "./PaymentsList";
+import { PaymentTakeForm } from "./PaymentTakeForm";
 
 /** S09 bill detail: issue draft, print link. */
 export function BillScreen() {
   const { id = "" } = useParams();
   const [bill, setBill] = useState<BillDto | null>(null);
   const [advancePaise, setAdvancePaise] = useState(0);
+  const [duePaise, setDuePaise] = useState(0);
+  const [payments, setPayments] = useState<PatientPaymentRow[]>([]);
   const [applyAdvance, setApplyAdvance] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     if (!id) return;
     getBill(id)
       .then(async (b) => {
@@ -23,13 +34,17 @@ export function BillScreen() {
         try {
           const account = await listPatientBills(b.patientId);
           setAdvancePaise(account.advancePaise);
+          setDuePaise(account.outstandingDuePaise);
           setApplyAdvance(account.advancePaise > 0);
+          setPayments(await listPatientPayments(b.patientId));
         } catch {
           setAdvancePaise(0);
         }
       })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : "Could not load bill."));
   }, [id]);
+
+  useEffect(load, [load]);
 
   async function onIssue() {
     if (!bill) return;
@@ -116,6 +131,23 @@ export function BillScreen() {
         <p className="muted small">{amountInWords(bill.totalPaise)}</p>
         <p className="muted small">This is not a GST invoice (gst_mode off — DRAFT accountant).</p>
       </div>
+
+      {bill.status === "issued" ? (
+        <>
+          <PaymentTakeForm
+            patientId={bill.patientId}
+            duePaise={duePaise}
+            onDone={load}
+            onError={(message) => setError(message || null)}
+          />
+          {bill.billNo ? (
+            <>
+              <h2 className="title-sm">Payments on this bill</h2>
+              <PaymentsList payments={payments.filter((p) => p.appliedTo.includes(bill.billNo!))} />
+            </>
+          ) : null}
+        </>
+      ) : null}
 
       <BillDiscountPanel bill={bill} onUpdated={setBill} onError={(message) => setError(message)} />
 

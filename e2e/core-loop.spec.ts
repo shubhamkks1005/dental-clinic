@@ -90,6 +90,14 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     // ---- Receptionist: part payment, then the rest; the statement shows both ----
     await page.goto("/api/staff/auth/dev-login?role=receptionist");
     await page.goto("/app");
+    // Q1.2: the finalised, unpaid visit shows Take payment on Today and in the stat strip.
+    const row = page.locator("li.today-row", { hasText: name });
+    await expect(row.getByRole("link", { name: "Take payment" })).toBeVisible();
+    await expect(page.locator(".stat", { hasText: "Ready to bill" })).toContainText("visit done");
+    await row.getByRole("link", { name: "Take payment" }).click();
+    await expect(page).toHaveURL(/\/app\/bills\//);
+    await expect(page.getByRole("button", { name: "Record payment" })).toBeVisible();
+    await page.goto("/app");
     await page.getByRole("combobox").first().fill(name);
     await page.waitForTimeout(1000);
     await page.keyboard.press("Enter");
@@ -99,6 +107,17 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.getByRole("button", { name: "Record payment" }).click();
     await expect(page.getByText(/500/).first()).toBeVisible();
     await expect(page.getByText("Due ₹1,000")).toBeVisible();
+    // Q1.3: a toast with the receipt number and Print, and a Payments row with its receipt link.
+    await expect(page.locator(".toast-text", { hasText: /₹500 recorded\. Receipt/ })).toBeVisible();
+    await expect(page.locator(".toast-link")).toHaveAttribute("href", /\/app\/print\/receipt\//);
+    const paymentRow = page.getByLabel("Payments", { exact: true }).locator("li").first();
+    await expect(paymentRow).toContainText("Applied to");
+    const [receiptPage] = await Promise.all([
+      page.context().waitForEvent("page"),
+      paymentRow.getByRole("link", { name: /Print receipt SR-/ }).click(),
+    ]);
+    await expect(receiptPage).toHaveURL(/\/app\/print\/receipt\//);
+    await receiptPage.close();
     // Q0.6: an amount above the balance asks first; "Change amount" records nothing.
     await page.getByLabel(/Amount/).fill("20000");
     await page.getByRole("button", { name: "Record payment" }).click();

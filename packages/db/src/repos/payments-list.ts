@@ -3,7 +3,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { patients, payments, refunds } from "../schema";
+import { bills, patients, paymentAllocations, payments, refunds } from "../schema";
 
 export type PatientPaymentRow = {
   id: string;
@@ -16,6 +16,8 @@ export type PatientPaymentRow = {
   dayLocal: string;
   refundedPaise: number;
   refundablePaise: number;
+  /** Bill numbers this payment was applied to (Q1.3); empty for an advance. */
+  appliedTo: string[];
 };
 
 export function paymentsListRepo(db: Db, ctx: Ctx) {
@@ -58,12 +60,27 @@ export function paymentsListRepo(db: Db, ctx: Ctx) {
         .all();
       const refundMap = new Map(refundRows.map((r) => [r.paymentId, Number(r.sum)]));
 
+      const allocRows = await db
+        .select({ paymentId: paymentAllocations.paymentId, billNo: bills.billNo })
+        .from(paymentAllocations)
+        .innerJoin(bills, eq(bills.id, paymentAllocations.billId))
+        .where(
+          and(inArray(paymentAllocations.paymentId, ids), isNull(paymentAllocations.deletedAt)),
+        )
+        .all();
+      const appliedMap = new Map<string, string[]>();
+      for (const a of allocRows) {
+        if (!a.billNo) continue;
+        appliedMap.set(a.paymentId, [...(appliedMap.get(a.paymentId) ?? []), a.billNo]);
+      }
+
       return rows.map((r) => {
         const refundedPaise = refundMap.get(r.id) ?? 0;
         return {
           ...r,
           refundedPaise,
           refundablePaise: r.amountPaise - refundedPaise,
+          appliedTo: appliedMap.get(r.id) ?? [],
         };
       });
     },

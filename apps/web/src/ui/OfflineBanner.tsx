@@ -5,8 +5,8 @@ export function OfflineBanner() {
   if (useOnline()) return null;
   return (
     <p className="offline-banner" role="alert">
-      No internet connection. Don't close this page. Wait for the internet to come back, then try
-      again.
+      No internet connection. What you typed on this page is kept. Don't close this page. Saving and
+      opening other pages wait until the internet is back.
     </p>
   );
 }

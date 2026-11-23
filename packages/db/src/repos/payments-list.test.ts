@@ -38,6 +38,9 @@ describe("payments list + refund path (5.3.7)", () => {
     const list = await repos().payments.listForPatient(PATIENT_ID);
     expect(list).toHaveLength(1);
     expect(list[0]!.refundablePaise).toBe(100_00);
+    // Q1.3: the row says which bill it paid.
+    const issued = await repos().bills.listForPatient(PATIENT_ID);
+    expect(list[0]!.appliedTo).toEqual([issued.bills[0]!.billNo]);
 
     const refund = await repos(doctor).refunds.record({
       paymentId: pay.id,
