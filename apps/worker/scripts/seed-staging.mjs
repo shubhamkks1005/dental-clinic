@@ -45,6 +45,11 @@ if (!wantsLocal && (!target.id || /^0{8}-/.test(target.id))) {
   exit(1);
 }
 
+if (wantsStaging && !process.env.CLOUDFLARE_API_TOKEN) {
+  console.error("Set CLOUDFLARE_API_TOKEN in this terminal first (with read -rs).");
+  exit(1);
+}
+
 const require = createRequire(join(workerDir, "../web/package.json"));
 const { getPlatformProxy } = await import(
   pathToFileURL(createRequire(join(workerDir, "package.json")).resolve("wrangler")).href
@@ -77,7 +82,7 @@ Object.assign(process.env, env);
 const proxy = await getPlatformProxy({
   configPath,
   environment,
-  persist: wantsLocal ? { path: join(workerDir, ".wrangler/state") } : false,
+  persist: wantsLocal ? { path: join(workerDir, ".wrangler/state/v3") } : false,
 });
 
 try {
