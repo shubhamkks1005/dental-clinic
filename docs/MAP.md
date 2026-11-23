@@ -62,7 +62,7 @@
 - scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
 - scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
 - playwright.config.ts - 1.7.3 Chromium smoke + 4.5.1 print regression; webServer builds web + local wrangler on 8787
-- e2e/core-loop.spec.ts - Q0.2+: receptionist registers + walk-in + In chair, doctor writes visit and finalises; fails on any API 4xx/5xx (grows in Q0.3, Q0.5)
+- e2e/core-loop.spec.ts - Q0.2-Q0.5 main loop: register, emergency walk-in, In chair, doctor visit + issue Rx + finalise, bill issued, two payments, statement; fails on any API 4xx/5xx; CI runs it via pnpm test:e2e
 - apps/web/src/api/client.test.ts - api() refuses a pre-stringified body (C1 guard)
 - e2e/booking.spec.ts - Q0.4: receptionist books a future slot with the note empty
 - e2e/write-smoke.spec.ts - Q0.1: receptionist creates a patient through the form (proves browser writes pass the CSRF origin)

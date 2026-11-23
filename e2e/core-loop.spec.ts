@@ -16,8 +16,8 @@ function watchApiFailures(page: Page): string[] {
   return bad;
 }
 
-test.describe("core loop (Q0.2+)", () => {
-  test("receptionist registers, walk-in in chair; doctor writes the visit and finalises", async ({
+test.describe("core loop (Q0.2 to Q0.5)", () => {
+  test("receptionist registers, walk-in in chair; doctor visit, bill, two payments", async ({
     page,
   }) => {
     const bad = watchApiFailures(page);
@@ -83,7 +83,29 @@ test.describe("core loop (Q0.2+)", () => {
 
     await page.getByRole("button", { name: "Finalise visit" }).click();
     await dialog.getByRole("button", { name: "Finalise" }).click();
-    await expect(page.getByRole("button", { name: "Create bill" })).toBeVisible();
+    await page.getByRole("button", { name: "Create bill" }).click();
+    await page.getByRole("button", { name: "Issue bill" }).click();
+    await expect(page.getByRole("button", { name: "Issue bill" })).toBeHidden();
+
+    // ---- Receptionist: part payment, then the rest; the statement shows both ----
+    await page.goto("/api/staff/auth/dev-login?role=receptionist");
+    await page.goto("/app");
+    await page.getByRole("combobox").first().fill(name);
+    await page.waitForTimeout(1000);
+    await page.keyboard.press("Enter");
+    await page.getByRole("tab", { name: "Billing", exact: true }).click();
+    const patientId = page.url().split("/").pop()?.split("?")[0] ?? "";
+    await page.getByLabel(/Amount/).fill("500");
+    await page.getByRole("button", { name: "Record payment" }).click();
+    await expect(page.getByText(/500/).first()).toBeVisible();
+    await page.getByRole("button", { name: "Full balance" }).click();
+    await page.goto(`/app/print/statement/${patientId}`);
+    const body = page.locator("body");
+    await expect(body).toContainText("Outstanding: ₹0");
+    await expect(body).toContainText("₹1,500");
+    await expect(body).toContainText("₹500");
+    await expect(body).toContainText("₹1,000");
+    await expect(page.locator("tr", { hasText: "SR-" })).toHaveCount(2);
 
     expect(bad, bad.join("\n")).toEqual([]);
   });
