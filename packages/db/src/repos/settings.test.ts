@@ -98,6 +98,7 @@ describe("settings store rules (1.5.1)", () => {
       ["doctor.registration_no", "", 1],
       ["medicines.list_reviewed", null, 1],
       ["billing.shadow_series", true, 1],
+      ["billing.gst_mode", "off", 1],
     ]);
   });
 });

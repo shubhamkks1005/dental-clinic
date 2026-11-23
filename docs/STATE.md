@@ -9,6 +9,11 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.1.3 DONE locally (paise helpers: half-up discount, round-off ≤99, allocate, bill cap, cash warn). No migration.
 5.2.1 DONE locally (bills + bill_items; server computeBillTotals; create draft). **Migration `0038_bills.sql` — owner applies.**
 5.2.2 DONE locally (payments + allocations + receipt no; issue helper). **Migration `0039_payments.sql` — owner applies.**
+5.2.3 DONE locally (refunds; doctor only; cannot exceed payment). No new migration (table in 0039).
+5.2.4 DONE locally (unallocated payment = advance; covered in payments test). No migration.
+5.2.5 DONE locally (opening_balance bill kind). Waiting: match 5 real paper register dues.
+5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
+5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
@@ -217,7 +222,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0036 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0040 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -232,11 +237,12 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **5.2.5**: enter 5 fake/real opening balances from paper register and confirm totals
 - **5.1.1**: CA written answers to docs/CA_QUESTIONS.md (GST, bill form, cash ₹2L, retention, print fields)
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0032–0037** with 0006–0031
+- Staging: apply migrations **0032–0040** with 0006–0031
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes

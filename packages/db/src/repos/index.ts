@@ -42,7 +42,10 @@ import { certificatesFinaliseRepo } from "./certificates-finalise";
 import { billsCreateRepo } from "./bills-create";
 import { billsGetRepo } from "./bills-get";
 import { billsIssueRepo } from "./bills-issue";
+import { billsCancelRepo } from "./bills-cancel";
+import { billsLockRepo } from "./bills-lock";
 import { paymentsCreateRepo } from "./payments-create";
+import { refundsCreateRepo } from "./refunds-create";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -103,9 +106,14 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...billsCreateRepo(db, ctx),
       ...billsGetRepo(db, ctx),
       ...billsIssueRepo(db, ctx),
+      ...billsCancelRepo(db, ctx),
+      ...billsLockRepo(db, ctx),
     },
     payments: {
       ...paymentsCreateRepo(db, ctx),
+    },
+    refunds: {
+      ...refundsCreateRepo(db, ctx),
     },
   };
 }

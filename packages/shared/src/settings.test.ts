@@ -25,6 +25,7 @@ describe("setting rules (1.5.1)", () => {
       "doctor.registration_no",
       "medicines.list_reviewed",
       "billing.shadow_series",
+      "billing.gst_mode",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

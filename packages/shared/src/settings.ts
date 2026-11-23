@@ -85,6 +85,8 @@ export const SETTING_SCHEMAS = {
     .nullable(),
   // 5.1.2: true = SB-/SR-/SF- so software numbers do not collide with paper books.
   "billing.shadow_series": z.boolean(),
+  // 5.2.6: DRAFT - accountant to confirm. Default off = no tax on bills.
+  "billing.gst_mode": z.enum(["off", "on"]),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;
