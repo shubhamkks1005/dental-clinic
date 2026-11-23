@@ -74,8 +74,15 @@ describe("settings store rules (1.5.1)", () => {
     });
   });
 
+  it("Q1.11: the desk does not read billing settings or the medicine list", async () => {
+    const keys = (await repo(receptionist).list()).map((s) => s.key);
+    expect(keys.some((k) => k.startsWith("billing."))).toBe(false);
+    expect((await repo(doctor).list()).some((s) => s.key.startsWith("billing."))).toBe(true);
+    await expect(repo(receptionist).get("billing.gst_mode")).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
   it("lists the known settings in a fixed order with their versions", async () => {
-    const list = await repo(receptionist).list();
+    const list = await repo(doctor).list();
     expect(list.map((s) => [s.key, s.value, s.version])).toEqual([
       ["patient_code.prefix", "P-", 1],
       ["patient_code.digits", 6, 1],

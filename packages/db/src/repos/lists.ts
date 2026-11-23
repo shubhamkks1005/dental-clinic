@@ -94,7 +94,8 @@ export function listsRepo(db: Db, ctx: Ctx) {
 
   return {
     async list(key: string): Promise<ListItem[]> {
-      assertAllowed(ctx, "settings.read");
+      // Q1.11 (D4): the medicine list is the doctor's own; the desk does not read it.
+      assertAllowed(ctx, key === "medicines" ? "settings.medicines" : "settings.read");
       return itemsOf(listKey(key));
     },
 

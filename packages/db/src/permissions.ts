@@ -33,6 +33,9 @@ export const PERMISSIONS = {
   // Receptionist: view only (timings); per-key limits come with the settings screens (1.5.x).
   "settings.read": ["doctor", "receptionist", "developer"],
   "settings.write": ["doctor", "developer"],
+  // Q1.11 (D4): the medicine list and billing settings are the doctor's; the desk cannot open them.
+  "settings.medicines": ["doctor", "developer"],
+  "settings.billing": ["doctor", "developer"],
   "staff.manage": ["doctor"],
   "audit.view": ["doctor"],
   // 8.2.11 patient requests (DRAFT, doctor to confirm): both roles see the list; the note text

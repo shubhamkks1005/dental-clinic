@@ -21,6 +21,7 @@ import { BillingHomeScreen, BillScreen } from "../features/billing";
 import { ReportsScreen } from "../features/reports";
 import { MessagesScreen } from "../features/messages";
 import { NotFound } from "../ui/PageMessage";
+import { RequirePermission } from "../ui/RequirePermission";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
 import { StaffShell } from "../ui/shell/StaffShell";
 
@@ -57,19 +58,54 @@ function ShellRoutes() {
         <Route path="patients" element={<PatientsScreen />} />
         <Route path="patients/new" element={<NewPatientScreen />} />
         <Route path="patients/:id/consents" element={<PatientConsentsScreen />} />
-        <Route path="patients/:id/certificates/new" element={<NewCertificateScreen />} />
+        <Route
+          path="patients/:id/certificates/new"
+          element={
+            <RequirePermission permission="certificates.write">
+              <NewCertificateScreen />
+            </RequirePermission>
+          }
+        />
         <Route path="patients/:id" element={<PatientProfileScreen />} />
         <Route path="certificates" element={<CertificateRegisterScreen />} />
-        <Route path="visits/:id" element={<VisitScreen />} />
+        <Route
+          path="visits/:id"
+          element={
+            <RequirePermission permission="clinical.view">
+              <VisitScreen />
+            </RequirePermission>
+          }
+        />
         <Route path="billing" element={<BillingHomeScreen />} />
         <Route path="bills/:id" element={<BillScreen />} />
         <Route path="reports" element={<ReportsScreen />} />
         <Route path="messages" element={<MessagesScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
-        <Route path="errors" element={<ErrorLogScreen />} />
-        <Route path="requests" element={<RequestsScreen />} />
-        <Route path="style-guide" element={<StyleGuideScreen />} />
+        <Route
+          path="errors"
+          element={
+            <RequirePermission permission="errors.view">
+              <ErrorLogScreen />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="requests"
+          element={
+            <RequirePermission permission="requests.view">
+              <RequestsScreen />
+            </RequirePermission>
+          }
+        />
+        <Route
+          path="style-guide"
+          element={
+            <RequirePermission permission="settings.write">
+              <StyleGuideScreen />
+            </RequirePermission>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </StaffShell>

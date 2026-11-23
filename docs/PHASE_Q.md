@@ -60,7 +60,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q1.8 | Data and form rules | Done (git log "Q1.8") |
 | Q1.9 | Dead Walk-in and wrong-bill path | Done (git log "Q1.9"; migration 0056) |
 | Q1.10 | Phone breakages | Done (git log "Q1.10"; exception: tooth surface shapes inside a tooth stay small, the whole-tooth button is 44 px) |
-| Q1.11 | Access control in the UI | Todo (D4) |
+| Q1.11 | Access control in the UI | Done (git log "Q1.11") |
 | Q1.G | Gate A | Todo |
 | Q2.1 to Q2.13 | Redesign (section 3) | Todo |
 | Q3.1 to Q3.6 | Product gaps (section 4) | Todo |

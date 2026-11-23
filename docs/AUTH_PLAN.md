@@ -69,6 +69,16 @@ before this is done; staging holds fake data only.
 | Settings and lists | yes | view timings only | config only, no patient data |
 | Staff screen, audit log | yes | no | no (developer uses the commands below) |
 
+- f2. **The receptionist's Settings view (Q1.11, decision D4, 2026-11-24).** She can open Settings and
+  read: Clinic details, Timings and holidays, Number series, Preferences, and the lists she picks from
+  when she books or bills (visit types, referral sources, procedures with their fees). She cannot
+  change anything (settings.write is doctor and developer). She cannot open **Medicines** (the
+  doctor's own list, permission `settings.medicines`) or **Billing** settings (permission
+  `settings.billing`): the page says "You do not have permission to open this page. Ask the doctor
+  if you need it.", the API answers 403, and `GET /api/staff/settings` leaves the `billing.*` keys
+  out. Templates (consent, messages), Staff and System are not in her list at all. Other doctor-only
+  pages (a visit, a new medical certificate, the history summary print, the error log, the style
+  guide) show the same sentence. Proof: e2e/role-matrix.spec.ts and packages/db settings.test.ts.
 - g. Recovery (doctor lost Gmail): developer checks identity in person, takes a Time Travel bookmark,
   then runs `pnpm staff:recover-doctor` (wrangler, token typed with `read -s`): sets the new email,
   clears `google_sub`, revokes sessions, writes audit. Never possible from inside the app.

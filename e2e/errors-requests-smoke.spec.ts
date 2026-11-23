@@ -23,7 +23,7 @@ test.describe("error log and patient requests smoke", () => {
   test("receptionist cannot read the error log", async ({ page }) => {
     await page.goto("/api/staff/auth/dev-login?role=receptionist");
     await page.goto("/app/errors");
-    await expect(page.getByText("Error log")).toBeVisible();
+    await expect(page.getByText(/You do not have permission to open this page/)).toBeVisible();
     await expect(page.getByText("SmokeError")).toHaveCount(0);
   });
 

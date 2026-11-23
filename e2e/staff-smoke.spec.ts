@@ -32,6 +32,6 @@ test.describe("staff smoke (1.7.3)", () => {
     );
 
     await page.goto("/app/settings/staff");
-    await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+    await expect(page.getByText(/You do not have permission to open this page/)).toBeVisible();
   });
 });

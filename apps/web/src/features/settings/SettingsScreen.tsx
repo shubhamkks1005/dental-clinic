@@ -5,7 +5,7 @@ import { useMe } from "../auth";
 import { ListEditor } from "../lists";
 import { StaffSettings } from "../staff";
 import { TimingsSettings } from "../timings";
-import { NotBuiltYet, NotFound } from "../../ui/PageMessage";
+import { NotBuiltYet, NotFound, PageMessage } from "../../ui/PageMessage";
 import { BillingSettings } from "./BillingSettings";
 import {
   filterSettingsSections,
@@ -126,6 +126,18 @@ export function SettingsScreen() {
             <Route index element={<Navigate to={`${BASE}/${first.path}`} replace />} />
             {visible.map((s: SettingsSectionDef) => (
               <Route key={s.path} path={s.path} element={SCREENS[s.path] ?? <NotFound />} />
+            ))}
+            {SETTINGS_SECTIONS.filter((s) => !visible.includes(s)).map((s) => (
+              <Route
+                key={s.path}
+                path={s.path}
+                element={
+                  <PageMessage
+                    title="Not available for your role"
+                    text="You do not have permission to open this page. Ask the doctor if you need it."
+                  />
+                }
+              />
             ))}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -27,7 +27,8 @@ const LIST_SECTIONS: SettingsSectionDef[] = LIST_KEYS.map((key) => ({
   path: key,
   label: LIST_DEFS[key].title,
   group: "lists" as const,
-  permission: "settings.read",
+  // Q1.11 (D4): the medicine list is for the doctor only.
+  permission: key === "medicines" ? "settings.medicines" : "settings.read",
   keywords: [LIST_DEFS[key].itemName, LIST_DEFS[key].help, key.replaceAll("_", " ")],
 }));
 
@@ -68,7 +69,7 @@ export const SETTINGS_SECTIONS: SettingsSectionDef[] = [
     path: "billing",
     label: "Billing",
     group: "clinic",
-    permission: "settings.read",
+    permission: "settings.billing",
     keywords: ["gst", "tax", "shadow", "bill", "receipt", SETTING_HELP["billing.gst_mode"]],
   },
   ...LIST_SECTIONS,

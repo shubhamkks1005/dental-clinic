@@ -62,6 +62,11 @@ describe("permission table per role (1.3.4)", () => {
   });
 
   it("developer (support) has configuration only, never patient data", () => {
-    expect(permissionsFor("developer")).toEqual(["settings.read", "settings.write"]);
+    expect(permissionsFor("developer")).toEqual([
+      "settings.read",
+      "settings.write",
+      "settings.medicines",
+      "settings.billing",
+    ]);
   });
 });

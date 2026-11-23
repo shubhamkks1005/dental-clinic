@@ -1,3 +1,4 @@
+import { RequirePermission } from "../../ui/RequirePermission";
 import { Route, Routes } from "react-router";
 import { NotFound } from "../../ui/PageMessage";
 import { PrintBlankFormsScreen } from "./PrintBlankFormsScreen";
@@ -25,7 +26,14 @@ export function PrintRoutes() {
       <Route path="bill/:id" element={<PrintBillScreen />} />
       <Route path="receipt/:id" element={<PrintReceiptScreen />} />
       <Route path="statement/:patientId" element={<PrintStatementScreen />} />
-      <Route path="history-summary/:patientId" element={<PrintHistorySummaryScreen />} />
+      <Route
+        path="history-summary/:patientId"
+        element={
+          <RequirePermission permission="clinical.view">
+            <PrintHistorySummaryScreen />
+          </RequirePermission>
+        }
+      />
       <Route path="prescription/:id" element={<PrintPrescriptionScreen />} />
       <Route path="estimate/:patientId" element={<PrintEstimateScreen />} />
       <Route path="consent/:patientId" element={<PrintConsentScreen />} />

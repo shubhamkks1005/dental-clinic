@@ -4,7 +4,7 @@ import { auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
-import { assertAllowed } from "../permissions";
+import { assertAllowed, isAllowed } from "../permissions";
 import { settings } from "../schema";
 import { nowUtcSql } from "../sql";
 
@@ -21,14 +21,17 @@ export function settingsRepo(db: Db, ctx: Ctx) {
         .select({ key: settings.key, valueJson: settings.valueJson, version: settings.version })
         .from(settings)
         .where(and(inArray(settings.key, SETTING_KEYS), isNull(settings.deletedAt)));
+      // Q1.11 (D4): billing settings are not part of what the desk reads.
+      const seeBilling = isAllowed(ctx.role, "settings.billing");
       return rows
         .filter((row): row is typeof row & { key: SettingKey } => isSettingKey(row.key))
+        .filter((row) => seeBilling || !row.key.startsWith("billing."))
         .map((row) => ({ key: row.key, value: JSON.parse(row.valueJson), version: row.version }))
         .sort((a, b) => SETTING_KEYS.indexOf(a.key) - SETTING_KEYS.indexOf(b.key));
     },
 
     async get(key: string): Promise<SettingValue> {
-      assertAllowed(ctx, "settings.read");
+      assertAllowed(ctx, key.startsWith("billing.") ? "settings.billing" : "settings.read");
       const row = await findByKey(db, key);
       return { value: JSON.parse(row.valueJson), version: row.version };
     },

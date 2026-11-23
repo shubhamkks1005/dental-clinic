@@ -513,3 +513,4 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - packages/shared/src/appointment-next.ts (+ test): pickNextAppointment. e2e/data-rules.spec.ts: Q1.8 form rules.
 - packages/db/src/schema/bill-cancel-requests.ts, migrations/0056_bill_cancel_requests.sql, repos/bills-cancel-request.ts (+ test): receptionist asks the doctor to cancel a bill (Q1.9). Web: features/billing/BillCancelRequestPanel.tsx, WaitingForYou.tsx (also lists these). Routes in staff-bills.ts (cancel-requests).
 - e2e/walk-in-button.spec.ts: Q1.9 top-bar Walk-in.
+- apps/web/src/ui/RequirePermission.tsx: the one permission page (Q1.11). e2e/role-matrix.spec.ts: pages and API for both roles.
