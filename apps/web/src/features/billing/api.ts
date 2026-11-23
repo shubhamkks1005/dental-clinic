@@ -113,6 +113,44 @@ export function approveBillDiscount(id: string, version: number) {
   }).then((r) => r.bill);
 }
 
+export type PatientPaymentRow = {
+  id: string;
+  amountPaise: number;
+  mode: string;
+  splitMode: string | null;
+  splitPaise: number | null;
+  reference: string;
+  receiptNo: string | null;
+  dayLocal: string;
+  refundedPaise: number;
+  refundablePaise: number;
+};
+
+export function listPatientPayments(patientId: string) {
+  return api<{ payments: PatientPaymentRow[] }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/payments`,
+  ).then((r) => r.payments);
+}
+
+export function recordRefund(input: {
+  paymentId: string;
+  amountPaise: number;
+  mode: string;
+  reason: string;
+}) {
+  return api<{ refund: { id: string; refundNo: string | null } }>("/api/staff/refunds", {
+    method: "POST",
+    body: input,
+  }).then((r) => r.refund);
+}
+
+export function cancelBill(id: string, version: number, reason: string) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/cancel`, {
+    method: "POST",
+    body: { version, reason },
+  }).then((r) => r.bill);
+}
+
 export function recordPayment(input: {
   patientId: string;
   amountPaise: number;

@@ -9,6 +9,7 @@ import {
   issueBill,
   listDues,
   listPatientBills,
+  listPatientPayments,
   recordDuesCall,
   recordPayment,
   recordRefund,
@@ -92,6 +93,11 @@ staffBills.get("/patients/:id/bills", async (c) => {
       advancePaise: result.advancePaise,
     }),
   );
+});
+
+staffBills.get("/patients/:id/payments", async (c) => {
+  const result = await listPatientPayments(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ payments: result.payments }));
 });
 
 staffBills.post("/payments", async (c) => {

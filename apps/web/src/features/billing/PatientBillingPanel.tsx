@@ -2,6 +2,7 @@ import { formatRupees } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { listPatientBills, recordPayment, type PatientBillRow } from "./api";
+import { RefundPanel } from "./RefundPanel";
 
 const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
 
@@ -128,6 +129,8 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
           ) : null}
         </div>
       ) : null}
+
+      <RefundPanel patientId={patientId} onDone={load} />
 
       {bills.length === 0 ? (
         <p className="muted">No bills yet. Create one from a visit.</p>
