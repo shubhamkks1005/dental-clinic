@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { ChartPlayground } from "../chart";
+import { ChartDemos } from "./ChartDemos";
 import { ComponentDemos } from "./ComponentDemos";
 import { FeedbackDemos } from "./FeedbackDemos";
 import { SampleForm } from "./SampleForm";
@@ -82,6 +83,11 @@ export function StyleGuideScreen() {
           wiring).
         </p>
         <ChartPlayground />
+      </section>
+
+      <section className="card guide-card" aria-labelledby="g-charts">
+        <h2 id="g-charts">Charts</h2>
+        <ChartDemos />
       </section>
 
       <section className="card guide-card" aria-labelledby="g-components">

@@ -1,0 +1,231 @@
+/* 6.3.2 small SVG charts — DESIGN.md tokens only. */
+
+.chart-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4);
+}
+
+.chart-frame-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.chart-frame-title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--navy);
+}
+
+.chart-frame-toggle {
+  min-height: 44px;
+}
+
+.chart-frame-live {
+  margin: 0;
+  min-height: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.chart-svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  outline: none;
+}
+
+.chart-svg:focus-visible {
+  box-shadow: 0 0 0 3px var(--focus);
+  border-radius: var(--radius-control);
+}
+
+.chart-axis {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chart-axis-label,
+.chart-tick,
+.chart-value-label,
+.chart-heat-label {
+  fill: var(--text);
+  font-size: 10px;
+}
+
+.chart-value-label {
+  font-weight: 600;
+  fill: var(--navy);
+}
+
+.chart-bar {
+  fill: var(--blue);
+}
+
+.chart-bar-focus {
+  fill: var(--blue-hover);
+  stroke: var(--navy);
+  stroke-width: 2;
+}
+
+.chart-bar-focus-stroke {
+  stroke: var(--navy);
+  stroke-width: 2;
+}
+
+.chart-point {
+  fill: var(--blue);
+}
+
+.chart-point-focus {
+  fill: var(--navy);
+  stroke: var(--card);
+  stroke-width: 2;
+}
+
+.chart-heat {
+  stroke: var(--card);
+  stroke-width: 1;
+}
+
+.chart-heat-focus {
+  stroke: var(--navy);
+  stroke-width: 2;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+
+.chart-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: var(--s2);
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+.chart-swatch-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.5) 2px,
+    rgba(255, 255, 255, 0.5) 3px
+  );
+}
+
+.chart-swatch-dots {
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    rgba(255, 255, 255, 0.7) 1px,
+    transparent 1px
+  );
+  background-size: 6px 6px;
+}
+
+.chart-swatch-diag {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.45) 2px,
+    rgba(255, 255, 255, 0.45) 3px
+  );
+}
+
+.chart-table-wrap {
+  overflow-x: auto;
+}
+
+.chart-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.chart-table th,
+.chart-table td {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.kpi-tile {
+  padding: var(--s4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.kpi-tile-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.kpi-tile-value {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.kpi-tile-note {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.kpi-tile-up .kpi-tile-note {
+  color: var(--success-text);
+}
+
+.kpi-tile-down .kpi-tile-note {
+  color: var(--danger-text);
+}
+
+.kpi-tile-thin .kpi-tile-note {
+  color: var(--warning-text);
+}
+
+.chart-spark {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.chart-demos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+.chart-demos-kpis {
+  display: grid;
+  gap: var(--s3);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .chart-demos-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1366px) {
+  .chart-demos-kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
