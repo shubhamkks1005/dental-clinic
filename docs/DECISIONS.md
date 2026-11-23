@@ -202,3 +202,9 @@
 - Statuses stay open / done / rejected (no "in progress"). Due date 30 days, legal wording DRAFT. Closing a withdraw-consent request does not yet withdraw consent automatically (Phase 7 withdrawal is separate).
 - Staff intake route exists (`POST /api/staff/patient-requests`, patients.edit); no staff intake form in the UI yet. Patient portal form is Phase 8.
 - Dashboard "Things to watch" shows open and overdue counts (doctor, reports.full).
+
+## 9.3.10 retention (2026-11-23)
+- Purge runs once a day (02:00 IST), dry run unless the Worker var `RETENTION_MODE` is `live`. Reason: no auto-delete before the doctor has seen the numbers. Staging stays dry run.
+- Only `message_attempts` 90d, `message_outbox` 1y, `error_log` 30d. `error_log` 30 days comes from PLAN 9.2.5 and was added to the RETENTION.md table.
+- Old behaviour (soft delete of message_attempts every hour with raw SQL in the cron file) replaced: rules now live in packages/db, hard delete is allowed for operational rows per RETENTION.md.
+- Audit row only when rows were eligible, to avoid unbounded growth of the never-purged audit log.

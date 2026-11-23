@@ -1,31 +1,27 @@
+import { createDb, createRepos, type PurgeResult } from "@clinic/db";
 import { writeLog } from "../log";
 import type { Bindings } from "../types";
 
-/** Max rows deleted per table per tick (Worker CPU). */
-export const PURGE_ROW_LIMIT = 200;
+const CRON_CTX = { userId: "system", role: "doctor" as const };
+
+/** Once a day at 02:00 IST (20:30 UTC), in the first 5 minutes, so a dry run adds at most one audit row a day. */
+export function isPurgeTick(now: Date): boolean {
+  return now.getUTCHours() === 20 && now.getUTCMinutes() >= 30 && now.getUTCMinutes() < 35;
+}
+
+/** Live only when RETENTION_MODE is exactly "live". Anything else is a dry run. */
+export const purgeIsLive = (env: Bindings) => env.RETENTION_MODE === "live";
 
 /**
- * 9.3.10: soft-delete aged operational rows. Clinical/money/audit never purged here.
- * Row-limited. Legal hold = Waiting.
+ * 9.3.10: purge old operational rows (messages, error log) as decided in docs/RETENTION.md.
+ * Patient, clinical and billing records are never touched. Rules live in packages/db.
  */
-export async function runRetentionPurge(env: Bindings, now: Date): Promise<{ deleted: number }> {
-  const nowIso = now.toISOString();
-  let deleted = 0;
-
-  // D1 has no UPDATE ... LIMIT, so pick ids in a subquery. Cutoff is ISO so it compares with created_at text.
-  const cutoff = new Date(now.getTime() - 90 * 86_400_000).toISOString();
-  const r = await env.DB.prepare(
-    `UPDATE message_attempts SET deleted_at = ?1, updated_at = ?1, updated_by = 'system'
-     WHERE id IN (
-       SELECT id FROM message_attempts
-       WHERE deleted_at IS NULL AND created_at < ?2
-       LIMIT ${PURGE_ROW_LIMIT}
-     )`,
-  )
-    .bind(nowIso, cutoff)
-    .run();
-  deleted += Number(r.meta?.changes ?? 0);
-
-  writeLog("info", { msg: "cron_retention_purge", deleted });
-  return { deleted };
+export async function runRetentionPurge(env: Bindings, now: Date): Promise<PurgeResult> {
+  const repos = createRepos(createDb(env.DB), {
+    ...CRON_CTX,
+    requestId: `cron-retention-${now.toISOString()}`,
+  });
+  const result = await repos.retention.purge(now, purgeIsLive(env));
+  writeLog("info", { msg: "cron_retention_purge", mode: result.mode, total: result.total });
+  return result;
 }

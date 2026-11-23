@@ -21,6 +21,7 @@ export { pingDb } from "./ping";
 export { rebuildPatientSearchStatements } from "./search/patient-tokens";
 export { assertAllowed, isAllowed, PERMISSIONS, permissionsFor, type Action } from "./permissions";
 export { createRepos, type Repos } from "./repos";
+export type { PurgeResult } from "./repos/retention";
 export {
   authRepo,
   type AuthRepo,

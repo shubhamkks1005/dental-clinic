@@ -15,6 +15,8 @@ export type Bindings = Env & {
   S3_APP_KEY?: string;
   /** Test-only in-memory adapter (never set in wrangler). */
   __testStorage?: import("./adapters/storage").StorageAdapter;
+  /** 9.3.10 set to "live" to really purge old operational rows. Unset = dry run (counts and audit only). */
+  RETENTION_MODE?: string;
   /** 9.1.10 signed ops status webhook (GitHub Actions). */
   OPS_WEBHOOK_SECRET?: string;
   /** 9.2.1 Cloudflare GraphQL analytics (Account Analytics Read). */

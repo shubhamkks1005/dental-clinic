@@ -2,7 +2,7 @@ import type { Bindings } from "../types";
 import { runNightlyDailyStats } from "./daily-stats";
 import { runMessagingTick } from "./messaging";
 import { runQuotaMonitor } from "./quota";
-import { runRetentionPurge } from "./retention-purge";
+import { isPurgeTick, runRetentionPurge } from "./retention-purge";
 
 /** One cron trigger; each job is a fast branch (AGENTS.md / worker rules). */
 export async function handleScheduled(
@@ -15,6 +15,6 @@ export async function handleScheduled(
   // Hourly-ish: run on :00 of each hour (cron is */5; skip other ticks).
   if (now.getUTCMinutes() < 5) {
     await runQuotaMonitor(env, now);
-    await runRetentionPurge(env, now);
   }
+  if (isPurgeTick(now)) await runRetentionPurge(env, now);
 }
