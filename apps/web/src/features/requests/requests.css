@@ -1,0 +1,60 @@
+.req {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s5) var(--s4) var(--s6);
+}
+
+.req-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.req-list {
+  display: grid;
+  gap: var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.req-item {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4);
+}
+
+.req-item p {
+  margin: 0;
+}
+
+.req-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.req-detail {
+  display: grid;
+  gap: var(--s2);
+}
+
+.req-note {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.req-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+@media (min-width: 768px) {
+  .req {
+    max-width: 52rem;
+    padding: var(--s5) var(--s6) var(--s6);
+  }
+}

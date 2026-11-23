@@ -27,6 +27,11 @@ export function MoreScreen() {
           ))}
         </nav>
       )}
+      {permissions.includes("requests.view") && (
+        <nav className="card more-list" aria-label="Patient requests">
+          <Link to="/app/requests">{icons.patients}Patient requests</Link>
+        </nav>
+      )}
       <HelpCard canSeeErrorLog={permissions.includes("errors.view")} />
     </div>
   );

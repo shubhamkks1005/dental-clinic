@@ -195,3 +195,10 @@
 - Limits per user: 5 per minute, 100 per day (repo-level count, no extra table). Body cap 2 KB. Reports from the same session are deduped in the browser (max 20).
 - Record ids in screen paths become `:id`; digits (4+) and emails in messages are removed; messages naming personal fields are replaced by a fixed sentence.
 - Error list is not audited per view: it holds no patient data (scrubbed on save). Reporting is open to any signed-in role; reading is doctor only (`errors.view`).
+
+## 8.2.11 patient requests (2026-11-23) - DRAFT, doctor to confirm
+- Roles: `requests.view` doctor + receptionist (list shows patient, type, due date, status, never the note text); `requests.manage` doctor only (open note, close). Reason: a note can mention health and the receptionist never sees clinical data. Doctor can widen this in permissions.ts.
+- Opening a request is written to access_log; closing is audited (needs a note and the version the doctor saw).
+- Statuses stay open / done / rejected (no "in progress"). Due date 30 days, legal wording DRAFT. Closing a withdraw-consent request does not yet withdraw consent automatically (Phase 7 withdrawal is separate).
+- Staff intake route exists (`POST /api/staff/patient-requests`, patients.edit); no staff intake form in the UI yet. Patient portal form is Phase 8.
+- Dashboard "Things to watch" shows open and overdue counts (doctor, reports.full).

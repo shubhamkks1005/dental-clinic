@@ -52,7 +52,11 @@ export type DashboardPayload = {
   /** Rows returned from stats tables (+ live today aggregates counted as 1 each). */
   rowsRead: number;
   /** 9.1.10: backup / ops lines for Things to watch (no PHI). */
-  attention?: { backup: { tone: "ok" | "warn" | "bad"; text: string } };
+  attention?: {
+    backup: { tone: "ok" | "warn" | "bad"; text: string };
+    /** 8.2.11: open patient requests and how many are past their due date. */
+    requests?: { open: number; overdue: number };
+  };
 };
 
 export type StatCell = { period: string; metric: string; dim: string; value: number };

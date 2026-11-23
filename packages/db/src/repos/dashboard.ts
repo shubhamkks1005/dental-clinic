@@ -16,6 +16,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
+import { patientRequests } from "../schema/patient-requests";
 import {
   appointments,
   bills,
@@ -70,7 +71,16 @@ async function loadPayload(
       detail = {};
     }
   }
+  const reqRow = await db
+    .select({
+      open: sql<number>`count(*)`,
+      overdue: sql<number>`coalesce(sum(case when ${patientRequests.dueOn} < ${today} then 1 else 0 end), 0)`,
+    })
+    .from(patientRequests)
+    .where(and(eq(patientRequests.status, "open"), isNull(patientRequests.deletedAt)))
+    .get();
   payload.attention = {
+    requests: { open: reqRow?.open ?? 0, overdue: reqRow?.overdue ?? 0 },
     backup: backupAttentionLine(
       backupRow ? { status: backupRow.status, checkedAt: backupRow.checkedAt, detail } : null,
       now.getTime(),

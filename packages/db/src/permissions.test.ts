@@ -42,6 +42,7 @@ describe("permission table per role (1.3.4)", () => {
       "files.documents",
       "reports.today",
       "settings.read",
+      "requests.view",
     ]);
   });
 

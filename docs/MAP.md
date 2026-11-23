@@ -98,6 +98,7 @@
 - docs/TESTING.md - tester guide: 10-task receptionist script (5.5.2), doctor and receptionist day flows, bug templates
 - (web) src/api/last-request.ts (+test) - in-memory last Error ID; src/ui/CopyButton.tsx; More screen Help card and crash page show a copyable Error ID
 - 9.2.5 error log: packages/shared/src/error-report.ts (zod, size cap, list type); packages/db repos/error-log.ts (scrub, per-user 5/min + 100/day, doctor list; +test); migration 0054; worker domain/error-log.ts, routes/staff-errors.ts (POST /api/staff/errors signed-in, 2 KB cap; GET doctor only; +staff-errors.test.ts); web features/errors/ (report.ts browser reporter + dedupe, ErrorLogScreen at /app/errors, link on More > Help for doctor)
+- 8.2.11 patient requests: packages/db repos/patient-requests.ts (list without note for receptionist, get = doctor + access_log, close = doctor, create; +test); permissions requests.view / requests.manage; worker domain/patient-requests.ts, routes/staff-patient-requests.ts (+staff-patient-requests.test.ts); dashboard repo adds attention.requests (open, overdue); web features/requests/ (RequestsScreen at /app/requests, RequestDetailPanel); linked from More and Reports "Things to watch"
 - src/public-routes.ts - PUBLIC_API (start, callback, branding, health), cookie names
 - src/types.ts - Bindings (Env + secrets) and Variables (db, requestId, session, ctx, repos)
 - src/http.ts - COOKIE_BASE (__Host-, HttpOnly, Secure, SameSite=Lax, Path=/), signedIn(c)

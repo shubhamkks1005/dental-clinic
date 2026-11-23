@@ -27,6 +27,12 @@ function concrete(path: string): string {
 /** Bodies that pass the route's own parse so assertAllowed runs. */
 function bodyFor(method: string, path: string): string | undefined {
   if (method === "GET") return undefined;
+  if (path === "/api/staff/patient-requests") {
+    return JSON.stringify({ patientId: "p-matrix", type: "copy", body: "Matrix request" });
+  }
+  if (path === "/api/staff/patient-requests/:id/close") {
+    return JSON.stringify({ status: "done", note: "Matrix note", version: 1 });
+  }
   if (path === "/api/staff/settings/:key") {
     return JSON.stringify({ value: "PT-", version: 1 });
   }
