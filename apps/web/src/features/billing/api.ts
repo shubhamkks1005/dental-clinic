@@ -21,6 +21,13 @@ export type DayCloseSummary = {
   totalPaise: number;
   paymentCount: number;
   closed: boolean;
+  incompleteAppointments: {
+    id: string;
+    patientId: string;
+    status: string;
+    startMin: number;
+    visitTypeLabel: string;
+  }[];
   close: {
     id: string;
     cashCountedPaise: number;

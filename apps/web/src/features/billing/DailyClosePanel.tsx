@@ -130,6 +130,22 @@ export function DailyClosePanel() {
             </div>
           ) : (
             <div className="stack gap-sm">
+              {summary.incompleteAppointments.length > 0 ? (
+                <div className="notice warning stack gap-xs">
+                  <p>
+                    {summary.incompleteAppointments.length} open appointment
+                    {summary.incompleteAppointments.length === 1 ? "" : "s"} must be finished,
+                    marked no-show, or cancelled before close.
+                  </p>
+                  <ul className="muted small">
+                    {summary.incompleteAppointments.map((a) => (
+                      <li key={a.id}>
+                        {a.visitTypeLabel} · {a.status.replace("_", " ")}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
               <label className="stack gap-xs">
                 <span className="muted small">Counted cash (₹)</span>
                 <input
@@ -150,7 +166,12 @@ export function DailyClosePanel() {
                   style={{ minHeight: 44 }}
                 />
               </label>
-              <button type="button" className="btn" disabled={busy} onClick={() => void onClose()}>
+              <button
+                type="button"
+                className="btn"
+                disabled={busy || summary.incompleteAppointments.length > 0}
+                onClick={() => void onClose()}
+              >
                 Close day
               </button>
             </div>

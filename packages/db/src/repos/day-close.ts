@@ -1,14 +1,25 @@
 import { newUlid, type CloseDayInput, type PaymentMode, type ReopenDayInput } from "@clinic/shared";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { dayCloses, payments } from "../schema";
+import { appointments, dayCloses, payments } from "../schema";
 import { nowUtcSql } from "../sql";
 
+/** 6.2.4: still open on the day — must finish, mark no-show, or cancel before close. */
+const INCOMPLETE_APPT = ["scheduled", "confirmed", "arrived", "in_chair"] as const;
+
 export type ModeTotals = Record<PaymentMode, number>;
+
+export type IncompleteAppt = {
+  id: string;
+  patientId: string;
+  status: string;
+  startMin: number;
+  visitTypeLabel: string;
+};
 
 export type DaySummary = {
   dayLocal: string;
@@ -18,6 +29,7 @@ export type DaySummary = {
   totalPaise: number;
   paymentCount: number;
   closed: boolean;
+  incompleteAppointments: IncompleteAppt[];
   close: {
     id: string;
     cashCountedPaise: number;
@@ -50,6 +62,26 @@ export async function isDayClosed(db: Db, dayLocal: string): Promise<boolean> {
     )
     .get();
   return Boolean(row);
+}
+
+async function incompleteAppointmentsForDay(db: Db, dayLocal: string): Promise<IncompleteAppt[]> {
+  return db
+    .select({
+      id: appointments.id,
+      patientId: appointments.patientId,
+      status: appointments.status,
+      startMin: appointments.startMin,
+      visitTypeLabel: appointments.visitTypeLabel,
+    })
+    .from(appointments)
+    .where(
+      and(
+        eq(appointments.dateLocal, dayLocal),
+        isNull(appointments.deletedAt),
+        inArray(appointments.status, [...INCOMPLETE_APPT]),
+      ),
+    )
+    .all();
 }
 
 async function modeTotalsForDay(
@@ -111,6 +143,8 @@ export function dayCloseRepo(db: Db, ctx: Ctx) {
         )
         .get();
 
+      const incompleteAppointments = await incompleteAppointmentsForDay(db, dayLocal);
+
       return {
         dayLocal,
         modeTotals,
@@ -119,6 +153,7 @@ export function dayCloseRepo(db: Db, ctx: Ctx) {
         totalPaise,
         paymentCount,
         closed: Boolean(closeRow),
+        incompleteAppointments,
         close: closeRow ?? null,
       };
     },
@@ -127,6 +162,13 @@ export function dayCloseRepo(db: Db, ctx: Ctx) {
       assertAllowed(ctx, "bills.create");
       if (await isDayClosed(db, input.dayLocal)) {
         throw new InvalidError("This day is already closed.");
+      }
+
+      const incomplete = await incompleteAppointmentsForDay(db, input.dayLocal);
+      if (incomplete.length > 0) {
+        throw new InvalidError(
+          `Finish, mark no-show, or cancel ${incomplete.length} open appointment${incomplete.length === 1 ? "" : "s"} before closing the day.`,
+        );
       }
 
       const { modeTotals, paymentCount } = await modeTotalsForDay(db, input.dayLocal);

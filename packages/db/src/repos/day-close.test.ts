@@ -41,6 +41,36 @@ async function pay(i: number, amountPaise: number, mode: "cash" | "upi") {
 }
 
 describe("day close (5.3.9)", () => {
+  it("refuses close while incomplete appointments remain (6.2.4)", async () => {
+    const statuses = ["scheduled", "arrived", "confirmed"] as const;
+    for (let i = 0; i < 3; i++) {
+      t.sqlite
+        .prepare(
+          `INSERT INTO appointments (
+             id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+             start_at, date_local, start_min, end_min, status, source, priority, overbook, version, updated_at
+           ) VALUES (
+             ?, 'system', 'system', ?, '1', 'vt1', 'Consultation',
+             '2026-11-23T04:30:00.000Z', ?, ?, ?, ?, 'phone', 'normal', 0, 1,
+             '2026-11-23T04:30:00.000Z'
+           )`,
+        )
+        .run(
+          `a-open-${i}`,
+          `01M85PATIENTDAYCLOSE${String(i).padStart(2, "0")}`,
+          DAY,
+          600 + i * 30,
+          630 + i * 30,
+          statuses[i],
+        );
+    }
+    await expect(
+      repos().dayClose.close({ dayLocal: DAY, cashCountedPaise: 0, note: "" }),
+    ).rejects.toThrow(/3 open appointment/);
+    const summary = await repos().dayClose.summary(DAY);
+    expect(summary.incompleteAppointments).toHaveLength(3);
+  });
+
   it("closes a 10-payment day with zero difference and locks further entries", async () => {
     for (let i = 0; i < 7; i++) await pay(i, 100_00, "cash");
     for (let i = 7; i < 10; i++) await pay(i, 50_00, "upi");

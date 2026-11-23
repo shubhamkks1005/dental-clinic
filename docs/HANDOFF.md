@@ -14,7 +14,8 @@ Written: 2026-11-23 (Phase 6 started). Read RUN_PROMPT.md, STATE.md, MAP.md. Fak
 | Phase 6 start | (with 6.2.1) | 6.1.1 Waiting; DRAFT defs in DECISIONS |
 | 6.2.1 | `e47a1b7` | first_arrived_on + backfill |
 | 6.2.2 | `19665b3` | daily_stats + monthly_stats |
-| 6.2.3 | (pending) | cron + recompute API + S10 button |
+| 6.2.3 | `ecc5d89` | cron + recompute API + S10 button |
+| 6.2.4 | (pending) | day-close incomplete appt block |
 
 ## Skipped / Waiting
 6.1.1 (sister); 5.4.2; 5.5.2–5.5.4; prior 3.x/4.x/5.x skips in STATE.
