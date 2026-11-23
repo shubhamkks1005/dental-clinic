@@ -18,6 +18,7 @@ import { treatmentHistorySource } from "./history-feed-treatments";
 import { visitHistorySource } from "./history-feed-visits";
 import { prescriptionHistorySource } from "./history-feed-prescriptions";
 import { certificateHistorySource } from "./history-feed-certificates";
+import { billHistorySource, paymentHistorySource, refundHistorySource } from "./history-feed-bills";
 
 function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
   const fileKinds = historyFileKindsForRole(ctx.role);
@@ -26,6 +27,10 @@ function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
     consentHistorySource(db),
     fileHistorySource(db, { kinds: fileKinds }),
   ];
+  // 5.3.16: receptionist and doctor both see bills/payments/refunds (money, not clinical notes).
+  if (isAllowed(ctx.role, "bills.create")) {
+    base.push(billHistorySource(db), paymentHistorySource(db), refundHistorySource(db));
+  }
   if (isAllowed(ctx.role, "prescriptions.print") && !isAllowed(ctx.role, "clinical.view")) {
     base.push(prescriptionHistorySource(db, { includeMedicines: false }));
   }

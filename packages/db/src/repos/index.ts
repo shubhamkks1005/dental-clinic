@@ -44,6 +44,8 @@ import { billsGetRepo } from "./bills-get";
 import { billsIssueRepo } from "./bills-issue";
 import { billsCancelRepo } from "./bills-cancel";
 import { billsLockRepo } from "./bills-lock";
+import { billsListRepo } from "./bills-list";
+import { billsFromVisitRepo } from "./bills-from-visit";
 import { paymentsCreateRepo } from "./payments-create";
 import { refundsCreateRepo } from "./refunds-create";
 
@@ -108,6 +110,8 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...billsIssueRepo(db, ctx),
       ...billsCancelRepo(db, ctx),
       ...billsLockRepo(db, ctx),
+      ...billsListRepo(db, ctx),
+      ...billsFromVisitRepo(db, ctx),
     },
     payments: {
       ...paymentsCreateRepo(db, ctx),

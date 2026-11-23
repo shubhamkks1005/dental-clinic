@@ -15,6 +15,11 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
 5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.1 PARTIAL (API createFromVisit + visit UI button; BillScreen issue). Screens S09.
+5.3.2 PARTIAL (payment API + PatientBillingPanel modes/full/half; cash ₹2L warn).
+5.3.3 PARTIAL (patient bills list + outstanding on Billing tab).
+5.3.7–5.3.8 API done earlier; UI cancel/refund pending.
+5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.

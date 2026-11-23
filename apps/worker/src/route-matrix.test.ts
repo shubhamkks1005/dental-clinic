@@ -199,6 +199,35 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/certificates/:id/finalise" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }
+  if (path === "/api/staff/bills" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      billOn: "2026-11-23",
+      items: [{ procedureLabel: "Matrix item", qty: 1, unitPaise: 10000 }],
+    });
+  }
+  if (path === "/api/staff/bills/:id/issue" && method === "POST") {
+    return JSON.stringify({ version: 1 });
+  }
+  if (path === "/api/staff/bills/:id/cancel" && method === "POST") {
+    return JSON.stringify({ version: 1, reason: "Matrix cancel" });
+  }
+  if (path === "/api/staff/payments" && method === "POST") {
+    return JSON.stringify({
+      patientId: "p1",
+      amountPaise: 10000,
+      mode: "cash",
+      dayLocal: "2026-11-23",
+    });
+  }
+  if (path === "/api/staff/refunds" && method === "POST") {
+    return JSON.stringify({
+      paymentId: "pay1",
+      amountPaise: 1000,
+      mode: "cash",
+      reason: "Matrix refund",
+    });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

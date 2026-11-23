@@ -1,8 +1,9 @@
 import { VISIT_STATUS_LABEL, type FdiTooth } from "@clinic/shared";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
+import { createBillFromVisit } from "../billing";
 import { PatientFilesTab } from "../files";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
@@ -22,11 +23,13 @@ import "./visit.css";
 /** 3.5.2 visit layout (S05): alerts, tabs, last visits side panel. */
 export function VisitScreen() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { permissions } = useMe();
   const canViewClinical = permissions.includes("clinical.view");
   const canEditClinical = permissions.includes("clinical.edit");
   const canWriteRx = permissions.includes("prescriptions.write");
   const canSeeFlags = permissions.includes("clinical.alert_flag");
+  const canBill = permissions.includes("bills.create");
 
   const [visit, setVisit] = useState<VisitSummary | null>(null);
   const [patient, setPatient] = useState<PatientDetail | null>(null);
@@ -34,6 +37,7 @@ export function VisitScreen() {
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<VisitTabId>("today");
   const [planTooth, setPlanTooth] = useState<FdiTooth | null>(null);
+  const [billingBusy, setBillingBusy] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -156,6 +160,33 @@ export function VisitScreen() {
       </header>
 
       <VisitFinaliseBar visit={visit} canEdit={canEditClinical} onFinalised={setVisit} />
+
+      {canBill && visit.status !== "void" ? (
+        <div className="row wrap gap-sm">
+          <button
+            type="button"
+            className="btn secondary"
+            disabled={billingBusy}
+            onClick={() => {
+              setBillingBusy(true);
+              createBillFromVisit(visit.id)
+                .then((bill) => navigate(`/app/bills/${bill.id}`))
+                .catch((err: unknown) => {
+                  setError(
+                    err instanceof ApiError
+                      ? err.message
+                      : err instanceof Error
+                        ? err.message
+                        : "Could not create bill.",
+                  );
+                })
+                .finally(() => setBillingBusy(false));
+            }}
+          >
+            Create bill from visit
+          </button>
+        </div>
+      ) : null}
 
       <div className="visit-body">
         <div className="visit-main">

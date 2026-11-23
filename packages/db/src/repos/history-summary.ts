@@ -6,6 +6,7 @@ import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed, isAllowed } from "../permissions";
 import { alerts, appointments, patients, visits } from "../schema";
+import { openBillDues } from "./bills-dues";
 
 export type HistorySummary = {
   firstVisitDate: string | null;
@@ -15,7 +16,7 @@ export type HistorySummary = {
   alertLabels: string[];
   hasAlert: boolean;
   hasRestricted: boolean;
-  /** Paise. Always 0 until Phase 5 billing. */
+  /** Paise. Sum of open issued-bill dues (5.3.16). */
   outstandingDuePaise: number;
   nextAppointment: {
     id: string;
@@ -87,6 +88,9 @@ export function historySummaryRepo(db: Db, ctx: Ctx) {
         ? alertRows.map((a) => a.label).filter((l) => l.trim().length > 0)
         : [];
 
+      const dues = await openBillDues(db, patientId);
+      const outstandingDuePaise = dues.reduce((s, d) => s + d.duePaise, 0);
+
       await accessInsert(db, ctx, {
         action: "view",
         resource: "patient_history",
@@ -101,7 +105,7 @@ export function historySummaryRepo(db: Db, ctx: Ctx) {
         alertLabels,
         hasAlert,
         hasRestricted,
-        outstandingDuePaise: 0,
+        outstandingDuePaise,
         nextAppointment: next
           ? {
               id: next.id,

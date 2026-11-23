@@ -394,6 +394,46 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     path: "/api/staff/certificates/:id/revise",
     access: { kind: "permission", action: "certificates.write" },
   },
+  {
+    method: "POST",
+    path: "/api/staff/bills",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/bills/:id",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/bills/:id/issue",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/bills/:id/cancel",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/visits/:id/bill",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/patients/:id/bills",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/payments",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/refunds",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
 ];
 
 export const matrixKey = (method: string, path: string) => `${method} ${path}`;

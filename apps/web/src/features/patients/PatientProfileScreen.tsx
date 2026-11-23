@@ -5,6 +5,7 @@ import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
 import { getPatient, type PatientDetail } from "./api";
 import { VisitChartPanel } from "../chart";
+import { PatientBillingPanel } from "../billing";
 import { PatientFilesTab } from "../files";
 import { PatientHistoryTab, getHistorySummary } from "../history";
 import { PatientVisitsTab } from "../visits/PatientVisitsTab";
@@ -115,6 +116,8 @@ export function PatientProfileScreen() {
           <PatientVisitsTab patientId={patient.id} />
         ) : t.id === "files" ? (
           <PatientFilesTab patientId={patient.id} />
+        ) : t.id === "billing" ? (
+          <PatientBillingPanel patientId={patient.id} />
         ) : (
           <PatientAppointmentsTab patientId={patient.id} />
         ),

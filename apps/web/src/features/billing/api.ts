@@ -1,0 +1,81 @@
+import { api } from "../../api/client";
+
+export type BillItemDto = {
+  id: string;
+  procedureLabel: string;
+  toothFdi: number | null;
+  qty: number;
+  unitPaise: number;
+  discountPaise: number;
+  taxPaise: number;
+  lineTotalPaise: number;
+};
+
+export type BillDto = {
+  id: string;
+  patientId: string;
+  visitId: string | null;
+  billNo: string | null;
+  billOn: string;
+  status: string;
+  kind: string;
+  subtotalPaise: number;
+  discountPaise: number;
+  taxPaise: number;
+  roundOffPaise: number;
+  totalPaise: number;
+  notes: string;
+  cancelReason: string | null;
+  version: number;
+  items: BillItemDto[];
+};
+
+export type PatientBillRow = {
+  id: string;
+  billNo: string | null;
+  billOn: string;
+  status: string;
+  kind: string;
+  totalPaise: number;
+  duePaise: number;
+};
+
+export function getBill(id: string) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}`).then((r) => r.bill);
+}
+
+export function listPatientBills(patientId: string) {
+  return api<{
+    bills: PatientBillRow[];
+    outstandingDuePaise: number;
+    advancePaise: number;
+  }>(`/api/staff/patients/${encodeURIComponent(patientId)}/bills`);
+}
+
+export function createBillFromVisit(visitId: string) {
+  return api<{ bill: BillDto }>(`/api/staff/visits/${encodeURIComponent(visitId)}/bill`, {
+    method: "POST",
+    body: {},
+  }).then((r) => r.bill);
+}
+
+export function issueBill(id: string, version: number) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/issue`, {
+    method: "POST",
+    body: { version },
+  }).then((r) => r.bill);
+}
+
+export function recordPayment(input: {
+  patientId: string;
+  amountPaise: number;
+  mode: string;
+  reference?: string;
+  splitMode?: string;
+  splitPaise?: number;
+}) {
+  return api<{ payment: { id: string; receiptNo: string | null; advancePaise: number } }>(
+    "/api/staff/payments",
+    { method: "POST", body: input },
+  ).then((r) => r.payment);
+}

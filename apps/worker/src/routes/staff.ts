@@ -16,6 +16,7 @@ import { staffVisits } from "./staff-visits";
 import { staffPrescriptions } from "./staff-prescriptions";
 import { staffPrint } from "./staff-print";
 import { staffCertificates } from "./staff-certificates";
+import { staffBills } from "./staff-bills";
 
 // /api/staff/*: every route needs a staff session (deny by default in app.ts) except the four
 // paths in public-routes.ts. Each route declares its permission through the repositories.
@@ -36,4 +37,5 @@ staff.route("/", staffPlan);
 staff.route("/", staffFiles);
 staff.route("/", staffPrescriptions);
 staff.route("/", staffCertificates);
+staff.route("/", staffBills);
 staff.route("/", staffPrint);
