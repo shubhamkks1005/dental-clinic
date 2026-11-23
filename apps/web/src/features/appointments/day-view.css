@@ -44,7 +44,7 @@
 .day-grid {
   position: relative;
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 76px 1fr;
   min-width: 0;
 }
 

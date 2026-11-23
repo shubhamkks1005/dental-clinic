@@ -1,4 +1,4 @@
-import { formatRupees, toHhmm } from "@clinic/shared";
+import { formatRupees, formatClockTime } from "@clinic/shared";
 import { Link } from "react-router";
 import type { HistorySummary } from "./api";
 
@@ -44,7 +44,7 @@ export function HistorySummaryStrip({ summary, patientId }: Props) {
         <dt>Next appointment</dt>
         <dd>
           {next ? (
-            `${next.dateLocal} · ${toHhmm(next.startMin)} · ${next.visitTypeLabel}`
+            `${next.dateLocal} · ${formatClockTime(next.startMin)} · ${next.visitTypeLabel}`
           ) : (
             <>
               None.{" "}

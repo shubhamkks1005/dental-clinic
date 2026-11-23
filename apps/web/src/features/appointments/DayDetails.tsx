@@ -1,4 +1,4 @@
-import { APPOINTMENT_STATUS_LABEL, displayMobile, toHhmm } from "@clinic/shared";
+import { APPOINTMENT_STATUS_LABEL, displayMobile, formatClockTime } from "@clinic/shared";
 import { Link } from "react-router";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import type { DayAppointment } from "./api";
@@ -24,7 +24,7 @@ export function DayDetails({ row, onClose }: Props) {
         <div>
           <dt>Time</dt>
           <dd>
-            {toHhmm(row.startMin)}–{toHhmm(row.endMin)}
+            {formatClockTime(row.startMin)}–{formatClockTime(row.endMin)}
           </dd>
         </div>
         <div>

@@ -2,7 +2,7 @@ import {
   APPOINTMENT_STATUS_LABEL,
   appointmentStatusTone,
   formatRupees,
-  toHhmm,
+  formatClockTime,
 } from "@clinic/shared";
 import type { CSSProperties, DragEvent } from "react";
 import { StatusBadge } from "../../ui/StatusBadge";
@@ -38,10 +38,10 @@ export function DayCard({ row, dayStartMin, selected, onSelect, onDragStart }: P
       draggable={!muted && row.status !== "completed"}
       onDragStart={onDragStart}
       onClick={onSelect}
-      aria-label={`${toHhmm(row.startMin)} ${row.patientName}, ${APPOINTMENT_STATUS_LABEL[row.status]}`}
+      aria-label={`${formatClockTime(row.startMin)} ${row.patientName}, ${APPOINTMENT_STATUS_LABEL[row.status]}`}
     >
       <span className="day-card-time">
-        {toHhmm(row.startMin)}–{toHhmm(row.endMin)}
+        {formatClockTime(row.startMin)}–{formatClockTime(row.endMin)}
       </span>
       <span className="day-card-name">
         {row.patientName}

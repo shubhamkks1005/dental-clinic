@@ -1,4 +1,4 @@
-import { formatDisplayDate, toHhmm, type ListItem } from "@clinic/shared";
+import { formatDisplayDate, formatClockTime, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
@@ -171,7 +171,8 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
                       className={`btn${active ? " btn-primary" : ""}`}
                       onClick={() => setSlot(s)}
                     >
-                      {formatDisplayDate(s.dateLocal)} · {toHhmm(s.startMin)}–{toHhmm(s.endMin)}
+                      {formatDisplayDate(s.dateLocal)} · {formatClockTime(s.startMin)}–
+                      {formatClockTime(s.endMin)}
                     </button>
                   </li>
                 );

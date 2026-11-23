@@ -5,7 +5,7 @@ import {
   istDate,
   istLocalToUtc,
   istLongDate,
-  toHhmm,
+  formatClockTime,
 } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
@@ -118,7 +118,7 @@ export function PrintDayListScreen() {
                 <tbody>
                   {rows.map((r) => (
                     <tr key={r.id}>
-                      <td>{toHhmm(r.startMin)}</td>
+                      <td>{formatClockTime(r.startMin)}</td>
                       <td>
                         {r.patientName}
                         <span className="day-list-print-code"> {r.patientCode}</span>

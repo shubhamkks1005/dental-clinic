@@ -1,15 +1,9 @@
-import { formatDisplayDate } from "@clinic/shared";
+import { formatClockTime, formatDisplayDate } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ApiError } from "../../api/client";
 import { getAppointmentChain, listPatientAppointments, type PatientAppointmentRow } from "./api";
 import "./patient-appointments.css";
-
-function hhmm(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-}
 
 function statusLabel(status: string): string {
   return status.replaceAll("_", " ");
@@ -17,7 +11,10 @@ function statusLabel(status: string): string {
 
 function chainSummary(chain: PatientAppointmentRow[]): string {
   return chain
-    .map((r) => `${formatDisplayDate(r.dateLocal)} ${hhmm(r.startMin)} (${statusLabel(r.status)})`)
+    .map(
+      (r) =>
+        `${formatDisplayDate(r.dateLocal)} ${formatClockTime(r.startMin)} (${statusLabel(r.status)})`,
+    )
     .join(" → ");
 }
 
@@ -74,7 +71,7 @@ export function PatientAppointmentsTab({ patientId }: { patientId: string }) {
             <li key={r.id} className="patient-appts-card">
               <div className="patient-appts-row">
                 <strong>
-                  {formatDisplayDate(r.dateLocal)} · {hhmm(r.startMin)}
+                  {formatDisplayDate(r.dateLocal)} · {formatClockTime(r.startMin)}
                 </strong>
                 <span className="patient-appts-status">{statusLabel(r.status)}</span>
               </div>

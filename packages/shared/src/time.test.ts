@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   addIstDays,
   financialYearOf,
+  formatClockTime,
   formatDisplayDate,
   istDate,
   istDateTime,
@@ -70,5 +71,16 @@ describe("financialYearOf", () => {
 
   it("pads the century turn", () => {
     expect(financialYearOf(new Date("2099-06-01T00:00:00Z"))).toBe("2099-00");
+  });
+});
+
+describe("formatClockTime (AM/PM for staff)", () => {
+  it("shows minutes since midnight as a 12-hour time with AM or PM", () => {
+    expect(formatClockTime(0)).toBe("12:00 AM");
+    expect(formatClockTime(9 * 60 + 5)).toBe("9:05 AM");
+    expect(formatClockTime(12 * 60)).toBe("12:00 PM");
+    expect(formatClockTime(13 * 60 + 30)).toBe("1:30 PM");
+    expect(formatClockTime(18 * 60 + 45)).toBe("6:45 PM");
+    expect(formatClockTime(23 * 60 + 59)).toBe("11:59 PM");
   });
 });

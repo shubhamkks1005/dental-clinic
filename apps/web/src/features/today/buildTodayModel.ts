@@ -5,7 +5,7 @@ import {
   emptySlotStarts,
   formatWaiting,
   sortWaitingQueue,
-  toHhmm,
+  formatClockTime,
   type DayWindow,
 } from "@clinic/shared";
 import type { StatusTone } from "../../ui/StatusBadge";
@@ -75,7 +75,7 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
   return {
     id: a.id,
     patientId: a.patientId,
-    time: toHhmm(a.startMin),
+    time: formatClockTime(a.startMin),
     name: a.patientName,
     patientCode: a.patientCode,
     visit: `${a.visitTypeLabel} · ${a.endMin - a.startMin} min`,

@@ -75,6 +75,15 @@ export function parseDisplayDate(raw: string): string | null {
   return real ? date.toISOString().slice(0, 10) : null;
 }
 
+// THE time-of-day display for staff: minutes since midnight -> "2:30 PM". Stored times stay
+// 24-hour (settings, slots); only what people read uses this.
+export function formatClockTime(minutes: number): string {
+  const h24 = Math.floor(minutes / 60) % 24;
+  const m = minutes % 60;
+  const hour = h24 % 12 === 0 ? 12 : h24 % 12;
+  return `${hour}:${String(m).padStart(2, "0")} ${h24 < 12 ? "AM" : "PM"}`;
+}
+
 export function formatDisplayDate(stored: string): string {
   const [year, month, day] = stored.split("-");
   return `${day}/${month}/${year}`;

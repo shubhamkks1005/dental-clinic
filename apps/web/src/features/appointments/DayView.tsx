@@ -3,7 +3,7 @@ import {
   istDate,
   istMinutes,
   snapToSlot,
-  toHhmm,
+  formatClockTime,
   type DayWindow,
 } from "@clinic/shared";
 import { useEffect, useRef, useState, type DragEvent } from "react";
@@ -124,7 +124,7 @@ export function DayView({
                 className="day-hour"
                 style={{ top: (m - window.dayStartMin) * PX_PER_MIN }}
               >
-                {toHhmm(m)}
+                {formatClockTime(m)}
               </span>
             ))}
           </div>
@@ -138,7 +138,7 @@ export function DayView({
                   top: (startMin - window.dayStartMin) * PX_PER_MIN,
                   height: window.slotMinutes * PX_PER_MIN,
                 }}
-                aria-label={`Book at ${toHhmm(startMin)}`}
+                aria-label={`Book at ${formatClockTime(startMin)}`}
                 onClick={() => onEmptySlot(startMin)}
               />
             ))}
@@ -167,7 +167,7 @@ export function DayView({
         title="Move appointment?"
         message={
           pending
-            ? `Move ${pending.row.patientName} to ${toHhmm(pending.startMin)} on this day?`
+            ? `Move ${pending.row.patientName} to ${formatClockTime(pending.startMin)} on this day?`
             : ""
         }
         confirmLabel="Move"

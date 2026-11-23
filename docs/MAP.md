@@ -280,6 +280,7 @@
 - apps/web features/print ConsentBody.tsx, ConsentSheet.tsx - draw a consent form (patient strip, text, signature block); PrintConsentScreen.tsx loads data and prints
 - apps/web features/today DoctorDayList.tsx - doctor's whole day, every row opens the visit (FIXES #1); opening moves the patient to In chair (statusActions.movesToChairOnOpen); status wheel allows scheduled/confirmed -> in_chair (packages/shared appointment-status.ts) and the repo then stamps arrived_at too
 - apps/web features/visits VisitPatientStrip.tsx (+ visit-patient-strip.ts, test) - patient facts and links under the name on the visit screen (Edit patient or medical history -> /app/patients/:id?tab=overview, Past visits); VisitNextSteps.tsx - after Finalise: Create bill (errors stay inline) and Next patient; History tab now shows PatientHistoryTab; VisitStubPanel removed; patients patient-tabs.ts parsePatientTab reads ?tab=
+- packages/shared time.ts formatClockTime - THE time-of-day display ("2:30 PM"); toHhmm stays for stored 24-hour values only
 - src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)
