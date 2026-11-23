@@ -1,5 +1,5 @@
 import { addIstDays, istDate, istLocalToUtc } from "./time";
-import { dayKeyOf, toMinutes, type Holiday, type Timings } from "./timings";
+import { dayKeyOf, isHolidayOn, toMinutes, type Holiday, type Timings } from "./timings";
 
 export type BookingRuleCode = "past" | "closed" | "lunch" | "ahead";
 
@@ -20,7 +20,7 @@ export function clinicWorkingIntervals(
   timings: Timings,
   holidays: Holiday[],
 ): [number, number][] {
-  if (holidays.some((h) => h.date === isoDay)) return [];
+  if (isHolidayOn(isoDay, holidays)) return [];
   const day = timings.week[dayKeyOf(isoDay)];
   if (!day.open) return [];
   const open = toMinutes(day.start);

@@ -41,6 +41,12 @@ describe("clinic timings (1.5.3)", () => {
     ).toEqual([]);
   });
 
+  it("yearly holiday blocks the same month-day next year (6.5.4)", () => {
+    const yearly = [{ date: "2026-01-26", note: "Republic Day", yearly: true }];
+    expect(workingSlots("2027-01-26", timings, yearly)).toEqual([]);
+    expect(workingSlots("2027-01-27", timings, yearly).length).toBeGreaterThan(0);
+  });
+
   it("refuses closing before opening, half-filled lunch, lunch outside hours", () => {
     const bad = (mon: object) =>
       timingsSchema.safeParse({ ...timings, week: { ...timings.week, mon } });

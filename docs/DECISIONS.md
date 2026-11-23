@@ -170,6 +170,7 @@
 - 2026-11-23 - **6.3.6 busy heat:** Arrived/in_chair/completed appointments grouped by IST weekday (strftime %w) × hour(start_min/60); returned as busyHeat on dashboard. - agent
 - 2026-11-23 - **6.3.7 call lists:** incomplete = accepted plan_items with no completed_visit_id and told/created ≥30d ago; recall = last final visit 6–9 months (30d months). Contact note in outreach_contacts hides until a later final visit. Defaults 30/6/9 until 6.5.3 settings. Migration 0045. - agent
 - 2026-11-23 - **6.5.3 tunables:** magic numbers live in `packages/shared/src/tunables.ts` + settings seeds (0047). Guard test bans re-hardcoding. README lists them. - agent
+- 2026-11-23 - **6.5.4 holidays:** `yearly` flag on holiday rows; `isHolidayOn` matches month-day; national templates Republic/Independence/Gandhi (DRAFT). - agent
 - 2026-11-23 - **6.3.8 today summary:** GET /api/staff/dashboard/today-summary (reports.today). Arrived distinct, remaining busy statuses, collected payments−refunds. Full /dashboard stays reports.full. - agent
 - 2026-11-23 - **6.3.9 / 6.3.10 skipped (baad me):** wait/chair + age/gender after pilot. - agent
 - 2026-11-23 - **6.4.1 monthly print:** /app/print/monthly-report?month=YYYY-MM uses dashboard custom range + compare; A4 English; aggregates only. - agent

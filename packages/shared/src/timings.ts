@@ -96,14 +96,52 @@ const isoDate = z
 
 export const holidaysSchema = z
   .array(
-    z.object({ date: isoDate, note: z.string().trim().max(60, "Keep the note under 60 letters.") }),
+    z.object({
+      date: isoDate,
+      note: z.string().trim().max(60, "Keep the note under 60 letters."),
+      /** 6.5.4: repeat every year on the same month-day. */
+      yearly: z.boolean().optional(),
+    }),
   )
   .max(100, "At most 100 holidays.")
-  .refine(
-    (list) => new Set(list.map((h) => h.date)).size === list.length,
-    "Each date can be listed once.",
-  );
+  .refine((list) => {
+    const keys = list.map((h) => (h.yearly ? `Y-${h.date.slice(5)}` : h.date));
+    return new Set(keys).size === list.length;
+  }, "Each date can be listed once.");
 export type Holiday = z.infer<typeof holidaysSchema>[number];
+
+/** Fixed national holidays (India). Sister edits in Settings. DRAFT until confirmed. */
+export const NATIONAL_HOLIDAY_TEMPLATES: { md: string; note: string }[] = [
+  { md: "01-26", note: "Republic Day" },
+  { md: "08-15", note: "Independence Day" },
+  { md: "10-02", note: "Gandhi Jayanti" },
+];
+
+/** Build yearly holiday rows for a calendar year from national templates. */
+export function nationalHolidaysForYear(year: number): Holiday[] {
+  return NATIONAL_HOLIDAY_TEMPLATES.map((t) => ({
+    date: `${year}-${t.md}`,
+    note: t.note,
+    yearly: true,
+  }));
+}
+
+/** Merge national yearly holidays into a list without duplicating month-days. */
+export function mergeNationalHolidays(existing: Holiday[], year: number): Holiday[] {
+  const next = [...existing];
+  for (const h of nationalHolidaysForYear(year)) {
+    const md = h.date.slice(5);
+    if (next.some((e) => (e.yearly ? e.date.slice(5) === md : e.date === h.date))) continue;
+    next.push(h);
+  }
+  return next;
+}
+
+/** 6.5.4: exact date or yearly month-day match. */
+export function isHolidayOn(isoDay: string, holidays: Holiday[]): boolean {
+  const md = isoDay.slice(5);
+  return holidays.some((h) => h.date === isoDay || (h.yearly === true && h.date.slice(5) === md));
+}
 
 export function dayKeyOf(isoDay: string): DayKey {
   const [y, m, d] = isoDay.split("-").map(Number) as [number, number, number];
@@ -114,7 +152,7 @@ export function dayKeyOf(isoDay: string): DayKey {
 // Start times ("HH:MM") of every slot the clinic is open on that date: none on closed days and
 // holidays, none overlapping lunch, and the last slot ends by closing time.
 export function workingSlots(isoDay: string, timings: Timings, holidays: Holiday[]): string[] {
-  if (holidays.some((h) => h.date === isoDay)) return [];
+  if (isHolidayOn(isoDay, holidays)) return [];
   const day = timings.week[dayKeyOf(isoDay)];
   if (!day.open) return [];
   const step = timings.slotMinutes;
