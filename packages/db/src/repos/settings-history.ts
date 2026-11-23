@@ -36,7 +36,8 @@ function parseSnapshot(json: string | null): Snapshot | null {
 export function settingsHistoryRepo(db: Db, ctx: Ctx) {
   return {
     async history(key: string, limit = 30): Promise<SettingHistoryEntry[]> {
-      assertAllowed(ctx, "settings.read");
+      // Q1.11 (D4): the desk does not read billing settings, nor their history.
+      assertAllowed(ctx, key.startsWith("billing.") ? "settings.billing" : "settings.read");
       if (!isSettingKey(key)) throw new NotFoundError(`The setting "${key}"`);
       const row = await db
         .select({ id: settings.id })

@@ -6,6 +6,11 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by han
 - Phase 7 complete locally (gate: passed with exceptions). Phase 9 docs drafts and 9.1.x backup minimum done locally. Do not start Phase 8 until the owner says so.
 - Staging-test run (2026-11-23): staging seed, tester guide, error log, patient requests, retention. All local commits, nothing pushed, nothing applied to staging.
 
+## Part 2 repair and Part 3 (2026-11-24) - Gate A passed
+- Owner accepted D1 to D8 (DECISIONS.md; D1 refund rule still to be confirmed by the CA). Done locally, each with its own commit: Part 2 repair, Q0.7, Q1.1, Q1.5, Q1.6 (offline), Q1.7, Q1.8, Q1.9, Q1.10, Q1.11, runner scripts, **Gate Q1.G: passed** (ten flows, no harness repair, docs/ui-audit/flows/GATE-A.md). 28 browser specs pass together (`pnpm test:e2e`), `pnpm check` is green.
+- **One new migration: 0056_bill_cancel_requests.sql (the owner applies it on staging).** Part 4 starts at Q2.1 only when the owner says so.
+- Known gaps going into Part 4: tap targets under 44 px in lists and links at 360 px, plain Billing and profile Billing screens (the Bill screen has a scoped stylesheet), page gutters at 360 px, tooth surface shapes are small, advance on purpose (Q3.1).
+
 ## Phase Q (added 2026-11-23)
 - Browser audit done (docs/ui-audit, docs/product-audit). Phase Q is planned in docs/PHASE_Q.md and runs before Phase 8. Q0.1 done (e2e runs, scratch DB, localhost origin; prettier ignores audit evidence and design mockups). Q0.2 done (C1 fixed, guard + browser test). Q0.3 done (C3). Q0.4 done (C4). Q0.5 done. Q0.6 done. Q0.7 blocked on D1.
 - **Gate P0: passed with exceptions** (2026-11-23). Core-loop e2e: pass. G01 (runner, no repair, id GATE-P0-G01): visit, issue Rx, finalise, bill, payment all with no 400/409; the one 400 is the scripted "no free slot today" walk-in step; the script's old one-click "Full balance" step no longer records money (by design, Q0.6). D03 (GATE-P0-D03): no failed requests; overpay now asks first, 0 and negative blocked, split and 100.50 work. Evidence: docs/ui-audit/flows/GATE-P0-*/result.json. Exceptions: (1) Q0.7 refund rule not done, needs D1, so the D02 refund steps were not run; (2) runner scripts g01/d03 still assume the old Full balance click (screens differ from their notes). Part 2 may start; Q0.7 stays open until D1.

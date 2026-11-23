@@ -161,3 +161,7 @@ Note: MEASURE Reports: horizontal scroll=no; tap targets under 44px=4 e.g. INPUT
 ![step 49](F02-phone-full-day/49-settings-doctor.jpg)
 
 Note: MEASURE Settings: horizontal scroll=no; tap targets under 44px=0 `/app/settings/clinic`
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-f02/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

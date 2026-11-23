@@ -114,3 +114,7 @@ Note: WhatsApp opens for number/text: no tab opened `/app/messages`
 ![step 28](G08-child-with-guardian-and-shared-mobile/28-profile-of-a-child-with-guardian.jpg)
 
 Note: Profile header: ← Patients / Kiddo Guardtest / 8 yrs · Male / P-000031 / No mobile / Contact 90000 99070 (mother) / Overview / History / Appointments / Billing / Files / Messages / Next appointment / No upcoming appointment. / Book appo `/app/patients/01M84M96HXXJRKPJA1JM4WNQ72`
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-g08/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

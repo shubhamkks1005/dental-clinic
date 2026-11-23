@@ -127,3 +127,7 @@ Note: After approve: / Draft bill / 2026-11-23 · draft / Patient account / Item
 ![step 29](D06-discount-request-and-approval/29-issued-bill-with-discount.jpg)
 
 Note: Issued: SB-2627-000025 / 2026-11-23 · issued / Patient account / Scaling · tooth 36₹1,500 / Subtotal₹1,500 / Discount-₹300 / Total₹1,200 / Rupees one thousand two hundred only / This is not a GST invoice (gst_mode off — DRAFT accountant). / Print billCancel bill `/app/bills/01M84KTM56AJ9ED5KNK3D4TTD7`
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-d06/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

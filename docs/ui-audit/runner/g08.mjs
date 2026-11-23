@@ -26,11 +26,16 @@ await flow({ id: process.argv[2] || "G08-child-with-guardian-and-shared-mobile",
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Book");
   await p.request.get(B + "/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*"); await p.waitForTimeout(1500);
   await c.go("/app/messages", "Run the cron and open Messages");
-  const card = p.getByText(/Dear Kiddo/).first().locator("xpath=ancestor::*[.//button[normalize-space()='Open WhatsApp']][1]");
+  // Q1.5: the message goes to the guardian ("Dear Sunita ... Kiddo's appointment"). Before its due time
+  // (quiet hours 21:00 to 08:00) it waits under Scheduled and has no Open WhatsApp button yet.
+  const card = p.getByText(/Kiddo's appointment/).first().locator("xpath=ancestor::li[1]");
   c.note("Message for the child: " + ((await card.innerText().catch(() => "none")).replace(/\n+/g, " | ").slice(0, 300)));
-  const popP = ctxWait(p);
-  await c.click(card.getByRole("button", { name: "Open WhatsApp" }), "Click Open WhatsApp on the child's message");
-  const pop = await popP; c.note("WhatsApp opens for number/text: " + (pop ? decodeURIComponent(pop.url()).replace(/\+/g, " ").slice(0, 260) : "no tab opened"));
+  const open = card.getByRole("button", { name: "Open WhatsApp" });
+  if (await open.count()) {
+    const popP = ctxWait(p);
+    await c.click(open, "Click Open WhatsApp on the child's message");
+    const pop = await popP; c.note("WhatsApp opens for number/text: " + (pop ? decodeURIComponent(pop.url()).replace(/\+/g, " ").slice(0, 260) : "no tab opened"));
+  } else c.note("No Open WhatsApp yet: the message is scheduled until its due time (hidden until due)");
   // profile
   await c.go("/app/patients", "Open the child's profile to see how the contact is shown"); await c.click(p.getByRole("link", { name: "Kiddo Guardtest" }).first(), "Open Kiddo");
   await c.look("Profile of a child with guardian");

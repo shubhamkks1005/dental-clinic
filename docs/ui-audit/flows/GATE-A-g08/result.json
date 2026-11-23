@@ -1,0 +1,387 @@
+{
+ "spec": {
+  "id": "GATE-A-g08",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 10,
+  "typedFields": 7,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages",
+   "/app/patients",
+   "/app/patients/01M850Z72VMWKEWVHPSYVFAEQ0"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 29
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "A mother brings her 8-year-old son. The boy has no phone; the mother's phone is the contact",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-a-mother-brings-her-8-year-old-son-the-b.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Child's name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age 8",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Tick No mobile (the child has none)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "type",
+   "why": "Type why there is no mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "After ticking No mobile: fields visible = Full name | Gender | Date of birth | Or age (years) | Mobile | No mobile | Why no mobile | Guardian name | Guardian relation | Guardian mobile | Privacy notice shown | SMS reminders allowed | Promo messages (off by defau",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Open More details (guardian fields)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 9,
+   "action": "look",
+   "why": "More details opened",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-more-details-opened.jpg"
+  },
+  {
+   "n": 10,
+   "action": "note",
+   "why": "More details fields: Full name | Gender | Date of birth | Or age (years) | Mobile | No mobile | Why no mobile | Guardian name | Guardian relation | Guardian mobile | Other mobile | Area or address | Whose contact mobile | Emergency contact | Old register no. | Notes | Privacy notice shown | SMS reminders allowed | Promo messages (off by default",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 11,
+   "action": "select",
+   "why": "Contact mobile belongs to: Mother",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Tick Privacy notice shown",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "Tick SMS reminders allowed",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "look",
+   "why": "Child form filled with guardian",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "14-child-form-filled-with-guardian.jpg"
+  },
+  {
+   "n": 15,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-save-patient.jpg"
+  },
+  {
+   "n": 16,
+   "action": "note",
+   "why": "Save result: Patient saved | Kiddo Guardtest · P-000031 | Book appointment | Walk-in now | Back to patients · Add another | ",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | What they said on the phone | Choose a visit type. | Cancel | Book"
+    ]
+   },
+   "shot": "17-book-appointment.jpg"
+  },
+  {
+   "n": 18,
+   "action": "select",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:3"
+    ]
+   }
+  },
+  {
+   "n": 19,
+   "action": "click",
+   "why": "Pick 12:15 PM",
+   "url": "/app/appointments?patient=01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:3"
+    ]
+   }
+  },
+  {
+   "n": 20,
+   "action": "type",
+   "why": "Note",
+   "url": "/app/appointments?patient=01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:3"
+    ]
+   }
+  },
+  {
+   "n": 21,
+   "action": "click",
+   "why": "Book",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for 24/11/2026, 12:15 PM\n×",
+     "Notifications Booked for 24/11/2026, 12:15 PM"
+    ],
+    "dialog": []
+   },
+   "shot": "21-book.jpg"
+  },
+  {
+   "n": 22,
+   "action": "open /app/messages",
+   "why": "Run the cron and open Messages",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "22-run-the-cron-and-open-messages.jpg"
+  },
+  {
+   "n": 23,
+   "action": "note",
+   "why": "Message for the child: remind · needs_human | Dear Sunita, a reminder of Kiddo's appointment at Align Dentistry tomorrow at 12:15 pm. To change it, call 0000000000. | Open WhatsApp | Mark sent | Cancel",
+   "url": "/app/messages"
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Click Open WhatsApp on the child's message",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand.",
+     "WhatsApp opened. Tap Send there, then mark Sent here.\n×",
+     "Notifications WhatsApp opened. Tap Send there, then mark Sent here."
+    ],
+    "dialog": []
+   },
+   "shot": "24-click-open-whatsapp-on-the-child-s-messa.jpg"
+  },
+  {
+   "n": 25,
+   "action": "note",
+   "why": "WhatsApp opens for number/text: https://api.whatsapp.com/send/?phone=919000099070&text=Dear Sunita, a reminder of Kiddo's appointment at Align Dentistry tomorrow at 12:15 pm. To change it, call 0000000000.&type=phone_number&app_absent=0",
+   "url": "/app/messages"
+  },
+  {
+   "n": 26,
+   "action": "open /app/patients",
+   "why": "Open the child's profile to see how the contact is shown",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-open-the-child-s-profile-to-see-how-the-.jpg"
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Open Kiddo",
+   "url": "/app/patients/01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Kiddo Guardtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "27-open-kiddo.jpg"
+  },
+  {
+   "n": 28,
+   "action": "look",
+   "why": "Profile of a child with guardian",
+   "url": "/app/patients/01M850Z72VMWKEWVHPSYVFAEQ0",
+   "errors": [],
+   "visible": {
+    "h1": "Kiddo Guardtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-profile-of-a-child-with-guardian.jpg"
+  },
+  {
+   "n": 29,
+   "action": "note",
+   "why": "Profile header: ← Patients | Kiddo Guardtest | 8 yrs · Male | P-000031 | No mobile | Contact 90000 99070 (mother) | Overview | History | Appointments | Billing | Files | Messages | Next appointment | 24/11/2026, 12:15 PM · Consultation ",
+   "url": "/app/patients/01M850Z72VMWKEWVHPSYVFAEQ0"
+  }
+ ]
+}

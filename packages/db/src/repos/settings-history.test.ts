@@ -54,4 +54,9 @@ describe("settings history / restore (6.5.2)", () => {
     await expect(histRec.history(KEY)).resolves.toHaveLength(entries.length);
     await expect(histRec.restore(KEY, entries[0]!.id, 2)).rejects.toBeInstanceOf(ForbiddenError);
   });
+
+  it("Q1.11: the desk cannot read the history of a billing setting", async () => {
+    const hist = createRepos(t.db, receptionist).settingsHistory;
+    await expect(hist.history("billing.gst_mode")).rejects.toBeInstanceOf(ForbiddenError);
+  });
 });

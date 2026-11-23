@@ -28,11 +28,19 @@ await flow({ id: process.argv[2] || "D05-dues-reminder-and-daily-cash-close", ro
   // resolve the open appointments on Today
   await c.go("/app", "Go to Today to finish the open appointments (one is 'Arrived', one 'In chair' from earlier)");
   await c.look("Today rows before cleanup");
-  await c.click(p.getByRole("button", { name: "Completed" }).first(), "Mark the in-chair patient Completed");
-  await c.click(p.getByRole("button", { name: "Cancel" }).first(), "Cancel the patient who never came (Manoj, Arrived 10 AM)");
-  await c.look("After Cancel click: what does it ask?");
-  c.note("Dialog after Cancel: " + (await d().innerText().catch(() => "none")).replace(/\n+/g, " | ").slice(0, 300));
-
+  // Q1.4: Cancel lives in the "..." menu and asks for a reason. Finish every open row that way
+  // (a fresh database has only scheduled or confirmed rows today).
+  for (let i = 0; i < 6; i++) {
+    const done = p.getByRole("button", { name: "Completed" }).first();
+    if (await done.count()) { await c.click(done, "Mark the in-chair patient Completed"); continue; }
+    const more = p.getByRole("button", { name: /More actions for/ }).first();
+    if (!(await more.count())) break;
+    await c.click(more, "Open the ... menu of an open row");
+    await c.click(p.getByRole("menuitem", { name: "Cancel" }), "Choose Cancel");
+    await c.pick(d().getByLabel("Reason"), { label: "Patient asked to cancel" }, "Pick the reason");
+    await c.click(d().getByRole("button", { name: "Cancel appointment" }), "Confirm the cancel with its reason");
+  }
+  await c.look("Today after the open rows were finished");
   await c.go("/app/billing", "Back to Billing, panel again");
   await p.getByText("Daily cash close").scrollIntoViewIfNeeded(); await c.look("Panel after the appointments were finished");
   c.note("Panel now says: " + ((await c.text()).match(/Daily cash close[\s\S]{0,300}/) || [""])[0]);

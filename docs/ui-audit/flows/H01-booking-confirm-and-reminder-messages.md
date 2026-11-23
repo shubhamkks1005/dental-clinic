@@ -105,3 +105,7 @@ Note: Open WhatsApp opened: https://api.whatsapp.com/send/?phone=919000099010&te
 
 ![step 20](H01-booking-confirm-and-reminder-messages/20-messages-after-open-whatsapp-where-did-t.jpg)
 
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-h01/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

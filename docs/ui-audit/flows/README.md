@@ -6,6 +6,8 @@ Labels: every line in a flow file was seen in the browser unless marked otherwis
 
 Read this first: the test clock was 8:45-10:00 PM IST on 23 Nov 2026, after clinic hours. All slots today were gone, so "the patient arrives today" was done with an emergency walk-in, and nothing real could be sent. Bug C1 (the app cannot open a visit) was repaired inside the test harness only so the doctor part could be reached.
 
+**Gate A (2026-11-24): passed.** Ten flows re-run without harness repair: see [GATE-A.md](GATE-A.md).
+
 ## Done (18)
 | Flow | What it covers | Result |
 |------|----------------|--------|

@@ -1,5 +1,5 @@
 import { flow } from "./lib2.mjs";
-const TOMORROW = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10); // computed, so the script works on any day
+const TOMORROW = new Date(Date.now() + 330 * 60_000 + 86_400_000).toISOString().slice(0, 10); // tomorrow in IST, computed, so the script works on any day
 const NAME = "Riya Flowtest", MOB = "9000099001";
 await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "receptionist", vp: "laptop" }, async (c) => {
   const p = c.page; const d = () => p.locator("dialog[open]");
@@ -18,7 +18,7 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose visit type Consultation");
   await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
   await c.look("Date set to tomorrow: free times appear");
-  await c.click(d().getByRole("button", { name: "11:15 AM", exact: true }), "Pick the 11:15 AM time");
+  await c.click(d().getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ }).first(), "Pick the first free time");
   await c.type(d().getByLabel(/What they said/), "Wants to check teeth alignment", "Type the phone note");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Click Book (result: toast, calendar opens on that date)");
   await c.go("/app/messages", "Open Messages to look for the confirm message");
@@ -28,7 +28,7 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.type(d().getByLabel("Patient"), "Riya", "Type patient name"); await p.waitForTimeout(900);
   await c.click(d().locator("button.quick-book-result"), "Pick the patient from the list");
   await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose Consultation");
-  await c.click(d().getByRole("button", { name: /Add walk-in/ }), "Click Add walk-in (no free slot today, so expect an error)");
+  // Tick Emergency first: it works at any time of day (a free slot may or may not exist today).
   await c.click(d().getByRole("checkbox"), "Tick Emergency (may overbook)");
   await c.click(d().getByRole("button", { name: /Add walk-in/ }), "Click Add walk-in again with Emergency ticked");
   await c.look("Today list after the walk-in");

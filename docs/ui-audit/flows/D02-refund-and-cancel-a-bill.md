@@ -143,3 +143,7 @@ Evidence labels: every line is [seen] in the browser unless marked otherwise. Sc
 
 ![step 36](D02-refund-and-cancel-a-bill/36-print-the-account-statement-does-it-show.jpg)
 
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-d02/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

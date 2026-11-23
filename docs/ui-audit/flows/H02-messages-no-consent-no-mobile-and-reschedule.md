@@ -175,3 +175,7 @@ Note: Messages for Resch after moving the appointment: remind · needs_human / D
 
 ![step 50](H02-messages-no-consent-no-mobile-and-reschedule/50-messages-after-reschedule.jpg)
 
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-h02/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

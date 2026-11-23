@@ -141,3 +141,7 @@ Note: Header now says: Outstanding: ₹0 · Advance: ₹18,000 / msg: `/app/pati
 
 ![step 40](D03-payments-advance-split-part-and-mistakes/40-open-the-printed-statement-for-vikram.jpg)
 
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-d03/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.

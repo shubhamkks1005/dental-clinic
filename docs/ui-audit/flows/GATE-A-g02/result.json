@@ -1,0 +1,463 @@
+{
+ "spec": {
+  "id": "GATE-A-g02",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 13,
+  "typedFields": 6,
+  "pagesVisited": [
+   "/app/patients",
+   "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "/app/bills/01M850T66NARRAXYBQ6CY51AG0",
+   "/app",
+   "/app/billing"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 31
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients",
+   "why": "Doctor opens the Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-doctor-opens-the-patients-list.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open Neha Testcase (old finalised visit, ₹2,500 still due)",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-open-neha-testcase-old-finalised-visit-2.jpg"
+  },
+  {
+   "n": 3,
+   "action": "look",
+   "why": "Profile of a returning patient: what does the doctor see first?",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "03-profile-of-a-returning-patient-what-does.jpg"
+  },
+  {
+   "n": 4,
+   "action": "click",
+   "why": "Click New visit (no appointment today)",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "04-click-new-visit-no-appointment-today.jpg"
+  },
+  {
+   "n": 5,
+   "action": "look",
+   "why": "New visit opens; side card 'Last visits' shows the previous visit",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "05-new-visit-opens-side-card-last-visits-sh.jpg"
+  },
+  {
+   "n": 6,
+   "action": "type",
+   "why": "Type chief complaint",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "Not saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Open the visit's History tab to see the old visit",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-open-the-visit-s-history-tab-to-see-the-.jpg"
+  },
+  {
+   "n": 8,
+   "action": "look",
+   "why": "History tab inside the visit",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-history-tab-inside-the-visit.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Open Chart tab",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 10,
+   "action": "look",
+   "why": "Chart: does it show the earlier finding on tooth 16?",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-chart-does-it-show-the-earlier-finding-o.jpg"
+  },
+  {
+   "n": 11,
+   "action": "click",
+   "why": "Click tooth 46",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "select",
+   "why": "Choose the procedure Extraction",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "select",
+   "why": "Choose the first procedure (the list starts empty)",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "click",
+   "why": "Click Add procedure",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "look",
+   "why": "Procedure added to the visit",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-procedure-added-to-the-visit.jpg"
+  },
+  {
+   "n": 16,
+   "action": "click",
+   "why": "Click Finalise visit (no prescription this time)",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Finalise this visit? | After finalise, notes become read-only. An addendum can add a note but not a procedure. Warnings: No diagnosis is recorded yet. Procedures were added. Check the treatment plan is up to date. | Keep editing | Finalise"
+    ]
+   },
+   "shot": "16-click-finalise-visit-no-prescription-thi.jpg"
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Confirm Finalise",
+   "url": "/app/visits/01M850SYZJQ8WE8Z5ZR959ZKJ7",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "17-confirm-finalise.jpg"
+  },
+  {
+   "n": 18,
+   "action": "click",
+   "why": "Click Create bill",
+   "url": "/app/bills/01M850T66NARRAXYBQ6CY51AG0",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-click-create-bill.jpg"
+  },
+  {
+   "n": 19,
+   "action": "click",
+   "why": "Click Issue bill",
+   "url": "/app/bills/01M850T66NARRAXYBQ6CY51AG0",
+   "errors": [],
+   "visible": {
+    "h1": "SB-2627-000025",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "19-click-issue-bill.jpg"
+  },
+  {
+   "n": 20,
+   "action": "look",
+   "why": "Issued bill",
+   "url": "/app/bills/01M850T66NARRAXYBQ6CY51AG0",
+   "errors": [],
+   "visible": {
+    "h1": "SB-2627-000025",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-issued-bill.jpg"
+  },
+  {
+   "n": 21,
+   "action": "switch user to receptionist",
+   "why": "Switch to the receptionist",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good morning, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "21-switch-to-the-receptionist.jpg"
+  },
+  {
+   "n": 22,
+   "action": "open /app/billing",
+   "why": "Receptionist opens Billing (dues list)",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-receptionist-opens-billing-dues-list.jpg"
+  },
+  {
+   "n": 23,
+   "action": "look",
+   "why": "Dues list: is Neha's new bill included? How much does she owe?",
+   "url": "/app/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Outstanding dues",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-dues-list-is-neha-s-new-bill-included-ho.jpg"
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Click Neha in the dues list",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "24-click-neha-in-the-dues-list.jpg"
+  },
+  {
+   "n": 25,
+   "action": "click",
+   "why": "Open Billing tab",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 26,
+   "action": "look",
+   "why": "Billing tab: two bills, balance",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-billing-tab-two-bills-balance.jpg"
+  },
+  {
+   "n": 27,
+   "action": "type",
+   "why": "Type amount 3000 (more than the older bill, less than both)",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 28,
+   "action": "select",
+   "why": "Choose mode upi",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 29,
+   "action": "type",
+   "why": "Type short reference",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "click",
+   "why": "Click Record payment",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹3,000 recorded. Receipt SR-2627-000019 Print\n×",
+     "Notifications ₹3,000 recorded. Receipt SR-2627-000019 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "30-click-record-payment.jpg"
+  },
+  {
+   "n": 31,
+   "action": "look",
+   "why": "After a payment that covers one bill and part of the other",
+   "url": "/app/patients/01M84FVD7HF5AE7M79J4VTRK5M?tab=billing",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹3,000 recorded. Receipt SR-2627-000019 Print\n×",
+     "Notifications ₹3,000 recorded. Receipt SR-2627-000019 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "31-after-a-payment-that-covers-one-bill-and.jpg"
+  }
+ ]
+}

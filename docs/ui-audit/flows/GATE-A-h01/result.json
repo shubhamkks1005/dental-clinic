@@ -1,0 +1,251 @@
+{
+ "spec": {
+  "id": "GATE-A-h01",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 6,
+  "typedFields": 5,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 17
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "Receptionist registers a patient WITH sms consent",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-receptionist-registers-a-patient-with-sm.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Type the name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "select",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Tick Privacy notice shown",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Tick SMS reminders allowed",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-save-patient.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M851JX5JBPHZF1ANX28KX4R3",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | What they said on the phone | Choose a visit type. | Cancel | Book"
+    ]
+   },
+   "shot": "09-book-appointment.jpg"
+  },
+  {
+   "n": 10,
+   "action": "select",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M851JX5JBPHZF1ANX28KX4R3",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 24/11/2026 | 11:15 AM | 11:30 AM | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 P"
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "action": "click",
+   "why": "Pick the first free time tomorrow (the seed fills some slots)",
+   "url": "/app/appointments?patient=01M851JX5JBPHZF1ANX28KX4R3",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | Visit type | Choose… | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | Date | Free times on 25/11/2026 | 11:45 AM | 12:00 PM | 12:15 PM | 12:30 PM | 12:45 PM | 1:00 PM | 2:30 PM | 2:45 PM | 3:00 PM "
+    ]
+   },
+   "shot": "11-pick-the-first-free-time-tomorrow-the-se.jpg"
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Click Book WITHOUT typing the optional note",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for 25/11/2026, 11:45 AM\n×",
+     "Notifications Booked for 25/11/2026, 11:45 AM"
+    ],
+    "dialog": []
+   },
+   "shot": "12-click-book-without-typing-the-optional-n.jpg"
+  },
+  {
+   "n": 13,
+   "action": "open /app/messages",
+   "why": "Messages right after booking",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "13-messages-right-after-booking.jpg"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "Ran the 5-minute cron by hand (like Cloudflare does): HTTP 200",
+   "url": "/app/messages"
+  },
+  {
+   "n": 15,
+   "action": "open /app/messages",
+   "why": "Messages after the cron ran",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 16,
+   "action": "note",
+   "why": "No Open WhatsApp yet: Mina's first message is scheduled until its due time",
+   "url": "/app/messages"
+  },
+  {
+   "n": 17,
+   "action": "look",
+   "why": "Messages after Open WhatsApp: where did the message go?",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "17-messages-after-open-whatsapp-where-did-t.jpg"
+  }
+ ]
+}

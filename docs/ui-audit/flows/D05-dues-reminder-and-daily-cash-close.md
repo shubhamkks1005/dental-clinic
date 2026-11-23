@@ -150,3 +150,7 @@ Note: After close: Daily cash close / Day / cash: ₹500 / Cash expected: ₹500
 ![step 41](D05-dues-reminder-and-daily-cash-close/41-result-of-a-payment-on-a-closed-day.jpg)
 
 Note: Message: This day is closed. Use a late entry or ask the doctor to reopen it. / Outstanding: ₹750 `/app/patients/01M84FVD8QXGQPDH3EPNV07S4K`
+
+
+## Gate A re-run (2026-11-24)
+Re-run without harness repair after Part 2 and Part 3: passed. Evidence: `GATE-A-d05/`. Summary and what changed: [GATE-A.md](GATE-A.md). The findings above describe the app before Phase Q.
