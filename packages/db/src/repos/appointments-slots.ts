@@ -24,6 +24,8 @@ export type SuggestSlotsOptions = {
   /** Prefer slots on/after this IST day (defaults to today). */
   fromDate?: string;
   limit?: number;
+  /** How many days to look at, starting at fromDate (default 14; 1 = that day only). */
+  searchDays?: number;
 };
 
 async function loadVisitType(db: Db, id: string): Promise<ListItem> {
@@ -58,7 +60,7 @@ export function appointmentsSlotsRepo(db: Db, ctx: Ctx) {
         dayStart.getTime() > slotSearchEarliest(opts.now).getTime()
           ? dayStart
           : slotSearchEarliest(opts.now);
-      const searchDays = 14;
+      const searchDays = opts.searchDays ?? 14;
       const endDate = addIstDays(fromDate, searchDays);
       const busy = await db
         .select({
@@ -76,14 +78,17 @@ export function appointmentsSlotsRepo(db: Db, ctx: Ctx) {
           ),
         )
         .all();
-      return findFreeSlots({
+      const free = findFreeSlots({
         timings: opts.timings,
         holidays: opts.holidays,
         durationMin: snap.durationMin,
         earliest,
         busy,
         limit: opts.limit ?? 5,
+        searchDays,
       });
+      // One-day search for a past date would start today: show nothing instead.
+      return searchDays === 1 ? free.filter((s) => s.dateLocal === fromDate) : free;
     },
   };
 }

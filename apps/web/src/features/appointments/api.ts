@@ -57,9 +57,14 @@ export type SuggestedSlot = {
   startAt: string;
 };
 
-export function suggestSlots(visitTypeId: string, dateLocal?: string): Promise<SuggestedSlot[]> {
+export function suggestSlots(
+  visitTypeId: string,
+  dateLocal?: string,
+  opts: { dayOnly?: boolean } = {},
+): Promise<SuggestedSlot[]> {
   const q = new URLSearchParams({ visitTypeId });
   if (dateLocal) q.set("date", dateLocal);
+  if (opts.dayOnly) q.set("day", "1");
   return api<{ slots: SuggestedSlot[] }>(`/api/staff/appointments/slots?${q}`).then((r) => r.slots);
 }
 

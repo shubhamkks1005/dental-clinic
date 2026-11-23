@@ -71,4 +71,33 @@ describe("suggestSlots (2.4.2)", () => {
     expect(slots.length).toBeLessThanOrEqual(5);
     expect(slots[0]?.startMin).toBeGreaterThanOrEqual(10 * 60 + 30);
   });
+
+  it("one day only: every free time of that day, none from other days", async () => {
+    const now = new Date("2026-11-23T03:30:00.000Z");
+    const slots = await repos().appointments.suggestSlots(VISIT_ID, {
+      timings,
+      holidays: [],
+      now,
+      fromDate: "2026-11-24",
+      limit: 60,
+      searchDays: 1,
+    });
+    expect(slots.length).toBeGreaterThanOrEqual(3);
+    expect(slots.every((s) => s.dateLocal === "2026-11-24")).toBe(true);
+    const starts = slots.map((s) => s.startMin);
+    expect(starts).toEqual([...starts].sort((a, b) => a - b));
+  });
+
+  it("today: times that already passed are never offered", async () => {
+    const now = new Date("2026-11-23T05:40:00.000Z"); // 11:10 IST
+    const slots = await repos().appointments.suggestSlots(VISIT_ID, {
+      timings,
+      holidays: [],
+      now,
+      fromDate: "2026-11-23",
+      limit: 60,
+      searchDays: 1,
+    });
+    expect(slots.every((s) => s.startMin >= 11 * 60 + 10)).toBe(true);
+  });
 });

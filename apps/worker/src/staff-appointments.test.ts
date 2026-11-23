@@ -133,3 +133,31 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     expect(bad.status).toBe(409);
   });
 });
+
+describe("GET /api/staff/appointments/slots", () => {
+  async function slots(query: string) {
+    const cookie = await sessionCookie(env, "rec@example.test");
+    return app.request(
+      `${ORIGIN}/api/staff/appointments/slots?visitTypeId=${VISIT_ID}&${query}`,
+      { headers: { cookie } },
+      env,
+    );
+  }
+
+  it("suggests five by default, across days", async () => {
+    const res = await slots("date=2030-01-07");
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { slots: unknown[] } };
+    expect(body.data.slots).toHaveLength(5);
+  });
+
+  it("day=1 lists every free time of that one day, so the desk can pick any", async () => {
+    const res = await slots("date=2030-01-07&day=1");
+    expect(res.status).toBe(200);
+    const { data } = (await res.json()) as {
+      data: { slots: { dateLocal: string; startMin: number }[] };
+    };
+    expect(data.slots.length).toBeGreaterThan(5);
+    expect(data.slots.every((s) => s.dateLocal === "2030-01-07")).toBe(true);
+  });
+});

@@ -282,6 +282,7 @@
 - apps/web features/visits VisitPatientStrip.tsx (+ visit-patient-strip.ts, test) - patient facts and links under the name on the visit screen (Edit patient or medical history -> /app/patients/:id?tab=overview, Past visits); VisitNextSteps.tsx - after Finalise: Create bill (errors stay inline) and Next patient; History tab now shows PatientHistoryTab; VisitStubPanel removed; patients patient-tabs.ts parsePatientTab reads ?tab=
 - packages/shared time.ts formatClockTime - THE time-of-day display ("2:30 PM"); toHhmm stays for stored 24-hour values only
 - apps/web features/patients BirthAgeFields.tsx + age-from-birth.ts (+ test) - date of birth fills the age (read only); no date of birth = type the age; used by NewPatientForm and PatientEditForm
+- apps/web features/appointments useBookSlots.ts, booked-message.ts (+ test) - book dialog fetches all free times of one day (GET /appointments/slots?day=1, limit 60) plus the next five on any day; AppointmentsScreen jumps to the booked date and toasts; appointments-slots repo takes searchDays
 - src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)

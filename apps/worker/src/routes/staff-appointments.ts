@@ -40,6 +40,7 @@ staffAppointments.get("/appointments/slots", async (c) => {
   const result = await suggestAppointmentSlots(signedIn(c).repos, {
     visitTypeId: c.req.query("visitTypeId") ?? "",
     fromDate: c.req.query("date"),
+    dayOnly: c.req.query("day") === "1",
   });
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ slots: result.slots }));

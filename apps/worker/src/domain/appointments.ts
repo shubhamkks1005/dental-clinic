@@ -138,7 +138,7 @@ export async function appointmentRescheduleChain(repos: Repos, id: string) {
 /** Next free slots for quick-book (2.4.2). */
 export async function suggestAppointmentSlots(
   repos: Repos,
-  query: { visitTypeId: string; fromDate?: string },
+  query: { visitTypeId: string; fromDate?: string; dayOnly?: boolean },
   now: Date = new Date(),
 ) {
   if (query.fromDate && !DATE_LOCAL.test(query.fromDate)) {
@@ -151,7 +151,9 @@ export async function suggestAppointmentSlots(
     holidays,
     now,
     fromDate: query.fromDate,
-    limit: 5,
+    // dayOnly: every free time of that one day (the desk picks the exact time).
+    limit: query.dayOnly ? 60 : 5,
+    searchDays: query.dayOnly ? 1 : undefined,
   });
   return {
     ok: true as const,

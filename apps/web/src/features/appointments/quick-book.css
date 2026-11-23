@@ -85,3 +85,7 @@
 .quick-book-slots .btn {
   min-height: 44px;
 }
+
+.quick-book-next {
+  margin: var(--s3) 0 var(--s2);
+}

@@ -1,11 +1,12 @@
-import { formatDisplayDate, formatClockTime, type ListItem } from "@clinic/shared";
+import { formatClockTime, formatDisplayDate, istDate, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { getPatient, type PatientListRow } from "../patients";
-import { bookAppointment, suggestSlots, type SuggestedSlot } from "./api";
+import { bookAppointment, type SuggestedSlot } from "./api";
 import { QuickBookPatient } from "./QuickBookPatient";
+import { useBookSlots } from "./useBookSlots";
 import "./quick-book.css";
 
 type Prefill = {
@@ -18,7 +19,8 @@ type Props = {
   open: boolean;
   prefill: Prefill;
   onClose: () => void;
-  onBooked: () => void;
+  /** Called with the booked slot so the screen can jump to that day. */
+  onBooked: (slot: SuggestedSlot) => void;
 };
 
 // S07 Book appointment — quick dialog (2.4.2): patient → visit type → slot → confirm.
@@ -27,7 +29,6 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
   const [visitTypes, setVisitTypes] = useState<ListItem[]>([]);
   const [visitTypeId, setVisitTypeId] = useState("");
   const [dateLocal, setDateLocal] = useState(prefill.dateLocal);
-  const [slots, setSlots] = useState<SuggestedSlot[]>([]);
   const [slot, setSlot] = useState<SuggestedSlot | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -37,7 +38,6 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
     if (!open) return;
     setDateLocal(prefill.dateLocal);
     setVisitTypeId("");
-    setSlots([]);
     setSlot(null);
     setNote("");
     setError(null);
@@ -64,33 +64,27 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
     }
   }, [open, prefill.dateLocal, prefill.patientId]);
 
+  const { daySlots, nextSlots, loading } = useBookSlots(open, visitTypeId, dateLocal);
+
+  // Keep the chosen time while it is still free; else the time asked for from the calendar,
+  // else nothing: the desk picks, we never book a time nobody chose.
   useEffect(() => {
-    if (!open || !visitTypeId) {
-      setSlots([]);
-      setSlot(null);
-      return;
-    }
-    let cancelled = false;
-    suggestSlots(visitTypeId, dateLocal)
-      .then((list) => {
-        if (cancelled) return;
-        setSlots(list);
-        const preferred =
-          prefill.startMin !== undefined
-            ? list.find((s) => s.dateLocal === dateLocal && s.startMin === prefill.startMin)
-            : undefined;
-        setSlot(preferred ?? list[0] ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setSlots([]);
-          setSlot(null);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [open, visitTypeId, dateLocal, prefill.startMin]);
+    setSlot((cur) => {
+      const all = [...daySlots, ...nextSlots];
+      const same = (x: SuggestedSlot) =>
+        x.dateLocal === cur?.dateLocal && x.startMin === cur?.startMin;
+      if (cur && all.some(same)) return cur;
+      if (prefill.startMin !== undefined) {
+        return daySlots.find((x) => x.startMin === prefill.startMin) ?? null;
+      }
+      return null;
+    });
+  }, [daySlots, nextSlots, prefill.startMin]);
+
+  function pickNext(next: SuggestedSlot) {
+    setDateLocal(next.dateLocal);
+    setSlot(next);
+  }
 
   async function confirm() {
     if (!patient || !visitTypeId || !slot) return;
@@ -105,7 +99,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         source: "phone",
         complaint: note.trim() || null,
       });
-      onBooked();
+      onBooked(slot);
       onClose();
     } catch (e) {
       setError(
@@ -145,10 +139,11 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         </label>
 
         <label>
-          From date
+          Date
           <input
             className="input"
             type="date"
+            min={istDate(new Date())}
             value={dateLocal}
             onChange={(e) => setDateLocal(e.target.value)}
             disabled={!patient}
@@ -156,29 +151,20 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         </label>
 
         <fieldset className="quick-book-slots" disabled={!visitTypeId}>
-          <legend>Suggested times</legend>
-          {slots.length === 0 ? (
-            <p className="muted small">No free slots in the next two weeks from this date.</p>
-          ) : (
-            <ul>
-              {slots.map((s) => {
-                const key = `${s.dateLocal}-${s.startMin}`;
-                const active = slot?.dateLocal === s.dateLocal && slot.startMin === s.startMin;
-                return (
-                  <li key={key}>
-                    <button
-                      type="button"
-                      className={`btn${active ? " btn-primary" : ""}`}
-                      onClick={() => setSlot(s)}
-                    >
-                      {formatDisplayDate(s.dateLocal)} · {formatClockTime(s.startMin)}–
-                      {formatClockTime(s.endMin)}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <legend>Free times on {formatDisplayDate(dateLocal)}</legend>
+          {loading ? <p className="muted small">Looking for free times…</p> : null}
+          {!loading && visitTypeId && daySlots.length === 0 ? (
+            <p className="muted small">
+              No free time on this day. Pick another date or a time below.
+            </p>
+          ) : null}
+          <SlotButtons slots={daySlots} chosen={slot} onPick={setSlot} showDate={false} />
+          {nextSlots.length > 0 ? (
+            <>
+              <p className="small muted quick-book-next">Next free times</p>
+              <SlotButtons slots={nextSlots} chosen={slot} onPick={pickNext} showDate />
+            </>
+          ) : null}
         </fieldset>
 
         <label>
@@ -211,5 +197,39 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         </div>
       </div>
     </Dialog>
+  );
+}
+
+function SlotButtons({
+  slots,
+  chosen,
+  onPick,
+  showDate,
+}: {
+  slots: SuggestedSlot[];
+  chosen: SuggestedSlot | null;
+  onPick: (slot: SuggestedSlot) => void;
+  showDate: boolean;
+}) {
+  return (
+    <ul>
+      {slots.map((s) => {
+        const active = chosen?.dateLocal === s.dateLocal && chosen.startMin === s.startMin;
+        return (
+          <li key={`${s.dateLocal}-${s.startMin}`}>
+            <button
+              type="button"
+              className={`btn${active ? " btn-primary" : ""}`}
+              aria-pressed={active}
+              onClick={() => onPick(s)}
+            >
+              {showDate ? `${formatDisplayDate(s.dateLocal)} · ` : ""}
+              {formatClockTime(s.startMin)}
+              {showDate ? `–${formatClockTime(s.endMin)}` : ""}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

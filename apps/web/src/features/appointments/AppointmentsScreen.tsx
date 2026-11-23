@@ -2,9 +2,11 @@ import { addIstDays, istDate } from "@clinic/shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
+import { useToast } from "../../ui/Toast";
 import { useVisibleInterval } from "../../ui/useVisibleInterval";
 import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
-import { listDayAppointments, type DayAppointmentsReply } from "./api";
+import { listDayAppointments, type DayAppointmentsReply, type SuggestedSlot } from "./api";
+import { bookedMessage } from "./booked-message";
 import { DayView } from "./DayView";
 import { QuickBookDialog } from "./QuickBookDialog";
 import "./day-view.css";
@@ -23,6 +25,7 @@ function parseBookMin(raw: string | null): number | undefined {
 // S08 Appointments — day view (2.4.1) + quick-book (2.4.2 / S07).
 export function AppointmentsScreen() {
   const [params, setParams] = useSearchParams();
+  const toast = useToast();
   const today = istDate(new Date());
   const dateLocal = validDate(params.get("date")) ?? today;
   const bookMin = parseBookMin(params.get("book"));
@@ -62,17 +65,36 @@ export function AppointmentsScreen() {
     if (wantBook) setBookOpen(true);
   }, [wantBook]);
 
+  // Functional updates: the book dialog sets the date and then closes in the same tick, and the
+  // close must not bring back the old date.
   function setDate(next: string) {
-    const nextParams = new URLSearchParams(params);
-    nextParams.set("date", next);
-    setParams(nextParams, { replace: true });
+    setParams(
+      (prev) => {
+        const nextParams = new URLSearchParams(prev);
+        nextParams.set("date", next);
+        return nextParams;
+      },
+      { replace: true },
+    );
   }
 
   function clearBookParams() {
-    const next = new URLSearchParams(params);
-    next.delete("book");
-    next.delete("patient");
-    setParams(next, { replace: true });
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("book");
+        next.delete("patient");
+        return next;
+      },
+      { replace: true },
+    );
+  }
+
+  function onBooked(slot: SuggestedSlot) {
+    // The booking may be on another day: go there so it is on screen, and say where it went.
+    if (slot.dateLocal === dateLocal) load();
+    else setDate(slot.dateLocal);
+    toast({ text: bookedMessage(slot.dateLocal, slot.startMin) });
   }
 
   return (
@@ -150,7 +172,7 @@ export function AppointmentsScreen() {
           setBookOpen(false);
           clearBookParams();
         }}
-        onBooked={load}
+        onBooked={onBooked}
       />
     </div>
   );
