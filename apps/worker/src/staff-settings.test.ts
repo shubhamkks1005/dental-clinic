@@ -80,3 +80,26 @@ describe("settings store API (1.5.1)", () => {
     expect(prefix()).toEqual({ value_json: '"P-"', version: 1 });
   });
 });
+
+describe("counters list API (6.5.1)", () => {
+  it("doctor and receptionist can read counters", async () => {
+    const res = await app.request(
+      `${ORIGIN}/api/staff/counters`,
+      { headers: { cookie: doctor } },
+      env,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { data: { counters: unknown[] } };
+    expect(Array.isArray(body.data.counters)).toBe(true);
+    const receptionist = await sessionCookie(env, "rec-1@example.test");
+    expect(
+      (
+        await app.request(
+          `${ORIGIN}/api/staff/counters`,
+          { headers: { cookie: receptionist } },
+          env,
+        )
+      ).status,
+    ).toBe(200);
+  });
+});

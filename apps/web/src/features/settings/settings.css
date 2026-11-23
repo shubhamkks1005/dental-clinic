@@ -1,4 +1,4 @@
-/* S12 Settings frame. Phone first: section tabs above the open section. Laptop: list beside it. */
+/* S12 Settings hub (6.5.1). Phone first: groups scroll above the open section. */
 .settings {
   display: grid;
   gap: var(--s4);
@@ -7,6 +7,37 @@
 
 .settings-head p {
   margin-top: var(--s1);
+}
+
+.settings-search {
+  display: block;
+  margin-top: var(--s3);
+  max-width: 28rem;
+}
+
+.settings-search-hits {
+  list-style: none;
+  margin: var(--s2) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s1);
+  max-width: 28rem;
+}
+
+.settings-hit {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  width: 100%;
+  padding: 0 var(--s4);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--blue-soft);
+  color: var(--navy);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
 
 .settings-body {
@@ -18,9 +49,26 @@
 
 .settings-nav {
   display: flex;
-  gap: var(--s1);
-  padding: var(--s2);
+  gap: var(--s3);
+  padding: var(--s3);
   overflow-x: auto;
+}
+
+.settings-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: max-content;
+}
+
+.settings-nav-label {
+  margin: 0;
+  padding: 0 var(--s3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
 }
 
 .settings-nav a {
@@ -45,6 +93,64 @@
   padding: var(--s4);
 }
 
+.settings-panel h2 {
+  margin: 0 0 var(--s2);
+}
+
+.settings-fields {
+  display: grid;
+  gap: var(--s3);
+  margin-top: var(--s3);
+}
+
+.settings-field {
+  display: grid;
+  gap: var(--s1);
+}
+
+.settings-field-check {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+  margin-top: var(--s4);
+}
+
+.settings-meta {
+  margin: var(--s3) 0;
+}
+
+.settings-counter-list {
+  list-style: none;
+  margin: var(--s3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s2);
+}
+
+.settings-counter-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: var(--s3);
+  align-items: center;
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  background: var(--blue-soft);
+  border-radius: var(--radius-control);
+}
+
+.settings-stack {
+  display: grid;
+  gap: var(--s4);
+}
+
 @media (min-width: 768px) {
   .settings {
     padding: var(--s5) var(--s6) var(--s6);
@@ -56,16 +162,20 @@
 }
 
 @media (min-width: 1366px) {
-  /* The laptop top bar already leaves space above the title. */
   .settings {
     padding-top: 0;
   }
 
   .settings-body {
-    grid-template-columns: 172px minmax(0, 1fr);
+    grid-template-columns: 200px minmax(0, 1fr);
   }
 
   .settings-nav {
     flex-direction: column;
+    overflow-x: visible;
+  }
+
+  .settings-nav-group {
+    min-width: 0;
   }
 }

@@ -1,5 +1,6 @@
 import { fail, ok, parseVersionOnly } from "@clinic/shared";
 import { Hono } from "hono";
+import { listCounters } from "../domain/counters";
 import { listSettings, updateSetting } from "../domain/settings";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
@@ -10,6 +11,11 @@ export const staffSettings = new Hono<AppEnv>();
 
 staffSettings.get("/settings", async (c) =>
   c.json(ok({ settings: await listSettings(signedIn(c).repos) })),
+);
+
+/** 6.5.1: view-only number series (counters). */
+staffSettings.get("/counters", async (c) =>
+  c.json(ok({ counters: await listCounters(signedIn(c).repos) })),
 );
 
 staffSettings.put("/settings/:key", async (c) => {
