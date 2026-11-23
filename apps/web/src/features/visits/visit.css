@@ -301,3 +301,30 @@ a.visit-side-link:focus-visible {
     font-size: 26px;
   }
 }
+
+.visit-patient {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.visit-patient-facts,
+.visit-patient-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.visit-patient-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.visit-next {
+  display: grid;
+  gap: 8px;
+}

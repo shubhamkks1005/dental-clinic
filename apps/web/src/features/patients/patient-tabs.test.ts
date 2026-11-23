@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PATIENT_PROFILE_TABS, readyPatientTabs } from "./patient-tabs";
+import { PATIENT_PROFILE_TABS, parsePatientTab, readyPatientTabs } from "./patient-tabs";
 
 describe("patient profile tabs (2.2.2 / 3.5.9)", () => {
   it("hides unfinished phase tabs; visits timeline is ready", () => {
@@ -15,5 +15,12 @@ describe("patient profile tabs (2.2.2 / 3.5.9)", () => {
       "messages",
     ]);
     expect(PATIENT_PROFILE_TABS.some((t) => t.id === "billing" && t.ready)).toBe(true);
+  });
+
+  it("?tab= opens a known tab and ignores anything else", () => {
+    expect(parsePatientTab("overview")).toBe("overview");
+    expect(parsePatientTab("history")).toBe("history");
+    expect(parsePatientTab("nope")).toBeNull();
+    expect(parsePatientTab(null)).toBeNull();
   });
 });

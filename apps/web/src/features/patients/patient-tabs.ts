@@ -12,6 +12,11 @@ export const PATIENT_PROFILE_TABS = [
 
 export type PatientProfileTabId = (typeof PATIENT_PROFILE_TABS)[number]["id"];
 
+/** Value of ?tab= if it names a real tab, else null. */
+export function parsePatientTab(raw: string | null): PatientProfileTabId | null {
+  return PATIENT_PROFILE_TABS.find((t) => t.id === raw)?.id ?? null;
+}
+
 export function readyPatientTabs() {
   return PATIENT_PROFILE_TABS.filter((t) => t.ready);
 }

@@ -1,10 +1,10 @@
 import { VISIT_STATUS_LABEL, type FdiTooth } from "@clinic/shared";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
-import { createBillFromVisit } from "../billing";
 import { PatientFilesTab } from "../files";
+import { PatientHistoryTab } from "../history";
 import { ProfileAlerts } from "../medical-history";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitPlanPanel } from "../plan";
@@ -14,7 +14,8 @@ import { getVisit, listRecentVisits, type VisitRecent, type VisitSummary } from 
 import { RecentVisitsSide } from "./RecentVisitsSide";
 import { VisitChartTab } from "./VisitChartTab";
 import { VisitFinaliseBar } from "./VisitFinaliseBar";
-import { VisitStubPanel } from "./VisitStubPanel";
+import { VisitNextSteps } from "./VisitNextSteps";
+import { VisitPatientStrip } from "./VisitPatientStrip";
 import { VISIT_TAB_IDS, VISIT_TAB_LABEL, type VisitTabId } from "./visit-tabs";
 import { VisitMedicinesPanel } from "../prescriptions";
 import { VisitTodayPanel } from "./VisitTodayPanel";
@@ -23,7 +24,6 @@ import "./visit.css";
 /** 3.5.2 visit layout (S05): alerts, tabs, last visits side panel. */
 export function VisitScreen() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { permissions } = useMe();
   const canViewClinical = permissions.includes("clinical.view");
   const canEditClinical = permissions.includes("clinical.edit");
@@ -37,7 +37,6 @@ export function VisitScreen() {
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<VisitTabId>("today");
   const [planTooth, setPlanTooth] = useState<FdiTooth | null>(null);
-  const [billingBusy, setBillingBusy] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -120,10 +119,7 @@ export function VisitScreen() {
       ) : tabId === "medicines" ? (
         <VisitMedicinesPanel visitId={visit.id} patientId={patient.id} canWrite={canWriteRx} />
       ) : tabId === "history" ? (
-        <VisitStubPanel
-          title="History"
-          note="Full patient history opens on the patient profile History tab (3.5.11)."
-        />
+        <PatientHistoryTab patientId={patient.id} />
       ) : (
         <PatientFilesTab patientId={patient.id} />
       ),
@@ -133,8 +129,6 @@ export function VisitScreen() {
     <div className="visit-screen">
       <p className="visit-back">
         <Link to="/app">← Today</Link>
-        {" · "}
-        <Link to={`/app/patients/${visit.patientId}`}>Patient</Link>
       </p>
 
       <ProfileAlerts
@@ -146,10 +140,8 @@ export function VisitScreen() {
       <header className={`visit-head${visit.status === "void" ? " is-void" : ""}`}>
         <div className="visit-head-text">
           <h1>{patient.fullName}</h1>
-          <p className="muted small">
-            Visit · {visit.visitDateLocal} · {patient.code}
-            {visit.status === "void" ? " · Entered in error" : ""}
-          </p>
+          <VisitPatientStrip patient={patient} dateLocal={visit.visitDateLocal} />
+          {visit.status === "void" ? <p className="muted small">Entered in error</p> : null}
         </div>
         <StatusBadge
           tone={
@@ -161,32 +153,7 @@ export function VisitScreen() {
 
       <VisitFinaliseBar visit={visit} canEdit={canEditClinical} onFinalised={setVisit} />
 
-      {canBill && visit.status !== "void" ? (
-        <div className="row wrap gap-sm">
-          <button
-            type="button"
-            className="btn secondary"
-            disabled={billingBusy}
-            onClick={() => {
-              setBillingBusy(true);
-              createBillFromVisit(visit.id)
-                .then((bill) => navigate(`/app/bills/${bill.id}`))
-                .catch((err: unknown) => {
-                  setError(
-                    err instanceof ApiError
-                      ? err.message
-                      : err instanceof Error
-                        ? err.message
-                        : "Could not create bill.",
-                  );
-                })
-                .finally(() => setBillingBusy(false));
-            }}
-          >
-            Create bill from visit
-          </button>
-        </div>
-      ) : null}
+      <VisitNextSteps visit={visit} canBill={canBill} />
 
       <div className="visit-body">
         <div className="visit-main">

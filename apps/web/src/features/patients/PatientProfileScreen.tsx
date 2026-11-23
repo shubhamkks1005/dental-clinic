@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useMe } from "../auth";
 import { Tabs } from "../../ui/Tabs";
@@ -13,12 +13,14 @@ import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
 import { PatientOverviewTab } from "./PatientOverviewTab";
 import { PatientProfileHeader } from "./PatientProfileHeader";
-import { readyPatientTabs } from "./patient-tabs";
+import { parsePatientTab, readyPatientTabs } from "./patient-tabs";
 import "./patient-profile.css";
 
 // S04 (laptop) / S17 (phone): profile with ready tabs only (2.2.2 / edit 2.2.4).
 export function PatientProfileScreen() {
   const { id } = useParams<{ id: string }>();
+  const [query] = useSearchParams();
+  const wantedTab = parsePatientTab(query.get("tab"));
   const { permissions } = useMe();
   const canEdit = permissions.includes("patients.edit");
   const canViewClinical = permissions.includes("clinical.view");
@@ -41,7 +43,12 @@ export function PatientProfileScreen() {
       .then(async (row) => {
         if (cancelled) return;
         setPatient(row);
-        // 3.5.11: returning patient (any past visit) opens on History.
+        // ?tab= (links from the visit screen) wins; else a returning patient opens on History (3.5.11).
+        if (wantedTab) {
+          setTab(wantedTab);
+          setDefaultTabReady(true);
+          return;
+        }
         try {
           const summary = await getHistorySummary(row.id);
           if (!cancelled && summary.totalVisits > 0) setTab("history");
@@ -63,7 +70,7 @@ export function PatientProfileScreen() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, wantedTab]);
 
   if (!id) {
     return (
