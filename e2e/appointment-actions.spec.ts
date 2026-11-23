@@ -155,7 +155,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await page.goto("/app");
   const row = page.locator("li.today-row", { hasText: name });
   await expect(row).toBeVisible();
-  await page.goto("/app/billing");
+  await page.goto("/app/billing?tab=close");
   await expect(page.getByRole("link", { name })).toBeVisible();
   await page.goto("/app");
   await row.getByRole("button", { name: /More actions/ }).click();

@@ -58,7 +58,7 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.click(p.getByRole("button", { name: "Create bill" }), "Click Create bill");
   console.log("bill url:", p.url()); console.log((await c.text()).slice(0, 800));
 
-  await c.click(p.getByRole("button", { name: "Issue bill" }), "Click Issue bill (bill is a draft until issued)");
+  c.note("D5: Create bill issues the bill at once; there is no Issue step.");
   console.log("issue bill:", JSON.stringify(c.steps.at(-1).visible), c.steps.at(-1).errors); console.log((await c.text()).slice(0, 700));
   await c.as("receptionist", "Switch to the receptionist to take payment");
   await c.look("Receptionist Today after the doctor finalised: is there a cue that Riya is ready to bill?");

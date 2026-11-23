@@ -50,6 +50,7 @@ import { billsCancelRepo } from "./bills-cancel";
 import { billsCancelRequestRepo } from "./bills-cancel-request";
 import { billsLockRepo } from "./bills-lock";
 import { billsListRepo } from "./bills-list";
+import { billsSearchRepo } from "./bills-search";
 import { billsFromVisitRepo } from "./bills-from-visit";
 import { billsDuesListRepo } from "./bills-dues-list";
 import { billsDiscountRepo } from "./bills-discount";
@@ -141,6 +142,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...billsCancelRequestRepo(db, ctx),
       ...billsLockRepo(db, ctx),
       ...billsListRepo(db, ctx),
+      ...billsSearchRepo(db, ctx),
       ...billsFromVisitRepo(db, ctx),
       ...billsDuesListRepo(db, ctx),
       ...billsDiscountRepo(db, ctx),

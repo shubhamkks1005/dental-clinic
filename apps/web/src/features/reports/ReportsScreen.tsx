@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { DashboardPayload, DashboardRangePreset } from "@clinic/shared";
 import { problemText } from "../../api/problem-text";
 import { useMe } from "../auth";
+import { CaExportPanel } from "../billing";
 import { useToast } from "../../ui/Toast";
 import { AttentionList } from "./AttentionList";
 import { CallListsPanel } from "./CallListsPanel";
@@ -138,6 +139,7 @@ export function ReportsScreen() {
           <DashboardCharts data={data} />
           <CallListsPanel />
           <AttentionList backup={data.attention?.backup} requests={data.attention?.requests} />
+          <CaExportPanel />
         </>
       ) : null}
     </div>

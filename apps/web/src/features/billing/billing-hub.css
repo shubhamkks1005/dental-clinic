@@ -1,0 +1,345 @@
+/* Billing hub (Billing.dc.html / PhoneBilling.dc.html). Phone first. */
+.hub-stack {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+
+.ageing {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+}
+
+.ageing-card {
+  padding: var(--s4);
+}
+
+.ageing-value {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ageing-total {
+  grid-column: 1 / -1;
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.ageing-total .ageing-value {
+  font-size: 32px;
+}
+
+.ageing-ok {
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.ageing-warn {
+  color: var(--warning-text);
+  font-weight: 600;
+}
+
+.ageing-late {
+  background: #fff6f1;
+  border-color: #f3c6ae;
+  color: var(--danger-text);
+}
+
+.hub-chips {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding-bottom: var(--s1);
+}
+
+.hub-chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--navy);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hub-chip.is-on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.dues-card,
+.bills-card {
+  overflow: hidden;
+}
+
+.dues-head {
+  display: none;
+}
+
+.dues-list,
+.bills-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dues-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--border);
+}
+
+.dues-row:first-child {
+  border-top: 0;
+}
+
+.dues-who {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-width: 0;
+}
+
+.dues-avatar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue-hover);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dues-name {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.dues-name a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+.dues-amount {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 18px;
+}
+
+.dues-age {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.dues-note {
+  grid-column: 1 / -1;
+  font-size: 14px;
+}
+
+.dues-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--s2);
+}
+
+.dues-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--s2);
+  font-size: 14px;
+}
+
+.dues-actions .btn-primary {
+  flex: 2;
+}
+
+.dues-write {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--s2);
+}
+
+.bills-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  min-height: 56px;
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+li:first-child > .bills-row {
+  border-top: 0;
+}
+
+.bills-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bills-amount {
+  text-align: right;
+}
+
+.hub-pager {
+  display: flex;
+  gap: var(--s3);
+}
+
+.close-card {
+  padding: var(--s4);
+}
+
+.close-expected {
+  display: flex;
+  flex-direction: column;
+}
+
+.close-expected strong {
+  font-size: 32px;
+}
+
+.close-diff {
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.close-diff.is-off {
+  color: var(--danger-text);
+}
+
+@media (min-width: 768px) {
+  .ageing {
+    grid-template-columns: 1.2fr repeat(3, minmax(0, 1fr));
+  }
+
+  .ageing-total {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 1366px) {
+  .dues-head,
+  .dues-row {
+    grid-template-columns: minmax(0, 1.4fr) 110px 120px minmax(0, 1.5fr) 330px;
+    gap: var(--s4);
+  }
+
+  .dues-head {
+    display: grid;
+    padding: var(--s3) var(--s5);
+    background: #f8fafb;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .dues-row {
+    padding: var(--s3) var(--s5);
+  }
+
+  .dues-who,
+  .dues-amount,
+  .dues-age,
+  .dues-note,
+  .dues-actions {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .dues-note {
+    font-size: 13px;
+  }
+
+  .dues-write {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .bills-row {
+    grid-template-columns: minmax(0, 1fr) 120px 120px 120px;
+  }
+}
+
+.close-card li a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* The Day close panel uses the plain layout helpers; define them for this card only. */
+.close-card .stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.close-card .row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.close-card .wrap {
+  flex-wrap: wrap;
+}
+
+.close-card .space-between {
+  justify-content: space-between;
+}
+
+.close-card .surface {
+  padding: var(--s3) var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.close-card input {
+  min-height: 48px;
+  padding: 0 var(--s3);
+  border: 1px solid #cbd6e0;
+  border-radius: var(--radius-control);
+  background: #fff;
+  font-size: 16px;
+}
+
+.close-card .notice {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--radius-control);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.close-card .btn {
+  align-self: flex-start;
+}
+
+.close-card .surface {
+  text-transform: capitalize;
+}

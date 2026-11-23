@@ -67,6 +67,25 @@ export function listDues() {
   }>("/api/staff/bills/dues");
 }
 
+export type BillSearchRow = {
+  id: string;
+  billNo: string | null;
+  billOn: string;
+  status: string;
+  totalPaise: number;
+  paidPaise: number;
+  patientId: string;
+  patientName: string;
+  patientCode: string;
+};
+
+export function searchBills(input: { q: string; status: string; page: number }) {
+  const query = new URLSearchParams({ page: String(input.page) });
+  if (input.q.trim()) query.set("q", input.q.trim());
+  if (input.status) query.set("status", input.status);
+  return api<{ rows: BillSearchRow[]; hasMore: boolean }>(`/api/staff/bills?${query.toString()}`);
+}
+
 export function downloadBillsExport(month: string) {
   return api<{ month: string; csv: string }>(
     "/api/staff/bills/export?month=" + encodeURIComponent(month),
@@ -148,10 +167,11 @@ export function listPatientBills(patientId: string) {
   }>(`/api/staff/patients/${encodeURIComponent(patientId)}/bills`);
 }
 
-export function createBillFromVisit(visitId: string) {
+// The bill is issued at once; reviewFirst keeps it as a draft (D5).
+export function createBillFromVisit(visitId: string, opts: { reviewFirst?: boolean } = {}) {
   return api<{ bill: BillDto }>(`/api/staff/visits/${encodeURIComponent(visitId)}/bill`, {
     method: "POST",
-    body: {},
+    body: opts.reviewFirst ? { reviewFirst: true } : {},
   }).then((r) => r.bill);
 }
 

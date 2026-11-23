@@ -6,6 +6,15 @@ import { recordPayment } from "./api";
 
 const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
 
+const MODE_LABEL: Record<(typeof MODES)[number], string> = {
+  cash: "Cash",
+  upi: "UPI",
+  card: "Card",
+  bank: "Bank",
+  cheque: "Cheque",
+  other: "Other",
+};
+
 function rupeeText(paise: number): string {
   return paise % 100 === 0 ? String(paise / 100) : (paise / 100).toFixed(2);
 }
@@ -123,20 +132,6 @@ export function PaymentTakeForm({
           </button>
         </div>
         <label className="stack gap-xs">
-          <span className="muted small">Mode</span>
-          <select
-            value={mode}
-            onChange={(e) => setMode(e.target.value as (typeof MODES)[number])}
-            style={{ minHeight: 44 }}
-          >
-            {MODES.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="stack gap-xs">
           <span className="muted small">Reference</span>
           <input
             value={reference}
@@ -146,6 +141,23 @@ export function PaymentTakeForm({
             style={{ minHeight: 44, minWidth: 140 }}
           />
         </label>
+      </div>
+
+      <div className="pay-modes" role="group" aria-label="Mode">
+        <span className="muted small">Mode</span>
+        <div className="row wrap gap-sm">
+          {MODES.map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={`pay-pill${mode === m ? " is-on" : ""}`}
+              aria-pressed={mode === m}
+              onClick={() => setMode(m)}
+            >
+              {MODE_LABEL[m]}
+            </button>
+          ))}
+        </div>
       </div>
 
       {!amountTyped ? <p className="muted small">Enter the amount to record a payment.</p> : null}
@@ -171,7 +183,7 @@ export function PaymentTakeForm({
             >
               {MODES.filter((m) => m !== mode).map((m) => (
                 <option key={m} value={m}>
-                  {m}
+                  {MODE_LABEL[m]}
                 </option>
               ))}
             </select>
@@ -190,14 +202,14 @@ export function PaymentTakeForm({
           </label>
           {Number.isFinite(typedPaise) && typedPaise > 0 && Number.isFinite(splitPaise) ? (
             <p className="muted small" style={{ alignSelf: "end" }}>
-              {mode}: {formatRupees(typedPaise - splitPaise)} · {splitMode}:{" "}
+              {MODE_LABEL[mode]}: {formatRupees(typedPaise - splitPaise)} · {MODE_LABEL[splitMode]}:{" "}
               {formatRupees(splitPaise)}
             </p>
           ) : null}
         </div>
       ) : null}
 
-      <div className="row wrap gap-sm">
+      <div className="row wrap gap-sm pay-submit">
         <button
           type="button"
           className="btn btn-primary"

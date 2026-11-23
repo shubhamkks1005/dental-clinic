@@ -12,10 +12,10 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
   if (visit.status !== "final") return null;
   const noProcedures = visit.procedures.length === 0;
 
-  function makeBill() {
+  function makeBill(reviewFirst: boolean) {
     setBusy(true);
     setError(null);
-    createBillFromVisit(visit.id)
+    createBillFromVisit(visit.id, { reviewFirst })
       .then((bill) => navigate(`/app/bills/${bill.id}`))
       .catch((err: unknown) => {
         // Stay on the visit: a failed bill must not hide the doctor's work.
@@ -36,9 +36,19 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
             type="button"
             className="btn btn-primary"
             disabled={busy || noProcedures}
-            onClick={makeBill}
+            onClick={() => makeBill(false)}
           >
             {busy ? "Creating bill…" : "Create bill"}
+          </button>
+        ) : null}
+        {canBill ? (
+          <button
+            type="button"
+            className="btn"
+            disabled={busy || noProcedures}
+            onClick={() => makeBill(true)}
+          >
+            Review first
           </button>
         ) : null}
         <Link className="btn" to="/app">

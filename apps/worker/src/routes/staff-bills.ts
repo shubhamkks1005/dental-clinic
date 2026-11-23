@@ -18,6 +18,7 @@ import {
   requestBillCancelDomain,
   listPendingDiscounts,
   listPatientBills,
+  searchBills,
   listPatientPayments,
   recordDuesCall,
   recordPayment,
@@ -36,6 +37,11 @@ staffBills.get("/bills/export", async (c) => {
   const result = await exportBillsMonth(signedIn(c).repos, c.req.query("month"));
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ month: result.month, csv: result.csv, rows: result.rows }));
+});
+
+staffBills.get("/bills", async (c) => {
+  const result = await searchBills(signedIn(c).repos, c.req.query());
+  return c.json(ok({ rows: result.rows, hasMore: result.hasMore }));
 });
 
 staffBills.get("/bills/dues", async (c) => {
@@ -130,7 +136,8 @@ staffBills.post("/bills/:id/cancel", async (c) => {
 });
 
 staffBills.post("/visits/:id/bill", async (c) => {
-  const result = await createBillFromVisit(signedIn(c).repos, c.req.param("id"));
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await createBillFromVisit(signedIn(c).repos, c.req.param("id"), body);
   return c.json(ok({ bill: result.bill }), 201);
 });
 

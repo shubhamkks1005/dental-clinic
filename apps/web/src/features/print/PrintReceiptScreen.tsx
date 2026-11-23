@@ -131,7 +131,7 @@ export function PrintReceiptScreen() {
         </p>
         {payment.reference ? <p>Reference: {payment.reference}</p> : null}
         {payment.notes ? <p className="muted small">{payment.notes}</p> : null}
-        <p className="muted small">This is not a GST invoice (gst_mode off — DRAFT accountant).</p>
+        <p className="muted small">This is not a GST invoice.</p>
       </PrintLayout>
     </div>
   );

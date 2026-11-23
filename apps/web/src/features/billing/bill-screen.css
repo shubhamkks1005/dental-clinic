@@ -1,0 +1,255 @@
+/* Bill screen (Bill.dc.html, PhoneBill.dc.html). Phone first. */
+.bill-screen {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+
+.bill-path {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bill-path a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.bill-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.bill-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.bill-title h1 {
+  color: var(--navy);
+  overflow-wrap: anywhere;
+}
+
+.bill-who {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s3);
+  margin-top: var(--s2);
+  font-weight: 600;
+}
+
+.bill-layout {
+  display: grid;
+  gap: var(--s4);
+  align-items: start;
+}
+
+.bill-main,
+.bill-side {
+  display: grid;
+  gap: var(--s4);
+  min-width: 0;
+}
+
+.bill-items,
+.bill-payments {
+  overflow: hidden;
+}
+
+.bill-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--border);
+}
+
+.bill-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px 68px 80px;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.bill-item-head {
+  background: #f8fafb;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bill-item-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bill-item-list .bill-item:last-child {
+  border-bottom: 0;
+}
+
+.bill-sub {
+  display: block;
+}
+
+.bill-num {
+  text-align: right;
+}
+
+.bill-totals {
+  padding: var(--s4);
+}
+
+.bill-label {
+  margin-bottom: var(--s2);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.bill-totals dl,
+.bill-totals dd {
+  margin: 0;
+}
+
+.bill-line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: 9px 0;
+  border-bottom: 1px solid #eef2f5;
+  font-size: 14px;
+}
+
+.bill-line-total {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.bill-line-balance {
+  border-bottom: 0;
+  color: var(--warning-text);
+  font-weight: 700;
+}
+
+.bill-bar {
+  height: 8px;
+  margin-top: var(--s2);
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--border);
+}
+
+.bill-bar span {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}
+
+.bill-issue {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4);
+}
+
+.bill-check {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
+}
+
+.bill-more summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bill-more-body {
+  display: grid;
+  gap: var(--s3);
+  padding: 0 var(--s4) var(--s4);
+}
+
+/* Payment card pieces: mode pills, and the Record button stays in view on a phone. */
+.pay-modes {
+  display: grid;
+  gap: var(--s2);
+}
+
+.pay-pill {
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 1px solid #d5dee6;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--navy);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pay-pill.is-on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.pay-submit {
+  position: sticky;
+  bottom: calc(64px + env(safe-area-inset-bottom));
+  padding: var(--s3) 0;
+  background: var(--card);
+}
+
+.pay-submit .btn {
+  flex: 1;
+  min-height: 52px;
+}
+
+@media (min-width: 768px) {
+  .pay-submit {
+    position: static;
+    padding: 0;
+  }
+
+  .pay-submit .btn {
+    flex: none;
+  }
+}
+
+@media (min-width: 1366px) {
+  .bill-layout {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+
+  .bill-item {
+    grid-template-columns: minmax(0, 1fr) 60px 110px 120px;
+  }
+}
+
+.bill-path a {
+  padding: 0 var(--s2);
+}
+
+.bill-who a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

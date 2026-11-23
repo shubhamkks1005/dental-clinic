@@ -103,7 +103,7 @@ test("discount request leaves the total alone until the doctor approves", async 
   await expect(procedures.locator("li")).toHaveCount(1);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
-  await page.getByRole("button", { name: "Create bill" }).click();
+  await page.getByRole("button", { name: "Review first" }).click();
   await expect(page).toHaveURL(/\/app\/bills\//);
   const billPath = new URL(page.url()).pathname;
   const totalText = async () =>
@@ -170,7 +170,6 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   await page.getByRole("button", { name: "Create bill" }).click();
   await expect(page).toHaveURL(/\/app\/bills\//);
   const billPath = new URL(page.url()).pathname;
-  await page.getByRole("button", { name: "Issue bill" }).click();
   await expect(page.getByRole("button", { name: "Record payment" })).toBeVisible();
 
   // Receptionist takes a part payment, then asks the doctor to cancel the bill.
@@ -183,6 +182,7 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   await page.getByRole("button", { name: "Record payment" }).click();
   await expect(page.locator(".toast-text", { hasText: /recorded/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "Cancel bill" })).toHaveCount(0);
+  await page.getByText("More actions").click();
   await page.getByRole("button", { name: "Ask the doctor to cancel" }).click();
   await page.getByLabel("Why is it wrong?").fill("Fake: wrong procedure");
   await page.getByRole("button", { name: "Send request" }).click();
@@ -195,6 +195,7 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   await expect(waiting).toContainText(`Cancel bill`);
   await expect(waiting).toContainText(name);
   await waiting.locator("li", { hasText: name }).getByRole("link", { name: "Open bill" }).click();
+  await page.getByText("More actions").click();
   await expect(page.getByText(/Reception asks to cancel this bill/)).toBeVisible();
   await page.getByRole("button", { name: "Cancel bill" }).click();
   await expect(page.getByRole("link", { name: "Refund first" })).toBeVisible();

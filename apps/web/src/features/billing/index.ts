@@ -3,3 +3,4 @@ export { BillScreen } from "./BillScreen";
 export { PatientBillingPanel } from "./PatientBillingPanel";
 export { createBillFromVisit, getBill, listPatientBills, recordPayment } from "./api";
 export { WaitingForYou } from "./WaitingForYou";
+export { CaExportPanel } from "./CaExportPanel";

@@ -69,8 +69,18 @@ export async function cancelBill(repos: Repos, id: string, body: unknown) {
   return { ok: true as const, bill };
 }
 
-export async function createBillFromVisit(repos: Repos, visitId: string) {
-  const bill = await repos.bills.createFromVisit(visitId);
+// D5: a bill from a finalised visit is issued at once (it gets its gap-free number then). Only
+// "Review first" (reviewFirst: true) keeps it as a draft, so items or a discount can be changed.
+// The draft and the issue are two writes; if the issue fails the draft stays and can be issued.
+export async function createBillFromVisit(repos: Repos, visitId: string, body?: unknown) {
+  const reviewFirst =
+    !!body && typeof body === "object" && (body as { reviewFirst?: unknown }).reviewFirst === true;
+  const draft = await repos.bills.createFromVisit(visitId);
+  if (reviewFirst) return { ok: true as const, bill: draft };
+  const account = await repos.bills.listForPatient(draft.patientId);
+  const bill = await repos.bills.issue(draft.id, draft.version, {
+    applyAdvance: account.advancePaise > 0,
+  });
   return { ok: true as const, bill };
 }
 
@@ -93,6 +103,25 @@ export async function exportBillsMonth(repos: Repos, monthRaw: unknown) {
 export async function listPatientBills(repos: Repos, patientId: string) {
   const data = await repos.bills.listForPatient(patientId);
   return { ok: true as const, ...data };
+}
+
+const BILL_STATUSES = ["draft", "issued", "cancelled"] as const;
+
+// Billing hub, Bills tab. Bad query values fall back to the default instead of failing.
+export async function searchBills(
+  repos: Repos,
+  query: { q?: string; status?: string; page?: string },
+) {
+  const status = BILL_STATUSES.find((s) => s === query.status);
+  const page = Math.max(0, Math.floor(Number(query.page ?? 0)) || 0);
+  const limit = 25;
+  const result = await repos.bills.searchBills({
+    q: query.q?.slice(0, 60),
+    status,
+    limit,
+    offset: page * limit,
+  });
+  return { ok: true as const, ...result };
 }
 
 export async function listPatientPayments(repos: Repos, patientId: string) {

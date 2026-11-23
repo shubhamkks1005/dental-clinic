@@ -111,9 +111,7 @@ export function PrintBillScreen() {
         <p>
           {patient.fullName} · {patient.code} · {formatDisplayDate(bill.billOn)}
         </p>
-        {registrationMissing(clinic.registrationNo) ? (
-          <p className="muted small">Doctor registration number missing in Settings.</p>
-        ) : (
+        {registrationMissing(clinic.registrationNo) ? null : (
           <p className="muted small">Reg. no. {clinic.registrationNo}</p>
         )}
         <ul>
@@ -151,7 +149,7 @@ export function PrintBillScreen() {
         {bill.status === "cancelled" ? (
           <p>Cancelled{bill.cancelReason ? `: ${bill.cancelReason}` : ""}</p>
         ) : null}
-        <p className="muted small">This is not a GST invoice (gst_mode off — DRAFT accountant).</p>
+        <p className="muted small">This is not a GST invoice.</p>
       </PrintLayout>
     </div>
   );

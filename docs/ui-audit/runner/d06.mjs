@@ -12,7 +12,7 @@ await flow({ id: process.argv[2] || "D06-discount-request-and-approval", role: "
   await c.click(p.getByRole("button", { name: "Add procedure" }), "Add procedure (Scaling ₹1,500)");
   await c.click(p.getByRole("button", { name: "Finalise visit" }), "Finalise visit");
   await c.click(d().getByRole("button", { name: "Finalise" }), "Confirm Finalise");
-  await c.click(p.getByRole("button", { name: "Create bill" }), "Create bill (a draft bill opens)");
+  await c.click(p.getByRole("button", { name: "Review first" }), "Review first (a draft bill opens, so a discount can be asked)");
   const billUrl = new URL(p.url()).pathname;
   // receptionist asks for a discount
   await c.as("receptionist", "PART 1: the receptionist opens the same draft bill; the patient asks for a discount");

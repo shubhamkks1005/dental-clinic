@@ -118,7 +118,6 @@ export function BillDiscountPanel({ bill, onUpdated, onError }: Props) {
           Request discount
         </button>
       </div>
-      <p className="muted small">Discounts are not advertised. Billing decision only (DCI).</p>
     </div>
   );
 }

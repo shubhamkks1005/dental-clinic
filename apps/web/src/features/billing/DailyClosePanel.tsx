@@ -1,4 +1,4 @@
-import { formatRupees, istDate, statusWord } from "@clinic/shared";
+import { formatMoney, formatRupees, istDate, plural, statusWord } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
@@ -19,7 +19,7 @@ export function DailyClosePanel() {
     getDayClose(dayLocal)
       .then((s) => {
         setSummary(s);
-        setCounted(String(Math.round(s.cashExpectedPaise / 100)));
+        setCounted(String(s.cashExpectedPaise / 100));
       })
       .catch((e: unknown) => {
         setError(e instanceof Error ? e.message : "Could not load day close.");
@@ -29,6 +29,8 @@ export function DailyClosePanel() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const differencePaise = Math.round(Number(counted) * 100) - (summary?.cashExpectedPaise ?? 0);
 
   async function onClose() {
     const cashCountedPaise = Math.round(Number(counted) * 100);
@@ -91,8 +93,8 @@ export function DailyClosePanel() {
             )}
           </div>
           <p className="muted">
-            Cash expected: <strong>{formatRupees(summary.cashExpectedPaise)}</strong> · Digital:{" "}
-            <strong>{formatRupees(summary.digitalPaise)}</strong> · {summary.paymentCount} payments
+            Digital: <strong>{formatMoney(summary.digitalPaise)}</strong> ·{" "}
+            {plural(summary.paymentCount, "payment")}
           </p>
           {summary.closed && summary.close ? (
             <div className="stack gap-sm">
@@ -149,6 +151,10 @@ export function DailyClosePanel() {
                   </ul>
                 </div>
               ) : null}
+              <div className="close-expected">
+                <span className="muted">Cash expected in the drawer</span>
+                <strong>{formatMoney(summary.cashExpectedPaise)}</strong>
+              </div>
               <label className="stack gap-xs">
                 <span className="muted small">Counted cash (₹)</span>
                 <input
@@ -160,19 +166,35 @@ export function DailyClosePanel() {
                   style={{ minHeight: 44 }}
                 />
               </label>
-              <label className="stack gap-xs">
-                <span className="muted small">Note (required if difference ≠ 0)</span>
-                <input
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  maxLength={500}
-                  style={{ minHeight: 44 }}
-                />
-              </label>
+              {Number.isFinite(differencePaise) ? (
+                <p
+                  className={differencePaise === 0 ? "close-diff" : "close-diff is-off"}
+                  role="status"
+                >
+                  {differencePaise === 0
+                    ? "Matches. No difference."
+                    : `Difference: ${formatMoney(differencePaise)} (${differencePaise > 0 ? "more" : "less"} than expected)`}
+                </p>
+              ) : null}
+              {differencePaise !== 0 && Number.isFinite(differencePaise) ? (
+                <label className="stack gap-xs">
+                  <span className="muted small">Why is there a difference?</span>
+                  <input
+                    className="input"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    maxLength={500}
+                  />
+                </label>
+              ) : null}
               <button
                 type="button"
-                className="btn"
-                disabled={busy || summary.incompleteAppointments.length > 0}
+                className="btn btn-primary"
+                disabled={
+                  busy ||
+                  summary.incompleteAppointments.length > 0 ||
+                  (differencePaise !== 0 && note.trim().length === 0)
+                }
                 onClick={() => void onClose()}
               >
                 Close day

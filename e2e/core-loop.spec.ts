@@ -87,8 +87,9 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.getByRole("button", { name: "Finalise visit" }).click();
     await dialog.getByRole("button", { name: "Finalise" }).click();
     await page.getByRole("button", { name: "Create bill" }).click();
-    await page.getByRole("button", { name: "Issue bill" }).click();
-    await expect(page.getByRole("button", { name: "Issue bill" })).toBeHidden();
+    // D5: the bill is issued at once (it has a number and a Print bill link, no Issue step).
+    await expect(page.getByRole("link", { name: "Print bill" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Issue bill" })).toHaveCount(0);
 
     // ---- Receptionist: part payment, then the rest; the statement shows both ----
     await page.goto("/api/staff/auth/dev-login?role=receptionist");

@@ -20,7 +20,7 @@ await flow({ id: process.argv[2] || "G02-returning-patient-second-visit", role: 
   await c.click(p.getByRole("button", { name: "Finalise visit" }), "Click Finalise visit (no prescription this time)");
   await c.click(d().getByRole("button", { name: "Finalise" }), "Confirm Finalise");
   await c.click(p.getByRole("button", { name: "Create bill" }), "Click Create bill");
-  await c.click(p.getByRole("button", { name: "Issue bill" }), "Click Issue bill");
+  c.note("D5: Create bill issues the bill at once; there is no Issue step.");
   await c.look("Issued bill");
   await c.as("receptionist", "Switch to the receptionist");
   await c.go("/app/billing", "Receptionist opens Billing (dues list)");
@@ -29,7 +29,7 @@ await flow({ id: process.argv[2] || "G02-returning-patient-second-visit", role: 
   await c.click(p.getByRole("tab", { name: "Billing", exact: true }), "Open Billing tab");
   await c.look("Billing tab: two bills, balance");
   await c.type(p.getByLabel(/Amount/), "3000", "Type amount 3000 (more than the older bill, less than both)");
-  await c.pick(p.getByLabel("Mode").first(), "upi", "Choose mode upi");
+  await c.click(p.getByRole("button", { name: "UPI", exact: true }), "Choose mode UPI");
   await c.type(p.getByLabel("Reference"), "UPI123456", "Type short reference");
   await c.click(p.getByRole("button", { name: "Record payment" }), "Click Record payment");
   await c.look("After a payment that covers one bill and part of the other");
