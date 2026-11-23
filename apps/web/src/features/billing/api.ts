@@ -59,6 +59,12 @@ export function listDues() {
   }>("/api/staff/bills/dues");
 }
 
+export function downloadBillsExport(month: string) {
+  return api<{ month: string; csv: string }>(
+    "/api/staff/bills/export?month=" + encodeURIComponent(month),
+  );
+}
+
 export function recordDuesCall(patientId: string, note: string) {
   return api<{ call: { id: string; calledOn: string } }>(
     `/api/staff/patients/${encodeURIComponent(patientId)}/dues-calls`,

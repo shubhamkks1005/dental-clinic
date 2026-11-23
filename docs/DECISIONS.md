@@ -153,3 +153,4 @@
 - 2026-11-23 - **5.3.1 fee change:** Draft bill lines editable (PATCH); when unitPaise ≠ visit_procedures.default_paise (or list default_paise), feeChangeReason required. Custom lines with no list fee need no reason. 3-click path: Create bill → Issue (Save lines only if editing). - agent (5.3.1)
 - 2026-11-23 - **5.3.2 split payment UI:** amountPaise = total; splitPaise = second mode portion; primary = total − split. Short reference only. - agent (5.3.2)
 - 2026-11-23 - **5.3.3 statement:** A4 print of charges+payments+outstanding from live list APIs; Billing tab status filter. - agent (5.3.3)
+- 2026-11-23 - **5.3.12 CA export:** GET /bills/export?month=YYYY-MM; reports.full (doctor); CSV with patient_code only; modes as cash:paise;upi:paise. - agent (5.3.12)

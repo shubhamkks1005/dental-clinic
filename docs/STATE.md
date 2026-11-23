@@ -26,6 +26,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.3.1 DONE locally (createFromVisit + draft line edit with fee-change reason + Issue; S09). No migration.
 5.3.2 DONE locally (split cash+UPI UI + reference; PaymentTakeForm; receipt shows both). No migration.
 5.3.3 DONE locally (account list + filter + A4 statement print; outstanding = dues sum test). No migration.
+5.3.12 DONE locally (monthly CSV doctor-only reports.full; patient code only; access_log export). Waiting: CA open fake month file. No migration.
 5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
@@ -250,6 +251,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **5.3.12**: CA open one fake-month CSV and approve columns
 - **5.3.11**: sister approve A5 bill/receipt print on clinic printer
 - **5.2.5**: enter 5 fake/real opening balances from paper register and confirm totals
 - **5.1.1**: CA written answers to docs/CA_QUESTIONS.md (GST, bill form, cash ₹2L, retention, print fields)

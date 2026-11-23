@@ -9,6 +9,8 @@ import {
   parseReopenDay,
   parseRequestBillDiscount,
   parseUpdateDraftBill,
+  parseMonthParam,
+  billingExportToCsv,
 } from "@clinic/shared";
 
 export async function createBill(repos: Repos, body: unknown) {
@@ -77,6 +79,13 @@ export async function updateDraftBill(repos: Repos, id: string, body: unknown) {
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const bill = await repos.bills.updateDraft(id, parsed.value);
   return { ok: true as const, bill };
+}
+
+export async function exportBillsMonth(repos: Repos, monthRaw: unknown) {
+  const parsed = parseMonthParam(monthRaw);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const rows = await repos.bills.exportMonth(parsed.month);
+  return { ok: true as const, month: parsed.month, csv: billingExportToCsv(rows), rows };
 }
 
 export async function listPatientBills(repos: Repos, patientId: string) {

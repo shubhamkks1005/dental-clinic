@@ -1,6 +1,7 @@
 import { formatRupees, type DueAgeBucket } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
+import { CaExportPanel } from "./CaExportPanel";
 import { DailyClosePanel } from "./DailyClosePanel";
 import { listDues, recordDuesCall, type DuesRow } from "./api";
 
@@ -153,6 +154,7 @@ export function BillingHomeScreen() {
         </Link>
       </p>
 
+      <CaExportPanel />
       <DailyClosePanel />
     </section>
   );

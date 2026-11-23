@@ -22,6 +22,7 @@ export * from "./billing-numbers";
 export * from "./billing";
 export * from "./bill-discount";
 export * from "./bill-draft";
+export * from "./billing-export";
 export * from "./payments";
 export * from "./dues";
 export * from "./day-close";

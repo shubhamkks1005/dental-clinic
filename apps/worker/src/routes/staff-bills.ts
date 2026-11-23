@@ -7,6 +7,7 @@ import {
   createBill,
   createBillFromVisit,
   dayCloseSummary,
+  exportBillsMonth,
   getBill,
   getPayment,
   issueBill,
@@ -25,7 +26,13 @@ import type { AppEnv } from "../types";
 
 export const staffBills = new Hono<AppEnv>();
 
-// 5.3.x billing. Permissions enforced in repos (bills.create / bills.adjust).
+// 5.3.x billing. Permissions enforced in repos (bills.create / bills.adjust / reports.full).
+staffBills.get("/bills/export", async (c) => {
+  const result = await exportBillsMonth(signedIn(c).repos, c.req.query("month"));
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ month: result.month, csv: result.csv, rows: result.rows }));
+});
+
 staffBills.get("/bills/dues", async (c) => {
   const result = await listDues(signedIn(c).repos);
   return c.json(
