@@ -1,5 +1,6 @@
 import {
   isAllowedStatusTransition,
+  istDate,
   statusTransitionBlockReason,
   type AppointmentStatus,
   type ChangeAppointmentStatusInput,
@@ -11,6 +12,7 @@ import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { appointments } from "../schema";
+import { markFirstArrivedBatch } from "./patient-first-arrived";
 
 export type AppointmentStatusRow = {
   id: string;
@@ -63,6 +65,10 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       const stamp = stampsFor(to, nowIso);
       const cancelReason =
         to === "cancelled" ? (input.cancelReason ?? row.cancelReason) : row.cancelReason;
+      const firstArrived =
+        to === "arrived"
+          ? markFirstArrivedBatch(db, ctx, row.patientId, row.dateLocal || istDate(now), nowIso)
+          : null;
 
       await db.batch([
         db
@@ -98,6 +104,7 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
               : {}),
           },
         }),
+        ...(firstArrived ?? []),
       ]);
 
       const next = await db

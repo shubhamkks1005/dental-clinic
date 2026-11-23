@@ -302,6 +302,13 @@
       "when": 1795472000000,
       "tag": "0042_day_closes",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "6",
+      "when": 1795480000000,
+      "tag": "0043_patient_first_arrived_on",
+      "breakpoints": true
     }
   ]
 }

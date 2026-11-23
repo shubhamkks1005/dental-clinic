@@ -1,10 +1,13 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 5 gate done (passed with exceptions). Do not start Phase 6 until owner says so.
+Phase: 6 in progress (dashboard, reports, settings). Owner said go; Phase 5 gate leftovers stay under Waiting.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
-Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
-PLAN: Phase 5 bills / payments / dues / receipts. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+Phase 3/4/5 leftovers stay under Before real patients / Waiting; not redone.
+PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+**DRAFT - sister to confirm (6.1.1):** metric definitions + top 4 KPIs in DECISIONS.md (plan defaults until haan).
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
+6.1.1 SKIPPED / Waiting (sister 45-min sign-off). DRAFT defs + top-4 in DECISIONS.
+6.2.1 DONE locally (first_arrived_on; set on arrived/walk-in; backfill; isNewPatientOn excludes legacy_ref). **Migration `0043_patient_first_arrived_on.sql` — owner applies.**
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
@@ -280,6 +283,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **6.1.1**: sister 45-min sign-off on metric definitions table + choose top 4 dashboard KPIs (DRAFT defaults in DECISIONS until then)
 - **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
 - **5.5.3 / 5.5.4**: CA review sample bills+export+day close; then top-5 fixes
 - **5.4.1**: create Healthchecks check + GitHub secret `HEALTHCHECKS_BILLING_URL`; confirm fail ping on bad dump
@@ -291,7 +295,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0006–0042** (next free still **0043**; no new mig this Phase 5 polish round)
+- Staging: apply migrations **0006–0043** (next free **0044** after 6.2.1)
 - **HEALTHCHECKS_BILLING_URL** GitHub secret for weekly billing integrity
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then

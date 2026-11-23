@@ -25,6 +25,7 @@ import {
   insertAppointmentIfFree,
   type AppointmentInsertValues,
 } from "./appointment-insert";
+import { markFirstArrivedBatch } from "./patient-first-arrived";
 
 export type WalkInAppointment = {
   id: string;
@@ -194,6 +195,7 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
             ...(emergency ? { overrideReason: "Emergency walk-in" } : {}),
           },
         }),
+        ...markFirstArrivedBatch(db, ctx, input.patientId, dateLocal, nowIso),
       ]);
 
       const row = await db

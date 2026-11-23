@@ -38,6 +38,7 @@ export * from "./patient-contact";
 export * from "./patient-create";
 export * from "./patient-duplicates";
 export * from "./patient-guardian";
+export * from "./patient-new";
 export * from "./patient-search-tokens";
 export * from "./request-id";
 export * from "./routing";

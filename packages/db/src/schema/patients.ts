@@ -37,6 +37,8 @@ export const patients = sqliteTable(
     contactRelation: text("contact_relation", { enum: CONTACT_RELATIONS }),
     messageLanguage: text("message_language", { enum: PATIENT_MESSAGE_LANGUAGES }),
     legacyRef: text("legacy_ref"),
+    // 6.2.1: IST YYYY-MM-DD of first arrived/in_chair/completed; set once, never overwrite.
+    firstArrivedOn: text("first_arrived_on"),
     notes: text("notes"),
     status: text("status", { enum: PATIENT_STATUSES }).notNull().default("active"),
   },

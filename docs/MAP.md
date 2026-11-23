@@ -206,7 +206,10 @@
 
 ## packages/db (tables: name - purpose - key columns)
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
-- patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, notes, status (active|archived)
+- patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, first_arrived_on (6.2.1), notes, status (active|archived)
+- migrations/0043_patient_first_arrived_on.sql - 6.2.1 first_arrived_on + index + backfill
+- src/repos/patient-first-arrived.ts (+ test) - 6.2.1 markFirstArrivedBatch; wired from status/walk-in
+- packages/shared/src/patient-new.ts (+ test) - 6.2.1 isNewPatientOn (excludes legacy_ref)
 - patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
 - consents - 2.1.9 append-only consent history (src/schema/consents.ts) - patient_id, type, notice_version, given, given_at, recorded_by, method; withdraw = new row with given=0
 - appointments - 2.3.1 bookings (src/schema/appointments.ts) - patient_id, chair_id, visit_type_id/label (copied), start_at (UTC), date_local + start_min/end_min (IST), status, source, priority, overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status
@@ -306,8 +309,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/repos/consents.ts (+ test) - 2.1.9 listForPatient / record (append-only + audit)
 - src/repos/appointment-insert.ts - INSERT…SELECT WHERE NOT EXISTS (busy overlap) for booking
 - src/repos/appointments-book.ts (+ test) - 2.3.4/2.3.5 book(); soft rules + override→overbook; 50 parallel same-slot → one win, no loser audit
-- src/repos/appointments-status.ts (+ test) - 2.3.6 changeStatus(); wheel + stamps + no_show/undo gates; version conflict
-- src/repos/appointments-walk-in.ts (+ test) - 2.3.7 walkIn(); arrived walk-ins; emergency overbook; queue order test
+- src/repos/appointments-status.ts (+ test) - 2.3.6 changeStatus(); wheel + stamps + no_show/undo gates; version conflict; 6.2.1 first_arrived_on on arrived
+- src/repos/appointments-walk-in.ts (+ test) - 2.3.7 walkIn(); arrived walk-ins; emergency overbook; queue order test; 6.2.1 first_arrived_on
 - src/repos/appointments-cancel.ts - 2.3.8 cancel() with reason codes; notifyPatient on audit
 - src/repos/appointments-reschedule.ts (+ test) - 2.3.8 reschedule(); chain; listForPatient
 - src/repos/appointments-list.ts (+ test) - listForDay (2.4.1, join patient), listForPatient + rescheduleChain
