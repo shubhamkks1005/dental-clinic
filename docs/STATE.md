@@ -9,6 +9,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.1.1 SKIPPED / Waiting (sister 45-min sign-off). DRAFT defs + top-4 in DECISIONS.
 6.2.1 DONE locally (first_arrived_on; set on arrived/walk-in; backfill; isNewPatientOn excludes legacy_ref). **Migration `0043_patient_first_arrived_on.sql` — owner applies.**
 6.2.2 DONE locally (daily_stats + monthly_stats; SQL aggregates; INSERT OR REPLACE recompute; hand-count test). **Migration `0044_daily_stats.sql` — owner applies.**
+6.2.3 DONE locally (cron `*/5` + nightly IST midnight branch recomputes 3 days; POST /stats/recompute rate-limited; S10 Reports button). No migration.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**

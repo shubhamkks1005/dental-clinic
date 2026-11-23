@@ -16,12 +16,13 @@ import { CertificateRegisterScreen, NewCertificateScreen } from "../features/cer
 import { TodayScreen } from "../features/today";
 import { VisitScreen } from "../features/visits";
 import { BillingHomeScreen, BillScreen } from "../features/billing";
+import { ReportsScreen } from "../features/reports";
 import { NotBuiltYet, NotFound } from "../ui/PageMessage";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
 import { StaffShell } from "../ui/shell/StaffShell";
 
 // Screens behind the nav items that later tasks will build.
-const NOT_BUILT = ["messages", "reports"];
+const NOT_BUILT = ["messages"];
 
 // Print screens open without the app frame; every other staff screen sits inside it.
 export function StaffRoutes() {
@@ -62,6 +63,7 @@ function ShellRoutes() {
         <Route path="visits/:id" element={<VisitScreen />} />
         <Route path="billing" element={<BillingHomeScreen />} />
         <Route path="bills/:id" element={<BillScreen />} />
+        <Route path="reports" element={<ReportsScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
         <Route path="style-guide" element={<StyleGuideScreen />} />

@@ -159,4 +159,15 @@ describe("daily_stats (6.2.2)", () => {
       ForbiddenError,
     );
   });
+
+  it("recomputeRecentDays rate-limits the doctor button", async () => {
+    const now = new Date("2026-11-15T12:00:00.000Z");
+    await repos().dailyStats.recomputeRecentDays(now, { rateLimit: true, days: 1 });
+    await expect(
+      repos().dailyStats.recomputeRecentDays(new Date(now.getTime() + 1000), {
+        rateLimit: true,
+        days: 1,
+      }),
+    ).rejects.toThrow(/Wait/);
+  });
 });

@@ -158,7 +158,10 @@
 - src/features/print/PrintDayCloseScreen.tsx - 5.3.9 A4 day close print
 - src/features/print/PrintBillScreen.tsx / PrintReceiptScreen.tsx - 5.3.11 A5 bill+receipt + Duplicate
 - src/features/print/PrintStatementScreen.tsx - 5.3.3 A4 patient account statement
-- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
+- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell; reports = ReportsScreen (6.2.3 S10); messages = NotBuiltYet
+- src/features/reports/ - 6.2.3 S10 Reports (sample label + Recompute now); api.ts
+- apps/worker src/cron/ - 6.2.3 scheduled branches (daily-stats nightly); entry createWorker adds scheduled()
+- apps/worker src/routes/staff-stats.ts - POST /stats/recompute
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/files/ - 3.7.3–3.7.4 prepareImage + PatientFilesTab (grid, viewer, upload; S04/S17)
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11

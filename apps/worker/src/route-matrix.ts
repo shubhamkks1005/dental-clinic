@@ -400,6 +400,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "reports.full" },
   },
   {
+    method: "POST",
+    path: "/api/staff/stats/recompute",
+    access: { kind: "permission", action: "reports.full" },
+  },
+  {
     method: "GET",
     path: "/api/staff/bills/dues",
     access: { kind: "permission", action: "bills.create" },

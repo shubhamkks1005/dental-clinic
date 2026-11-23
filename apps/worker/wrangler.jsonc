@@ -31,6 +31,8 @@
     },
   ],
   "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-local-files" }],
+  // One free-plan cron; branches live in src/cron/* (6.2.3 nightly stats, later messaging).
+  "triggers": { "crons": ["*/5 * * * *"] },
   // ACCESS_*: empty = Cloudflare Access check off (1.3.1 waits on a card). Fill both to switch it on.
   // AUTH_MODE: "dev-stub" only here; staging and production must be "google" (dev-guard.test.ts).
   "vars": {
@@ -62,6 +64,7 @@
       ],
       // Staging uses B2 via S3 API (STORAGE_DRIVER=s3). No R2 binding (card).
       "r2_buckets": [],
+      "triggers": { "crons": ["*/5 * * * *"] },
       // GOOGLE_CLIENT_ID: the Google Cloud web client for staging + local (not a secret).
       // S3_* below are not secrets. Put S3_KEY_ID / S3_APP_KEY with `wrangler secret put` only.
       "vars": {
@@ -91,6 +94,7 @@
       ],
       // Keep R2 binding as optional fallback; planned driver is B2 S3 (STORAGE_DRIVER=s3).
       "r2_buckets": [{ "binding": "FILES", "bucket_name": "dental-clinic-production-files" }],
+      "triggers": { "crons": ["*/5 * * * *"] },
       // Stays dry_run until Phase 7 sends real messages. APP_ORIGIN is set with the domain (8.1.3).
       "vars": {
         "MESSAGING_MODE": "dry_run",

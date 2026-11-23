@@ -1,10 +1,14 @@
-import { newUlid } from "@clinic/shared";
-import { and, eq, isNull, ne, sql } from "drizzle-orm";
+import { addIstDays, istDate, newUlid } from "@clinic/shared";
+import { and, desc, eq, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
+import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { dailyStats, monthlyStats } from "../schema";
 import { computeDayStatRows, computeMonthStatRows, type StatRow } from "./daily-stats-queries";
+
+/** Manual recompute cooldown (seconds). Magic number cleaned in 6.5.3. */
+export const STATS_RECOMPUTE_COOLDOWN_SEC = 60;
 
 export function dailyStatsRepo(db: Db, ctx: Ctx) {
   return {
@@ -130,6 +134,45 @@ export function dailyStatsRepo(db: Db, ctx: Ctx) {
         .from(monthlyStats)
         .where(and(eq(monthlyStats.monthLocal, monthLocal), isNull(monthlyStats.deletedAt)))
         .all();
+    },
+
+    /**
+     * 6.2.3: recompute today + previous 2 days (3 days). Rate-limited for the doctor button.
+     * Cron passes rateLimit=false.
+     */
+    async recomputeRecentDays(
+      now: Date = new Date(),
+      opts: { rateLimit?: boolean; days?: number } = {},
+    ): Promise<{ days: string[] }> {
+      assertAllowed(ctx, "reports.full");
+      const days = opts.days ?? 3;
+      if (opts.rateLimit !== false) {
+        const latest = await db
+          .select({ updatedAt: dailyStats.updatedAt })
+          .from(dailyStats)
+          .where(and(eq(dailyStats.updatedBy, ctx.userId), isNull(dailyStats.deletedAt)))
+          .orderBy(desc(dailyStats.updatedAt))
+          .limit(1)
+          .get();
+        if (latest?.updatedAt) {
+          const ago = (now.getTime() - new Date(latest.updatedAt).getTime()) / 1000;
+          if (ago < STATS_RECOMPUTE_COOLDOWN_SEC) {
+            throw new InvalidError(
+              `Wait ${STATS_RECOMPUTE_COOLDOWN_SEC} seconds before recomputing again.`,
+            );
+          }
+        }
+      }
+      const today = istDate(now);
+      const list: string[] = [];
+      for (let i = 0; i < days; i++) {
+        const day = addIstDays(today, -i);
+        list.push(day);
+        await this.recomputeDay(day, now);
+      }
+      const months = [...new Set(list.map((d) => d.slice(0, 7)))];
+      for (const m of months) await this.recomputeMonth(m, now);
+      return { days: list };
     },
   };
 }
