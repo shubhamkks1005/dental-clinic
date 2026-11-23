@@ -31,6 +31,7 @@
 - docs/PILOT_PREP.md - 10.1.2–10.1.14 preparation checklists: calendar, responsibilities, hardware, SIM, pre-load A+B, 30 mock scenarios, dress rehearsal, privacy consent prep
 - docs/runbooks/DOWNTIME.md - 9.2.4 decision tree (app down, 1027, D1, bad deploy rollback, paper mode, DNS); phone number placeholders DRAFT
 - docs/ui-audit/ - UI/UX audit knowledge base (2026-11-23): README (index, [seen]/[code] labels, coverage), AUDIT (ranked problems C/H/M/L), PAGES, FORMS, WORKFLOWS, DESIGN_SYSTEM, DECISIONS_UI (approved vs proposed), REVIEW_CHECKLIST (read before any UI task), screenshots/ (fake data)
+- docs/product-audit/ - Product assessment from the UI audit evidence (2026-11-23): README (four answers), ISSUES (master register, confidence-rated), IDEAL_EXPERIENCE (target screens and vocabulary), ROADMAP (P0-P4 order, decisions, gates)
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
