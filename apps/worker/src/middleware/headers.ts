@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from "hono";
 import { secureHeaders } from "hono/secure-headers";
+import { DASHBOARD_CACHE_CONTROL } from "../domain/dashboard";
 import type { AppEnv } from "../types";
 
 // Security headers for Worker replies (/api, /hooks). Web pages get theirs from apps/web/public/_headers.
@@ -15,6 +16,12 @@ export function apiHeaders(): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     await secure(c, next);
     // Replies can hold patient data: never keep them in a browser or proxy cache.
-    c.header("Cache-Control", "no-store");
+    // Exception: 6.3.1 dashboard is aggregates only (no names) — short private cache.
+    const path = new URL(c.req.url).pathname;
+    if (path === "/api/staff/dashboard") {
+      c.header("Cache-Control", DASHBOARD_CACHE_CONTROL);
+    } else {
+      c.header("Cache-Control", "no-store");
+    }
   };
 }

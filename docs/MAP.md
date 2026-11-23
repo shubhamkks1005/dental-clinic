@@ -161,7 +161,11 @@
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell; reports = ReportsScreen (6.2.3 S10); messages = NotBuiltYet
 - src/features/reports/ - 6.2.3 S10 Reports (sample label + Recompute now); api.ts
 - apps/worker src/cron/ - 6.2.3 scheduled branches (daily-stats nightly); entry createWorker adds scheduled()
-- apps/worker src/routes/staff-stats.ts - POST /stats/recompute
+- apps/worker src/routes/staff-stats.ts - POST /stats/recompute; GET /dashboard (6.3.1)
+- apps/worker src/domain/dashboard.ts - 6.3.1 getDashboard + cache-control constant
+- packages/shared/src/dashboard-range.ts (+ test) - 6.3.1/6.3.4 range presets → IST from/to + grain
+- packages/shared/src/dashboard.ts - 6.3.1 prepared payload types + fold cells → series/totals
+- packages/db/src/repos/dashboard.ts (+ test) - 6.3.1 load daily_stats/monthly_stats + live today; rowsRead
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/files/ - 3.7.3–3.7.4 prepareImage + PatientFilesTab (grid, viewer, upload; S04/S17)
 - src/features/patients/ - list (2.2.5 filters: new month / inactive 6m / archived; default created_at desc), new form, profile + edit, PatientSearch, consents, api, CSS; Overview hosts MedicalHistoryPanel for clinical.view; History tab 3.5.11

@@ -21,6 +21,13 @@ describe("security headers", () => {
     }
   });
 
+  it("dashboard aggregates may use a short private cache (6.3.1)", async () => {
+    const { env } = makeEnv();
+    const res = await app.request(`${ORIGIN}/api/staff/dashboard`, {}, env);
+    // 401 without session, but cache header still set by middleware after the handler.
+    expect(res.headers.get("cache-control")).toBe("private, max-age=60");
+  });
+
   it("web pages get a strict CSP and the same protections from apps/web/public/_headers", () => {
     const rules = readFileSync(`${REPO_ROOT}apps/web/public/_headers`, "utf8");
     expect(rules.split("\n")[0]).toBe("/*");
