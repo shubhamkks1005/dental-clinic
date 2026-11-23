@@ -1,4 +1,6 @@
-type Props = { label: string; value: string; note: string; good?: boolean; className?: string };
+import type { ReactNode } from "react";
+
+type Props = { label: ReactNode; value: string; note: string; good?: boolean; className?: string };
 
 export function StatCard({ label, value, note, good = false, className = "" }: Props) {
   return (

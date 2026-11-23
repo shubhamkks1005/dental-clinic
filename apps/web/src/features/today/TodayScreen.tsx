@@ -1,20 +1,17 @@
-import { addIstDays, istDate, istHour, istLongDate } from "@clinic/shared";
-import { useCallback, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router";
-import { ApiError } from "../../api/client";
+import { istHour, istLongDate } from "@clinic/shared";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { icons } from "../../ui/icons";
-import { Logo } from "../../ui/Logo";
 import { shortName } from "../../ui/names";
-import { StatCard } from "../../ui/StatCard";
-import { useVisibleInterval } from "../../ui/useVisibleInterval";
-import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
+import { plural } from "../../ui/format";
 import { useMe } from "../auth";
-import { changeAppointmentStatus, listDayAppointments } from "./api";
-import { buildTodayModel, type TodayModel } from "./buildTodayModel";
-import { CallList } from "./CallList";
+import { FollowUpList } from "./FollowUpList";
 import { DoctorToday } from "./DoctorToday";
 import { NextPatientCard } from "./NextPatientCard";
+import { TodayActions } from "./TodayActions";
 import { TodayList } from "./TodayList";
+import { TodayStats } from "./TodayStats";
+import { useTodayModel } from "./useTodayModel";
 import { WalkInDialog } from "./WalkInDialog";
 import "./today.css";
 import "./today-cards.css";
@@ -25,14 +22,11 @@ function greeting(now: Date): string {
   return hour < 17 ? "Good afternoon" : "Good evening";
 }
 
-// S01 (laptop) / S14 (phone). Real appointments API (2.4.3).
+// Main.dc.html / DoctorToday.dc.html (laptop) and PhoneToday.dc.html (phone). Q2.5.
 export function TodayScreen() {
   const me = useMe();
-  const firstName = shortName(me.name);
   const isDoctor = me.role === "doctor";
-  const [model, setModel] = useState<TodayModel | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const { model, error, busyId, serverNow, load, onStatus } = useTodayModel();
   const [walkInOpen, setWalkInOpen] = useState(false);
   const [params, setParams] = useSearchParams();
   // Q1.9: the top bar's Walk-in on another page lands here with ?walkin=1.
@@ -41,127 +35,40 @@ export function TodayScreen() {
     setWalkInOpen(true);
     setParams({}, { replace: true });
   }, [params, setParams]);
-  const [serverNow, setServerNow] = useState(() => new Date());
 
-  const load = useCallback(() => {
-    const dateLocal = istDate(new Date());
-    listDayAppointments(dateLocal)
-      .then((data) => {
-        setServerNow(new Date(data.serverNow));
-        setModel(buildTodayModel(data.appointments, data.window, data.serverNow));
-        setError(null);
-      })
-      .catch((e) => {
-        setModel(null);
-        setError(
-          e instanceof ApiError
-            ? e.message
-            : "Could not load today. Check the connection, then try again.",
-        );
-      });
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  useVisibleInterval(load, AUTO_REFRESH_MS);
-
-  async function onStatus(
-    id: string,
-    status: Parameters<typeof changeAppointmentStatus>[1]["status"],
-    version: number,
-  ) {
-    setBusyId(id);
-    setError(null);
-    try {
-      await changeAppointmentStatus(id, { status, version });
-      load();
-    } catch (e) {
-      setError(
-        e instanceof ApiError
-          ? e.message
-          : "Could not update status. Check the connection, then try again.",
-      );
-    } finally {
-      setBusyId(null);
-    }
-  }
+  const who = isDoctor ? `Dr. ${shortName(me.name)}` : shortName(me.name);
+  const subtitle = model
+    ? isDoctor
+      ? `${istLongDate(serverNow)} · ${plural(model.appointmentsCount, "patient")} today · ${model.doctorDoneCount} done`
+      : `${istLongDate(serverNow)} · ${plural(model.appointmentsCount, "appointment")} today`
+    : istLongDate(serverNow);
 
   return (
     <div className="today">
       <header className="today-hero">
-        <span className="hero-phone-only">
-          <Logo />
-        </span>
         <span className="hero-text">
           <h1>
-            {greeting(serverNow)}, {firstName}
+            {greeting(serverNow)}, {who}
           </h1>
-          <span className="hero-date">
-            {istLongDate(serverNow)}.
-            {model ? ` ${model.appointmentsCount} appointments today.` : ""}
-          </span>
+          <span className="hero-date">{subtitle}</span>
         </span>
         <button type="button" className="hero-search hero-phone-only" aria-label="Search patients">
           {icons.search}
         </button>
+        {!isDoctor ? (
+          <div className="hero-actions">
+            <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
+          </div>
+        ) : null}
       </header>
 
       {error ? <p className="field-error">{error}</p> : null}
-
-      {!isDoctor && model ? (
-        <div className="today-stats">
-          <StatCard
-            label="Today's appointments"
-            value={String(model.appointmentsCount)}
-            note={`${model.openSlots} open slots`}
-            good
-          />
-          <StatCard
-            label="Arrived"
-            value={String(model.arrivedCount)}
-            note="checked in"
-            good
-            className="wide-only"
-          />
-          <StatCard
-            label="Waiting"
-            value={String(model.waitingCount)}
-            note={
-              model.longestWaitMin === null ? "none waiting" : `longest ${model.longestWaitMin} min`
-            }
-          />
-          <StatCard
-            label="Ready to bill"
-            value={String(model.readyToBillCount)}
-            note={model.readyToBillCount === 0 ? "nothing to collect" : "visit done, not paid"}
-            good={model.readyToBillCount === 0}
-            className={model.readyToBillCount > 0 ? "stat-ready" : ""}
-          />
-        </div>
-      ) : null}
-
+      {!isDoctor && model ? <TodayStats model={model} /> : null}
       {!isDoctor ? (
-        <div className="today-toolbar">
-          <button type="button" className="btn btn-primary" onClick={() => setWalkInOpen(true)}>
-            Walk-in
-          </button>
-          <Link
-            className="btn"
-            to={`/app/print/day?date=${encodeURIComponent(istDate(serverNow))}`}
-          >
-            Print today's list
-          </Link>
-          <Link
-            className="btn"
-            to={`/app/print/day?date=${encodeURIComponent(addIstDays(istDate(serverNow), 1))}`}
-          >
-            Print tomorrow
-          </Link>
+        <div className="today-phone-actions">
+          <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
         </div>
       ) : null}
-
       {!model && !error ? <p className="muted">Loading…</p> : null}
 
       {model && isDoctor ? <DoctorToday model={model} busyId={busyId} onStatus={onStatus} /> : null}
@@ -182,7 +89,7 @@ export function TodayScreen() {
             <TodayList rows={model.rows} busyId={busyId} onStatus={onStatus} onChanged={load} />
           </div>
           <div className="today-calls">
-            <CallList items={model.callList} />
+            <FollowUpList items={model.callList} onChanged={load} />
           </div>
         </div>
       ) : null}

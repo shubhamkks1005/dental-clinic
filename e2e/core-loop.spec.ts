@@ -43,16 +43,24 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await dialog.getByRole("checkbox").check();
     await dialog.getByRole("button", { name: /Add walk-in/ }).click();
     await expect(dialog).toBeHidden();
-    await page.getByRole("button", { name: "In chair" }).last().click();
+    await page.getByRole("button", { name: "Send in" }).last().click();
 
     // ---- Doctor: open visit, write, procedure, diagnosis, medicine, finalise ----
     await page.goto("/api/staff/auth/dev-login?role=doctor");
     await page.goto("/app");
-    await page
-      .getByRole("link", { name: "Open visit" })
-      .or(page.getByRole("button", { name: "Open visit" }))
-      .last()
-      .click();
+    // Q2.5: this patient is in the Now card (in the chair), in Next, or under "Rest of the day".
+    const now = page
+      .getByRole("region", { name: "Now" })
+      .filter({ hasText: name })
+      .getByRole("button", { name: "Open visit" });
+    const listed = page
+      .locator("li.doctor-row", { hasText: name })
+      .getByRole("button", { name: "Open visit" });
+    await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
+    if ((await now.or(listed).count()) === 0) {
+      await page.getByRole("button", { name: /Rest of the day/ }).click();
+    }
+    await now.or(listed).first().click();
     await page.getByLabel("Complaint").fill("Wants alignment check");
     await page.getByLabel("Findings").fill("Crowding lower anterior");
     await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
@@ -99,7 +107,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     // Q1.2: the finalised, unpaid visit shows Take payment on Today and in the stat strip.
     const row = page.locator("li.today-row", { hasText: name });
     await expect(row.getByRole("link", { name: "Take payment" })).toBeVisible();
-    await expect(page.locator(".stat", { hasText: "Ready to bill" })).toContainText("visit done");
+    await expect(page.locator(".stat", { hasText: "Ready to bill" })).toContainText("to collect");
     // Phone (360 px): no sideways scroll and the Take payment button sits inside the screen.
     await page.setViewportSize({ width: 360, height: 780 });
     const box = await row.getByRole("link", { name: "Take payment" }).boundingBox();

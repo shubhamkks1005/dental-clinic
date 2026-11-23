@@ -2,14 +2,16 @@ import type { AppointmentStatus } from "@clinic/shared";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
-import { StatusBadge } from "../../ui/StatusBadge";
 import { WaitingForYou } from "../billing";
+import { useMe } from "../auth";
 import { openOrReuseVisit } from "../visits/open-visit";
 import { changeAppointmentStatus } from "./api";
 import type { TodayListRow, TodayModel } from "./buildTodayModel";
-import { DoctorDayList } from "./DoctorDayList";
+import { DoctorNextList } from "./DoctorNextList";
+import { DoctorNowCard } from "./DoctorNowCard";
 import { movesToChairOnOpen } from "./statusActions";
-import { IncompleteVisitsWidget } from "./IncompleteVisitsWidget";
+import { useDoctorTodos } from "./useDoctorTodos";
+import "./today-doctor.css";
 
 type Props = {
   model: TodayModel;
@@ -17,81 +19,22 @@ type Props = {
   onStatus: (id: string, status: AppointmentStatus, version: number) => void;
 };
 
-function DoctorCard({
-  title,
-  row,
-  busyId,
-  onStatus,
-  onOpenVisit,
-  opening,
-}: {
-  title: string;
-  row: TodayListRow | null;
-  busyId: string | null;
-  onStatus: Props["onStatus"];
-  onOpenVisit?: (row: TodayListRow) => void;
-  opening?: boolean;
-}) {
-  return (
-    <section className="card doctor-today-card" aria-label={title}>
-      <h2>{title}</h2>
-      {!row ? (
-        <p className="muted">None right now.</p>
-      ) : (
-        <>
-          <p className="today-name">
-            {row.time} · {row.name}
-          </p>
-          <p className="small muted">{row.visit}</p>
-          <StatusBadge tone={row.tone} label={row.statusLabel} />
-          <div className="today-actions">
-            {onOpenVisit ? (
-              <button
-                type="button"
-                className="btn btn-primary btn-compact"
-                disabled={busyId === row.id || opening}
-                onClick={() => onOpenVisit(row)}
-              >
-                {opening ? "Opening…" : "Open visit"}
-              </button>
-            ) : null}
-            {row.actions
-              .filter(
-                (a) =>
-                  a.status === "in_chair" || a.status === "completed" || a.status === "arrived",
-              )
-              .map((a) => (
-                <button
-                  key={a.status}
-                  type="button"
-                  className="btn btn-compact"
-                  disabled={busyId === row.id || opening}
-                  onClick={() => onStatus(row.id, a.status, row.version)}
-                >
-                  {a.label}
-                </button>
-              ))}
-          </div>
-        </>
-      )}
-    </section>
-  );
-}
-
-/** Doctor home (2.4.3 / 3.5.1): Now card, then the whole day. Any patient can be opened. */
+/** Doctor home (DoctorToday.dc.html): Now, Next, Rest of the day, and Waiting for you. */
 export function DoctorToday({ model, busyId, onStatus }: Props) {
   const navigate = useNavigate();
+  const { permissions } = useMe();
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [openError, setOpenError] = useState<string | null>(null);
+  const todos = useDoctorTodos({
+    canSeeRequests: permissions.includes("requests.view"),
+    exceptPatientId: model.doctorNow?.patientId,
+  });
 
   async function openVisitFor(row: TodayListRow) {
     setOpeningId(row.id);
     setOpenError(null);
     try {
-      const visitId = await openOrReuseVisit({
-        patientId: row.patientId,
-        appointmentId: row.id,
-      });
+      const visitId = await openOrReuseVisit({ patientId: row.patientId, appointmentId: row.id });
       if (movesToChairOnOpen(row.status)) {
         // The patient is now with the doctor. If this fails (someone else just changed it) the
         // doctor still gets the visit: the status is a note for the desk, not a gate.
@@ -118,17 +61,21 @@ export function DoctorToday({ model, busyId, onStatus }: Props) {
           {openError}
         </p>
       ) : null}
-      <WaitingForYou />
-      <IncompleteVisitsWidget />
-      <DoctorCard
-        title="Now"
-        row={model.doctorNow}
-        busyId={busyId}
-        onStatus={onStatus}
-        onOpenVisit={openVisitFor}
-        opening={openingId !== null}
-      />
-      <DoctorDayList rows={model.doctorDay} openingId={openingId} onOpen={openVisitFor} />
+      <div className="doctor-today-main">
+        <DoctorNowCard
+          row={model.doctorNow}
+          busy={openingId !== null || busyId === model.doctorNow?.id}
+          onOpenVisit={openVisitFor}
+          onDone={(row) => onStatus(row.id, "completed", row.version)}
+        />
+        <DoctorNextList
+          next={model.doctorNext}
+          rest={model.doctorRest}
+          openingId={openingId}
+          onOpen={openVisitFor}
+        />
+      </div>
+      <WaitingForYou extra={todos} />
     </div>
   );
 }

@@ -45,7 +45,7 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
   await dialog.getByRole("checkbox").check();
   await dialog.getByRole("button", { name: /Add walk-in/ }).click();
   await expect(dialog).toBeHidden();
-  await a.getByRole("button", { name: "In chair" }).last().click();
+  await a.getByRole("button", { name: "Send in" }).last().click();
 
   await a.goto("/api/staff/auth/dev-login?role=doctor");
   await a.goto("/app");

@@ -33,10 +33,10 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.click(d().getByRole("button", { name: /Add walk-in/ }), "Click Add walk-in again with Emergency ticked");
   await c.look("Today list after the walk-in");
 
-  await c.click(p.getByRole("button", { name: "In chair" }).last(), "Click In chair on Riya's row");
+  await c.click(p.getByRole("button", { name: "Send in" }).last(), "Click Send in on Riya's row");
   // ---- Doctor ----
   await c.as("doctor", "Switch to the doctor");
-  await c.click(p.getByRole("link", { name: "Open visit" }).or(p.getByRole("button", { name: "Open visit" })).last(), "Doctor clicks Open visit on Riya's row");
+  await c.click(p.getByRole("region", { name: "Now" }).filter({ hasText: "Riya" }).getByRole("button", { name: "Open visit" }), "Doctor clicks Open visit on Riya (Now card)");
   // Q2.4: the whole doctor chain is on ONE screen, no tab switch.
   await c.type(p.getByLabel("Complaint"), "Wants alignment check, mild crowding lower front", "Type complaint");
   await c.type(p.getByLabel("Findings"), "Crowding lower anterior, no caries seen", "Type findings");

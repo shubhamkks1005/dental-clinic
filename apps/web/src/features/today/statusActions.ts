@@ -24,3 +24,25 @@ export function statusActionButtons(
     label: APPOINTMENT_STATUS_ACTION_LABEL[status],
   }));
 }
+
+export type RowPrimary =
+  { status: AppointmentStatus; label: string } | { pay: string; label: string };
+
+/**
+ * Q2.5: ONE main button per Today row, chosen by where the patient is.
+ * Booked -> Arrived, Waiting -> Send in, In chair -> Done, finished and not paid -> Take payment.
+ * Everything else (Reschedule, Cancel, Missed) lives in the "..." menu.
+ */
+export function primaryRowAction(row: {
+  status: AppointmentStatus;
+  payLink: string | null;
+  allowed: AppointmentStatus[];
+}): RowPrimary | null {
+  if (row.payLink) return { pay: row.payLink, label: "Take payment" };
+  const pick = (status: AppointmentStatus, label: string) =>
+    row.allowed.includes(status) ? { status, label } : null;
+  if (row.status === "scheduled" || row.status === "confirmed") return pick("arrived", "Arrived");
+  if (row.status === "arrived") return pick("in_chair", "Send in");
+  if (row.status === "in_chair") return pick("completed", "Done");
+  return null;
+}

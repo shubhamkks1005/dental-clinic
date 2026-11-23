@@ -34,9 +34,11 @@ export function NextPatientCard({ patient, busy, onSendIn }: Props) {
       </p>
       <p className="next-meta">
         <PatientNoChip patientNo={patient.patientNo} />
-        <span>
-          {patient.visit} · {patient.mobile}
-        </span>
+        <span>{patient.visit}</span>
+      </p>
+      <p className="next-meta">
+        {patient.waiting ? `${patient.waiting} · ` : ""}
+        {patient.mobile}
       </p>
       <button
         type="button"

@@ -61,26 +61,25 @@ export function TodayList({ rows, busyId, onStatus, onChanged }: Props) {
               </span>
               <StatusBadge tone={row.tone} label={row.statusLabel} />
               <span className="today-actions">
-                {row.payLink ? (
-                  <Link className="btn btn-primary btn-compact today-action" to={row.payLink}>
-                    Take payment
+                {row.primary && "pay" in row.primary ? (
+                  <Link className="btn btn-primary btn-compact today-action" to={row.primary.pay}>
+                    {row.primary.label}
                   </Link>
                 ) : null}
-                {row.actions
-                  // Cancel, Missed and Reschedule live in the "..." menu: they need a reason or a new time.
-                  .filter((a) => !["rescheduled", "cancelled", "no_show"].includes(a.status))
-                  .slice(0, row.payLink ? 1 : 2)
-                  .map((a) => (
-                    <button
-                      key={a.status}
-                      type="button"
-                      className="btn btn-compact today-action"
-                      disabled={busyId === row.id}
-                      onClick={() => onStatus(row.id, a.status, row.version)}
-                    >
-                      {a.label}
-                    </button>
-                  ))}
+                {row.primary && "status" in row.primary ? (
+                  <button
+                    type="button"
+                    className={`btn btn-compact today-action${row.highlighted ? " btn-primary" : ""}`}
+                    disabled={busyId === row.id}
+                    onClick={() =>
+                      row.primary &&
+                      "status" in row.primary &&
+                      onStatus(row.id, row.primary.status, row.version)
+                    }
+                  >
+                    {row.primary.label}
+                  </button>
+                ) : null}
                 <AppointmentActions
                   row={{
                     id: row.id,

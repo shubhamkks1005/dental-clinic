@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { movesToChairOnOpen, statusActionButtons } from "./statusActions";
+import type { AppointmentStatus } from "@clinic/shared";
+import { movesToChairOnOpen, primaryRowAction, statusActionButtons } from "./statusActions";
 
 describe("statusActionButtons (2.3.6 UI)", () => {
   const startAt = new Date("2026-11-23T04:30:00.000Z");
@@ -37,5 +38,35 @@ describe("statusActionButtons (2.3.6 UI)", () => {
     expect(movesToChairOnOpen("in_chair")).toBe(false);
     expect(movesToChairOnOpen("completed")).toBe(false);
     expect(movesToChairOnOpen("no_show")).toBe(false);
+  });
+});
+
+describe("primaryRowAction (Q2.5 one main button per row)", () => {
+  const all: AppointmentStatus[] = ["arrived", "in_chair", "completed"];
+  const row = (status: AppointmentStatus, payLink: string | null = null) =>
+    primaryRowAction({ status, payLink, allowed: all });
+
+  it("follows the patient through the day", () => {
+    expect(row("scheduled")).toEqual({ status: "arrived", label: "Arrived" });
+    expect(row("confirmed")).toEqual({ status: "arrived", label: "Arrived" });
+    expect(row("arrived")).toEqual({ status: "in_chair", label: "Send in" });
+    expect(row("in_chair")).toEqual({ status: "completed", label: "Done" });
+  });
+
+  it("a finished visit that is not paid shows Take payment, whatever the status", () => {
+    expect(row("completed", "/app/bills/b1")).toEqual({
+      pay: "/app/bills/b1",
+      label: "Take payment",
+    });
+  });
+
+  it("nothing to press for finished, missed or cancelled rows", () => {
+    expect(row("completed")).toBeNull();
+    expect(row("no_show")).toBeNull();
+    expect(row("cancelled")).toBeNull();
+  });
+
+  it("never offers a step the rules do not allow", () => {
+    expect(primaryRowAction({ status: "scheduled", payLink: null, allowed: [] })).toBeNull();
   });
 });

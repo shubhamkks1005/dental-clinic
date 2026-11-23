@@ -11,7 +11,7 @@ import {
 } from "@clinic/shared";
 import type { StatusTone } from "../../ui/StatusBadge";
 import type { DayAppointment } from "../appointments";
-import { statusActionButtons } from "./statusActions";
+import { primaryRowAction, statusActionButtons, type RowPrimary } from "./statusActions";
 
 export type TodayListRow = {
   id: string;
@@ -33,7 +33,8 @@ export type TodayListRow = {
   payLink: string | null;
   /** Raw appointment status (statusLabel can say "Waiting 5 min"). */
   status: DayAppointment["status"];
-  actions: { status: DayAppointment["status"]; label: string }[];
+  /** The one main button of the row (Q2.5). */
+  primary: RowPrimary | null;
   version: number;
   startAt: string;
   updatedAt: string;
@@ -43,8 +44,12 @@ export type TodayListRow = {
 export type TodayModel = {
   appointmentsCount: number;
   openSlots: number;
-  arrivedCount: number;
+  /** Waiting = arrived and not yet in the chair. */
   waitingCount: number;
+  inChairCount: number;
+  inChairName: string | null;
+  /** Total still to collect on the ready-to-bill rows; null when a row has no amount. */
+  readyToBillPaise: number | null;
   /** Q1.2: finalised visits not yet fully paid (receptionist). */
   readyToBillCount: number;
   longestWaitMin: number | null;
@@ -54,6 +59,8 @@ export type TodayModel = {
     patientNo: string;
     visit: string;
     mobile: string;
+    /** "Waiting 12 min" */
+    waiting: string | null;
     version: number;
     status: DayAppointment["status"];
     startAt: string;
@@ -62,11 +69,24 @@ export type TodayModel = {
     hasRestrictedAlert: boolean;
   } | null;
   rows: TodayListRow[];
-  callList: { id: string; initials: string; name: string; note: string; mobile: string | null }[];
+  /** Missed today: the desk rebooks them. */
+  callList: {
+    id: string;
+    patientId: string;
+    visitTypeId: string;
+    initials: string;
+    name: string;
+    note: string;
+    mobile: string | null;
+  }[];
   /** Doctor view: the patient to see now (in chair, else arrived, else next upcoming). */
   doctorNow: TodayListRow | null;
   /** Doctor view: the whole day in time order, so nothing waits for the desk. */
   doctorDay: TodayListRow[];
+  /** Doctor: up to 3 patients after Now (waiting first), and everyone else of the day. */
+  doctorNext: TodayListRow[];
+  doctorRest: TodayListRow[];
+  doctorDoneCount: number;
 };
 
 function initials(name: string): string {
@@ -103,10 +123,14 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     duePaise: a.duePaise ?? null,
     payLink: payLink(a),
     status: a.status,
-    actions: statusActionButtons(a.status, {
-      startAt: new Date(a.startAt),
-      statusChangedAt: new Date(a.updatedAt),
-      now,
+    primary: primaryRowAction({
+      status: a.status,
+      payLink: payLink(a),
+      allowed: statusActionButtons(a.status, {
+        startAt: new Date(a.startAt),
+        statusChangedAt: new Date(a.updatedAt),
+        now,
+      }).map((b) => b.status),
     }),
     version: a.version,
     startAt: a.startAt,
@@ -153,10 +177,15 @@ export function buildTodayModel(
     .sort((a, b) => a.startMin - b.startMin || a.startAt.localeCompare(b.startAt))
     .map((a) => toRow(a, now, a.id === nextId));
 
+  const inChair = active.filter((a) => a.status === "in_chair");
+  const readyRows = rows.filter((r) => r.payLink !== null);
+
   const callList = appointments
     .filter((a) => a.status === "no_show")
     .map((a) => ({
       id: a.id,
+      patientId: a.patientId,
+      visitTypeId: a.visitTypeId,
       initials: initials(a.patientName),
       name: a.patientName,
       note: "Missed today — needs a new slot",
@@ -170,12 +199,30 @@ export function buildTodayModel(
     doctorDay.find((r) => r.status === "scheduled" || r.status === "confirmed") ??
     null;
 
+  const waitingFirst = (r: TodayListRow) => (r.status === "arrived" ? 0 : 1);
+  const doctorUpcoming = doctorDay
+    .filter(
+      (r) =>
+        r.id !== doctorNow?.id &&
+        (r.status === "arrived" || r.status === "scheduled" || r.status === "confirmed"),
+    )
+    .sort((a, b) => waitingFirst(a) - waitingFirst(b));
+  const doctorNext = doctorUpcoming.slice(0, 3);
+  const shown = new Set([doctorNow?.id, ...doctorNext.map((r) => r.id)]);
+
   return {
+    doctorNext,
+    doctorRest: doctorDay.filter((r) => !shown.has(r.id)),
+    doctorDoneCount: doctorDay.filter((r) => r.status === "completed").length,
     appointmentsCount: active.filter((a) => a.status !== "no_show").length,
     openSlots,
-    arrivedCount: arrived.length + active.filter((a) => a.status === "in_chair").length,
     waitingCount: arrived.length,
-    readyToBillCount: rows.filter((r) => r.payLink !== null).length,
+    inChairCount: inChair.length,
+    inChairName: inChair[0]?.patientName ?? null,
+    readyToBillPaise: readyRows.every((r) => r.duePaise != null)
+      ? readyRows.reduce((sum, r) => sum + (r.duePaise ?? 0), 0)
+      : null,
+    readyToBillCount: readyRows.length,
     longestWaitMin,
     next: nextAppt
       ? {
@@ -184,6 +231,7 @@ export function buildTodayModel(
           patientNo: nextAppt.patientCode,
           visit: `${nextAppt.visitTypeLabel}, ${nextAppt.endMin - nextAppt.startMin} min`,
           mobile: nextAppt.patientMobile ? displayMobile(nextAppt.patientMobile) : "No mobile",
+          waiting: formatWaiting(nextAppt.arrivedAt, now),
           version: nextAppt.version,
           status: nextAppt.status,
           startAt: nextAppt.startAt,

@@ -50,9 +50,27 @@
 
 .today-stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s3);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s2);
   margin-top: -56px;
+}
+
+/* Phone (PhoneToday.dc.html): four small cards in one row, a short word and the number. */
+.today-stats .stat {
+  padding: var(--s3) var(--s2);
+}
+
+.today-stats .stat-long,
+.today-stats .stat .small {
+  display: none;
+}
+
+.today-stats .stat-value {
+  font-size: 24px;
+}
+
+.today-phone-actions .btn:not(.btn-primary) {
+  display: none;
 }
 
 .today-stats .wide-only,
@@ -65,6 +83,11 @@
   display: flex;
   gap: var(--s3);
   flex-wrap: wrap;
+}
+
+/* Walk-in and print sit under the stats on a phone and in the header from tablet up. */
+.hero-actions {
+  display: none;
 }
 
 .today-actions {
@@ -95,115 +118,6 @@
   min-height: 44px;
 }
 
-.doctor-today {
-  display: grid;
-  gap: var(--s4);
-}
-
-.doctor-today-card {
-  display: grid;
-  gap: var(--s2);
-  padding: var(--s4);
-}
-
-.doctor-day-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--s2);
-}
-
-/* The whole row is one button: easy to hit with a thumb, 44px minimum. */
-.doctor-day-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: var(--s2) var(--s3);
-  width: 100%;
-  min-height: 56px;
-  padding: var(--s3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  background: var(--card);
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.doctor-day-row:hover:not(:disabled) {
-  background: var(--blue-soft);
-}
-
-.doctor-day-row:disabled {
-  opacity: 0.7;
-  cursor: wait;
-}
-
-.doctor-day-who {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.doctor-day-alert {
-  color: var(--danger-text, #9a3412);
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.doctor-day-go {
-  grid-column: 1 / -1;
-  color: var(--blue);
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-@media (min-width: 768px) {
-  .doctor-day-row {
-    grid-template-columns: auto 1fr auto auto;
-  }
-
-  .doctor-day-go {
-    grid-column: auto;
-  }
-}
-
-.incomplete-visits {
-  display: grid;
-  gap: var(--s2);
-  padding: var(--s4);
-}
-
-.incomplete-visits-list {
-  display: grid;
-  gap: var(--s2);
-}
-
-.incomplete-visits-link {
-  display: grid;
-  gap: 2px;
-  min-height: 44px;
-  padding: var(--s2) 0;
-  color: inherit;
-  text-decoration: none;
-}
-
-.incomplete-visits-link:hover .incomplete-visits-name,
-.incomplete-visits-link:focus-visible .incomplete-visits-name {
-  text-decoration: underline;
-}
-
-.incomplete-visits-date {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.incomplete-visits-name {
-  font-weight: 600;
-}
-
 .today-body {
   display: grid;
   gap: var(--s4);
@@ -223,10 +137,6 @@
 }
 
 @media (min-width: 768px) {
-  .today {
-    padding: 0 var(--s6) var(--s6);
-  }
-
   .today-hero {
     margin: 0;
     padding: var(--s2) 0 0;
@@ -235,8 +145,14 @@
     color: var(--text);
   }
 
-  .hero-phone-only {
+  .hero-phone-only,
+  .today-phone-actions {
     display: none;
+  }
+
+  .hero-actions {
+    display: block;
+    margin-left: auto;
   }
 
   .hero-text {
@@ -253,6 +169,24 @@
 
   .today-stats {
     margin-top: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s3);
+  }
+
+  .today-stats .stat {
+    padding: var(--s4);
+  }
+
+  .today-stats .stat-long {
+    display: inline;
+  }
+
+  .today-stats .stat .small {
+    display: block;
+  }
+
+  .today-stats .stat-short {
+    display: none;
   }
 
   .today-stats .wide-only,

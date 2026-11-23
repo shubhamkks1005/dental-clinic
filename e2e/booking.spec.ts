@@ -41,6 +41,6 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
   // Note stays empty on purpose.
   await dialog.getByRole("button", { name: "Book", exact: true }).click();
 
-  await expect(page.getByText(/Booked for/)).toBeVisible();
+  await expect(page.locator(".toast-text", { hasText: /Booked for/ })).toBeVisible();
   expect(bad, bad.join("\n")).toEqual([]);
 });

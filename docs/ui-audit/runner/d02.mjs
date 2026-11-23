@@ -9,14 +9,16 @@ await flow({ id: process.argv[2] || "D02-refund-and-cancel-a-bill", role: "recep
   await c.click(p.getByRole("link", { name: /SB-/ }).first(), "Open the bill (patient says: the bill is wrong, cancel it)");
   await c.look("Receptionist's view of an issued bill: there is no Cancel bill, only a way to ask the doctor");
   // Q1.9 (D4): the receptionist cannot cancel; she asks the doctor with a reason.
+  await c.click(p.getByText("More actions"), "Open More actions (Q2.3 moved the cancel actions there)");
   await c.click(p.getByRole("button", { name: "Ask the doctor to cancel" }), "Click Ask the doctor to cancel");
   await c.type(p.getByLabel("Why is it wrong?"), "Wrong procedure billed", "Type the reason");
   await c.click(p.getByRole("button", { name: "Send request" }), "Send the request to the doctor");
   await c.as("doctor", "Switch to the doctor");
   await c.go("/app", "Doctor Today: Waiting for you lists the cancel request");
   await c.look("Doctor Today with the cancel request under Waiting for you");
-  c.note("Waiting for you mentions the bill: " + /Cancel bill/.test(await c.text()));
-  await c.click(p.getByRole("region", { name: "Waiting for you" }).getByRole("link", { name: "Open bill" }).first(), "Open the bill from Waiting for you");
+  c.note("Waiting for you mentions the bill: " + /BILL CANCEL/.test(await c.text()));
+  await c.click(p.getByRole("region", { name: "Waiting for you" }).locator("li", { hasText: "BILL CANCEL" }).getByRole("link", { name: "Open", exact: true }), "Open the bill from Waiting for you");
+  await c.click(p.getByText("More actions"), "Open More actions");
   await c.click(p.getByRole("button", { name: "Cancel bill" }), "Click Cancel bill");
   await c.look("Cancel panel: money is held, so it says Refund first and Confirm cancel is off");
   c.note("Refund first link shown: " + ((await p.getByRole("link", { name: "Refund first" }).count()) > 0) + " | Confirm cancel enabled: " + (await p.getByRole("button", { name: "Confirm cancel" }).isEnabled()));

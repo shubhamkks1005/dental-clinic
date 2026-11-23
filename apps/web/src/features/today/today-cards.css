@@ -59,7 +59,7 @@
 }
 
 .today-who,
-.call-row > span:last-child {
+.call-row > span:first-child {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -187,4 +187,32 @@
   gap: var(--s2);
   padding: var(--s2) 0;
   border-top: 1px solid var(--border);
+}
+
+.follow-empty {
+  padding: 0 var(--s4) var(--s2);
+}
+
+.follow-more {
+  margin: 0;
+  padding: var(--s2) var(--s4) 0;
+}
+
+.follow-more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.call-row {
+  border-top: 1px solid var(--border);
+}
+
+.next-meta + .next-meta {
+  font-size: 13px;
+}
+
+.next-patient .muted {
+  color: var(--on-navy);
 }

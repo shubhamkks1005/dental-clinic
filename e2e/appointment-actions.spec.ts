@@ -146,7 +146,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   if (istNowMinutes() < 20) {
     test.info().annotations.push({
       type: "note",
-      description: "Today's Call list and Close-day part skipped: it is before 00:20 IST.",
+      description: "Today's To follow up and Close-day part skipped: it is before 00:20 IST.",
     });
     return expect(bad, bad.join("\n")).toEqual([]);
   }
@@ -163,7 +163,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await dialog.getByLabel("Why did they miss it?").fill("Fake: did not answer the phone");
   await dialog.getByRole("button", { name: "Mark missed" }).click();
   await expect(page.locator(".toast-text", { hasText: /marked as missed/ })).toBeVisible();
-  await expect(page.getByRole("region", { name: "Call list" })).toContainText(name);
+  await expect(page.getByRole("region", { name: "To follow up" })).toContainText(name);
 
   expect(bad, bad.join("\n")).toEqual([]);
 });

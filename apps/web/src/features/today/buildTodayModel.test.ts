@@ -168,4 +168,63 @@ describe("buildTodayModel (2.4.3)", () => {
     expect(afternoon.openSlots).toBeLessThan(morning.openSlots);
     expect(after.openSlots).toBe(0);
   });
+
+  describe("Q2.5 stat strip and doctor lists", () => {
+    const at = "2026-11-23T04:40:00.000Z";
+
+    it("Waiting does not count the patient in the chair; In chair has its own count and name", () => {
+      const model = buildTodayModel(
+        [
+          appt({ id: "a1", status: "arrived", arrivedAt: "2026-11-23T04:30:00.000Z" }),
+          appt({ id: "a2", status: "in_chair", patientId: "p2", patientName: "In The Chair" }),
+          appt({ id: "a3", status: "scheduled", patientId: "p3" }),
+        ],
+        window,
+        at,
+      );
+      expect(model.waitingCount).toBe(1);
+      expect(model.inChairCount).toBe(1);
+      expect(model.inChairName).toBe("In The Chair");
+      expect(model.next?.waiting).toBe("Waiting 10 min");
+    });
+
+    it("Ready to bill adds up what is still to collect, or says unknown when an amount is missing", () => {
+      const ready = (id: string, due: number | null) =>
+        appt({
+          id,
+          status: "completed",
+          patientId: id,
+          duePaise: due,
+          readyToBill: { billId: null },
+        });
+      const known = buildTodayModel([ready("a1", 120000), ready("a2", 230000)], window, at);
+      expect(known.readyToBillPaise).toBe(350000);
+      const unknown = buildTodayModel([ready("a1", 120000), ready("a2", null)], window, at);
+      expect(unknown.readyToBillPaise).toBeNull();
+    });
+
+    it("Next lists up to 3 waiting-first patients after Now; the rest of the day keeps everyone else", () => {
+      const sched = (id: string, name: string, startMin: number, extra = {}) =>
+        appt({ id, status: "scheduled", patientId: id, patientName: name, startMin, ...extra });
+      const model = buildTodayModel(
+        [
+          sched("a0", "Chair", 10 * 60, { status: "in_chair" }),
+          sched("a1", "Later A", 10 * 60 + 15),
+          sched("a2", "Later B", 10 * 60 + 30),
+          sched("a3", "Waits", 10 * 60 + 45, {
+            status: "arrived",
+            arrivedAt: "2026-11-23T04:20:00.000Z",
+          }),
+          sched("a4", "Later C", 11 * 60),
+          sched("a5", "Finished", 9 * 60, { status: "completed" }),
+        ],
+        window,
+        at,
+      );
+      expect(model.doctorNow?.name).toBe("Chair");
+      expect(model.doctorNext.map((r) => r.name)).toEqual(["Waits", "Later A", "Later B"]);
+      expect(model.doctorRest.map((r) => r.name).sort()).toEqual(["Finished", "Later C"]);
+      expect(model.doctorDoneCount).toBe(1);
+    });
+  });
 });

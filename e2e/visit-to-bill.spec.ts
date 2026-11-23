@@ -26,12 +26,19 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
 async function doctorOpensVisitOf(page: Page, name: string) {
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  await page
-    .locator("li.today-row, li.doctor-row", { hasText: name })
-    .getByRole("link", { name: "Open visit" })
-    .or(page.locator("li", { hasText: name }).getByRole("button", { name: "Open visit" }))
-    .first()
-    .click();
+  // Q2.5: the patient is in the Now card, in Next, or under "Rest of the day".
+  const now = page
+    .getByRole("region", { name: "Now" })
+    .filter({ hasText: name })
+    .getByRole("button", { name: "Open visit" });
+  const listed = page
+    .locator("li.doctor-row", { hasText: name })
+    .getByRole("button", { name: "Open visit" });
+  await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
+  if ((await now.or(listed).count()) === 0) {
+    await page.getByRole("button", { name: /Rest of the day/ }).click();
+  }
+  await now.or(listed).first().click();
   await expect(page.getByLabel("Complaint")).toBeVisible();
 }
 
@@ -129,7 +136,8 @@ test("discount request leaves the total alone until the doctor approves", async 
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
   const waiting = page.getByRole("region", { name: "Waiting for you" });
-  await expect(waiting).toContainText(`Discount for ${name}`);
+  await expect(waiting).toContainText("DISCOUNT WAITING");
+  await expect(waiting).toContainText(name);
   await waiting.locator("li", { hasText: name }).getByRole("button", { name: "Approve" }).click();
   await expect(waiting.locator("li", { hasText: name })).toHaveCount(0);
   await page.goto(billPath);
@@ -187,9 +195,12 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
   const waiting = page.getByRole("region", { name: "Waiting for you" });
-  await expect(waiting).toContainText(`Cancel bill`);
+  await expect(waiting).toContainText("BILL CANCEL ASKED");
   await expect(waiting).toContainText(name);
-  await waiting.locator("li", { hasText: name }).getByRole("link", { name: "Open bill" }).click();
+  await waiting
+    .locator("li", { hasText: name })
+    .getByRole("link", { name: "Open", exact: true })
+    .click();
   await page.getByText("More actions").click();
   await expect(page.getByText(/Reception asks to cancel this bill/)).toBeVisible();
   await page.getByRole("button", { name: "Cancel bill" }).click();
