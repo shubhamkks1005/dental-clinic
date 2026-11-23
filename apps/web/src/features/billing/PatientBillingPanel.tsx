@@ -10,6 +10,7 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
   const [bills, setBills] = useState<PatientBillRow[]>([]);
   const [due, setDue] = useState(0);
   const [advance, setAdvance] = useState(0);
+  const [filter, setFilter] = useState<"all" | "issued" | "cancelled" | "draft">("all");
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
@@ -41,6 +42,14 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
             </>
           ) : null}
         </p>
+        <Link
+          className="btn secondary"
+          to={`/app/print/statement/${encodeURIComponent(patientId)}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Print statement
+        </Link>
       </header>
 
       {error ? <p className="error-text">{error}</p> : null}
@@ -54,27 +63,43 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
 
       <RefundPanel patientId={patientId} onDone={load} />
 
+      <div className="row wrap gap-sm" role="group" aria-label="Bill filter">
+        {(["all", "issued", "draft", "cancelled"] as const).map((f) => (
+          <button
+            key={f}
+            type="button"
+            className={filter === f ? "btn" : "btn secondary"}
+            style={{ minHeight: 44 }}
+            onClick={() => setFilter(f)}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+
       {bills.length === 0 ? (
         <p className="muted">No bills yet. Create one from a visit.</p>
       ) : (
         <ul className="stack gap-sm list-plain">
-          {bills.map((b) => (
-            <li key={b.id} className="surface card-pad row wrap gap-sm space-between">
-              <div className="stack gap-xs">
-                <Link to={`/app/bills/${b.id}`}>{b.billNo ?? "Draft bill"}</Link>
-                <span className="muted small">
-                  {b.billOn} · {b.status}
-                  {b.kind === "opening_balance" ? " · opening" : ""}
-                </span>
-              </div>
-              <div className="stack gap-xs end">
-                <span>{formatRupees(b.totalPaise)}</span>
-                {b.duePaise > 0 ? (
-                  <span className="muted small">Due {formatRupees(b.duePaise)}</span>
-                ) : null}
-              </div>
-            </li>
-          ))}
+          {bills
+            .filter((b) => filter === "all" || b.status === filter)
+            .map((b) => (
+              <li key={b.id} className="surface card-pad row wrap gap-sm space-between">
+                <div className="stack gap-xs">
+                  <Link to={`/app/bills/${b.id}`}>{b.billNo ?? "Draft bill"}</Link>
+                  <span className="muted small">
+                    {b.billOn} · {b.status}
+                    {b.kind === "opening_balance" ? " · opening" : ""}
+                  </span>
+                </div>
+                <div className="stack gap-xs end">
+                  <span>{formatRupees(b.totalPaise)}</span>
+                  {b.duePaise > 0 ? (
+                    <span className="muted small">Due {formatRupees(b.duePaise)}</span>
+                  ) : null}
+                </div>
+              </li>
+            ))}
         </ul>
       )}
     </section>

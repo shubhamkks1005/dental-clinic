@@ -10,6 +10,7 @@ import { PrintEstimateScreen } from "./PrintEstimateScreen";
 import { PrintPrescriptionScreen } from "./PrintPrescriptionScreen";
 import { PrintReceiptScreen } from "./PrintReceiptScreen";
 import { PrintSampleScreen } from "./PrintSampleScreen";
+import { PrintStatementScreen } from "./PrintStatementScreen";
 
 // /app/print/*: print screens open without the app frame (menu, top bar, tabs).
 export function PrintRoutes() {
@@ -20,6 +21,7 @@ export function PrintRoutes() {
       <Route path="day-close" element={<PrintDayCloseScreen />} />
       <Route path="bill/:id" element={<PrintBillScreen />} />
       <Route path="receipt/:id" element={<PrintReceiptScreen />} />
+      <Route path="statement/:patientId" element={<PrintStatementScreen />} />
       <Route path="prescription/:id" element={<PrintPrescriptionScreen />} />
       <Route path="estimate/:patientId" element={<PrintEstimateScreen />} />
       <Route path="consent/:patientId" element={<PrintConsentScreen />} />
