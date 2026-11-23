@@ -120,3 +120,11 @@
 .page-message p {
   margin-top: var(--s2);
 }
+
+/* Q1.6: offline, server actions look switched off (OfflineGuard says why when clicked). */
+html[data-offline] button[type="submit"],
+html[data-offline] .btn-primary,
+html[data-offline] a[href^="/app"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

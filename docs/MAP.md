@@ -508,3 +508,4 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - apps/worker/src/domain/messages-events.ts: messagesAfterAppointmentChange (out-of-date + moved/cancelled message), called from domain/appointments.ts. Tests: apps/worker/src/appointment-messages.test.ts, e2e/messages.spec.ts.
 - packages/shared/src/message-recipient.ts (+ test): messageRecipient (own, guardian, emergency) and speakForPatient.
 - e2e/visit-to-bill.spec.ts: Q1.1 chain (warning, disabled Create bill with reason, bill with a procedure).
+- apps/web/src/ui/OfflineGuard.tsx: Q1.6 offline: blocks Save/primary buttons and in-app links with a reason, keeps the screen (html[data-offline] in ui.css). Test: e2e/no-silent-failures.spec.ts.

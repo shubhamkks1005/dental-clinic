@@ -82,3 +82,34 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
   expect(patches).toBe(0);
   await context.close();
 });
+
+test("offline: the screen stays, typed text stays, server actions say why they are off", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await page.goto("/app/patients/new");
+  await page.getByLabel("Full name").fill("Fake Offline Person");
+  await context.setOffline(true);
+  await expect(page.getByText(/No internet connection/).first()).toBeVisible();
+
+  // Save is switched off and says why; the form and the typed name stay.
+  await page.getByRole("button", { name: "Save patient" }).click();
+  await expect(
+    page.locator(".toast-text", { hasText: /switched off until the connection/ }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Full name")).toHaveValue("Fake Offline Person");
+
+  // Opening another page is refused: the current screen stays.
+  await page.locator('a[href="/app/billing"]').first().click();
+  await expect(page).toHaveURL(/\/app\/patients\/new/);
+  await expect(page.getByLabel("Full name")).toHaveValue("Fake Offline Person");
+  await expect(page.locator(".toast-text", { hasText: /switched off/ }).nth(1)).toBeVisible();
+
+  // Back online everything works again.
+  await context.setOffline(false);
+  await expect(page.locator(".offline-banner")).toBeHidden();
+  await page.getByLabel("Full name").fill(""); // an untouched form leaves without the "unsaved" question
+  await page.locator('a[href="/app/billing"]').first().click();
+  await expect(page).toHaveURL(/\/app\/billing/);
+});
