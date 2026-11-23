@@ -2,7 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 // 1.7.3: small local smoke only (Chromium). Staging Google login stays a manual owner check.
 const PORT = 8787;
-const ORIGIN = `http://127.0.0.1:${PORT}`;
+// Must be "localhost": the Worker's APP_ORIGIN is http://localhost:8787 and its CSRF guard returns 403
+// on every write from 127.0.0.1. The Worker itself still listens on 127.0.0.1 (--ip below).
+const ORIGIN = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -24,8 +26,8 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    // Local D1 may already have migrations; ignore re-apply UNIQUE failures.
-    command: `pnpm --filter @clinic/web build && (pnpm --filter @clinic/worker wr d1 migrations apply DB --local --env='' || true) && pnpm --filter @clinic/worker wr dev --env='' --ip 127.0.0.1 --port ${PORT}`,
+    // Fresh SCRATCH database every run (never the owner's local D1, which is half-migrated).
+    command: `pnpm --filter @clinic/web build && rm -rf apps/worker/.wrangler/e2e-state && pnpm --filter @clinic/worker wr d1 migrations apply DB --local --env='' --persist-to .wrangler/e2e-state && pnpm --filter @clinic/worker wr dev --env='' --ip 127.0.0.1 --port ${PORT} --persist-to .wrangler/e2e-state`,
     url: `${ORIGIN}/api/staff/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

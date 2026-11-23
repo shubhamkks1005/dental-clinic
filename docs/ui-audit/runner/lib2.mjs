@@ -1,5 +1,5 @@
-import { open, BASE, VP, measure } from "./lib.mjs";
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
+import { open, BASE, measure } from "./lib.mjs";
+import { mkdirSync, writeFileSync } from "node:fs";
 const ROOT = process.env.FLOW_ROOT || "/Users/shubham.kumar/dental-clinic/docs/ui-audit/flows";
 export const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
 

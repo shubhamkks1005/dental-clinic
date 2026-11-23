@@ -8,3 +8,7 @@ packages/db/migrations
 # Docs and agent rules are hand-written; never reformat them.
 **/*.md
 .cursor
+# Audit evidence, throwaway runner scripts and design mockups (Phase Q): never reformat.
+docs/ui-audit/flows
+docs/ui-audit/runner
+docs/design/proposal

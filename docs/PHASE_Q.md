@@ -42,7 +42,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 ## Status board (update after each task: Todo, Done with commit hash, Blocked)
 | Task | Title | Status |
 |---|---|---|
-| Q0.1 | Browser tests can run | Todo |
+| Q0.1 | Browser tests can run | Done (see git log "Q0.1") |
 | Q0.2 | Fix double JSON encoding (C1) | Todo |
 | Q0.3 | Prescription Issue works (C3) | Todo |
 | Q0.4 | Booking without a note works (C4) | Todo |

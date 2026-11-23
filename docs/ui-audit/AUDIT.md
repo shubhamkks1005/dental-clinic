@@ -72,7 +72,7 @@ The shell, Today (receptionist), New patient, dialogs and print output are tidy 
 - L6 Receptionist can open `/app/errors` (menu hides it); the API returns 403. Not seen how the page reports it. [seen console only]
 
 ## Test and tooling notes (found during the audit)
-- T1 `playwright.config.ts` uses `http://127.0.0.1:8787`, but `APP_ORIGIN` is `http://localhost:8787`, so any e2e step that writes data gets 403 "blocked for safety". [seen]. Use localhost in the config.
+- T1 [FIXED Q0.1: config uses localhost and a scratch DB] `playwright.config.ts` uses `http://127.0.0.1:8787`, but `APP_ORIGIN` is `http://localhost:8787`, so any e2e step that writes data gets 403 "blocked for safety". [seen]. Use localhost in the config.
 - T2 Installed Chromium is build 1248, Playwright 1.65 wants 1255. Run `pnpm exec playwright install chromium`.
 - T3 The local D1 in `apps/worker/.wrangler/state` is half-migrated (migration 0016 hits a UNIQUE error). This audit used a scratch DB. Reset local state before the next session.
 

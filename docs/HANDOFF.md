@@ -9,16 +9,15 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
 
 ## Next task
-**Part 1 (bugs and money safety): Q0.1, Q0.2, Q0.3, Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
+**Part 1 (bugs and money safety): (Q0.1 done) Q0.2, Q0.3, Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
 
 ## Done in Phase Q
-(nothing yet; add one line per finished task: id, commit hash, date)
+- Q0.1 Browser tests can run, 2026-11-23 (hash in git log, message starts "Q0.1"). `pnpm test:e2e`: 15 pass on a fresh scratch DB.
 
 ## Half done
 (nothing)
 
 ## Waiting on me (the owner). The AI must not guess these
-- **Run once:** `pnpm exec playwright install chromium` (needed for Q0.1 and every browser check).
 - D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.
 - Older items: STATE.md "Waiting on me" (staging steps, doctor confirmations, CA questions).
 

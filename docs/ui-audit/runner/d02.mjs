@@ -33,7 +33,6 @@ await flow({ id: process.argv[2] || "D02-refund-and-cancel-a-bill", role: "recep
   await c.type(p.getByLabel("Reason").last(), "Wrong procedure billed", "Type the reason");
   await c.click(p.getByRole("button", { name: "Confirm cancel" }), "Confirm cancel (nothing paid now)");
   await c.look("Bill cancelled");
-  const pid = p.url().includes("/bills/") ? null : null;
   await c.go("/app/patients", "Open Neha again to compare the numbers after the refund");
   await c.click(p.getByRole("link", { name: "Neha Testcase" }).first(), "Open Neha Testcase");
   await c.look("Profile History tab: the refund is listed, what does Outstanding say?");
