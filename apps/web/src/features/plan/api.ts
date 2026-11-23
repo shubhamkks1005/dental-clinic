@@ -8,6 +8,8 @@ export type PlanItem = {
   listItemId: string | null;
   procedureLabel: string;
   estimatePaise: number;
+  billedPaise: number;
+  paidPaise: number;
   phase: number;
   status: PlanItemStatus;
   sittings: number;

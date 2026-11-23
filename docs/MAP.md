@@ -233,6 +233,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - schema/dues-calls.ts + migrations/0041_dues_calls.sql - append-only dues call notes
 - schema/day-closes.ts + migrations/0042_day_closes.sql + repos/day-close.ts - 5.3.9 daily cash close
 - src/repos/bills-create.ts / bills-get.ts / bills-update-draft.ts / bills-export.ts - draft bill create/get/edit + CA monthly CSV
+- src/repos/plan-items-billing.ts - 5.3.15 billed/paid totals for plan items
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
 - access_log - sign-ins, failures, staff changes, views, exports (src/schema/access-log.ts) - action (login|login_failed|login_denied|logout|staff_change|view|export), resource, resource_id, request_id, detail (reason, masked email); who = created_by ('anonymous' for failed sign-ins)

@@ -154,3 +154,4 @@
 - 2026-11-23 - **5.3.2 split payment UI:** amountPaise = total; splitPaise = second mode portion; primary = total − split. Short reference only. - agent (5.3.2)
 - 2026-11-23 - **5.3.3 statement:** A4 print of charges+payments+outstanding from live list APIs; Billing tab status filter. - agent (5.3.3)
 - 2026-11-23 - **5.3.12 CA export:** GET /bills/export?month=YYYY-MM; reports.full (doctor); CSV with patient_code only; modes as cash:paise;upi:paise. - agent (5.3.12)
+- 2026-11-23 - **5.3.15 plan money:** billed/paid from issued bill_items.plan_item_id; paid pro-rated by line/bill total. UI flags billed > estimate. - agent (5.3.15)

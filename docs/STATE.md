@@ -27,6 +27,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.3.2 DONE locally (split cash+UPI UI + reference; PaymentTakeForm; receipt shows both). No migration.
 5.3.3 DONE locally (account list + filter + A4 statement print; outstanding = dues sum test). No migration.
 5.3.12 DONE locally (monthly CSV doctor-only reports.full; patient code only; access_log export). Waiting: CA open fake month file. No migration.
+5.3.15 DONE locally (Plan tab estimate/billed/paid; over-estimate flag). No migration.
 5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.

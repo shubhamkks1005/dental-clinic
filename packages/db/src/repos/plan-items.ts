@@ -6,10 +6,14 @@ import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { patients, planItems } from "../schema";
+import { billingTotalsForPlanItems } from "./plan-items-billing";
 import type { PlanItemDetail, PlanItemRow } from "./plan-items-types";
 import { changeEstimate, setDecision } from "./plan-items-update";
 
-function toDetail(row: typeof planItems.$inferSelect): PlanItemDetail {
+function toDetail(
+  row: typeof planItems.$inferSelect,
+  money: { billedPaise: number; paidPaise: number } = { billedPaise: 0, paidPaise: 0 },
+): PlanItemDetail {
   return {
     id: row.id,
     patientId: row.patientId,
@@ -17,6 +21,8 @@ function toDetail(row: typeof planItems.$inferSelect): PlanItemDetail {
     listItemId: row.listItemId,
     procedureLabel: row.procedureLabel,
     estimatePaise: row.estimatePaise,
+    billedPaise: money.billedPaise,
+    paidPaise: money.paidPaise,
     phase: row.phase,
     status: row.status,
     sittings: row.sittings,
@@ -46,7 +52,11 @@ export function planItemsRepo(db: Db, ctx: Ctx) {
         .where(and(eq(planItems.patientId, patientId), isNull(planItems.deletedAt)))
         .orderBy(asc(planItems.phase), asc(planItems.createdAt))
         .all();
-      return rows.map(toDetail);
+      const money = await billingTotalsForPlanItems(
+        db,
+        rows.map((r) => r.id),
+      );
+      return rows.map((r) => toDetail(r, money.get(r.id)));
     },
 
     async create(input: CreatePlanItemInput): Promise<PlanItemRow> {

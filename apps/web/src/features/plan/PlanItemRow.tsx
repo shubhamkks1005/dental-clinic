@@ -76,10 +76,19 @@ export function PlanItemRow({ item, canEdit, onChanged }: Props) {
       <div className="plan-item-main">
         <strong>{item.procedureLabel}</strong>
         {item.toothFdi != null ? <span> · tooth {item.toothFdi}</span> : null}
-        <span> · {formatRupees(item.estimatePaise)}</span>
+        <span> · Estimate {formatRupees(item.estimatePaise)}</span>
         <span className="muted small"> · {planPhaseLabel(item.phase)}</span>
         <StatusBadge tone="done" label={item.status as PlanItemStatus} />
       </div>
+      <p className="muted small">
+        Billed {formatRupees(item.billedPaise ?? 0)} · Paid {formatRupees(item.paidPaise ?? 0)}
+        {(item.billedPaise ?? 0) > item.estimatePaise ? (
+          <span className="error-text">
+            {" "}
+            · Billed {formatRupees((item.billedPaise ?? 0) - item.estimatePaise)} over estimate
+          </span>
+        ) : null}
+      </p>
       {canEdit ? (
         <div className="plan-item-edit">
           <label>
