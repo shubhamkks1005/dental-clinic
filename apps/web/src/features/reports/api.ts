@@ -47,3 +47,10 @@ export function contactCallList(kind: CallListKind, patientId: string, note: str
     body: { note },
   });
 }
+
+export function fetchStatsCsv(from: string, to: string) {
+  const params = new URLSearchParams({ from, to });
+  return api<{ csv: string; from: string; to: string; rows: number }>(
+    `/api/staff/stats/export?${params}`,
+  );
+}

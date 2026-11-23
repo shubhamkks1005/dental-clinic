@@ -406,6 +406,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/stats/export",
+    access: { kind: "permission", action: "reports.full" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/dashboard",
     access: { kind: "permission", action: "reports.full" },
   },

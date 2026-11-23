@@ -5,7 +5,8 @@ import { useMe } from "../auth";
 import { useToast } from "../../ui/Toast";
 import { AttentionList } from "./AttentionList";
 import { CallListsPanel } from "./CallListsPanel";
-import { fetchDashboard, recomputeStats } from "./api";
+import { Link } from "react-router";
+import { fetchDashboard, fetchStatsCsv, recomputeStats } from "./api";
 import { DashboardCharts } from "./DashboardCharts";
 import { DashboardKpis } from "./DashboardKpis";
 import { RangeControls } from "./RangeControls";
@@ -98,6 +99,33 @@ export function ReportsScreen() {
       <div className="dash-toolbar">
         <button type="button" className="btn" disabled={busy} onClick={() => void onRecompute()}>
           {busy ? "Updating…" : "Recompute now"}
+        </button>
+        <Link
+          className="btn btn-secondary"
+          to={`/app/print/monthly-report?month=${new Date().toISOString().slice(0, 7)}`}
+        >
+          Print this month
+        </Link>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled={!data}
+          onClick={() => {
+            if (!data) return;
+            void fetchStatsCsv(data.range.from, data.range.to)
+              .then((out) => {
+                const blob = new Blob([out.csv], { type: "text/csv;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `clinic-stats-${out.from}_${out.to}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+              })
+              .catch((err) => toast({ text: problemText(err), tone: "error" }));
+          }}
+        >
+          Download CSV
         </button>
         {loading ? <span className="muted">Loading…</span> : null}
       </div>

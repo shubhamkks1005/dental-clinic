@@ -161,7 +161,9 @@
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell; reports = ReportsScreen (6.2.3 S10); messages = NotBuiltYet
 - src/features/reports/ - S10 dashboard (6.3.3–5): ReportsScreen, RangeControls, DashboardKpis/Charts, AttentionList; api.ts
 - apps/worker src/cron/ - 6.2.3 scheduled branches (daily-stats nightly); entry createWorker adds scheduled()
-- apps/worker src/routes/staff-stats.ts - POST /stats/recompute; GET /dashboard (6.3.1)
+- apps/worker src/routes/staff-stats.ts - POST /stats/recompute; GET /dashboard; today-summary; call-lists; stats/export
+- apps/web PrintMonthlyReportScreen - 6.4.1 A4 monthly report
+- packages/db/src/repos/stats-export.ts (+ test) - 6.4.2 daily_stats CSV
 - apps/worker src/domain/dashboard.ts - 6.3.1 getDashboard + cache-control constant
 - packages/shared/src/dashboard-range.ts (+ test) - 6.3.1/6.3.4 range presets → IST from/to + grain
 - packages/shared/src/dashboard.ts - 6.3.1 prepared payload types + fold cells → series/totals

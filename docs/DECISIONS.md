@@ -171,3 +171,6 @@
 - 2026-11-23 - **6.3.7 call lists:** incomplete = accepted plan_items with no completed_visit_id and told/created ≥30d ago; recall = last final visit 6–9 months (30d months). Contact note in outreach_contacts hides until a later final visit. Defaults 30/6/9 until 6.5.3 settings. Migration 0045. - agent
 - 2026-11-23 - **6.3.8 today summary:** GET /api/staff/dashboard/today-summary (reports.today). Arrived distinct, remaining busy statuses, collected payments−refunds. Full /dashboard stays reports.full. - agent
 - 2026-11-23 - **6.3.9 / 6.3.10 skipped (baad me):** wait/chair + age/gender after pilot. - agent
+- 2026-11-23 - **6.4.1 monthly print:** /app/print/monthly-report?month=YYYY-MM uses dashboard custom range + compare; A4 English; aggregates only. - agent
+- 2026-11-23 - **6.4.2 stats CSV:** GET /api/staff/stats/export?from&to → date_local,metric,dim,value from daily_stats. reports.full. - agent
+- 2026-11-23 - **6.4.3 / 6.4.4 skipped (baad me):** Brevo monthly email; YoY chart. - agent

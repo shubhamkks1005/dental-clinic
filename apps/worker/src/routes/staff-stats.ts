@@ -37,6 +37,15 @@ staffStats.post("/call-lists/:kind/:patientId/contact", async (c) => {
   return c.json(ok({ contacted: true }));
 });
 
+// 6.4.2: daily_stats CSV for a custom range (aggregates only).
+staffStats.get("/stats/export", async (c) => {
+  const result = await signedIn(c).repos.statsExport.csv({
+    from: c.req.query("from"),
+    to: c.req.query("to"),
+  });
+  return c.json(ok(result));
+});
+
 // 6.2.3: manual stats recompute (reports.full). Cron does the same without rate limit.
 staffStats.post("/stats/recompute", async (c) => {
   const result = await recomputeStats(signedIn(c).repos);

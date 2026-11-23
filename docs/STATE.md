@@ -22,6 +22,10 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.3.8 DONE locally (GET /dashboard/today-summary reports.today; receptionist S10 summary; full dashboard still 403). No migration.
 6.3.9 SKIPPED / Waiting (baad me — wait & chair utilisation after status habit).
 6.3.10 SKIPPED / Waiting (baad me — age/gender mix).
+6.4.1 DONE locally (A4 monthly report print from dashboard totals; DRAFT sister printer). No migration.
+6.4.2 DONE locally (GET /stats/export CSV from daily_stats; Download CSV on S10). No migration.
+6.4.3 SKIPPED / Waiting (baad me — monthly email via Brevo).
+6.4.4 SKIPPED / Waiting (baad me — year-on-year after 12 months).
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
@@ -311,6 +315,8 @@ Waiting on me (owner):
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
 - Staging: apply migrations **0006–0045** (next free **0046**)
 - **6.3.9 / 6.3.10**: baad me (wait/chair; age/gender)
+- **6.4.1**: sister approve monthly report print on clinic printer
+- **6.4.3 / 6.4.4**: baad me (email report; YoY)
 - **HEALTHCHECKS_BILLING_URL** GitHub secret for weekly billing integrity
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then

@@ -56,6 +56,7 @@ import { dailyStatsRepo } from "./daily-stats";
 import { dashboardRepo } from "./dashboard";
 import { callListsRepo } from "./call-lists";
 import { todaySummaryRepo } from "./today-summary";
+import { statsExportRepo } from "./stats-export";
 import { paymentsCreateRepo } from "./payments-create";
 import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { paymentsListRepo } from "./payments-list";
@@ -145,6 +146,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     dashboard: dashboardRepo(db, ctx),
     callLists: callListsRepo(db, ctx),
     todaySummary: todaySummaryRepo(db, ctx),
+    statsExport: statsExportRepo(db, ctx),
   };
 }
 
