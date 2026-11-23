@@ -8,8 +8,10 @@ export const STATUS_UNDO_HOURS = tunableDefault("appointments.status_undo_hours"
 
 // One place for the status wheel. Anything else is refused (409/invalid).
 const NEXT: Record<AppointmentStatus, readonly AppointmentStatus[]> = {
-  scheduled: ["confirmed", "arrived", "cancelled", "no_show", "rescheduled"],
-  confirmed: ["arrived", "cancelled", "no_show", "rescheduled"],
+  // in_chair straight from scheduled/confirmed: the doctor opened the visit before the desk
+  // pressed Arrived. The repo then stamps arrived_at too.
+  scheduled: ["confirmed", "arrived", "in_chair", "cancelled", "no_show", "rescheduled"],
+  confirmed: ["arrived", "in_chair", "cancelled", "no_show", "rescheduled"],
   arrived: ["in_chair", "cancelled"],
   in_chair: ["completed"],
   completed: [],

@@ -278,6 +278,7 @@
 - packages/shared consent-body.ts (+ test) - parses consent text markup (# heading, - bullet, 1. item, [ ] tick box)
 - packages/shared consent-forms-hi-a/b/c.ts - doctor's Hindi consent forms (extraction, filling, scaling / root canal, crown and bridge / orthodontic); consent-templates.ts has the keys, schema, CONSENT_TEMPLATE_META (language, tooth line) and resolveConsentTemplates
 - apps/web features/print ConsentBody.tsx, ConsentSheet.tsx - draw a consent form (patient strip, text, signature block); PrintConsentScreen.tsx loads data and prints
+- apps/web features/today DoctorDayList.tsx - doctor's whole day, every row opens the visit (FIXES #1); opening moves the patient to In chair (statusActions.movesToChairOnOpen); status wheel allows scheduled/confirmed -> in_chair (packages/shared appointment-status.ts) and the repo then stamps arrived_at too
 - src/features/today/ - Today (S01/S14, 2.4.3 real APIs): TodayScreen, DoctorToday, IncompleteVisitsWidget (3.5.8 drafts), TodayList, NextPatientCard, CallList, WalkInDialog, buildTodayModel (+ test), incomplete-visits-label (+ test), api.ts, statusActions.ts (+ test), today.css, today-cards.css, index.ts
 
 ## packages/db (tables: name - purpose - key columns)

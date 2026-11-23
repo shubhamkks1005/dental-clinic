@@ -27,6 +27,8 @@ export type TodayListRow = {
   hasRestrictedAlert: boolean;
   hasDue: boolean;
   duePaise: number | null;
+  /** Raw appointment status (statusLabel can say "Waiting 5 min"). */
+  status: DayAppointment["status"];
   actions: { status: DayAppointment["status"]; label: string }[];
   version: number;
   startAt: string;
@@ -55,8 +57,10 @@ export type TodayModel = {
   } | null;
   rows: TodayListRow[];
   callList: { id: string; initials: string; name: string; note: string; mobile: string | null }[];
+  /** Doctor view: the patient to see now (in chair, else arrived, else next upcoming). */
   doctorNow: TodayListRow | null;
-  doctorNext: TodayListRow[];
+  /** Doctor view: the whole day in time order, so nothing waits for the desk. */
+  doctorDay: TodayListRow[];
 };
 
 function initials(name: string): string {
@@ -83,6 +87,7 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     hasRestrictedAlert: a.alertFlags?.hasRestricted ?? false,
     hasDue: a.hasDue ?? false,
     duePaise: a.duePaise ?? null,
+    status: a.status,
     actions: statusActionButtons(a.status, {
       startAt: new Date(a.startAt),
       statusChangedAt: new Date(a.updatedAt),
@@ -139,18 +144,12 @@ export function buildTodayModel(
       mobile: a.patientMobile ? displayMobile(a.patientMobile) : null,
     }));
 
-  const inChair = rows.find((r) => r.statusLabel === "In chair") ?? null;
-  const doctorNow = inChair ?? (nextId ? (rows.find((r) => r.id === nextId) ?? null) : null);
-  const doctorNext = rows
-    .filter(
-      (r) =>
-        r.id !== doctorNow?.id &&
-        (r.statusLabel === "Scheduled" ||
-          r.statusLabel === "Confirmed" ||
-          r.statusLabel.startsWith("Waiting") ||
-          r.statusLabel === "Arrived"),
-    )
-    .slice(0, 3);
+  const doctorDay = rows.filter((r) => r.status !== "no_show");
+  const doctorNow =
+    doctorDay.find((r) => r.status === "in_chair") ??
+    (nextId ? doctorDay.find((r) => r.id === nextId) : undefined) ??
+    doctorDay.find((r) => r.status === "scheduled" || r.status === "confirmed") ??
+    null;
 
   return {
     appointmentsCount: active.filter((a) => a.status !== "no_show").length,
@@ -176,6 +175,6 @@ export function buildTodayModel(
     rows,
     callList,
     doctorNow,
-    doctorNext,
+    doctorDay,
   };
 }

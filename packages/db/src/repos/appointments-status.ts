@@ -86,11 +86,13 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       if (block) throw new InvalidError(block);
 
       const nowIso = now.toISOString();
-      const stamp = stampsFor(to, nowIso);
+      // Doctor opened the visit before the desk pressed Arrived: count them as arrived now.
+      const skippedArrival = to === "in_chair" && from !== "arrived";
+      const stamp = { ...stampsFor(to, nowIso), ...(skippedArrival ? { arrivedAt: nowIso } : {}) };
       const cancelReason =
         to === "cancelled" ? (input.cancelReason ?? row.cancelReason) : row.cancelReason;
       const firstArrived =
-        to === "arrived"
+        to === "arrived" || skippedArrival
           ? markFirstArrivedBatch(db, ctx, row.patientId, row.dateLocal || istDate(now), nowIso)
           : null;
 

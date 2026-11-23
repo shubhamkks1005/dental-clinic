@@ -16,6 +16,7 @@ describe("appointment status wheel (2.3.6)", () => {
     expect(allowedNextStatuses("scheduled")).toEqual([
       "confirmed",
       "arrived",
+      "in_chair",
       "cancelled",
       "no_show",
       "rescheduled",
@@ -25,6 +26,10 @@ describe("appointment status wheel (2.3.6)", () => {
     expect(allowedNextStatuses("completed")).toEqual([]);
     expect(isAllowedStatusTransition("scheduled", "completed")).toBe(false);
     expect(isAllowedStatusTransition("arrived", "in_chair")).toBe(true);
+    // The doctor opens the visit before the desk pressed Arrived: never block the doctor.
+    expect(isAllowedStatusTransition("scheduled", "in_chair")).toBe(true);
+    expect(isAllowedStatusTransition("confirmed", "in_chair")).toBe(true);
+    expect(isAllowedStatusTransition("cancelled", "in_chair")).toBe(false);
   });
 
   it("blocks no_show until start + 15 minutes", () => {

@@ -76,6 +76,33 @@ describe("appointment status change (2.3.6)", () => {
     expect(done).toMatchObject({ status: "completed", endedAt: t2.toISOString() });
   });
 
+  it("scheduled → in_chair (doctor opened the visit first) stamps arrived_at and started_at", async () => {
+    const t1 = new Date("2026-11-23T05:00:00.000Z");
+    const chair = await repos().appointments.changeStatus(
+      APPT_ID,
+      { status: "in_chair", version: 1, cancelReason: null },
+      t1,
+    );
+    expect(chair).toMatchObject({
+      status: "in_chair",
+      arrivedAt: t1.toISOString(),
+      startedAt: t1.toISOString(),
+    });
+  });
+
+  it("arrived → in_chair keeps the original arrived_at", async () => {
+    const arrived = new Date("2026-11-23T04:50:00.000Z");
+    t.sqlite
+      .prepare(`UPDATE appointments SET status = 'arrived', version = 2, arrived_at = ?`)
+      .run(arrived.toISOString());
+    const chair = await repos().appointments.changeStatus(
+      APPT_ID,
+      { status: "in_chair", version: 2, cancelReason: null },
+      new Date("2026-11-23T05:00:00.000Z"),
+    );
+    expect(chair.arrivedAt).toBe(arrived.toISOString());
+  });
+
   it("no_show before start+15m is refused; after is allowed", async () => {
     const tooSoon = new Date(new Date(START_AT).getTime() + 5 * 60 * 1000);
     await expect(

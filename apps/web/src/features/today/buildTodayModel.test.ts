@@ -75,4 +75,71 @@ describe("buildTodayModel (2.4.3)", () => {
     expect(model.callList[0]?.name).toBe("Missed Person");
     expect(model.waitingCount).toBe(2);
   });
+
+  describe("doctor view: nothing blocks the doctor", () => {
+    const sched = (id: string, name: string, startMin: number, over = {}) =>
+      appt({
+        id,
+        patientId: `p-${id}`,
+        status: "scheduled",
+        patientName: name,
+        startMin,
+        endMin: startMin + 30,
+        ...over,
+      });
+
+    it("lists every patient of the day in time order, not just three", () => {
+      const model = buildTodayModel(
+        [
+          sched("a4", "Four", 10 * 60 + 90),
+          sched("a1", "One", 10 * 60),
+          sched("a3", "Three", 10 * 60 + 60),
+          sched("a2", "Two", 10 * 60 + 30),
+          sched("a5", "Five", 10 * 60 + 120),
+        ],
+        window,
+        "2026-11-23T04:00:00.000Z",
+      );
+      expect(model.doctorDay.map((r) => r.name)).toEqual(["One", "Two", "Three", "Four", "Five"]);
+    });
+
+    it("Now is the next upcoming patient when the desk marked nobody arrived", () => {
+      const model = buildTodayModel(
+        [sched("a2", "Second", 10 * 60 + 30), sched("a1", "First", 10 * 60)],
+        window,
+        "2026-11-23T04:00:00.000Z",
+      );
+      expect(model.doctorNow?.name).toBe("First");
+    });
+
+    it("Now prefers the patient in the chair, then an arrived one, then an upcoming one", () => {
+      const rows = [
+        sched("a1", "Upcoming", 10 * 60),
+        sched("a2", "Arrived", 10 * 60 + 30, {
+          status: "arrived",
+          arrivedAt: "2026-11-23T04:00:00.000Z",
+        }),
+        sched("a3", "InChair", 11 * 60, { status: "in_chair" }),
+      ];
+      expect(buildTodayModel(rows, window, "2026-11-23T04:10:00.000Z").doctorNow?.name).toBe(
+        "InChair",
+      );
+      expect(
+        buildTodayModel(rows.slice(0, 2), window, "2026-11-23T04:10:00.000Z").doctorNow?.name,
+      ).toBe("Arrived");
+    });
+
+    it("keeps finished patients in the list, drops cancelled ones, and has no Now when all done", () => {
+      const model = buildTodayModel(
+        [
+          sched("a1", "Done", 10 * 60, { status: "completed" }),
+          sched("a2", "Gone", 10 * 60 + 30, { status: "cancelled" }),
+        ],
+        window,
+        "2026-11-23T05:00:00.000Z",
+      );
+      expect(model.doctorDay.map((r) => r.name)).toEqual(["Done"]);
+      expect(model.doctorNow).toBeNull();
+    });
+  });
 });

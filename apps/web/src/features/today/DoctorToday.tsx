@@ -4,7 +4,10 @@ import { useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { openOrReuseVisit } from "../visits/open-visit";
+import { changeAppointmentStatus } from "./api";
 import type { TodayListRow, TodayModel } from "./buildTodayModel";
+import { DoctorDayList } from "./DoctorDayList";
+import { movesToChairOnOpen } from "./statusActions";
 import { IncompleteVisitsWidget } from "./IncompleteVisitsWidget";
 
 type Props = {
@@ -41,7 +44,7 @@ function DoctorCard({
           <p className="small muted">{row.visit}</p>
           <StatusBadge tone={row.tone} label={row.statusLabel} />
           <div className="today-actions">
-            {title === "Now" && onOpenVisit ? (
+            {onOpenVisit ? (
               <button
                 type="button"
                 className="btn btn-primary btn-compact"
@@ -74,20 +77,27 @@ function DoctorCard({
   );
 }
 
-/** Doctor home (2.4.3 / 3.5.1): Now + Open visit + next three. */
+/** Doctor home (2.4.3 / 3.5.1): Now card, then the whole day. Any patient can be opened. */
 export function DoctorToday({ model, busyId, onStatus }: Props) {
   const navigate = useNavigate();
-  const [opening, setOpening] = useState(false);
+  const [openingId, setOpeningId] = useState<string | null>(null);
   const [openError, setOpenError] = useState<string | null>(null);
 
   async function openVisitFor(row: TodayListRow) {
-    setOpening(true);
+    setOpeningId(row.id);
     setOpenError(null);
     try {
       const visitId = await openOrReuseVisit({
         patientId: row.patientId,
         appointmentId: row.id,
       });
+      if (movesToChairOnOpen(row.status)) {
+        // The patient is now with the doctor. If this fails (someone else just changed it) the
+        // doctor still gets the visit: the status is a note for the desk, not a gate.
+        await changeAppointmentStatus(row.id, { status: "in_chair", version: row.version }).catch(
+          () => undefined,
+        );
+      }
       navigate(`/app/visits/${visitId}`);
     } catch (err: unknown) {
       setOpenError(
@@ -96,7 +106,7 @@ export function DoctorToday({ model, busyId, onStatus }: Props) {
           : "Could not open the visit. Check the connection, then try again.",
       );
     } finally {
-      setOpening(false);
+      setOpeningId(null);
     }
   }
 
@@ -114,24 +124,9 @@ export function DoctorToday({ model, busyId, onStatus }: Props) {
         busyId={busyId}
         onStatus={onStatus}
         onOpenVisit={openVisitFor}
-        opening={opening}
+        opening={openingId !== null}
       />
-      <section className="card" aria-labelledby="doctor-next-title">
-        <h2 id="doctor-next-title">Next 3</h2>
-        {model.doctorNext.length === 0 ? (
-          <p className="muted">No more patients lined up.</p>
-        ) : (
-          <ul className="doctor-next-list">
-            {model.doctorNext.map((row) => (
-              <li key={row.id}>
-                <span className="today-time">{row.time}</span>
-                <span className="today-name">{row.name}</span>
-                <StatusBadge tone={row.tone} label={row.statusLabel} />
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <DoctorDayList rows={model.doctorDay} openingId={openingId} onOpen={openVisitFor} />
     </div>
   );
 }
