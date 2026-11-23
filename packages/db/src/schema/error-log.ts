@@ -12,6 +12,8 @@ export const errorLog = sqliteTable(
     message: text("message").notNull(),
     path: text("path"),
     requestId: text("request_id"),
+    appVersion: text("app_version"),
+    role: text("role"),
   },
   (t) => [
     check("error_log_source_check", oneOf("source", ERROR_LOG_SOURCES)),

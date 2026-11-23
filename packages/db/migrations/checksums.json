@@ -52,5 +52,6 @@
   "0050_privacy_notice_messaging.sql": "5cec29f5bdb9c837bdb90ac1dafe1caab248428f6da8464006264611e0f5fd7a",
   "0051_ops_status.sql": "913fa91d2050384572eb3b3f5ab356efce144f7ea64e2c140c96c40f52cdab67",
   "0052_error_log.sql": "f26a3d5dd6cf133ff4e452ea7833d6ca44846aa72579056a4a574dd36b86d09b",
-  "0053_patient_requests.sql": "afce7879ff2f41217f95db0584671f09b74d784484b2d4ceee3cd4ec4ead5187"
+  "0053_patient_requests.sql": "afce7879ff2f41217f95db0584671f09b74d784484b2d4ceee3cd4ec4ead5187",
+  "0054_error_log_role_version.sql": "e8df9023c5128737c7c7daafbb7901550b1661081dd8faebcb13fcfbd2e8980a"
 }

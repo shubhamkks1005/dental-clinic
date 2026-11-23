@@ -379,6 +379,13 @@
       "when": 1795490000000,
       "tag": "0053_patient_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "6",
+      "when": 1795491000000,
+      "tag": "0054_error_log_role_version",
+      "breakpoints": true
     }
   ]
 }

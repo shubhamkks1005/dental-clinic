@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router";
 import { useMe, UserCard } from "../features/auth";
+import { ErrorLogScreen } from "../features/errors";
 import { MoreScreen } from "../features/more";
 import {
   NewPatientScreen,
@@ -65,6 +66,7 @@ function ShellRoutes() {
         <Route path="messages" element={<MessagesScreen />} />
         <Route path="settings/*" element={<SettingsScreen />} />
         <Route path="more" element={<MoreScreen />} />
+        <Route path="errors" element={<ErrorLogScreen />} />
         <Route path="style-guide" element={<StyleGuideScreen />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

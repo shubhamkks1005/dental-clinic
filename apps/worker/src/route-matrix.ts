@@ -19,6 +19,12 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   { method: "GET", path: "/api/staff/auth/callback", access: { kind: "public" } },
   { method: "POST", path: "/api/staff/auth/logout", access: { kind: "signed_in" } },
   { method: "GET", path: "/api/staff/me", access: { kind: "signed_in" } },
+  { method: "POST", path: "/api/staff/errors", access: { kind: "signed_in" } },
+  {
+    method: "GET",
+    path: "/api/staff/errors",
+    access: { kind: "permission", action: "errors.view" },
+  },
   {
     method: "GET",
     path: "/api/staff/settings",

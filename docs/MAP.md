@@ -97,6 +97,7 @@
 - scripts/seed-staging.mjs - CLI: refuses unless --staging (staging D1 id from wrangler.jsonc) or --local; idempotent via notes marker; `pnpm --filter @clinic/worker db:seed:staging -- --staging`
 - docs/TESTING.md - tester guide: 10-task receptionist script (5.5.2), doctor and receptionist day flows, bug templates
 - (web) src/api/last-request.ts (+test) - in-memory last Error ID; src/ui/CopyButton.tsx; More screen Help card and crash page show a copyable Error ID
+- 9.2.5 error log: packages/shared/src/error-report.ts (zod, size cap, list type); packages/db repos/error-log.ts (scrub, per-user 5/min + 100/day, doctor list; +test); migration 0054; worker domain/error-log.ts, routes/staff-errors.ts (POST /api/staff/errors signed-in, 2 KB cap; GET doctor only; +staff-errors.test.ts); web features/errors/ (report.ts browser reporter + dedupe, ErrorLogScreen at /app/errors, link on More > Help for doctor)
 - src/public-routes.ts - PUBLIC_API (start, callback, branding, health), cookie names
 - src/types.ts - Bindings (Env + secrets) and Variables (db, requestId, session, ctx, repos)
 - src/http.ts - COOKIE_BASE (__Host-, HttpOnly, Secure, SameSite=Lax, Path=/), signedIn(c)

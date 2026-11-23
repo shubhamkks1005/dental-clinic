@@ -188,3 +188,10 @@
 - 2026-11-23 - **Quota thresholds (9.2.1):** Worker request alerts at 50k (log only), 80k (investigate), 95k (warn clinic + prepare paper mode); resets 05:30 IST. GraphQL analytics token Waiting on owner. Estimates ~1,100 req/day for a 15-patient-day clinic; fill real numbers from 9.4.1 load test. - agent
 - 2026-11-23 - **Retention defaults (9.3.10) DRAFT:** Clinical records ≥3y DCI minimum; clinic policy 8y (IDA suggestion) — doctor to confirm. Access log 1y, message_outbox 1y, message_attempts 90d, OTP 1d, expired sessions 30d, webhook_receipts 3d, rate_limits 1h. Audit_log kept permanently. All "DRAFT" until doctor + CA confirm. - agent
 - 2026-11-23 - **Cut A patient pre-load (10.1.7–10.1.9):** Staff-only Option B approach (pre-load only patients with appointment in next 30 days + active ongoing treatment); portal pre-load form (Option B via portal) is later work, not in Cut A scope. Doctor to confirm count before import. - agent
+
+## 9.2.5 error log (2026-11-23)
+- Migration 0054 adds `app_version` and `role` to `error_log` (needed: the task lists both fields). 0052 left untouched (already locked).
+- Role comes from the session and app version from the Worker build, never from the browser body.
+- Limits per user: 5 per minute, 100 per day (repo-level count, no extra table). Body cap 2 KB. Reports from the same session are deduped in the browser (max 20).
+- Record ids in screen paths become `:id`; digits (4+) and emails in messages are removed; messages naming personal fields are replaced by a fixed sentence.
+- Error list is not audited per view: it holds no patient data (scrubbed on save). Reporting is open to any signed-in role; reading is doctor only (`errors.view`).

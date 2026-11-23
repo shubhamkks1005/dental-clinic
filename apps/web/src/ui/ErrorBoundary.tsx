@@ -6,7 +6,9 @@ type State = { errorId: string | null };
 
 // 1.4.7: if a screen crashes, show a plain page with an Error ID instead of a blank page or a
 // stack trace. The ID and the error type go to the browser console only (no error tracker).
-export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
+type Props = { children: ReactNode; onError?: (error: Error) => void };
+
+export class ErrorBoundary extends Component<Props, State> {
   override state: State = { errorId: null };
 
   static getDerivedStateFromError(): State {
@@ -15,6 +17,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
 
   override componentDidCatch(error: Error) {
     console.error("screen error:", error.name, this.state.errorId);
+    this.props.onError?.(error);
   }
 
   override render() {

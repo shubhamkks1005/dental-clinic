@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import { AccessDenied, LandingPage, RequireStaff } from "./features/auth";
 import { PortalRoutes } from "./routes/PortalRoutes";
 import { StaffRoutes } from "./routes/StaffRoutes";
+import { reportBrowserError } from "./features/errors";
 import { ErrorBoundary } from "./ui/ErrorBoundary";
 import { OfflineBanner } from "./ui/OfflineBanner";
 import { NotFound } from "./ui/PageMessage";
@@ -13,7 +14,7 @@ export function App() {
     <TooltipProvider>
       <ToastProvider>
         <OfflineBanner />
-        <ErrorBoundary>
+        <ErrorBoundary onError={reportBrowserError}>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/denied" element={<AccessDenied />} />

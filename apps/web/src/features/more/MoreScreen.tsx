@@ -9,7 +9,8 @@ import "./more.css";
 // Phone "More" tab (no mockup; built from the S14 cards): who is signed in, Sign out, and the
 // screens that have no bottom tab, filtered by role.
 export function MoreScreen() {
-  const items = moreItems(useMe().permissions);
+  const { permissions } = useMe();
+  const items = moreItems(permissions);
   return (
     <div className="more">
       <h1>More</h1>
@@ -26,13 +27,13 @@ export function MoreScreen() {
           ))}
         </nav>
       )}
-      <HelpCard />
+      <HelpCard canSeeErrorLog={permissions.includes("errors.view")} />
     </div>
   );
 }
 
 // For bug reports: the Error ID of the last thing the app asked the server.
-function HelpCard() {
+function HelpCard({ canSeeErrorLog }: { canSeeErrorLog: boolean }) {
   const id = lastRequestId();
   return (
     <section className="card more-card" aria-label="Help">
@@ -44,6 +45,7 @@ function HelpCard() {
       ) : (
         <p className="muted">No Error ID yet. Open a screen, then come back here.</p>
       )}
+      {canSeeErrorLog && <Link to="/app/errors">Open the error log</Link>}
     </section>
   );
 }

@@ -53,6 +53,7 @@ export * from "./patient-guardian";
 export * from "./patient-new";
 export * from "./patient-search-tokens";
 export * from "./request-id";
+export * from "./error-report";
 export * from "./routing";
 export * from "./settings";
 export * from "./settings-help";

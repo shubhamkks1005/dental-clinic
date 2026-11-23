@@ -1,0 +1,29 @@
+.errlog {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s5) var(--s4) var(--s6);
+}
+
+.errlog-list {
+  display: grid;
+  gap: var(--s3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.errlog-item {
+  padding: var(--s3) var(--s4);
+  overflow-wrap: anywhere;
+}
+
+.errlog-item p {
+  margin: var(--s1) 0 0;
+}
+
+@media (min-width: 768px) {
+  .errlog {
+    max-width: 52rem;
+    padding: var(--s5) var(--s6) var(--s6);
+  }
+}

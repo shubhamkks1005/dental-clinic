@@ -35,6 +35,8 @@ export const PERMISSIONS = {
   "settings.write": ["doctor", "developer"],
   "staff.manage": ["doctor"],
   "audit.view": ["doctor"],
+  // 9.2.5: read the app error list (reporting needs only a signed-in session).
+  "errors.view": ["doctor"],
 } as const satisfies Record<string, readonly Role[]>;
 
 export type Action = keyof typeof PERMISSIONS;
