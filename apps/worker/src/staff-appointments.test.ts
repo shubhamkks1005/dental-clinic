@@ -40,7 +40,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     const body = {
       patientId: "p1",
       visitTypeId: VISIT_ID,
-      dateLocal: "2026-11-23",
+      dateLocal: "2026-11-24",
       startMin: 600,
       source: "phone",
     };
@@ -58,7 +58,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
         await book("dev@example.test", {
           patientId: "p1",
           visitTypeId: VISIT_ID,
-          dateLocal: "2026-11-23",
+          dateLocal: "2026-11-24",
           startMin: 600,
           source: "phone",
         })
@@ -92,7 +92,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     const created = await book("rec@example.test", {
       patientId: "p1",
       visitTypeId: VISIT_ID,
-      dateLocal: "2026-11-23",
+      dateLocal: "2026-11-24",
       startMin: 600,
       source: "phone",
     });

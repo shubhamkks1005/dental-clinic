@@ -20,6 +20,8 @@ export function StyleGuideScreen() {
         <p className="muted">
           Colours, type and building blocks from DESIGN.md.{" "}
           <Link to="/app/print/sample">Open the printer check</Link>
+          {" · "}
+          <Link to="/app/print/blank">Blank forms (20 copies)</Link>
         </p>
       </header>
 

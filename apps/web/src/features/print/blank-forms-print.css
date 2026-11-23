@@ -1,0 +1,50 @@
+.blank-forms-stack {
+  display: grid;
+  gap: var(--s4);
+}
+
+.blank-form h2 {
+  margin: 0 0 var(--s4);
+  font-size: 1.15rem;
+}
+
+.blank-line {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: var(--s2);
+  align-items: end;
+  margin: 0 0 var(--s3);
+  font-size: 0.95rem;
+}
+
+.blank-rule {
+  border-bottom: 1px solid #222;
+  min-height: 1.4rem;
+}
+
+.blank-check,
+.blank-body,
+.blank-note {
+  margin: 0 0 var(--s3);
+  font-size: 0.9rem;
+}
+
+.blank-copy-mark {
+  margin-top: var(--s4);
+  font-size: 0.75rem;
+  color: #555;
+}
+
+@media print {
+  .blank-forms-stack {
+    gap: 0;
+  }
+
+  .blank-forms-stack .print-page {
+    page-break-after: always;
+  }
+
+  .blank-forms-stack .print-page:last-child {
+    page-break-after: auto;
+  }
+}

@@ -48,6 +48,7 @@ export * from "./medical-history";
 export * from "./plan-items";
 export * from "./estimate-print";
 export * from "./certificates";
+export * from "./blank-forms";
 export * from "./history-feed";
 export * from "./files";
 export * from "./storage-usage";
