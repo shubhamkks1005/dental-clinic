@@ -8,6 +8,7 @@ import {
   parseRecordRefund,
   parseReopenDay,
   parseRequestBillDiscount,
+  parseUpdateDraftBill,
 } from "@clinic/shared";
 
 export async function createBill(repos: Repos, body: unknown) {
@@ -68,6 +69,13 @@ export async function cancelBill(repos: Repos, id: string, body: unknown) {
 
 export async function createBillFromVisit(repos: Repos, visitId: string) {
   const bill = await repos.bills.createFromVisit(visitId);
+  return { ok: true as const, bill };
+}
+
+export async function updateDraftBill(repos: Repos, id: string, body: unknown) {
+  const parsed = parseUpdateDraftBill(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.updateDraft(id, parsed.value);
   return { ok: true as const, bill };
 }
 

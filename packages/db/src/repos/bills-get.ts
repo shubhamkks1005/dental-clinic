@@ -1,9 +1,9 @@
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { billItems, bills, paymentAllocations, payments } from "../schema";
+import { billItems, bills, paymentAllocations, payments, visitProcedures } from "../schema";
 
 export type BillItemRow = {
   id: string;
@@ -20,6 +20,8 @@ export type BillItemRow = {
   planItemId: string | null;
   visitProcedureId: string | null;
   feeChangeReason: string | null;
+  /** List / visit procedure fee when known (for fee-change reason UI). */
+  listUnitPaise: number | null;
   sortOrder: number;
 };
 
@@ -111,6 +113,23 @@ export function billsGetRepo(db: Db, ctx: Ctx) {
         .orderBy(asc(billItems.sortOrder))
         .all();
 
+      const vpIds = [
+        ...new Set(items.map((i) => i.visitProcedureId).filter((x): x is string => Boolean(x))),
+      ];
+      const listByVp = new Map<string, number | null>();
+      if (vpIds.length > 0) {
+        const vps = await db
+          .select({ id: visitProcedures.id, defaultPaise: visitProcedures.defaultPaise })
+          .from(visitProcedures)
+          .where(and(inArray(visitProcedures.id, vpIds), isNull(visitProcedures.deletedAt)))
+          .all();
+        for (const vp of vps) listByVp.set(vp.id, vp.defaultPaise);
+      }
+      const itemsWithList = items.map((i) => ({
+        ...i,
+        listUnitPaise: i.visitProcedureId ? (listByVp.get(i.visitProcedureId) ?? null) : null,
+      }));
+
       const payRows = await db
         .select({
           paymentId: paymentAllocations.paymentId,
@@ -124,7 +143,7 @@ export function billsGetRepo(db: Db, ctx: Ctx) {
         .where(and(eq(paymentAllocations.billId, id), isNull(paymentAllocations.deletedAt)))
         .all();
 
-      return { ...row, items, payments: payRows };
+      return { ...row, items: itemsWithList, payments: payRows };
     },
   };
 }

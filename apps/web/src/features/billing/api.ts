@@ -75,6 +75,11 @@ export type BillItemDto = {
   discountPaise: number;
   taxPaise: number;
   lineTotalPaise: number;
+  listItemId: string | null;
+  planItemId: string | null;
+  visitProcedureId: string | null;
+  feeChangeReason: string | null;
+  listUnitPaise: number | null;
 };
 
 export type BillDto = {
@@ -131,6 +136,29 @@ export function createBillFromVisit(visitId: string) {
   return api<{ bill: BillDto }>(`/api/staff/visits/${encodeURIComponent(visitId)}/bill`, {
     method: "POST",
     body: {},
+  }).then((r) => r.bill);
+}
+
+export function updateDraftBill(
+  id: string,
+  input: {
+    version: number;
+    items: {
+      procedureLabel: string;
+      toothFdi?: number | null;
+      qty: number;
+      unitPaise: number;
+      listItemId?: string | null;
+      planItemId?: string | null;
+      visitProcedureId?: string | null;
+      listUnitPaise?: number | null;
+      feeChangeReason?: string | null;
+    }[];
+  },
+) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    body: input,
   }).then((r) => r.bill);
 }
 

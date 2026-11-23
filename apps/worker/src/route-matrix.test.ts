@@ -206,6 +206,12 @@ function bodyFor(method: string, path: string): string | undefined {
       items: [{ procedureLabel: "Matrix item", qty: 1, unitPaise: 10000 }],
     });
   }
+  if (path === "/api/staff/bills/:id" && method === "PATCH") {
+    return JSON.stringify({
+      version: 1,
+      items: [{ procedureLabel: "Matrix item", qty: 1, unitPaise: 10000 }],
+    });
+  }
   if (path === "/api/staff/bills/:id/issue" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }

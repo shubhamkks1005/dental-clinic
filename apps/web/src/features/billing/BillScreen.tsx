@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { BillCancelPanel } from "./BillCancelPanel";
 import { BillDiscountPanel } from "./BillDiscountPanel";
+import { BillDraftItems } from "./BillDraftItems";
 import { getBill, issueBill, listPatientBills, type BillDto } from "./api";
 
 /** S09 bill detail: issue draft, print link. */
@@ -63,18 +64,27 @@ export function BillScreen() {
       </header>
       {error ? <p className="error-text">{error}</p> : null}
 
-      <ul className="stack gap-sm list-plain">
-        {bill.items.map((item) => (
-          <li key={item.id} className="row wrap space-between surface card-pad">
-            <span>
-              {item.procedureLabel}
-              {item.toothFdi != null ? ` · tooth ${item.toothFdi}` : ""}
-              {item.qty > 1 ? ` ×${item.qty}` : ""}
-            </span>
-            <span>{formatRupees(item.lineTotalPaise)}</span>
-          </li>
-        ))}
-      </ul>
+      {bill.status === "draft" ? (
+        <BillDraftItems
+          bill={bill}
+          onUpdated={setBill}
+          onError={(message) => setError(message || null)}
+        />
+      ) : (
+        <ul className="stack gap-sm list-plain">
+          {bill.items.map((item) => (
+            <li key={item.id} className="row wrap space-between surface card-pad">
+              <span>
+                {item.procedureLabel}
+                {item.toothFdi != null ? ` · tooth ${item.toothFdi}` : ""}
+                {item.qty > 1 ? ` ×${item.qty}` : ""}
+                {item.feeChangeReason ? ` · fee note: ${item.feeChangeReason}` : ""}
+              </span>
+              <span>{formatRupees(item.lineTotalPaise)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="stack gap-xs surface card-pad">
         <div className="row space-between">

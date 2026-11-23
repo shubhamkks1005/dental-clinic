@@ -150,3 +150,4 @@
 - 2026-11-23 - **5.3.8 Cancel UI:** Doctor cancels draft/issued unpaid bills with reason; paid bills must refund first; number retained. - agent (5.3.8)
 - 2026-11-23 - **5.3.9 Day close:** Close locks day_local for new payments unless lateEntry or doctor reopen (bills.adjust). Difference ≠ 0 needs a note. Split payments count into both modes. Mig 0042. - agent (5.3.9)
 - 2026-11-23 - **5.3.11 Bill/receipt print:** print_log kinds bill+receipt; A5 letterhead; amount in words; not-GST disclaimer; Duplicate on reprint. Receipt auto-opens after take payment. - agent (5.3.11)
+- 2026-11-23 - **5.3.1 fee change:** Draft bill lines editable (PATCH); when unitPaise ≠ visit_procedures.default_paise (or list default_paise), feeChangeReason required. Custom lines with no list fee need no reason. 3-click path: Create bill → Issue (Save lines only if editing). - agent (5.3.1)

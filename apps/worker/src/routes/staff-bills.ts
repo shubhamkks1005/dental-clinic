@@ -18,6 +18,7 @@ import {
   recordRefund,
   reopenDay,
   requestBillDiscount,
+  updateDraftBill,
 } from "../domain/bills";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
@@ -52,6 +53,13 @@ staffBills.post("/bills", async (c) => {
 
 staffBills.get("/bills/:id", async (c) => {
   const result = await getBill(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ bill: result.bill }));
+});
+
+staffBills.patch("/bills/:id", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await updateDraftBill(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }));
 });
 
