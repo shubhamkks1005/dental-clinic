@@ -19,6 +19,10 @@ export type MessageRow = {
 
 export type MessagesBoard = {
   outgoing: MessageRow[];
+  /** Q1.5: not due yet (for example the 17:00 reminder the day before). */
+  scheduled: MessageRow[];
+  /** Q1.5: replaced because the appointment was moved or cancelled. */
+  outOfDate: MessageRow[];
   sentToday: MessageRow[];
   attention: MessageRow[];
   whatsapp: MessageRow[];

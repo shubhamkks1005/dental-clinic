@@ -137,6 +137,15 @@ export function MessagesScreen() {
             onCancel={onCancel}
           />
           <Bucket
+            title="Scheduled"
+            rows={board.scheduled}
+            busyId={busyId}
+            onOpen={onOpenWhatsApp}
+            onDone={onDone}
+            onCancel={onCancel}
+            notDue
+          />
+          <Bucket
             title="Sent / opened"
             rows={board.sentToday}
             busyId={busyId}
@@ -152,10 +161,35 @@ export function MessagesScreen() {
             onDone={onDone}
             onCancel={onCancel}
           />
+          <Bucket
+            title="Out of date"
+            rows={board.outOfDate}
+            busyId={busyId}
+            onOpen={onOpenWhatsApp}
+            onDone={onDone}
+            onCancel={onCancel}
+          />
         </div>
       )}
     </div>
   );
+}
+
+const SKIP_WORDS: Record<string, string> = {
+  out_of_date: "out of date, the appointment changed",
+  no_number: "no mobile number",
+  no_sms_reminders_consent: "no consent for reminders",
+};
+
+function dueText(iso: string): string {
+  return new Date(iso).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 }
 
 function Bucket(props: {
@@ -165,6 +199,8 @@ function Bucket(props: {
   onOpen: (r: MessageRow) => void;
   onDone: (r: MessageRow) => void;
   onCancel: (r: MessageRow) => void;
+  /** Not due yet: show the due time, offer only Cancel. */
+  notDue?: boolean;
 }) {
   return (
     <section className="messages-bucket" aria-label={props.title}>
@@ -179,34 +215,37 @@ function Bucket(props: {
             <li key={row.id} className="messages-card">
               <p className="messages-meta">
                 <strong>{row.kind}</strong> · {row.status}
-                {row.skipReason ? ` · ${row.skipReason}` : ""}
+                {row.skipReason ? ` · ${SKIP_WORDS[row.skipReason] ?? row.skipReason}` : ""}
+                {props.notDue ? ` · due ${dueText(row.sendAfter)}` : ""}
               </p>
               <p className="messages-body">{row.body || "(no text)"}</p>
               <div className="messages-actions">
-                {(row.status === "needs_human" ||
-                  row.status === "queued" ||
-                  row.status === "held" ||
-                  row.status === "failed" ||
-                  row.status === "expired") && (
-                  <button
-                    type="button"
-                    className="btn primary"
-                    disabled={props.busyId === row.id}
-                    onClick={() => props.onOpen(row)}
-                  >
-                    Open WhatsApp
-                  </button>
-                )}
-                {(row.status === "opened_in_whatsapp" || row.status === "needs_human") && (
-                  <button
-                    type="button"
-                    className="btn"
-                    disabled={props.busyId === row.id}
-                    onClick={() => props.onDone(row)}
-                  >
-                    Mark sent
-                  </button>
-                )}
+                {!props.notDue &&
+                  (row.status === "needs_human" ||
+                    row.status === "queued" ||
+                    row.status === "held" ||
+                    row.status === "failed" ||
+                    row.status === "expired") && (
+                    <button
+                      type="button"
+                      className="btn primary"
+                      disabled={props.busyId === row.id}
+                      onClick={() => props.onOpen(row)}
+                    >
+                      Open WhatsApp
+                    </button>
+                  )}
+                {!props.notDue &&
+                  (row.status === "opened_in_whatsapp" || row.status === "needs_human") && (
+                    <button
+                      type="button"
+                      className="btn"
+                      disabled={props.busyId === row.id}
+                      onClick={() => props.onDone(row)}
+                    >
+                      Mark sent
+                    </button>
+                  )}
                 {["queued", "held", "needs_human"].includes(row.status) && (
                   <button
                     type="button"

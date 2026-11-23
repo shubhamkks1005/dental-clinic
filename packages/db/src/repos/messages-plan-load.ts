@@ -1,3 +1,4 @@
+import { messageRecipient, type MessageRecipient } from "@clinic/shared";
 import { and, eq, gte, inArray, isNull, lte } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
@@ -16,6 +17,7 @@ export function messagesPlanLoadRepo(db: Db, ctx: Ctx) {
           startMin: appointments.startMin,
           status: appointments.status,
           startAt: appointments.startAt,
+          rescheduledFrom: appointments.rescheduledFrom,
         })
         .from(appointments)
         .where(
@@ -83,14 +85,32 @@ export function messagesPlanLoadRepo(db: Db, ctx: Ctx) {
       return out;
     },
 
-    async patientMobile(patientId: string): Promise<string | null> {
+    /** Q1.5: who gets each patient's messages (own number, else guardian, else emergency contact). */
+    async recipients(patientIds: string[]): Promise<Map<string, MessageRecipient>> {
       assertAllowed(ctx, "patients.view");
-      const row = await db
-        .select({ mobile: patients.mobile })
+      const out = new Map<string, MessageRecipient>();
+      if (patientIds.length === 0) return out;
+      const rows = await db
+        .select({
+          id: patients.id,
+          fullName: patients.fullName,
+          mobile: patients.mobile,
+          guardianName: patients.guardianName,
+          guardianMobile: patients.guardianMobile,
+          emergencyName: patients.emergencyName,
+          emergencyMobile: patients.emergencyMobile,
+        })
         .from(patients)
-        .where(and(eq(patients.id, patientId), isNull(patients.deletedAt)))
-        .get();
-      return row?.mobile ?? null;
+        .where(and(inArray(patients.id, patientIds), isNull(patients.deletedAt)))
+        .all();
+      for (const r of rows) out.set(r.id, messageRecipient(r));
+      return out;
+    },
+
+    /** The number messages for this patient go to (see recipients). */
+    async patientMobile(patientId: string): Promise<string | null> {
+      const map = await this.recipients([patientId]);
+      return map.get(patientId)?.mobile ?? null;
     },
   };
 }

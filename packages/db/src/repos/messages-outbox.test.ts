@@ -52,4 +52,29 @@ describe("message_outbox (7.2.1)", () => {
       .all() as { action: string; after_json: string }[];
     expect(audits.some((a) => a.after_json.includes("opened_in_whatsapp"))).toBe(true);
   });
+
+  it("Q1.5: a reminder not yet due is hidden from outgoing and listed as scheduled", async () => {
+    const { db } = testDb();
+    const repo = messagesOutboxRepo(db, doctor);
+    const due = await repo.enqueue({ ...baseInput("a:1"), status: "queued" });
+    const later = await repo.enqueue({
+      ...baseInput("a:2"),
+      status: "queued",
+      sendAfter: "2026-11-24T11:30:00.000Z",
+    });
+    const now = new Date("2026-11-23T12:00:00.000Z");
+    expect((await repo.listBoard("outgoing", 100, now)).map((r) => r.id)).toEqual([due.id]);
+    expect((await repo.listBoard("scheduled", 100, now)).map((r) => r.id)).toEqual([later.id]);
+  });
+
+  it("Q1.5: cancelQueuedForAppointment marks them out of date with the reason", async () => {
+    const { db } = testDb();
+    const repo = messagesOutboxRepo(db, doctor);
+    const m = await repo.enqueue({ ...baseInput("b:1"), appointmentId: "APPT9", status: "queued" });
+    expect(await repo.cancelQueuedForAppointment("APPT9", "out_of_date")).toBe(1);
+    const row = await repo.get(m.id);
+    expect(row.status).toBe("cancelled");
+    expect(row.skipReason).toBe("out_of_date");
+    expect((await repo.listBoard("out_of_date")).map((r) => r.id)).toEqual([m.id]);
+  });
 });

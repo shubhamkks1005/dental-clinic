@@ -6,7 +6,6 @@ import {
   enqueuePlanned,
   loadMessagingConfig,
   messagingMode,
-  patientFirstName,
   pickAdapter,
 } from "../domain/messages";
 
@@ -35,7 +34,8 @@ export async function runMessagingTick(
   const apptRows = await repos.messagesPlan.listAppointmentsForPlan(fromDay, toDay);
   const patientIds = [...new Set(apptRows.map((a) => a.patientId))];
   const latestConsent = await repos.messagesPlan.latestSmsReminderConsent(patientIds);
-  const nameByPatient = await repos.messagesPlan.patientNames(patientIds);
+  const recipients = await repos.messagesPlan.recipients(patientIds);
+  const noNumber = new Set(patientIds.filter((id) => !recipients.get(id)?.mobile));
 
   const planAppts: PlanAppointment[] = apptRows.map((a) => ({
     id: a.id,
@@ -44,6 +44,7 @@ export async function runMessagingTick(
     startMin: a.startMin,
     status: a.status,
     startAt: a.startAt,
+    rescheduledFrom: a.rescheduledFrom,
   }));
   const planConsents: PlanConsent[] = patientIds.map((id) => ({
     patientId: id,
@@ -55,6 +56,7 @@ export async function runMessagingTick(
     consents: planConsents,
     settings,
     now,
+    noNumber,
   });
 
   const apptById = new Map(planAppts.map((a) => [a.id, a]));
@@ -64,7 +66,8 @@ export async function runMessagingTick(
     const body = buildBody({
       templates,
       planned: p,
-      firstName: patientFirstName(nameByPatient.get(p.patientId) ?? "Patient"),
+      firstName: recipients.get(p.patientId)?.addressName ?? "Patient",
+      onBehalfOf: recipients.get(p.patientId)?.onBehalfOf ?? null,
       clinicName,
       clinicPhone,
       dateLocal: appt?.dateLocal,

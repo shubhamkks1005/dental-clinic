@@ -4,7 +4,7 @@ import {
   type MessageKind,
   type MessageStatus,
 } from "@clinic/shared";
-import { and, asc, desc, eq, gte, inArray, isNull, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, inArray, isNull, lte, sql } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
@@ -39,6 +39,10 @@ export type OutboxRow = typeof messageOutbox.$inferSelect;
 
 const BOARD_QUEUES = {
   outgoing: ["queued", "held"] as MessageStatus[],
+  /** Q1.5: messages that were replaced (appointment moved or cancelled). Reason in skip_reason. */
+  out_of_date: ["cancelled"] as MessageStatus[],
+  /** Q1.5: queued but not due yet (a reminder for 17:00 the day before). Hidden from "outgoing". */
+  scheduled: ["queued", "held", "needs_human"] as MessageStatus[],
   sent_today: [
     "sent",
     "delivered",
@@ -137,13 +141,28 @@ export function messagesOutboxRepo(db: Db, ctx: Ctx) {
         .all();
     },
 
-    async listBoard(bucket: keyof typeof BOARD_QUEUES, limit = 100): Promise<OutboxRow[]> {
+    async listBoard(
+      bucket: keyof typeof BOARD_QUEUES,
+      limit = 100,
+      now: Date = new Date(),
+    ): Promise<OutboxRow[]> {
       assertAllowed(ctx, "patients.view");
+      const nowIso = now.toISOString();
+      const due =
+        bucket === "outgoing" || bucket === "whatsapp"
+          ? [lte(messageOutbox.sendAfter, nowIso)]
+          : bucket === "scheduled"
+            ? [gt(messageOutbox.sendAfter, nowIso)]
+            : [];
       return db
         .select()
         .from(messageOutbox)
         .where(
-          and(inArray(messageOutbox.status, BOARD_QUEUES[bucket]), isNull(messageOutbox.deletedAt)),
+          and(
+            inArray(messageOutbox.status, BOARD_QUEUES[bucket]),
+            isNull(messageOutbox.deletedAt),
+            ...due,
+          ),
         )
         .orderBy(asc(messageOutbox.sendAfter), asc(messageOutbox.priority))
         .limit(limit)

@@ -9,6 +9,8 @@ export type PlanAppointment = {
   status: string;
   /** ISO UTC start. */
   startAt: string;
+  /** Set when this booking replaced an earlier one: the "moved" message covers the confirmation. */
+  rescheduledFrom?: string | null;
 };
 
 export type PlanConsent = { patientId: string; smsReminders: boolean };
@@ -81,6 +83,8 @@ export function planMessages(input: {
   now: Date;
   /** When messaging kill switch off. */
   messagingEnabled?: boolean;
+  /** Q1.5: patients with no usable number (own, guardian or emergency): nothing is queued. */
+  noNumber?: Set<string>;
 }): PlannedMessage[] {
   const { appointments, consents, settings, now } = input;
   if (input.messagingEnabled === false || !settings.enabled) return [];
@@ -90,17 +94,21 @@ export function planMessages(input: {
 
   for (const appt of appointments) {
     if (["cancelled", "rescheduled", "no_show"].includes(appt.status)) continue;
-    const hasConsent = consentBy.get(appt.patientId) === true;
     const start = new Date(appt.startAt);
+    // Q1.5: a booking that has already started gets no confirmation and no reminder.
+    if (start.getTime() <= now.getTime()) continue;
+    const hasConsent = consentBy.get(appt.patientId) === true;
+    const noNumber = input.noNumber?.has(appt.patientId) === true;
     const expireAt = start.toISOString();
 
-    if (settings.kinds.confirm) {
+    if (settings.kinds.confirm && !appt.rescheduledFrom) {
       out.push(
         makeApptPlan({
           kind: "confirm",
           templateKey: "confirm",
           appt,
           hasConsent,
+          noNumber,
           sendAfter: respectQuietHours(now, settings).toISOString(),
           expireAt,
           dedupeKey: `confirm:${appt.id}:${appt.startAt}`,
@@ -121,6 +129,7 @@ export function planMessages(input: {
             templateKey: "remind",
             appt,
             hasConsent,
+            noNumber,
             sendAfter: respectQuietHours(remindLocal, settings).toISOString(),
             expireAt: new Date(start.getTime() - leadMs).toISOString(),
             dedupeKey: `remind:${appt.id}:${appt.startAt}:1`,
@@ -138,6 +147,7 @@ export function planMessages(input: {
             templateKey: "remind",
             appt,
             hasConsent,
+            noNumber,
             sendAfter: respectQuietHours(sameDay, settings).toISOString(),
             expireAt: new Date(start.getTime() - 60 * 60_000).toISOString(),
             dedupeKey: `remind:${appt.id}:${appt.startAt}:same`,
@@ -163,10 +173,24 @@ function makeApptPlan(args: {
   templateKey: string;
   appt: PlanAppointment;
   hasConsent: boolean;
+  noNumber?: boolean;
   sendAfter: string;
   expireAt: string;
   dedupeKey: string;
 }): PlannedMessage {
+  if (args.noNumber) {
+    return {
+      kind: args.kind,
+      templateKey: args.templateKey,
+      patientId: args.appt.patientId,
+      appointmentId: args.appt.id,
+      dedupeKey: args.dedupeKey,
+      sendAfter: args.sendAfter,
+      expireAt: args.expireAt,
+      status: "skipped",
+      skipReason: "no_number",
+    };
+  }
   if (!args.hasConsent) {
     return {
       kind: args.kind,
@@ -197,9 +221,11 @@ export function planCancelMessage(
   settings: MessagingSettings,
   now: Date,
   hasConsent: boolean,
+  noNumber = false,
 ): PlannedMessage {
   return makeApptPlan({
     kind: "cancel",
+    noNumber,
     templateKey: "cancel",
     appt,
     hasConsent: hasConsent && settings.kinds.cancel,
@@ -214,9 +240,11 @@ export function planRescheduleMessage(
   settings: MessagingSettings,
   now: Date,
   hasConsent: boolean,
+  noNumber = false,
 ): PlannedMessage {
   return makeApptPlan({
     kind: "reschedule",
+    noNumber,
     templateKey: "reschedule",
     appt,
     hasConsent: hasConsent && settings.kinds.reschedule,

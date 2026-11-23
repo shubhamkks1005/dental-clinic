@@ -9,13 +9,7 @@ import {
 } from "@clinic/shared";
 import type { Repos } from "@clinic/db";
 import { InvalidError, NotFoundError } from "@clinic/db";
-import {
-  buildBody,
-  enqueuePlanned,
-  loadMessagingConfig,
-  messagingMode,
-  patientFirstName,
-} from "./messages";
+import { buildBody, enqueuePlanned, loadMessagingConfig, messagingMode } from "./messages";
 
 function publicRow(row: {
   id: string;
@@ -52,14 +46,18 @@ function publicRow(row: {
 }
 
 export async function messagesBoard(repos: Repos) {
-  const [outgoing, sentToday, attention, whatsapp] = await Promise.all([
+  const [outgoing, scheduled, outOfDate, sentToday, attention, whatsapp] = await Promise.all([
     repos.messages.listBoard("outgoing"),
+    repos.messages.listBoard("scheduled"),
+    repos.messages.listBoard("out_of_date"),
     repos.messages.listBoard("sent_today"),
     repos.messages.listBoard("attention"),
     repos.messages.listBoard("whatsapp"),
   ]);
   return {
     outgoing: outgoing.map(publicRow),
+    scheduled: scheduled.map(publicRow),
+    outOfDate: outOfDate.map(publicRow),
     sentToday: sentToday.map(publicRow),
     attention: attention.map(publicRow),
     whatsapp: whatsapp.map(publicRow),
@@ -121,9 +119,9 @@ export async function createOneOffPatientMessage(
     throw new InvalidError("This patient has not consented to reminder messages.");
   }
 
-  const names = await repos.messagesPlan.patientNames([patientId]);
-  const name = names.get(patientId);
-  if (!name) throw new NotFoundError("That patient");
+  const recipient = (await repos.messagesPlan.recipients([patientId])).get(patientId);
+  if (!recipient) throw new NotFoundError("That patient");
+  if (!recipient.mobile) throw new InvalidError("This patient has no mobile number for messages.");
 
   const { settings, templates, clinicName, clinicPhone } = await loadMessagingConfig(repos);
   const mode = messagingMode(envMode);
@@ -150,7 +148,8 @@ export async function createOneOffPatientMessage(
   const body = buildBody({
     templates,
     planned,
-    firstName: patientFirstName(name),
+    firstName: recipient.addressName,
+    onBehalfOf: recipient.onBehalfOf,
     clinicName,
     clinicPhone,
   });
@@ -209,11 +208,13 @@ export async function sendAppointmentMessageNow(
     throw new InvalidError("This patient has not consented to reminder messages.");
   }
 
-  const names = await repos.messagesPlan.patientNames([appt.patientId]);
+  const recipient = (await repos.messagesPlan.recipients([appt.patientId])).get(appt.patientId);
+  if (!recipient?.mobile) throw new InvalidError("This patient has no mobile number for messages.");
   const body = buildBody({
     templates,
     planned,
-    firstName: patientFirstName(names.get(appt.patientId) ?? "Patient"),
+    firstName: recipient.addressName,
+    onBehalfOf: recipient.onBehalfOf,
     clinicName,
     clinicPhone,
     dateLocal: appt.dateLocal,

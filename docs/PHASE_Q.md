@@ -54,7 +54,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q1.2 | Ready to bill on receptionist Today | Done (git log "Q1.2") |
 | Q1.3 | Receipts and payments list | Done (git log "Q1.3") |
 | Q1.4 | Cancel, Missed, Reschedule | Done (git log "Q1.4") |
-| Q1.5 | Messages hygiene | Todo (D6 accepted) |
+| Q1.5 | Messages hygiene | Done (git log "Q1.5") |
 | Q1.6 | No silent failures | Done (git log "Q1.6") |
 | Q1.7 | Discount hand-off | Todo |
 | Q1.8 | Data and form rules | Todo (D3) |

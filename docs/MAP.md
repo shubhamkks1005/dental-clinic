@@ -505,3 +505,6 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 
 - packages/db/src/repos/bills-paid.ts: paidByBill(db, billIds), what each bill has really been paid after refunds (D1). Test: bills-paid.test.ts.
 - apps/web/src/features/billing/billing.css: scoped layout for the Bill screen and payment form (utility classes are not global until Q2.1).
+- apps/worker/src/domain/messages-events.ts: messagesAfterAppointmentChange (out-of-date + moved/cancelled message), called from domain/appointments.ts. Tests: apps/worker/src/appointment-messages.test.ts, e2e/messages.spec.ts.
+- packages/shared/src/message-recipient.ts (+ test): messageRecipient (own, guardian, emergency) and speakForPatient.
+- e2e/visit-to-bill.spec.ts: Q1.1 chain (warning, disabled Create bill with reason, bill with a procedure).

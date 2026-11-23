@@ -6,6 +6,7 @@ import {
   formatTareekh,
   patientFirstName,
   renderMessageTemplate,
+  speakForPatient,
   smsSegmentCount,
   waLink,
   type MessageTemplates,
@@ -65,13 +66,15 @@ export function buildBody(args: {
   clinicPhone: string;
   dateLocal?: string;
   startMin?: number;
+  /** Q1.5: patient first name when the message goes to a guardian or other contact. */
+  onBehalfOf?: string | null;
 }): string {
   if (args.planned.status === "skipped") return "";
   const key = args.planned.templateKey as keyof MessageTemplates["templates"];
   const din = args.dateLocal ? dayNameIst(args.dateLocal) : "";
   const tareekh = args.dateLocal ? formatTareekh(args.dateLocal) : "";
   const samay = args.startMin !== undefined ? formatSamay(args.startMin) : "";
-  return renderMessageTemplate(args.templates, key, {
+  const text = renderMessageTemplate(args.templates, key, {
     naam: args.firstName,
     clinic: args.clinicName,
     din,
@@ -79,6 +82,7 @@ export function buildBody(args: {
     samay,
     fone: args.clinicPhone || "the clinic",
   });
+  return speakForPatient(text, args.onBehalfOf ?? null);
 }
 
 export async function enqueuePlanned(

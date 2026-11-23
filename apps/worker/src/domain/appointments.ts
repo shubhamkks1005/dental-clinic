@@ -1,4 +1,5 @@
 import type { Repos } from "@clinic/db";
+import { messagesAfterAppointmentChange, OUT_OF_DATE } from "./messages-events";
 import {
   dayWindow,
   istDate,
@@ -41,6 +42,10 @@ export async function changeAppointmentStatus(
   const parsed = parseChangeAppointmentStatus(body);
   if (!parsed.ok) return parsed;
   const appointment = await repos.appointments.changeStatus(id, parsed.value, now);
+  // Q1.5: a missed or cancelled booking must not keep a confirm or reminder in the queue.
+  if (["no_show", "cancelled", "rescheduled"].includes(appointment.status)) {
+    await repos.messages.cancelQueuedForAppointment(id, OUT_OF_DATE).catch(() => 0);
+  }
   return { ok: true as const, appointment };
 }
 
@@ -52,10 +57,24 @@ export async function walkInAppointment(repos: Repos, body: unknown, now: Date =
   return { ok: true as const, appointment };
 }
 
-export async function cancelAppointment(repos: Repos, id: string, body: unknown) {
+export async function cancelAppointment(
+  repos: Repos,
+  id: string,
+  body: unknown,
+  messagingMode?: string,
+) {
   const parsed = parseCancelAppointment(body);
   if (!parsed.ok) return parsed;
   const appointment = await repos.appointments.cancel(id, parsed.value);
+  // Q1.5: queued messages for it are out of date; the patient gets one "cancelled" message.
+  const row = await repos.messagesPlan.getAppointment(id);
+  if (row) {
+    await messagesAfterAppointmentChange(
+      repos,
+      { kind: "cancel", appt: row },
+      messagingMode ?? "dry_run",
+    );
+  }
   return { ok: true as const, appointment };
 }
 
@@ -64,6 +83,7 @@ export async function rescheduleAppointment(
   id: string,
   body: unknown,
   now: Date = new Date(),
+  messagingMode?: string,
 ) {
   const parsed = parseRescheduleAppointment(body);
   if (!parsed.ok) return parsed;
@@ -75,6 +95,13 @@ export async function rescheduleAppointment(
     bookAheadDays,
     now,
   });
+  // Q1.5: old queued messages are out of date; one "moved" message for the new time.
+  await messagesAfterAppointmentChange(
+    repos,
+    { kind: "move", oldId: id, appt: result.appointment },
+    messagingMode ?? "dry_run",
+    now,
+  );
   return { ok: true as const, ...result };
 }
 

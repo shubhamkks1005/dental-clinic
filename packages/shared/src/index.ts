@@ -22,6 +22,7 @@ export * from "./ops-status";
 export * from "./patient-requests";
 export * from "./message-render";
 export * from "./message-plan";
+export * from "./message-recipient";
 export * from "./money";
 export * from "./billing-numbers";
 export * from "./billing";
