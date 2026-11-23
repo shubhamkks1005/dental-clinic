@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 5 in progress (billing). Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
+Phase: 5 mid-flight (HANDOFF written; context stop). Gate not run. Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
 PLAN: Phase 5 bills / payments / dues / receipts. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
