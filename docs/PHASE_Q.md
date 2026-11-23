@@ -50,7 +50,7 @@ The AI must not guess these itself. The owner can answer each one, or accept ALL
 | Q0.6 | Payment safety | Done (see git log "Q0.6") |
 | Q0.7 | Refund rule and balances | Done (git log "Q0.7"; D1 accepted, CA to confirm) |
 | Q0.G | Gate P0 | Passed with exception (Q0.7 open, see STATE.md) |
-| Q1.1 | Visit to bill chain, minimal | Todo (D2 accepted) |
+| Q1.1 | Visit to bill chain, minimal | Done (git log "Q1.1") |
 | Q1.2 | Ready to bill on receptionist Today | Done (git log "Q1.2") |
 | Q1.3 | Receipts and payments list | Done (git log "Q1.3") |
 | Q1.4 | Cancel, Missed, Reschedule | Done (git log "Q1.4") |

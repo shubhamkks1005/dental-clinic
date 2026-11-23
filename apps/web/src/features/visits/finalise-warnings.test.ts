@@ -95,4 +95,17 @@ describe("finaliseWarnings (3.5.6)", () => {
     );
     expect(w.some((s) => s.toLowerCase().includes("consent"))).toBe(true);
   });
+
+  it("Q1.1: warns when there are no procedures (the bill would be empty)", () => {
+    const w = finaliseWarnings(base);
+    expect(w.some((x) => x.startsWith("No procedures are recorded"))).toBe(true);
+  });
+
+  it("Q1.1: warns when the prescription is still a draft", () => {
+    const w = finaliseWarnings(base, { hasDraftPrescription: true });
+    expect(w.some((x) => x.includes("prescription is still a draft"))).toBe(true);
+    expect(finaliseWarnings(base, { hasDraftPrescription: false })).not.toContain(
+      "The prescription is still a draft. Issue it from the Medicines tab first.",
+    );
+  });
 });

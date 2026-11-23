@@ -10,6 +10,7 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   if (visit.status !== "final") return null;
+  const noProcedures = visit.procedures.length === 0;
 
   function makeBill() {
     setBusy(true);
@@ -31,7 +32,12 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
     <div className="visit-next">
       <div className="row wrap gap-sm">
         {canBill ? (
-          <button type="button" className="btn btn-primary" disabled={busy} onClick={makeBill}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={busy || noProcedures}
+            onClick={makeBill}
+          >
             {busy ? "Creating bill…" : "Create bill"}
           </button>
         ) : null}
@@ -39,6 +45,12 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
           Next patient
         </Link>
       </div>
+      {canBill && noProcedures ? (
+        <p className="muted small">
+          No procedures were recorded on this visit, so there is nothing to bill. Ask the doctor to
+          check the visit.
+        </p>
+      ) : null}
       {error ? (
         <p className="notice notice-error" role="alert">
           {error}

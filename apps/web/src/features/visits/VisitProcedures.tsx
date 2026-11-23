@@ -21,10 +21,19 @@ type Props = {
   selection: ChartSelection | null;
   readOnly: boolean;
   onAdded: (row: VisitProcedure) => void;
+  /** Replaces the "click a tooth" line where there is no chart on the screen. */
+  selectionHint?: string;
 };
 
 /** 3.5.4: add procedure using chart tooth/surface selection (S05 Chart tab). */
-export function VisitProcedures({ visitId, procedures, selection, readOnly, onAdded }: Props) {
+export function VisitProcedures({
+  visitId,
+  procedures,
+  selection,
+  readOnly,
+  onAdded,
+  selectionHint,
+}: Props) {
   const [list, setList] = useState<ListItem[]>([]);
   const [listItemId, setListItemId] = useState("");
   const [note, setNote] = useState("");
@@ -80,7 +89,9 @@ export function VisitProcedures({ visitId, procedures, selection, readOnly, onAd
     <section className="visit-proc" aria-label="Procedures">
       <h2 className="visit-section-title">Procedures</h2>
       {procedures.length === 0 ? (
-        <p className="muted small">None yet. Select a tooth on the chart, pick a procedure, Add.</p>
+        <p className="muted small">
+          None yet. Pick a procedure and press Add. The bill is made from these.
+        </p>
       ) : (
         <ul className="visit-proc-list">
           {procedures.map((p) => (
@@ -99,12 +110,11 @@ export function VisitProcedures({ visitId, procedures, selection, readOnly, onAd
       {!readOnly && (
         <div className="visit-proc-add">
           <p className="muted small">
-            Chart selection:{" "}
             {selection
-              ? `tooth ${selection.tooth} · ${selection.surfaces
+              ? `Chart selection: tooth ${selection.tooth} · ${selection.surfaces
                   .map((s) => TOOTH_SURFACE_LABEL[s])
                   .join(", ")}`
-              : "click a tooth surface on the chart first"}
+              : (selectionHint ?? "Chart selection: click a tooth surface on the chart first")}
           </p>
           <label className="visit-field">
             <span>Procedure</span>

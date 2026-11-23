@@ -5,6 +5,7 @@ import type { VisitDiagnosis, VisitSummary } from "./api";
 import { VisitAddenda } from "./VisitAddenda";
 import { VisitDiagnoses } from "./VisitDiagnoses";
 import { VisitNotesForm } from "./VisitNotesForm";
+import { VisitProcedures } from "./VisitProcedures";
 
 type Props = {
   visit: VisitSummary;
@@ -60,6 +61,14 @@ export function VisitTodayPanel({ visit, canEdit, onVisitChange }: Props) {
         diagnosisList={diagnosisList}
         readOnly={readOnly}
         onAdded={onDiagnosisAdded}
+      />
+      <VisitProcedures
+        visitId={visit.id}
+        procedures={visit.procedures}
+        selection={null}
+        readOnly={readOnly}
+        selectionHint="Tooth and surface are optional here. Pick them on the Chart tab to add a procedure for a tooth."
+        onAdded={(row) => onVisitChange({ ...visit, procedures: [...visit.procedures, row] })}
       />
       <VisitAddenda visit={visit} canEdit={canEdit} onChanged={onVisitChange} />
     </div>

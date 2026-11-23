@@ -2,6 +2,7 @@ import { hasActiveConsent } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { getPatientConsents } from "../patients/api";
+import { listVisitPrescriptions } from "../prescriptions/api";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { finaliseVisit, getVisit, type VisitSummary } from "./api";
 import { finaliseWarnings } from "./finalise-warnings";
@@ -18,6 +19,21 @@ export function VisitFinaliseBar({ visit, canEdit, onFinalised }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasTreatmentConsent, setHasTreatmentConsent] = useState<boolean | undefined>(undefined);
+  const [hasDraftPrescription, setHasDraftPrescription] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    listVisitPrescriptions(visit.id)
+      .then((rows) => {
+        if (!cancelled) setHasDraftPrescription(rows.some((r) => r.status === "draft"));
+      })
+      .catch(() => {
+        /* warning only: nothing to show if the list cannot load */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [visit.id, open]);
 
   useEffect(() => {
     let cancelled = false;
@@ -35,7 +51,7 @@ export function VisitFinaliseBar({ visit, canEdit, onFinalised }: Props) {
 
   if (!canEdit || visit.status !== "draft") return null;
 
-  const warnings = finaliseWarnings(visit, { hasTreatmentConsent });
+  const warnings = finaliseWarnings(visit, { hasTreatmentConsent, hasDraftPrescription });
 
   async function confirm() {
     setBusy(true);
@@ -75,9 +91,8 @@ export function VisitFinaliseBar({ visit, canEdit, onFinalised }: Props) {
         open={open}
         title="Finalise this visit?"
         message={
-          warnings.length > 0
-            ? `After finalise, notes become read-only. Warnings: ${warnings.join(" ")}`
-            : "After finalise, notes become read-only. You can still add an addendum."
+          `After finalise, notes become read-only. An addendum can add a note but not a procedure. ` +
+          (warnings.length > 0 ? `Warnings: ${warnings.join(" ")}` : "")
         }
         confirmLabel="Finalise"
         cancelLabel="Keep editing"
