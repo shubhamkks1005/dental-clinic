@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Billing hub, dues</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:44px;padding:0 18px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:14px;font-weight:600}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.btn-s{height:40px;padding:0 14px;font-size:13px}
+.mut{color:#5B6B7B}
+.th{font-size:12px;font-weight:600;color:#5B6B7B;letter-spacing:.02em}
+.pn{background:#E6EEFA;color:#163C80;font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+</style>
+</helmet>
+<div style="width:1366px;height:860px;display:flex;background:#F3F6F7;overflow:hidden">
+  <dc-import name="Sidebar" active="Billing" role="Receptionist" messages="5" hint-size="232px,860px"></dc-import>
+  <main style="flex:1;min-width:0;padding:24px;display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <h1 style="margin:0;font-size:26px;font-weight:700;color:#0F2A5C">Billing</h1>
+      <div class="card" style="width:420px;height:48px;border-radius:12px;display:flex;align-items:center;padding:0 16px;color:#5B6B7B;font-size:14px">Search a patient or bill number</div>
+    </div>
+    <div style="display:flex;gap:28px;border-bottom:1px solid #E3E9EE">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+        <span style="{{t.style}};font-size:14px;font-weight:600;padding:0 2px 12px">{{t.label}}</span>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:16px">
+      <div class="card" style="padding:16px 20px;background:#0F2A5C;border-color:#0F2A5C;color:#fff"><div style="font-size:13px;color:#CFDDF5;font-weight:500">Total due</div><div style="font-size:32px;font-weight:700;margin-top:2px">₹1,12,500</div><div style="font-size:12px;color:#CFDDF5">34 patients</div></div>
+      <div class="card" style="padding:16px 20px"><div class="mut" style="font-size:13px">Up to 30 days</div><div style="font-size:26px;font-weight:700;margin-top:2px">₹86,500</div><div style="font-size:12px;font-weight:600;color:#14532D">22 patients</div></div>
+      <div class="card" style="padding:16px 20px"><div class="mut" style="font-size:13px">31 to 60 days</div><div style="font-size:26px;font-weight:700;margin-top:2px">₹18,000</div><div style="font-size:12px;font-weight:600;color:#78350F">8 patients</div></div>
+      <div class="card" style="padding:16px 20px;border-color:#F3C6AE;background:#FFF6F1"><div style="font-size:13px;color:#9A3412;font-weight:500">Over 60 days</div><div style="font-size:26px;font-weight:700;margin-top:2px;color:#9A3412">₹8,000</div><div style="font-size:12px;font-weight:600;color:#9A3412">4 patients</div></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <span class="chip" style="height:36px;background:#0F2A5C;color:#fff">All</span>
+      <span class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C">Over 30 days</span>
+      <span class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C">Over 60 days</span>
+      <span class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C">Not called this week</span>
+    </div>
+    <section class="card" style="overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(0,1.4fr) 110px 120px minmax(0,1.5fr) 330px;gap:16px;padding:12px 20px;background:#F8FAFB;border-bottom:1px solid #E3E9EE">
+        <span class="th">PATIENT</span><span class="th">DUE</span><span class="th">OLDEST BILL</span><span class="th">LAST CALL NOTE</span><span class="th">ACTIONS</span>
+      </div>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="6">
+        <div style="display:grid;grid-template-columns:minmax(0,1.4fr) 110px 120px minmax(0,1.5fr) 330px;gap:16px;align-items:center;padding:12px 20px;border-bottom:1px solid #EEF2F5">
+          <div style="display:flex;align-items:center;gap:12px;min-width:0"><div style="width:38px;height:38px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none">{{r.ini}}</div><div style="min-width:0"><div style="font-size:15px;font-weight:600">{{r.name}}</div><span class="pn">{{r.pn}}</span></div></div>
+          <span style="font-size:16px;font-weight:700">{{r.due}}</span>
+          <span class="chip" style="{{r.ageStyle}}">{{r.age}}</span>
+          <span class="mut" style="font-size:13px">{{r.note}}</span>
+          <div style="display:flex;gap:8px"><button class="btn btn-p btn-s">Take payment</button><button class="btn btn-s">Call note</button><button class="btn btn-s">WhatsApp</button></div>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1366,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'color:#0F2A5C;border-bottom:3px solid #1E4FA3';
+    const off = 'color:#5B6B7B;border-bottom:3px solid transparent';
+    const tabs = [['Today', off], ['Dues', on], ['Bills', off], ['Day close', off]].map(([label, style]) => ({ label, style }));
+    const a1 = 'background:#DCFCE7;color:#14532D', a2 = 'background:#FEF3C7;color:#78350F', a3 = 'background:#FFE4D6;color:#9A3412';
+    const r = (ini, name, pn, due, age, ageStyle, note) => ({ ini, name, pn, due, age, ageStyle, note });
+    const rows = [
+      r('SD', 'Sunita Devi', 'P-000098', '₹12,000', '74 days', a3, 'Called 21 Nov: will pay on Friday'),
+      r('RS', 'Rahul Sharma', 'P-000412', '₹8,000', '12 days', a1, 'Instalment of ₹4,000 due 20 Dec'),
+      r('KR', 'Kavita Rao', 'P-000902', '₹5,500', '41 days', a2, 'Not called yet'),
+      r('AG', 'Anil Gupta', 'P-000655', '₹3,000', '38 days', a2, 'Called 18 Nov: phone switched off'),
+      r('PM', 'Pooja Mishra', 'P-001020', '₹2,500', '9 days', a1, 'Not called yet'),
+      r('DP', 'Dev Patel', 'P-000771', '₹1,800', '27 days', a1, 'Reminder opened in WhatsApp 20 Nov')
+    ];
+    return { tabs, rows };
+  }
+}
+</script>
+</body>
+</html>

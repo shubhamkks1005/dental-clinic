@@ -6,6 +6,10 @@ Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by han
 - Phase 7 complete locally (gate: passed with exceptions). Phase 9 docs drafts and 9.1.x backup minimum done locally. Do not start Phase 8 until the owner says so.
 - Staging-test run (2026-11-23): staging seed, tester guide, error log, patient requests, retention. All local commits, nothing pushed, nothing applied to staging.
 
+## Phase Q (added 2026-11-23)
+- Browser audit done (docs/ui-audit, docs/product-audit). Phase Q is planned in docs/PHASE_Q.md and runs before Phase 8. No Phase Q task is done yet. Next: Q0.1.
+- Found by the audit and not yet fixed: visit cannot be opened (C1), prescription cannot be issued (C3), booking without a note fails (C4), overpayment accepted silently, refund does not change the balance.
+
 ## This run (commit, task)
 | Commit | Task |
 |--------|------|

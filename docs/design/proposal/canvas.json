@@ -1,0 +1,32 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-23T22:30:00Z" },
+  "title": "Align Dentistry UI proposal",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1366, "h": 860, "title": "1 Today (receptionist): ready to bill" },
+    "Billing.dc.html": { "x": 1446, "y": 0, "w": 1366, "h": 860, "title": "2 Billing hub: dues" },
+    "Bill.dc.html": { "x": 0, "y": 980, "w": 1366, "h": 900, "title": "3 Bill and payment (S09)" },
+    "Visit.dc.html": { "x": 1446, "y": 980, "w": 1366, "h": 1040, "title": "4 Visit on one screen (S05)" },
+    "Calendar.dc.html": { "x": 0, "y": 2140, "w": 1366, "h": 860, "title": "5 Calendar and appointment panel (S08)" },
+    "Messages.dc.html": { "x": 1446, "y": 2140, "w": 1366, "h": 860, "title": "6 Messages grouped by patient" },
+    "DoctorToday.dc.html": { "x": 0, "y": 3260, "w": 1366, "h": 860, "title": "7 Today (doctor): waiting for you" },
+    "PhoneToday.dc.html": { "x": 1446, "y": 3260, "w": 390, "h": 844, "title": "8 Phone: Today" },
+    "PhoneVisit.dc.html": { "x": 1916, "y": 3260, "w": 390, "h": 844, "title": "9 Phone: Visit" },
+    "Sidebar.dc.html": { "x": 2386, "y": 3260, "w": 232, "h": 860, "title": "Shared sidebar, 8 items (component)" },
+    "Settings.dc.html": { "x": 0, "y": 4240, "w": 1366, "h": 900, "title": "10 Settings redesigned: 4 groups, setup progress, letterhead preview" },
+    "Library.dc.html": { "x": 1446, "y": 4240, "w": 1366, "h": 860, "title": "11 Library (new): Medicines" },
+    "LibraryAdd.dc.html": { "x": 0, "y": 5260, "w": 1366, "h": 860, "title": "12 Library: add a medicine drawer" }
+  },
+  "order": [
+    "Main.dc.html", "Billing.dc.html", "Bill.dc.html", "Visit.dc.html", "Calendar.dc.html",
+    "Messages.dc.html", "DoctorToday.dc.html", "PhoneToday.dc.html", "PhoneVisit.dc.html", "Sidebar.dc.html",
+    "Settings.dc.html", "Library.dc.html", "LibraryAdd.dc.html"
+  ],
+  "notes": {
+    "t1": { "x": 0, "y": -260, "text": "Align Dentistry: screens to build next (proposal, same tokens as DESIGN.md)", "kind": "title1", "maxW": 2812 },
+    "n1": { "x": 0, "y": -130, "w": 520, "text": "Colours, Inter, 16 px cards, 12 px controls, navy sidebar are unchanged from DESIGN.md. New here: state-based row actions, a Billing hub, a sticky Finalise bar with checklist, grouped Messages." }
+  },
+  "designSystems": []
+}

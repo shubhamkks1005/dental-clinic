@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sidebar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif}
+.nv{display:flex;align-items:center;gap:12px;height:48px;padding:0 14px;border-radius:12px;font-size:14px;font-weight:600}
+</style>
+</helmet>
+<div style="width:232px;height:860px;box-sizing:border-box;background:#0F2A5C;display:flex;flex-direction:column;padding:20px 12px;gap:24px;font-family:'Inter',system-ui,sans-serif">
+  <div style="display:flex;align-items:center;gap:12px;padding:0 8px">
+    <div style="width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F2A5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4c-2.5 0-4 2-4 4.5 0 3 1.5 4 2 7 .3 2 1 4 2.2 4 1.4 0 1.3-3.5 2.8-3.5s1.4 3.500 2.800 3.500c1.200 0 1.900-2 2.200-4 .5-3 2-4 2-7C19 6 17.500 4 15 4c-1.500 0-2 .8-3 .8S8.500 4 7 4z"/></svg>
+    </div>
+    <div><div style="color:#fff;font-size:15px;font-weight:700;line-height:1.2">Align Dentistry</div><div style="color:#C7D3E8;font-size:12px">Orthodontics</div></div>
+  </div>
+  <nav aria-label="Main" style="display:flex;flex-direction:column;gap:4px">
+    <sc-for list="{{items}}" as="it" hint-placeholder-count="7">
+      <div class="nv" style="{{it.style}}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"/></svg>
+        <span>{{it.label}}</span>
+        <sc-if value="{{it.badge}}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;background:#C8202A;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px">{{it.badge}}</span></sc-if>
+      </div>
+    </sc-for>
+  </nav>
+  <div style="margin-top:auto;background:rgba(255,255,255,.08);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;border-radius:50%;background:#E6EEFA;color:#163C80;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center">{{initials}}</div>
+      <div><div style="color:#fff;font-size:13px;font-weight:600">{{userName}}</div><div style="color:#C7D3E8;font-size:12px">{{userRole}}</div></div>
+    </div>
+    <div style="height:40px;border:1px solid rgba(255,255,255,.35);border-radius:12px;color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center">Sign out</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"text","default":"Today"},"role":{"editor":"enum","options":["Receptionist","Doctor"],"default":"Receptionist"},"$preview":{"width":232,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? 'Today';
+    const role = this.props.role ?? 'Receptionist';
+    const defs = [
+      ['Today', 'M12 7v5l3 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
+      ['Patients', 'M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 20c0-3.500 3.500-6 8-6s8 2.500 8 6'],
+      ['Appointments', 'M4 7h16v13H4zM4 11h16M8 3v4M16 3v4'],
+      ['Billing', 'M3 7h18v12H3zM3 11h18M7 15h3'],
+      ['Messages', 'M4 5h16v11H9l-5 4z'],
+      ['Reports', 'M5 20V10M12 20V4M19 20v-7'],
+      ['Library', 'M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3V4zM5 17a3 3 0 013-3h10M9 8h5'],
+      ['Settings', 'M4 7h10M18 7h2M4 17h2M10 17h10M14 5v4M8 15v4']
+    ];
+    const badges = { Messages: this.props.messages ?? '' };
+    const items = defs.map(([label, icon]) => ({
+      label, icon, badge: badges[label] || '',
+      style: label === active ? 'background:#fff;color:#0F2A5C' : 'color:#DBE4F3'
+    }));
+    return {
+      items,
+      userName: role === 'Doctor' ? 'Dr. Nidhi Kushwaha' : 'Priya Singh',
+      userRole: role,
+      initials: role === 'Doctor' ? 'NK' : 'PS'
+    };
+  }
+}
+</script>
+</body>
+</html>

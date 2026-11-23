@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Library, medicines</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:44px;padding:0 18px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:14px;font-weight:600}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.btn-s{height:36px;padding:0 12px;font-size:13px}
+.mut{color:#5B6B7B}
+.th{font-size:12px;font-weight:600;color:#5B6B7B;letter-spacing:.02em}
+.fl{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between}
+.fld{height:46px;border:1px solid #CBD6E0;border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 14px;font-size:15px}
+.pill{height:42px;padding:0 16px;border-radius:999px;border:1px solid #D5DEE6;background:#fff;font-size:13px;font-weight:600;color:#0F2A5C}
+.pill-on{background:#0F2A5C;border-color:#0F2A5C;color:#fff}
+</style>
+</helmet>
+<div style="width:1366px;height:860px;display:flex;background:#F3F6F7;overflow:hidden;position:relative">
+  <dc-import name="Sidebar" active="Library" role="Doctor" messages="" hint-size="232px,860px"></dc-import>
+  <main style="flex:1;min-width:0;padding:24px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px">
+      <div><h1 style="margin:0;font-size:26px;font-weight:700;color:#0F2A5C">Library</h1><div class="mut" style="font-size:14px;margin-top:4px">Your own lists. Editing them never changes old prescriptions or bills.</div></div>
+      <div class="card" style="width:380px;height:46px;border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 14px;color:#5B6B7B;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Search settings and library</div>
+    </div>
+    <div style="display:flex;gap:26px;border-bottom:1px solid #E3E9EE;overflow:hidden">
+      <sc-for list="{{tabs}}" as="t" hint-placeholder-count="7"><span style="{{t.style}};font-size:14px;font-weight:600;padding:0 2px 12px;white-space:nowrap">{{t.label}}</span></sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="card" style="width:300px;height:44px;border-radius:12px;display:flex;align-items:center;padding:0 14px;color:#5B6B7B;font-size:14px">Search medicines</div>
+      <span class="chip" style="height:36px;background:#0F2A5C;color:#fff;font-size:13px">All 24</span>
+      <span class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C;font-size:13px">Needs review 21</span>
+      <span class="chip" style="height:36px;background:#fff;border:1px solid #D5DEE6;color:#0F2A5C;font-size:13px">Hidden 2</span>
+      <button class="btn" style="margin-left:auto">Reorder</button>
+      <button class="btn btn-p">+ Add medicine</button>
+    </div>
+    <section class="card" style="overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 150px minmax(0,1.5fr) 120px 150px 150px;gap:14px;padding:12px 20px;background:#F8FAFB;border-bottom:1px solid #E3E9EE"><span class="th">MEDICINE</span><span class="th">FORM AND STRENGTH</span><span class="th">USUAL DOSE</span><span class="th">USED, 30 DAYS</span><span class="th">STATUS</span><span class="th" style="text-align:right">ACTIONS</span></div>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:minmax(0,1.5fr) 150px minmax(0,1.5fr) 120px 150px 150px;gap:14px;align-items:center;padding:11px 20px;border-bottom:1px solid #EEF2F5;{{r.row}}">
+          <div><div style="font-size:15px;font-weight:600">{{r.name}}</div><div class="mut" style="font-size:12px">{{r.note}}</div></div>
+          <span style="font-size:14px">{{r.form}}</span>
+          <span style="font-size:14px">{{r.dose}}</span>
+          <span style="font-size:14px;font-weight:600">{{r.used}}</span>
+          <span class="chip" style="{{r.chip}}">{{r.status}}</span>
+          <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-s">Edit</button><button class="btn btn-s">Hide</button></div>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;font-size:13px;color:#5B6B7B"><span>Showing 1 to 7 of 24</span><span style="font-weight:600;color:#1E4FA3">Next &#8250;</span></div>
+    </section>
+  </main>
+  <sc-if value="{{drawer}}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:rgba(15,42,92,.38)"></div>
+    <aside style="position:absolute;top:0;right:0;bottom:0;width:460px;background:#fff;box-shadow:-12px 0 32px rgba(15,42,92,.18);display:flex;flex-direction:column">
+      <div style="padding:20px 24px;border-bottom:1px solid #E3E9EE;display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:20px;font-weight:700;color:#0F2A5C">Add medicine</h2><button class="btn btn-s" aria-label="Close">Close</button></div>
+      <div style="padding:22px 24px;display:flex;flex-direction:column;gap:18px;flex:1">
+        <div><div class="fl">Medicine name <span class="mut" style="font-weight:400">generic name</span></div><div class="fld" style="border-color:#1E4FA3;box-shadow:0 0 0 3px #CFDDF5">Ibuprofen</div></div>
+        <div><div class="fl">Strength</div><div class="fld">400 mg</div></div>
+        <div><div class="fl">Form</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill pill-on">Tablet</button><button class="pill">Capsule</button><button class="pill">Syrup</button><button class="pill">Gel</button><button class="pill">Other</button></div></div>
+        <div style="border-top:1px dashed #D5DEE6;padding-top:14px;display:flex;justify-content:space-between;color:#1E4FA3;font-size:14px;font-weight:600"><span>More details: brand, usual dose, days, timing, instruction</span><span>+</span></div>
+        <div style="background:#F3F6F7;border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.5;color:#334155"><b>Tip:</b> you can also add a medicine while writing a prescription. Search for it and choose <b>Add to my list</b>. You do not need to come here.</div>
+        <div style="border:1px solid #E3E9EE;border-radius:12px;padding:12px 14px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#5B6B7B;margin-bottom:8px">FROM INSIDE A VISIT</div><div class="fld" style="height:40px;font-size:14px;margin-bottom:8px">ibuprofen 400</div><div style="border:1px dashed #1E4FA3;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#1E4FA3">+ Add "ibuprofen 400" to my list</div></div>
+      </div>
+      <div style="padding:16px 24px;border-top:1px solid #E3E9EE;display:flex;gap:10px"><button class="btn btn-p" style="flex:1">Save medicine</button><button class="btn">Save and add another</button><button class="btn">Cancel</button></div>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"drawer":{"editor":"boolean","default":false},"$preview":{"width":1366,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = 'color:#0F2A5C;border-bottom:3px solid #1E4FA3', off = 'color:#5B6B7B;border-bottom:3px solid transparent';
+    const tabs = [['Medicines 24', on], ['Medicine sets 6', off], ['Procedures and fees 12', off], ['Visit types 7', off], ['Diagnoses 18', off], ['Quick phrases 9', off], ['More', off]].map(([label, style]) => ({ label, style }));
+    const review = 'background:#FEF3C7;color:#78350F', ok = 'background:#DCFCE7;color:#14532D', hid = 'background:#EDF1F4;color:#334155';
+    const r = (name, note, form, dose, used, status, chip, row = '') => ({ name, note, form, dose, used, status, chip, row });
+    const rows = [
+      r('Amoxicillin', 'Penicillin group', 'Capsule · 500 mg', '1-0-1 · 5 days · after food', '38 times', 'Needs review', review),
+      r('Amoxicillin + clavulanic acid', 'Penicillin group', 'Tablet · 625 mg', '1-0-1 · 5 days · after food', '21 times', 'Needs review', review),
+      r('Metronidazole', 'Avoid alcohol during the course', 'Tablet · 400 mg', '1-0-1 · 5 days · after food', '17 times', 'Active', ok),
+      r('Ibuprofen', 'Pain and swelling', 'Tablet · 400 mg', '1-0-1 · 3 days · after food', '52 times', 'Active', ok),
+      r('Azithromycin', '', 'Tablet · 500 mg', '1-0-0 · 3 days', '6 times', 'Needs review', review),
+      r('Chlorhexidine mouthwash', '10 ml, gargle 30 seconds', 'Mouthwash · 0.2%', '0-0-1 · 7 days', '29 times', 'Active', ok),
+      r('Ciprofloxacin', 'Not used since August', 'Tablet · 500 mg', '1-0-1 · 5 days', '0 times', 'Hidden', hid, 'opacity:.6')
+    ];
+    return { tabs, rows, drawer: this.props.drawer === true };
+  }
+}
+</script>
+</body>
+</html>

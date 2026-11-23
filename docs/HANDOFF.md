@@ -1,27 +1,33 @@
 # HANDOFF (for the next AI session)
 
-Written: 2026-11-23 (staging-test run finished). Read RUN_PROMPT.md, STATE.md, MAP.md. Fake data only. Never push, never deploy, never apply migrations.
+Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE_Q.md (only the section of the task below). Fake data only. Never push, never deploy, never apply migrations (give the owner the command).
 
 ## Where we are
-- Phase 7 complete locally; **do not start Phase 8** until the owner says so.
-- App is ready for staff testing on staging with fake data once the owner runs the by-hand steps (docs/STAGING_READINESS.md).
-- Next free migration: **0056** (0055 letterhead settings is new this run, owner applies) (0054 error_log role + version is new this run).
-
-## Done this run (all local commits, see STATE.md table)
-Staging seed, docs/TESTING.md + copyable Error ID, 9.2.5 error log (route, reporter, doctor list), 8.2.11 patient requests staff side, 9.3.10 retention (dry run by default).
-
-## Half done / not verified
-- Seed CLI against a real database: not run. Exact next step: owner runs `pnpm --filter @clinic/worker db:migrate`, then `pnpm --filter @clinic/worker db:seed:staging -- --local` and reports the output.
-- Playwright e2e (old smoke, print regression, new errors-requests-smoke): not run, browsers missing. Next step: `pnpm exec playwright install chromium`, then `pnpm test:e2e`; fix only failures caused by this run's work.
-- UI of /app/errors, /app/requests and More > Help was not checked at 360/768/1366 in a browser (CSS is mobile-first; owner check open).
-
-## Waiting on humans
-Doctor: confirm request roles, 30-day due, DRAFT wording, 8-year retention, access-log retention, legal hold. CA: billing retention. Owner: staging steps, tokens, GraphQL analytics token (9.2.1), Phase 8 go-ahead. Rest: STATE.md "Waiting on me".
+- Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
+- **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
+- No Phase Q task is done yet. Nothing in the app code was changed by the audit.
+- Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
 
 ## Next task
-Wait for the owner's go on Phase 8 (8.2.11 portal form and portal login belong there). Otherwise fix what staff testing finds (bug templates in docs/TESTING.md).
+**Q0.1 Browser tests can run.** Full text and "Done when" in docs/PHASE_Q.md section 1. Then Q0.2, Q0.3, Q0.4, Q0.5, Q0.6 in that order. Q0.7 is BLOCKED until the owner answers D1.
 
-## Commands the owner runs by hand
-See docs/STAGING_READINESS.md (token with `read -rs`, migrations apply, `pnpm deploy:staging`, seed, reactivate receptionist in the app).
+## Done in Phase Q
+(nothing yet; add one line per finished task: id, commit hash, date)
 
-Run commands with node 26: `source ~/.nvm/nvm.sh; nvm use system`. Check: `pnpm check 2>&1 | tail -25`.
+## Half done
+(nothing)
+
+## Waiting on me (the owner). The AI must not guess these
+- **Run once:** `pnpm exec playwright install chromium` (needed for Q0.1 and every browser check).
+- D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.
+- Older items: STATE.md "Waiting on me" (staging steps, doctor confirmations, CA questions).
+
+## How the app is run for testing (short; full text in PHASE_Q.md section 0)
+Node 26: `source ~/.nvm/nvm.sh; nvm use system`. Use a SCRATCH database (`--persist-to <folder>`), not the owner's local one (it is half-migrated). Browse only `http://localhost:8787`. Dev login: `/api/staff/auth/dev-login?role=doctor|receptionist`. Cron by hand: `/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*`. Scripts that already drive the browser: docs/ui-audit/runner/ (they repair bug C1 until Q0.2 is done; remove that repair then).
+Check: `pnpm check 2>&1 | tail -25`.
+
+## Prompts the owner gives a new AI (one line is enough)
+1. Every normal session: **"Read docs/RUN_PROMPT.md and continue from docs/HANDOFF.md."**
+2. If the AI asks which task: **"Do the task named under Next task in docs/HANDOFF.md, following docs/PHASE_Q.md. Stop when the task passes its Done-when or when your context is nearly full; update HANDOFF.md and commit locally first."**
+3. After the owner answered a decision: **"Read docs/HANDOFF.md. I decided D1: <answer>. Write it in docs/DECISIONS.md, unblock the task in docs/PHASE_Q.md and continue."**
+4. For a check-only session: **"Read docs/RUN_PROMPT.md. Run the Gate named in docs/HANDOFF.md using docs/ui-audit/runner/ and report; change no app code."**

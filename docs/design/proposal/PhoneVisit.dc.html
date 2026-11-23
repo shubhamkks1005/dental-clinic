@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Visit</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:46px;padding:0 18px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:14px;font-weight:600}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.mut{color:#5B6B7B}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:#5B6B7B}
+.pill{height:44px;padding:0 14px;border-radius:999px;border:1px solid #D5DEE6;background:#fff;font-size:13px;font-weight:600;color:#0F2A5C}
+.pill-on{background:#0F2A5C;border-color:#0F2A5C;color:#fff}
+.tx{border:1px solid #CBD6E0;border-radius:12px;background:#fff;padding:10px 12px;font-size:14px;line-height:1.4}
+.tooth{flex:none;width:44px;height:48px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;font-size:13px;font-weight:600;color:#0E1B2B;padding:0}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#5B6B7B}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 24px 24px;padding:14px 16px 16px;color:#fff">
+    <div style="font-size:12px;color:#CFDDF5">&#8249; Today</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:6px"><span style="font-size:21px;font-weight:700;flex:1">Rahul Sharma</span><span class="chip" style="background:#EDF1F4;color:#334155">Draft</span></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><span style="background:#E6EEFA;color:#163C80;font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px">P-000412</span><span style="font-size:12px;color:#DBE4F3">34 yrs · Male</span></div>
+    <div style="display:flex;gap:6px;margin-top:10px"><span class="chip" style="background:#FFE4D6;color:#9A3412">Allergy: penicillin</span><span class="chip" style="background:#FEF3C7;color:#78350F">Diabetic</span></div>
+  </div>
+  <div style="padding:14px 16px;display:flex;flex-direction:column;gap:12px;height:626px;overflow:hidden;box-sizing:border-box">
+    <section class="card" style="padding:12px 14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span class="lbl">TOOTH CHART (FDI)</span><span class="mut" style="font-size:11px">Swipe sideways &#8594;</span></div>
+      <div style="overflow:hidden;border-radius:10px">
+        <div style="display:flex;flex-direction:column;gap:6px;width:max-content">
+          <div style="display:flex;gap:6px"><sc-for list="{{upper}}" as="t" hint-placeholder-count="10"><button class="tooth" style="{{t.style}}" aria-label="{{t.label}}">{{t.n}}</button></sc-for></div>
+          <div style="display:flex;gap:6px"><sc-for list="{{lower}}" as="t" hint-placeholder-count="10"><button class="tooth" style="{{t.style}}" aria-label="{{t.label}}">{{t.n}}</button></sc-for></div>
+        </div>
+      </div>
+    </section>
+    <section class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+      <div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Complaint</div><div class="tx">Wire poking on the right side, ulcer on the cheek.</div></div>
+      <div><div style="font-size:13px;font-weight:600;margin-bottom:6px">Procedures done</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="pill pill-on">Braces adjustment ₹1,000 &#215;</button><button class="pill">X-ray</button><button class="pill" style="border-style:dashed">+ Add</button></div></div>
+    </section>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:68px;background:#fff;border-top:1px solid #E3E9EE;padding:10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -6px 18px rgba(15,42,92,.08)">
+    <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#14532D">Saved 10:42</div><div style="display:flex;gap:6px;margin-top:4px"><span class="chip" style="background:#DCFCE7;color:#14532D">Diagnosis &#10003;</span><span class="chip" style="background:#DCFCE7;color:#14532D">Procedures &#10003;</span><span class="chip" style="background:#FEF3C7;color:#78350F">Rx !</span></div></div>
+    <button class="btn btn-p" style="padding:0 20px">Finalise</button>
+  </div>
+  <nav aria-label="Main" style="position:absolute;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid #E3E9EE;display:flex;padding:8px 6px 0">
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Today</div>
+    <div class="tab" style="color:#1E4FA3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.500 3.500-6 8-6s8 2.500 8 6"/></svg>Patients</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16v13H4zM4 11h16M8 3v4M16 3v4"/></svg>Calendar</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18v12H3zM3 11h18"/></svg>Billing</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.700"/><circle cx="12" cy="12" r="1.700"/><circle cx="19" cy="12" r="1.700"/></svg>More</div>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const state = { 16: 'treated', 46: 'selected', 24: 'watch' };
+    const styleFor = (n) => {
+      const s = state[n];
+      if (s === 'selected') return 'background:#1E4FA3;border-color:#1E4FA3;color:#fff';
+      if (s === 'treated') return 'background:#DCFCE7;border-color:#86D3A0;color:#14532D';
+      if (s === 'watch') return 'background:#FEF3C7;border-color:#E9C46A;color:#78350F';
+      return '';
+    };
+    const mk = (ns) => ns.map((n) => ({ n, label: 'Tooth ' + n, style: styleFor(n) }));
+    return { upper: mk([18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28]), lower: mk([48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]) };
+  }
+}
+</script>
+</body>
+</html>

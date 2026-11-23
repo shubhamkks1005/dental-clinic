@@ -6,6 +6,7 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 
 ## Start of every session (do this first, nothing else)
 1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), docs/FIXES.md (the owner's bug and polish list, work it top to bottom), and docs/MAP.md (what each file does).
+1b. Current phase is Phase Q (docs/PHASE_Q.md): read the section of the task named in HANDOFF.md. Product audit and designs: docs/product-audit/, docs/ui-audit/, docs/design/proposal/.
 2. Do NOT read the whole codebase. Find files with search (grep/ripgrep), then read only the lines you need.
 3. If the task needs a decision that is not in docs/SPEC.md or docs/DECISIONS.md, ASK the owner. Never guess clinical, legal, tax or money rules. (When following RUN_PROMPT.md, prefer writing the choice in DECISIONS.md and continuing unless it is a real blocker.)
 

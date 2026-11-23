@@ -6550,3 +6550,31 @@ par kuch aur nikle (page badal gaya ho), to us daave ko yahan 'galat' ya 'badla 
 us task ka 'Done jab' dobara dekho.
 Dental clinic software: ultra detail build plan
 Page 150 of 150
+
+# Phase Q: quality, safety and redesign (added 2026-11-23, runs BEFORE Phase 8)
+Source: the browser audit in docs/ui-audit/ and docs/product-audit/. Full task text, "Done when" tests, design files and the order are in docs/PHASE_Q.md. One task per session, in order. A task is done only after its "Done when" was run in a real browser and pnpm check is green.
+Q0.1 Browser tests can run (playwright base URL localhost:8787, Chromium install by owner). Done when: pnpm test:e2e starts and a write spec passes.
+Q0.2 Fix double JSON encoding in six feature api.ts files (C1). Done when: doctor opens a visit, autosaves, adds procedure, diagnosis, medicine, finalises with no 400.
+Q0.3 Prescription Issue uses the fresh version (C3). Done when: add a medicine, Issue works, no 409, reload shows issued.
+Q0.4 Booking without a note works (C4). Done when: book with an empty note shows "Booked for ...".
+Q0.5 Core-loop browser test in pnpm check or CI. Done when: it passes and fails if Q0.2 is reverted.
+Q0.6 Payment safety: above-due amount needs an advance confirm (server and web), Full balance and Half only fill the field, form resets, 0 or negative gets a sentence. Done when: domain tests and browser run.
+Q0.7 Refund rule and balances. BLOCKED until decision D1 (doctor and CA). Done when: pay 500, refund 500, outstanding returns; statement shows both.
+Q0.G Gate P0: core-loop, G01 and D03 flows pass with no harness repair.
+Q1.1 Visit to bill chain minimal (procedures on first tab, Finalise warnings, Create bill reason). Needs D2.
+Q1.2 Ready to bill on receptionist Today (Take payment action).
+Q1.3 Receipts toast and Payments list.
+Q1.4 Cancel, Missed, Reschedule for any booking, with reason.
+Q1.5 Messages hygiene (withdraw on move, no past, no number, guardian number, due time). Needs D6.
+Q1.6 No silent failures (Timings, visit conflict banner, disabled-button reasons, offline).
+Q1.7 Discount hand-off (doctor Waiting for you, total unchanged until approved).
+Q1.8 Data and form rules (next appointment, open slots, future DOB, procedure default, gender D3, duplicate prompt, guardian opens at age under 18).
+Q1.9 Dead top-bar Walk-in; wrong-bill path for the receptionist. Needs D4, D1.
+Q1.10 Phone breakages (receptionist Today at 360, tooth chart fit).
+Q1.11 Access control in the UI plus role-matrix browser test. Needs D4.
+Q1.G Gate A: re-run flows G01, G02, G08, H01, H02, D02, D03, D05, D06, F02 with no harness repair.
+Q2.1 to Q2.13 Redesign from docs/design/proposal/: foundation and 8-item sidebar, status words and formats, Billing hub and Bill, Visit on one screen, both Today screens, Patients list and profile, Calendar and Book dialog, Messages, New patient form, form-control lint, phone and tablet chrome, Reports, Settings redesign and the new Library page.
+Q3.1 to Q3.6 Advance on purpose (D8), late entry, manual charge, audit of unseen areas, portal after go-ahead, customer discovery.
+Q4.1 Polish.
+Done when (phase): the 10 receptionist tasks in docs/TESTING.md pass without help; the doctor goes from Today to Ready to bill on one screen; core-loop test in CI; no sideways scroll at 360, 768, 1366 px; no silent failed save.
+

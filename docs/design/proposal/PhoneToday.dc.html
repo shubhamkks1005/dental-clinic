@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Phone, Today</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:44px;padding:0 16px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:14px;font-weight:600}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.mut{color:#5B6B7B}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#5B6B7B}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F3F6F7;position:relative;overflow:hidden">
+  <div style="background:#0F2A5C;border-radius:0 0 28px 28px;padding:20px 20px 52px;display:flex;align-items:center;gap:12px">
+    <div style="width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0F2A5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4c-2.500 0-4 2-4 4.500 0 3 1.500 4 2 7 .3 2 1 4 2.200 4 1.400 0 1.300-3.500 2.800-3.500s1.400 3.500 2.800 3.500c1.200 0 1.900-2 2.200-4 .5-3 2-4 2-7C19 6 17.500 4 15 4c-1.500 0-2 .8-3 .8S8.500 4 7 4z"/></svg></div>
+    <div style="flex:1"><div style="font-size:12px;color:#CFDDF5">Saturday, 22 November</div><div style="font-size:21px;font-weight:700;color:#fff">Good morning, Priya</div></div>
+    <button aria-label="Search" style="width:44px;height:44px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+  </div>
+  <div style="margin:-32px 16px 0;display:flex;gap:10px;overflow:hidden">
+    <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+      <div class="card" style="{{s.style}};flex:1;padding:10px 12px;min-width:0"><div style="font-size:11px;font-weight:600;{{s.lab}}">{{s.label}}</div><div style="font-size:24px;font-weight:700;line-height:1.15">{{s.value}}</div></div>
+    </sc-for>
+  </div>
+  <div style="margin:14px 16px 0;border-radius:16px;padding:16px;color:#fff;background:linear-gradient(135deg,#1E4FA3,#0F2A5C);display:flex;flex-direction:column;gap:6px">
+    <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#CFDDF5">NEXT PATIENT</span>
+    <div style="font-size:20px;font-weight:700">Rahul Sharma</div>
+    <div style="font-size:13px;color:#DBE4F3">P-000412 · Braces fitting · waiting 12 min</div>
+    <button style="height:46px;border-radius:12px;border:0;background:#fff;color:#0F2A5C;font-size:15px;font-weight:700;margin-top:4px">Send in</button>
+  </div>
+  <div style="margin:16px 16px 8px;font-size:15px;font-weight:700;color:#0F2A5C">Today's list</div>
+  <div style="margin:0 16px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="3">
+      <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px;{{r.row}}">
+        <div style="display:flex;align-items:center;gap:12px"><b style="font-size:15px;width:44px">{{r.time}}</b><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{r.name}}</div><div class="mut" style="font-size:12px">{{r.kind}}</div></div><span class="chip" style="{{r.chip}}">{{r.status}}</span></div>
+        <div style="display:flex;gap:8px"><button class="{{r.btn}}" style="flex:1">{{r.action}}</button><button class="btn" aria-label="More actions" style="width:44px;padding:0">&#8943;</button></div>
+      </div>
+    </sc-for>
+  </div>
+  <button aria-label="New patient" style="position:absolute;right:16px;bottom:88px;width:56px;height:56px;border-radius:18px;border:0;background:#1E4FA3;color:#fff;font-size:28px;box-shadow:0 6px 18px rgba(30,79,163,.4)">+</button>
+  <nav aria-label="Main" style="position:absolute;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid #E3E9EE;display:flex;padding:8px 6px 0">
+    <div class="tab" style="color:#1E4FA3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Today</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-3.500 3.500-6 8-6s8 2.500 8 6"/></svg>Patients</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16v13H4zM4 11h16M8 3v4M16 3v4"/></svg>Calendar</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 7h18v12H3zM3 11h18"/></svg>Billing</div>
+    <div class="tab"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.700"/><circle cx="12" cy="12" r="1.700"/><circle cx="19" cy="12" r="1.700"/></svg>More</div>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const plain = 'background:#fff';
+    const stats = [
+      { label: 'Booked', value: '18', style: plain, lab: 'color:#5B6B7B' },
+      { label: 'Waiting', value: '3', style: plain, lab: 'color:#78350F' },
+      { label: 'In chair', value: '1', style: plain, lab: 'color:#1E3A8A' },
+      { label: 'To bill', value: '2', style: 'background:#E6EEFA;border-color:#B9CCEA', lab: 'color:#163C80' }
+    ];
+    const chips = { done: 'background:#DCFCE7;color:#14532D', chair: 'background:#E0E7FF;color:#1E3A8A', wait: 'background:#FEF3C7;color:#78350F' };
+    const rows = [
+      { time: '10:00', name: 'Meena Joshi', kind: 'Braces adjustment · due ₹1,200', status: 'Done', chip: chips.done, action: 'Take payment', btn: 'btn btn-p', row: 'background:#F5F8FD' },
+      { time: '10:30', name: 'Karan Yadav', kind: 'Consultation', status: 'In chair', chip: chips.chair, action: 'Done', btn: 'btn', row: '' },
+      { time: '11:00', name: 'Rahul Sharma', kind: 'Braces fitting', status: 'Waiting 12 min', chip: chips.wait, action: 'Send in', btn: 'btn btn-p', row: '' }
+    ];
+    return { stats, rows };
+  }
+}
+</script>
+</body>
+</html>

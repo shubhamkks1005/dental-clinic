@@ -33,3 +33,6 @@ Backend stays as is; change it only where a point below says so.
 - **Messages:** moved appointment leaves old messages (H20), children get no reminder (H21), booking confirm only after cron.
 - **Settings:** closing before opening fails silently (H23).
 - Rest (page margins, unstyled Billing/Bill/Messages/Reports, phone "+" overlap, status words, dates): AUDIT.md H2-H10, M1-M14. Not scheduled until the owner picks them.
+
+## Tracking moved (2026-11-23)
+All audit fixes are now tracked as tasks in docs/PHASE_Q.md (Q0.x to Q4.x). Do not work this list by hand; use HANDOFF.md 'Next task'. Older points above (Today, visit flow, booking) stay as history.

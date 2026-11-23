@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bill and payment</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#0E1B2B}
+button{font-family:inherit;cursor:pointer}
+.card{background:#fff;border:1px solid #E3E9EE;border-radius:16px}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.btn{height:44px;padding:0 18px;border-radius:12px;border:1px solid #D5DEE6;background:#fff;color:#0F2A5C;font-size:14px;font-weight:600}
+.btn-p{background:#1E4FA3;border-color:#1E4FA3;color:#fff}
+.mut{color:#5B6B7B}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.08em;color:#5B6B7B}
+.pill{height:44px;padding:0 20px;border-radius:999px;border:1px solid #D5DEE6;background:#fff;font-size:14px;font-weight:600;color:#0F2A5C}
+.pill-on{background:#0F2A5C;border-color:#0F2A5C;color:#fff}
+.fld{height:48px;border:1px solid #CBD6E0;border-radius:12px;background:#fff;display:flex;align-items:center;padding:0 16px;font-size:16px}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #EEF2F5;font-size:14px}
+.pn{background:#E6EEFA;color:#163C80;font-weight:700;font-size:13px;border-radius:999px;padding:4px 12px}
+</style>
+</helmet>
+<div style="width:1366px;height:900px;display:flex;background:#F3F6F7;overflow:hidden;position:relative">
+  <dc-import name="Sidebar" active="Billing" role="Receptionist" messages="5" hint-size="232px,860px"></dc-import>
+  <main style="flex:1;min-width:0;padding:24px;display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <a href="#" style="font-size:13px;font-weight:600;color:#1E4FA3">Billing</a><span class="mut">/</span><span style="font-size:13px;font-weight:600">Bills</span>
+    </div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px"><h1 style="margin:0;font-size:26px;font-weight:700;color:#0F2A5C">Bill SB-2627-000025</h1><span class="chip" style="background:#FEF3C7;color:#78350F">Part paid</span></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px"><span style="font-size:15px;font-weight:600">Rahul Sharma</span><span class="pn">P-000412</span><span class="mut" style="font-size:13px">22 Nov 2026 · Visit with Dr. Nidhi Kushwaha</span></div>
+      </div>
+      <div style="display:flex;gap:10px"><button class="btn">Print bill</button><button class="btn" aria-label="More bill actions" style="width:44px;padding:0">&#8943;</button></div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:flex-start;min-height:0">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px">
+        <section class="card" style="overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid #E3E9EE;display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px;font-weight:700">Items</h2><span class="mut" style="font-size:12px">Taken from the finalised visit</span></div>
+          <div style="display:grid;grid-template-columns:1fr 60px 110px 120px;padding:10px 20px;background:#F8FAFB;font-size:12px;font-weight:600;color:#5B6B7B"><span>ITEM</span><span>QTY</span><span style="text-align:right">RATE</span><span style="text-align:right">AMOUNT</span></div>
+          <div style="display:grid;grid-template-columns:1fr 60px 110px 120px;padding:12px 20px;border-bottom:1px solid #EEF2F5;font-size:14px"><div><div style="font-weight:600">Braces adjustment</div><div class="mut" style="font-size:12px">Lower arch wire change</div></div><span>1</span><span style="text-align:right">₹1,000</span><span style="text-align:right;font-weight:600">₹1,000</span></div>
+          <div style="display:grid;grid-template-columns:1fr 60px 110px 120px;padding:12px 20px;font-size:14px"><div><div style="font-weight:600">X-ray (OPG)</div><div class="mut" style="font-size:12px">Tooth 46 area</div></div><span>1</span><span style="text-align:right">₹500</span><span style="text-align:right;font-weight:600">₹500</span></div>
+        </section>
+        <section class="card" style="padding:20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:16px;font-weight:700">Take payment</h2><span class="mut" style="font-size:13px">Balance on this bill: <strong style="color:#0E1B2B">₹1,000</strong></span></div>
+          <div style="display:flex;gap:16px;align-items:flex-end">
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;margin-bottom:6px">Amount</div><div class="fld" style="border-color:#1E4FA3;box-shadow:0 0 0 3px #CFDDF5;font-weight:600">₹ 1,000</div></div>
+            <div style="display:flex;gap:8px"><button class="pill">Full balance</button><button class="pill">Half</button></div>
+          </div>
+          <div><div style="font-size:13px;font-weight:600;margin-bottom:6px">Mode</div><div style="display:flex;gap:8px"><button class="pill pill-on">Cash</button><button class="pill">UPI</button><button class="pill">Card</button><button class="pill">More</button></div></div>
+          <div style="display:flex;gap:12px"><button class="btn btn-p" style="flex:1;height:48px;font-size:15px">Record payment and print receipt</button><button class="btn" style="height:48px">Split between two modes</button></div>
+        </section>
+        <section class="card" style="overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid #E3E9EE"><h2 style="margin:0;font-size:16px;font-weight:700">Payments</h2></div>
+          <div style="display:grid;grid-template-columns:110px 110px 100px minmax(0,1fr) 150px;align-items:center;padding:12px 20px;font-size:14px;gap:12px">
+            <span>22 Nov, 10:42</span><span style="font-weight:700">₹500</span><span class="chip" style="background:#EDF1F4;color:#334155;height:24px">Cash</span><span class="mut" style="font-size:13px">SR-2627-000019 · applied to this bill · Priya Singh</span><button class="btn" style="height:36px;font-size:13px">Print receipt</button>
+          </div>
+        </section>
+      </div>
+      <aside style="width:340px;display:flex;flex-direction:column;gap:16px">
+        <section class="card" style="padding:20px">
+          <div class="lbl" style="margin-bottom:6px">BILL TOTAL</div>
+          <div class="row"><span class="mut">Subtotal</span><span>₹1,500</span></div>
+          <div class="row"><span class="mut">Discount</span><span>₹0</span></div>
+          <div class="row" style="font-size:18px;font-weight:700"><span>Total</span><span>₹1,500</span></div>
+          <div class="row"><span class="mut">Paid so far</span><span>₹500</span></div>
+          <div class="row" style="border-bottom:0;font-weight:700;color:#78350F"><span>Balance</span><span>₹1,000</span></div>
+          <div style="height:8px;border-radius:99px;background:#E3E9EE;margin-top:8px;overflow:hidden"><div style="width:33%;height:100%;background:#1E4FA3"></div></div>
+        </section>
+        <section class="card" style="padding:16px 20px;border-color:#F3D9A4;background:#FFF9EA;display:flex;flex-direction:column;gap:10px">
+          <div class="lbl" style="color:#78350F">IF THE AMOUNT IS TOO HIGH</div>
+          <div style="font-size:14px;font-weight:600;color:#78350F">₹20,000 is ₹19,000 more than the balance. Record the extra as an advance?</div>
+          <div style="display:flex;gap:8px"><button class="btn" style="height:40px;font-size:13px;flex:1">Change amount</button><button class="btn" style="height:40px;font-size:13px;flex:1">Record as advance</button></div>
+        </section>
+        <section class="card" style="padding:16px 20px;display:flex;flex-direction:column;gap:10px">
+          <div class="lbl">DISCOUNT</div>
+          <div class="mut" style="font-size:13px">Only the doctor can approve a discount. Ask the doctor from here.</div>
+          <button class="btn" style="height:40px;font-size:13px">Request a discount</button>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <div style="position:absolute;right:24px;bottom:24px;background:#0F2A5C;color:#fff;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 24px rgba(15,42,92,.28)">
+    <div><div style="font-size:14px;font-weight:700">₹500 recorded</div><div style="font-size:12px;color:#CFDDF5">Receipt SR-2627-000019</div></div>
+    <button style="height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;font-size:13px;font-weight:600;padding:0 14px">Print</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1366,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

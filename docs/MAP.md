@@ -32,6 +32,8 @@
 - docs/runbooks/DOWNTIME.md - 9.2.4 decision tree (app down, 1027, D1, bad deploy rollback, paper mode, DNS); phone number placeholders DRAFT
 - docs/ui-audit/ - UI/UX audit knowledge base (2026-11-23): README (index, [seen]/[code] labels, coverage), AUDIT (ranked problems C/H/M/L), PAGES, FORMS, WORKFLOWS, DESIGN_SYSTEM, DECISIONS_UI (approved vs proposed), REVIEW_CHECKLIST (read before any UI task), screenshots/ (fake data)
 - docs/product-audit/ - Product assessment from the UI audit evidence (2026-11-23): README (four answers), ISSUES (master register, confidence-rated), IDEAL_EXPERIENCE (target screens and vocabulary), ROADMAP (P0-P4 order, decisions, gates)
+- docs/PHASE_Q.md - Phase Q task list (Q0 to Q4): what to build, files to look at, Done-when tests, decisions D1-D8, how to run the app for testing
+- docs/design/proposal/ - new screen designs as .dc.html files (README says which file is which screen and which task builds it)
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together
