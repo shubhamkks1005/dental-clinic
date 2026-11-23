@@ -1,6 +1,7 @@
 // Shared bits for the staging seed.
 export type SeedReport = {
   patients: number;
+  requests: number;
   appointments: number;
   visitsFinal: number;
   visitsOpen: number;

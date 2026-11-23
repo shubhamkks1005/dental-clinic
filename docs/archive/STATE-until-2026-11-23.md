@@ -1,0 +1,465 @@
+# STATE
+Last updated: 2026-11-23
+Phase: Owner authorised Cut A path: backup min (1.6.3/1.6.4 + 9.1.x) → Phase 9 core → 8.10 + 8.2.11 → 10.1 (stop before 10.2 pilot). Phase 7 leftovers stay under Waiting.
+RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
+Phase 3/4/5/6 leftovers stay under Before real patients / Waiting; not redone.
+PLAN: Cut A / raasta 2 after Phase 7. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+1.6.3 DONE locally (pipeline + dry-run + billing-on-dump + fixture). **Waiting:** owner ACCOUNTS §1.6.3 (B2/age/HC/CF token), 7 green nights, one restore drill.
+1.6.4 DONE locally (docs/ALARMS.md). **Waiting:** Healthchecks + UptimeRobot create + both alarm tests.
+9.1.1 DONE locally (docs/BACKUP.md + DECISIONS). **Waiting:** sister read.
+9.1.2 DONE locally (schedule-spike.yml dispatch-only). **Waiting:** owner enable 15-min cron 3 days + HC secret; pick schedule vs workflow_dispatch fallback.
+9.1.3 DONE locally (integrity+billing refuse bad dump; age; sha256; B2; HC; workflow skips without secrets).
+9.1.4 DONE locally (files-backup.yml + files-copy dry-run). **Waiting:** R2/rclone crypt secrets + one file restore proof.
+9.1.5 DONE locally (clinic-pc-copy.md). **Waiting:** PC setup + 3 weeks + off-week alert.
+9.1.6 DONE locally (docs/runbooks/KEYS.md). **Waiting:** sister decrypt without developer.
+9.1.7 DONE locally (RESTORE_B2.md + dry-run path). **Waiting:** measured restore time on laptop.
+9.1.8 DONE locally (RESTORE_TIME_TRAVEL.md). **Waiting:** throwaway D1 drill.
+9.1.9 DONE locally (MIGRATION_SAFETY.md). **Waiting:** fake bad-migration rollback note.
+9.1.10 DONE locally (ops_status mig 0051, /hooks/ops-status, dashboard attention). **Waiting:** OPS_WEBHOOK_* secrets + fail-ping → red line test.
+**Migration `0051_ops_status.sql` — owner applies.**
+9.2.5 PARTIAL locally (mig 0052_error_log + repo errorLog with PHI scrub). **Missing:** POST route (rate limited), browser reporter, UI. Not wired anywhere yet.
+8.2.11 PARTIAL locally (mig 0053_patient_requests + repo + zod types, 30-day due). **Missing:** staff API routes + UI; portal form is later.
+9.2.1 cron: quota monitor + retention purge wired into cron/run.ts (hourly branch). Live GraphQL count is still a stub (returns 0) until owner token.
+**Migrations 0052, 0053 — owner applies (agent did not touch staging).** Next free: **0054**.
+Migration meta: snapshots exist only for 0019-0024 and 0038-0039; later migrations are hand-written SQL + journal entry (checksums.json lock is the guard). Same as 0040-0051; not new.
+9.2.1 DONE locally (docs/QUOTA.md — budget table, thresholds, Error 1027, reset time). **Waiting:** GraphQL analytics token (owner) + real numbers from 9.4.1 load test.
+9.2.3 DONE locally (docs/PAPER_KIT.md — evening checklist, blank forms, late-entry rule). **Waiting:** sister runs one mock paper day (drill).
+9.2.4 DONE locally (docs/runbooks/DOWNTIME.md — decision tree, paper mode, rollback, DNS; phone placeholders). **Waiting:** owner fills phone numbers; rollback drill by developer.
+9.3.1 DONE locally (docs/THREAT_MODEL.md — 3 surfaces, ~17 risks with mitigations and task refs).
+9.3.3 DONE locally (docs/SECRETS_ROTATION.md — secrets table, 6-month calendar; no values). **Waiting:** rotation drill (one secret changed, system still running).
+9.3.4 DONE locally (docs/ACCESS_REVIEW.md — quarterly checklist table).
+9.3.8 DONE locally (docs/PRIVACY_READINESS.md — Yes/Waiting/DRAFT checklist + processors table). **Waiting:** all Waiting rows completed before real patients.
+9.3.9 DONE locally (docs/BREACH_PLAN.md — contain/notify/record DRAFT; tabletop drill steps). **Waiting:** lawyer to confirm; tabletop drill not yet done.
+9.3.10 DONE locally (docs/RETENTION.md — retention table DRAFT). **Waiting:** doctor confirm 8y clinic policy; CA confirm billing retention; purge job (cron/retention-purge.ts) only soft-deletes message_attempts >90d so far; other tables/legal hold still to do.
+9.5.1 DONE locally (docs/ARCHITECTURE.md — one-page system overview; docs/FIRST_DAY.md — new dev onboarding).
+9.5.2 DONE locally (docs/USER_MANUAL.md — English staff manual outline, doctor + receptionist; screenshot placeholders). **Waiting:** screenshots after dress rehearsal.
+9.5.3 DONE locally (docs/TRAINING.md — two 90-min sessions, mock day, cheat sheet). **Waiting:** actual sessions with sister + receptionist.
+9.5.4 DONE locally (docs/SUPPORT.md — P0/P1/P2, deploy windows, Hypercare). **Waiting:** owner fills phone numbers.
+9.5.5 DONE locally (docs/RELEASE.md — full release process, CI, rollback, migration checklist).
+10.1.1 DONE locally (docs/GO_NO_GO.md — criteria table; all Waiting).
+10.1.2–10.1.14 DONE locally (docs/PILOT_PREP.md — all checklists as tables; 30 mock scenarios; Waiting columns). **Waiting:** all items in the Waiting column; live drills not done.
+**Phase 7 owner decision:** no paid SMS/WhatsApp API, no DLT, no card; MESSAGING_MODE=dry_run everywhere; ManualWhatsApp + FakeAdapter; English DRAFT templates; consent required; status opened_in_whatsapp on wa.me tap.
+7.1.1 SKIPPED / Waiting (sister message-list ok). DRAFT English table seeded.
+7.1.2–7.1.5 SKIPPED / Waiting (gateway spike, E2E encryption, SIM/TRAI, Plan B DLT — need phone/SIM/operator/card).
+7.2.1 DONE locally (message_outbox, attempts, channel_state, phone_flags; dedupe unique; status index). **Migration `0049_message_outbox.sql` — owner applies.**
+7.2.2 DONE locally (MessageChannel + FakeAdapter + ManualWhatsAppAdapter + SmsGateway stub refuses live). No real provider.
+7.2.3 DONE locally (render/lint/segment; English DRAFT templates).
+7.2.4 DONE locally (planMessages pure; quiet hours; consent skip).
+7.2.5 DONE locally (cron messaging tick; claim due; dry_run / needs_human).
+7.2.6 DONE partially (fallback via dump-to-whatsapp + needs_human; full SMS retry chaos deferred with no provider).
+7.2.7 SKIPPED (OTP — Phase 8 portal).
+7.2.8–7.2.9 SKIPPED / Waiting (webhooks + phone heartbeat — need gateway).
+7.2.10 DONE locally (MESSAGING_MODE dry_run; kill via messaging.settings.enabled).
+7.2.11 DONE locally (settings smsDailyCap / otpReserve / dispatchPerTick seeded; cap enforcement light — full 80-msg test deferred).
+7.3.1 DONE locally (S11 Messages board: outgoing / WhatsApp / sent / attention + dry_run bar).
+7.3.2 DONE locally (waLink + Open WhatsApp → opened_in_whatsapp + audit).
+7.3.3 DONE locally (patient Messages tab; consent withdraw cancels queued).
+7.3.4 DONE locally (POST appointments/:id/messages/send-now).
+7.3.5 SKIPPED (baad me inbound inbox + webhook).
+7.3.6 PARTIAL / Waiting (day-cancel wizard UI not built; dump-to-whatsapp exists).
+7.4.1–7.4.3 DONE locally (DRAFT templates seed; Settings Messages panel; messaging.settings).
+7.4.4 SKIPPED (English only per owner).
+7.5.1–7.5.3 DONE locally (call-list + dues WhatsApp buttons; no treatment/amount in text).
+7.5.4–7.5.5 SKIPPED (baad me aftercare/birthday).
+7.6.1 SKIPPED (baad me Brevo).
+7.7.1 DONE locally (sms_reminders consent gates enqueue; withdraw cancels).
+7.7.2 DONE locally (normaliseMobile / waLink / maskMobile — existing + wa tests).
+7.7.3 DONE locally (privacy notice messaging paragraph DRAFT). **Migration `0050_privacy_notice_messaging.sql` — owner applies.**
+7.8.1 PARTIAL (test-mode bar on S11; no live phone-down card).
+7.8.2–7.8.4 SKIPPED / Waiting (SMS phone setup / runbook drill / gateway secrets).
+7.9.1 DONE locally (planner + claim-once tests).
+7.9.2 PARTIAL (adapter fail paths; full webhook chaos skipped).
+7.9.3–7.9.4 SKIPPED / Waiting (7-day phone + sister sign-off).
+**DRAFT - sister to confirm (6.1.1):** metric definitions + top 4 KPIs in DECISIONS.md (plan defaults until haan).
+**DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
+6.1.1 SKIPPED / Waiting (sister 45-min sign-off). DRAFT defs + top-4 in DECISIONS.
+6.2.1 DONE locally (first_arrived_on; set on arrived/walk-in; backfill; isNewPatientOn excludes legacy_ref). **Migration `0043_patient_first_arrived_on.sql` — owner applies.**
+6.2.2 DONE locally (daily_stats + monthly_stats; SQL aggregates; INSERT OR REPLACE recompute; hand-count test). **Migration `0044_daily_stats.sql` — owner applies.**
+6.2.3 DONE locally (cron `*/5` + nightly IST midnight branch recomputes 3 days; POST /stats/recompute rate-limited; S10 Reports button). No migration.
+6.2.4 DONE locally (day close blocked while scheduled/confirmed/arrived/in_chair appts remain; list on summary + DailyClosePanel). No migration.
+6.2.5 DONE locally (edge tests: IST 23:30, legacy not new, walk-in excl. from no-show %, refund vs collected, cancelled bill not billed; noshow_count/noshow_arrived metrics). No migration.
+6.3.1 DONE locally (GET /api/staff/dashboard prepared arrays; daily_stats + live today; Cache-Control private max-age=60; rowsRead <2000 test; receptionist 403). No migration.
+6.3.2 DONE locally (SVG chart kit: bar, stacked, line, heatmap, KPI, sparkline; table toggle + keyboard; style-guide demos; no chart library). No migration.
+6.3.3 DONE locally (S10 doctor dashboard: 4 KPI tiles, charts from /dashboard, attention stubs). No migration.
+6.3.4 DONE locally (range chips today/7d/this_month/last_month/12m/custom + compare). No migration.
+6.3.5 DONE locally (growthNote/growthView thin-data rule; KPI notes always show counts). No migration.
+6.3.6 DONE locally (busyHeat weekday×hour on dashboard from arrived appts; heatmap on S10). No migration.
+6.3.7 DONE locally (incomplete + recall call lists; outreach_contacts; contact hides until next visit). **Migration `0045_outreach_contacts.sql` — owner applies.**
+6.3.8 DONE locally (GET /dashboard/today-summary reports.today; receptionist S10 summary; full dashboard still 403). No migration.
+6.3.9 SKIPPED / Waiting (baad me — wait & chair utilisation after status habit).
+6.3.10 SKIPPED / Waiting (baad me — age/gender mix).
+6.4.1 DONE locally (A4 monthly report print from dashboard totals; DRAFT sister printer). No migration.
+6.4.2 DONE locally (GET /stats/export CSV from daily_stats; Download CSV on S10). No migration.
+6.4.3 SKIPPED / Waiting (baad me — monthly email via Brevo).
+6.4.4 SKIPPED / Waiting (baad me — year-on-year after 12 months).
+6.5.1 DONE locally (Settings hub S12: groups + search; clinic/billing/privacy/numbers/system/prefs/messages; GET /counters). No migration.
+6.5.2 DONE locally (setting history + restore; Timings panels; GET/POST history/restore). **Migration `0046_audit_log_settings_history_idx.sql` — owner applies.**
+6.5.3 DONE locally (TUNABLES + settings; Preferences Clinic limits; guard test; README table). **Migration `0047_tunable_settings.sql` — owner applies.**
+6.5.4 DONE locally (yearly holidays + national templates + booking block). No migration. DRAFT national list for sister.
+6.5.5 DONE locally (Preferences chart.view in hub; covered with 6.5.1/6.5.3). No migration.
+6.5.6 DONE locally (SETTING_HELP for every key; UI lines on clinic/billing/privacy/prefs/tunables; test). No migration.
+6.6.1 DONE locally (dashboard rowsRead &lt;2000 already asserted in dashboard.test 6.3.1). No migration.
+6.6.2 SKIPPED / Waiting (sister sign-off on dashboard layout/defs — needs 6.1.1).
+6.6.3 SKIPPED / Waiting (top-5 fixes after 6.6.2).
+6.7.1 DONE locally (History chips + date/tooth/q filters; summary always loaded; filter tests). No migration.
+6.7.2 DONE locally (A4 history print summary doctor-only; receptionist 403; print_log history_summary). No migration.
+6.7.3 DONE locally (past_records + Added later feed; doctor create; receptionist 403). **Migration `0048_past_records.sql` — owner applies.**
+Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
+5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
+5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
+5.1.3 DONE locally (paise helpers: half-up discount, round-off ≤99, allocate, bill cap, cash warn). No migration.
+5.2.1 DONE locally (bills + bill_items; server computeBillTotals; create draft). **Migration `0038_bills.sql` — owner applies.**
+5.2.2 DONE locally (payments + allocations + receipt no; issue helper). **Migration `0039_payments.sql` — owner applies.**
+5.2.3 DONE locally (refunds; doctor only; cannot exceed payment). No new migration (table in 0039).
+5.2.4 DONE locally (unallocated payment = advance; covered in payments test). No migration.
+5.2.5 DONE locally (opening_balance bill kind). Waiting: match 5 real paper register dues.
+5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
+5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
+5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.11 DONE locally (A5 bill+receipt print; amount in words; reg no; not GST note; Duplicate via print_log; receipt opens after payment). Waiting: sister printer haan. No migration.
+5.3.9 DONE locally (daily cash close by mode; counted cash; note if difference; lock day; late entry; doctor reopen; print). **Migration `0042_day_closes.sql` — owner applies.**
+5.3.8 DONE locally (doctor cancel UI on BillScreen; paid bills blocked; number kept). No migration.
+5.3.7 DONE locally (doctor refund UI on Billing tab; payments list + full refund path test). No migration.
+5.3.6 DONE locally (discount request + doctor approve; issue blocked until approved; receptionist cannot approve). No migration.
+5.3.5 DONE locally (apply patient advance on bill issue; advance shown on Billing tab). No migration.
+5.3.4 DONE locally (dues list by age buckets + call notes; appointment/Today Due mark, amount for receptionist only). **Migration `0041_dues_calls.sql` — owner applies.** Screens S09.
+5.3.1 DONE locally (createFromVisit + draft line edit with fee-change reason + Issue; S09). No migration.
+5.3.2 DONE locally (split cash+UPI UI + reference; PaymentTakeForm; receipt shows both). No migration.
+5.3.3 DONE locally (account list + filter + A4 statement print; outstanding = dues sum test). No migration.
+5.3.12 DONE locally (monthly CSV doctor-only reports.full; patient code only; access_log export). Waiting: CA open fake month file. No migration.
+5.3.15 DONE locally (Plan tab estimate/billed/paid; over-estimate flag). No migration.
+5.4.1 DONE locally (weekly workflow + SQL integrity script; intentional over-alloc test). Waiting: HEALTHCHECKS_BILLING_URL + staging export secrets for live alarm. No migration.
+5.4.2 SKIPPED / Waiting (needs 2.5.1 domain events).
+5.5.1 DONE locally (money property loops + 50 parallel bill issue + refund cap; day-close lock covered by 5.3.9 tests; no SQL triggers — repo locks). No migration.
+5.5.2 SKIPPED / Waiting (receptionist usability 10 tasks — needs sister).
+5.5.3 SKIPPED / Waiting (CA review of sample bills/export/day close).
+5.5.4 SKIPPED / Waiting (top-5 fixes after 5.5.2).
+5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
+4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
+4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
+4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
+4.4.3 DONE locally (certificates + register + print; history feed; receptionist no diagnosis; gap-free MC-FY-####). **Migration `0036_certificates.sql` — owner applies.**
+4.4.2 DONE locally (consent A4 from templates; extraction default; print_log; DRAFT lawyer body). No migration.
+4.4.1 DONE locally (estimate A4 from live plan; print_log; DRAFT lawyer disclaimer; valid 30 days). No migration.
+4.3.4 SKIPPED (Waiting: clinic printer test).
+4.3.1–4.3.5 DONE locally (letterhead settings; Rx print S13; print_log + Duplicate copy; reg empty blocks print). **Migrations `0034_clinic_letterhead_settings.sql`, `0035_print_log.sql` — owner applies.**
+4.2.8 DONE locally (prescriptions in History; doctor sees medicines; receptionist rx_no only + print href).
+4.2.2–4.2.7 DONE locally (Medicines tab S05; issue/revise/copy; safety warnings; tablet count; API + matrix).
+4.2.1 DONE locally (prescriptions + prescription_items; create/get; snapshot lock test; receptionist draft 403). **New migration `0033_prescriptions.sql` — owner applies.**
+4.1.5 DONE locally (medicine_sets seed + parseMedicineSetItems; apply-to-Rx UI in 4.2.2).
+4.1.4 DONE locally (allergen tag ↔ medicine tags; medicineMatchesAllergen test).
+4.1.3 DONE locally (Settings ListEditor already covers medicines; medicineSnapshot freezes name/dose for issued Rx).
+4.1.2 DONE locally (45 DRAFT medicines + 3 sets + allergen tags). **New migration `0032_medicines_seed.sql` — owner applies.** Sister sign-off Waiting.
+4.1.1 DONE locally (medicines + medicine_sets LIST_DEFS; allergen optional tag; no DDL — seed 4.1.2 / 0032).
+3.10.5 DONE locally (fake clinical seed SQL + `pnpm db:seed:clinical` for 200 local-only patients; chart <400 rows test). No migration.
+3.10.4 SKIPPED (needs 3.10.3 usability issues list — Waiting on doctor).
+3.10.3 SKIPPED / Waiting (doctor usability session).
+3.10.2 DONE locally (autosave patch/retry labels covered; offline hold already in useVisitAutosave). No migration.
+3.10.1 DONE locally (phase3-gate + existing clinical/file/plan/history permission tests). No migration.
+3.9.1–3.9.2 SKIPPED (baad me records demand). Listed under Waiting / DECISIONS.
+3.8.3 DONE locally (photo upload soft-warns without photo consent). No migration.
+3.8.2 DONE locally (consents visit/plan/template columns; extraction finalise soft warning). Migration 0031.
+3.8.1 DONE locally (DRAFT consent templates setting + Settings editor). **New migration `0031_consent_templates.sql` — owner applies.**
+3.7.8 SKIPPED (baad me DICOM viewer). Listed under Waiting / DECISIONS.
+3.7.7 DONE locally (soft delete + audit; object kept in storage). No migration.
+3.7.6 DONE locally (storage usage panel; warn ≥7GB / crit ≥9GB from files.bytes sum). No migration.
+3.7.5 DONE locally (receptionist 403 on X-ray content; scan OK; access_log on clinical view). No migration.
+3.7.4 DONE locally (Files tab S04/S17 grid+viewer+upload; visit Files tab). No migration.
+3.7.3 DONE locally (browser prepare: photo→2000px JPEG 85%, X-ray untouched, thumb 300px). No migration.
+3.7.2 DONE locally (StorageAdapter local/S3/memory; upload+list+content API; aws4fetch; check-storage script). **New migration `0030_files_upload_meta.sql` — owner applies; agent did not apply to staging.**
+3.7.1 DONE locally (DECISIONS: JPEG/PNG upload path until sister confirms RVG; B2 S3 driver for staging/prod, local R2/memory for dev). No migration.
+3.6.5 DONE locally (estimate change reason required; PATCH `/plan-items/:id/estimate` + Plan tab UI). No migration.
+3.6.4 DONE locally (visit finalise matches/creates plan items → completed). No migration.
+3.6.3 SKIPPED (baad me multi-sitting steps). Listed under Waiting / DECISIONS.
+3.6.2 DONE locally (Plan tab by phase + totals; accepted requires toldOn; PATCH decision). No migration. Screens: S05/S06.
+3.6.1 DONE locally (POST/GET plan-items; Plan karo from visit Plan tab with chart tooth focus). No migration.
+3.5.15 DONE locally (archived patient History summary+feed still 200; extends 2.1.8 acceptance). No migration.
+3.5.14 DONE locally (receptionist history feed uses non-clinical sources only; files limited to scan/consent; API + repo tests). No migration.
+3.5.13 DONE locally (stage-1 feed sources: treatments, files, medical_change, consent, amendment; visits enriched with dx; empty sources stay empty). **New migration `0029_files_patient_history_idx.sql` — owner applies; agent did not apply to staging.**
+3.5.12 DONE locally (GET `/patients/:id/history` merged feed; cursor pagination; appointments+visits sources; access_log; <1s page test). No new migration (existing patient indexes).
+3.5.11 DONE locally (History tab + summary strip S04/S17; empty state; filter chip stubs; GET `/history/summary`; access_log on view; returning patient defaults to History). No migration.
+3.5.10 SKIPPED (baad me): visit templates deferred; listed under Waiting / DECISIONS. No migration.
+3.5.9 DONE locally (Visits tab timeline S04/S17; GET `/patients/:id/visits/timeline` with dx/px filters; 30-visit speed test; receptionist 403). No migration.
+3.5.8 DONE locally (Today incomplete-visits widget; GET `/visits/drafts`; yesterday’s drafts still listed; never auto-finalise; receptionist 403). No migration. Screen: S01.
+3.5.7 DONE locally (addenda list+form; entered-in-error voids visit with audit; original text kept). No migration.
+3.5.6 DONE locally (Finalise visit UI with soft warnings; locks draft via existing API; fields read-only after). No migration.
+3.5.5 DONE locally (visit notes autosave: 1.5s debounce, ≥5s between saves, Saved/Saving/Not saved chip, offline hold + retry, UnsavedChangesGuard; draft patch still no audit). No migration.
+3.5.4 DONE locally (visit procedures from list + chart tooth/surfaces; usual fee shown; POST `/visits/:id/procedures`; Chart tab VisitProcedures). No migration.
+3.5.3 DONE locally (Today's visit notes form: complaint/history/exam/gum/advice/vitals; quick phrases `;scal`; diagnosis autocomplete + free text + tooth; PATCH visit + POST diagnoses; no audit on draft patch). No migration.
+3.5.2 DONE locally (Visit layout S05: AlertsStrip/ProfileAlerts, tabs Today's visit / Chart / Plan / History / Files, last 3 visits side; GET `/patients/:id/visits`; receptionist 403). No migration.
+3.5.1 DONE locally (Open visit from Today Now + profile New visit; idempotent draft reuse; `/app/visits/:id` shell S05). No migration.
+3.4.6 DONE locally (dentitionFromAgeYears: &lt;6 primary, 6–12 mixed, 13+ permanent; Dentition override on Chart tab; primary/permanent are separate FDI events). No migration.
+3.4.5 DONE locally (chart API GET/POST; as-of finalised visit; today highlight; VisitChartPanel on patient Chart tab S04/S17; receptionist 403). No new migration.
+3.4.4 DONE locally (conditions list: code/colour/icon/applies_to; DRAFT full starter set; chart legend + surface colours from list). **New migration `0028_conditions_chart_fields.sql` — owner applies; agent did not apply to staging.**
+3.4.3 DONE locally (dentist-view R label + FDI default; single setting `chart.view` facing+notation; labels convert Universal/Palmer; notation name always on chart). **New migration `0027_chart_view_setting.sql` — owner applies; agent did not apply to staging.** Sister "haan" still Waiting.
+3.4.2 DONE locally (custom SVG ToothChart: permanent/primary/mixed rows, 5 surfaces + whole, keyboard arrows+Enter, aria labels; playground on /app/style-guide). No migration.
+3.4.1 DONE locally (chart UI spike → custom SVG; table in DECISIONS.md). No migration. Sister facing/notation still Waiting (3.4.3).
+3.3.4 DONE locally (stale_months setting default 6; GET medical-history returns stale; Overview prompt Yes/No; visit-open prompt also wires in 3.5.1). **New migration `0026_medical_history_stale_months.sql` — owner applies; agent did not apply to staging.**
+3.3.3 DONE locally (restricted alerts: receptionist API flags only / 403 on medical-history; doctor listAlerts writes access_log). No new migration.
+3.3.2 DONE locally (AlertsStrip on profile S04/S17 + Today/day appointment cards icon-only; day API adds alertFlags; visit-screen strip waits for 3.5.2 layout). No new migration.
+3.3.1 DONE locally (medical history checklist form on patient Overview S04/S17; list `medical_history_items` + allergens; API GET/POST + alert-flags; receptionist 403 on clinical history). **New migration `0025_medical_history_checklist_seed.sql` — owner applies; agent did not apply to staging.**
+3.2.7 DONE locally (staff visit API: open/get/finalise/addenda; STAFF_ROUTE_MATRIX clinical.edit/view; receptionist+developer HTTP 403). No new migration.
+3.2.6 DONE locally (finalise snapshot+hash; repo blocks draft edits on final; addenda). **New migration `0024_visit_addenda.sql` — owner applies; agent did not apply to staging.** No SQL triggers (DECISIONS).
+3.2.5 DONE locally (plan_items + plan_item_versions; estimate increase needs reason). **New migration `0023_plan_items.sql` — owner applies; agent did not apply to staging.**
+3.2.4 DONE locally (medical_history versions + alerts; receptionist alertFlags only). **New migration `0022_medical_history_alerts.sql` — owner applies; agent did not apply to staging.**
+3.2.3 DONE locally (diagnoses/procedures/conditions/allergens/quick_phrases lists; visit_diagnoses + visit_procedures; DRAFT seeds). **New migrations `0020_visit_clinical_children.sql`, `0021_clinical_lists_seed.sql` — owner applies; agent did not apply to staging.**
+3.2.2 DONE locally (tooth_events append-only; chartFromEvents; <400 rows). **New migration `0019_tooth_events.sql` — owner applies; agent did not apply to staging.**
+3.2.1 DONE locally (visits table; open draft; one appointment → one live visit; receptionist 403). **New migration `0018_visits.sql` — owner applies; agent did not apply to staging.**
+3.1.2 DONE locally (reference note in DECISIONS.md). No migration.
+2.4.7 DONE locally (Today + Appointments auto-refresh every 60s via useVisibleInterval; pauses when tab hidden). No new migration.
+2.4.4 DONE locally (A4 day list at /app/print/day?date=; Print today/tomorrow from Today; browser print). Printer test on clinic printer waiting on owner. No new migration.
+2.4.3 DONE locally (Today wired to GET day appointments; status one-click; walk-in dialog; next/waiting/call-list no-shows; doctor Now+Next3; collection stat deferred to Phase 5). No new migration. Screens: S01/S14.
+2.4.2 DONE locally (QuickBookDialog S07: patient search, visit type, 5 slots, phone note, POST book; GET `/appointments/slots`). No new migration.
+2.4.1 DONE locally (day view at /app/appointments: GET `/appointments?date=`, CSS grid timeline, status colour+label, now-line from serverNow, empty-slot → ?book=, drag-reschedule with confirm). No new migration. Screen: S08 (day).
+2.3.8 DONE locally (cancel reasons + notifyPatient on audit until 2.5.1; reschedule new row + old rescheduled + chain; GET patient appointments + profile tab chain). No new migration.
+2.3.7 DONE locally (POST `/appointments/walk-in`; arrived + waiting queue sort emergency-first; emergency overbook insert; formatWaiting). No new migration.
+2.3.6 DONE locally (status wheel in shared; PATCH `/appointments/:id/status`; arrived/started/ended stamps; no_show after start+15m; cancelled/no_show→scheduled within 24h via updated_at; statusActionButtons for UI). No new migration.
+2.3.5 DONE locally (booking rules: past/closed/lunch/ahead; overrideReason → overbook + audit; setting appointments.book_ahead_days=90). **New migration `0017_appointments_book_ahead.sql` — owner applies; agent did not apply to staging.**
+2.3.4 DONE locally (POST `/api/staff/appointments`; INSERT…WHERE NOT EXISTS overlap + auditInsertIfChanged; 50 parallel same-slot → 1 win / 49 ConflictError / 1 audit). No new migration.
+2.3.3 DONE locally (findFreeSlots: working hours − lunch − holidays − busy statuses; slotSearchEarliest = now+15m; 12 unit tests for empty/full/lunch/holiday/gap/RCT/today/Sunday/cancelled/rescheduled/arrived/limit). No new migration.
+2.3.2 DONE locally (visit_types: minutes + colour; seed Consultation/Follow-up/Cleaning/RCT sitting/Extraction/Ortho adjustment/Emergency; roundUpToSlot + visitTypeSnapshot so list edits do not rewrite old bookings; Settings list UI colour picker). **New migration `0016_visit_types_seed.sql` — owner applies; agent did not apply to staging.**
+2.3.1 DONE locally (appointments table: patient, chair_id, visit_type id/label, start_at UTC, date_local + start_min/end_min IST, status/source/priority/overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status; EXPLAIN uses indexes). **New migration `0015_appointments.sql` — owner applies; agent did not apply to staging.**
+2.2.8 DONE locally (contact_relation; contactMobile = own or guardian; profile shows relation + “N others on this number”). **New migration `0014_patient_contact_relation.sql` — owner applies; agent did not apply to staging.**
+2.2.7 DONE locally (registration consent panel; create without consent OK; SMS/marketing/notice rows only when checked; settings privacy_notice.*). **New migration `0013_privacy_notice_settings.sql` — owner applies; agent did not apply to staging.**
+2.2.5 DONE locally (list filters: new this month, not seen in 6 months [reg proxy until 2.3], archived; default sort created_at desc; server pagination). No new migration.
+2.2.4 DONE locally (PUT `/patients/:id` version-checked edit; audit old/new mobile; ConfirmDialog on mobile change; 409 stale version). No new migration.
+2.2.3 DONE locally (top-bar PatientSearch: `/` focus, 250 ms debounce, arrows+Enter → profile; empty → New patient: query; last visit placeholder until 2.3). No new migration.
+2.2.2 DONE locally (GET `/patients/:id`; S04/S17 profile header + Overview/Appointments tabs; Visits/Billing/Files/Messages hidden until their phase; consents on Overview; list name → profile). No new migration.
+2.2.1 DONE locally (new patient form S03/S16: four required fields, More details fold, duplicate-check on mobile debounce, POST `/api/staff/patients` mints P- code + search tokens + audit; after save Book appointment / Walk-in now). No new migration.
+2.1.9 DONE locally (consents table append-only; GET/POST `/patients/:id/consents`; ConsentsPanel shows when / who / notice version; withdraw = new row). **New migration `0012_consents.sql` — owner applies (with 0006–0011); agent did not apply to staging.**
+2.1.8 DONE locally (archive with reason + restore; default list status=active; `?status=archived|all`; POST archive/restore; audit update/restore).
+2.1.7 DONE locally (soft duplicate warnings: mobile+name word, name+age±1y, secondary mobile; POST `/api/staff/patients/duplicate-check`; never hard-blocks).
+2.1.6 DONE locally (`patient_search` tokens + index; range search; last-4 via mobile_rev; seed writes tokens; EXPLAIN uses index; <100 rows on 5k). **New migration `0011_patient_search.sql` — owner applies (with 0006–0010); agent did not apply to staging.**
+2.1.5 DONE locally (`takePatientCode`: counters `patient_code` / period `all` + settings prefix/digits → P-000123; batch with patient INSERT; same takeNumber path for later bill/prescription/portal numbers).
+2.1.4 DONE locally (`displayAge` / `ageYearsOn`: DOB preferred; else age-at-reg + years since registration; Patients list shows computed age, never a stored current-age column).
+2.1.3 DONE locally (guardian_name/relation/mobile columns; `guardianSaveError` blocks under-18 without guardian; age helpers for minor check). **New migration `0010_patient_guardian.sql` — owner must apply to staging (with 0006–0009); agent did not apply it.** Final DPDP lawyer wording still open.
+1.1.7 DONE locally (`pnpm db:seed` loads 5,000 fake patients into local D1 only; GET `/api/staff/patients` + Patients screen S02/S15 so a developer can see them). Never seed staging/production.
+2.1.2 DONE locally (20 good + 20 bad unit tests for `normaliseMobile` in packages/shared; displayMobile covered).
+2.1.1 DONE locally (PATIENT_FIELDS registry with required/optional + purpose; patients table migration 0009; CHECKs for gender/status/mobile-or-reason/dob-or-age). Staging apply of 0009 waits on owner (with 0006–0008).
+version_metadata DONE locally (env.staging + env.production in wrangler.jsonc so `/api/staff/health` shows real version, not "dev").
+1.7.3–1.7.5 / 1.6.x / 1.5.x / 1.4.x / 1.3.x / 1.2.x / 1.1.x: see prior Done notes; staging Google live-checked 2026-11-22.
+Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not start Phase 4.
+
+## Manual check (3.5.2)
+1. Open a visit as doctor from Today or patient profile.
+2. See alerts strip (if any), five tabs, and Last visits on the side (below on phone).
+3. Check at 360 / 768 / 1366; Tab through tabs with arrows.
+
+## Manual check (3.4.3)
+1. Open /app/style-guide as doctor; chart shows "R (patient's right) · FDI".
+2. Tooth labels are FDI numbers; change `chart.view` notation later via Settings when UI exists.
+3. Check at 360 / 768 / 1366.
+
+## Manual check (3.4.2)
+1. Open /app/style-guide as doctor.
+2. Tab to the tooth chart board.
+3. Arrow to tooth 46 occlusal; Enter — filling marks blue.
+4. Check at 360 / 768 / 1366 (horizontal scroll inside board OK on phone).
+
+
+
+## Phase 6 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Fake numbers hand-count match in tests | **passed** (daily-stats / dashboard / call-lists tests) |
+| Dashboard open reads &lt;2000 rows | **passed** (dashboard.test 6.3.1 / 6.6.1) |
+| Day close blocked with 3 incomplete appts | **passed** (day-close.test) |
+| Sister approved defs, layout, top-4 KPIs | **waiting** (6.1.1 / 6.6.2) |
+| Charts as table + keyboard | **passed with exception** — ChartFrame table toggle + keys; clinic pass Waiting |
+| Setting restore one-click | **passed** (settings-history.test) |
+| Receptionist: full dashboard/reports 403; today-summary OK | **passed** (route-matrix + today-summary) |
+| Incomplete + recall lists on fake data | **passed** (call-lists.test) |
+| Fake-data-only scan | **passed** (Fake* seeds/tests) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+| Keyboard use | **passed with exception** — existing patterns; clinic pass Waiting |
+| 6.6.2 / 6.6.3 sister sign-off + top-5 | **waiting** |
+| 6.3.9 / 6.3.10 / 6.4.3 / 6.4.4 | **skipped** (baad me) |
+
+**Phase 6 gate: passed with exceptions** (do not start Phase 7 until owner says go).
+
+## Phase 7 gate (from PLAN.md + owner dry_run/wa.me decision)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist (board/view OK; developer blocked on patient messages) | **passed** |
+| No real SMS/WhatsApp provider integrated; MESSAGING_MODE dry_run | **passed** |
+| Consent required; withdraw cancels queued | **passed** |
+| Templates English DRAFT; no clinical/amount in body (lint + dues wording) | **passed** |
+| wa.me open → opened_in_whatsapp + audit | **passed** |
+| FakeAdapter claim-once / dry_run path | **passed** |
+| 7.1.2–7.1.5 gateway/SIM/DLT reports | **waiting** |
+| Webhooks / phone heartbeat / 7-day phone test | **waiting** (skipped) |
+| Sister message list + runbook sign-off | **waiting** |
+| Day-cancel wizard (7.3.6) | **partial** |
+| Fake-data-only scan | **passed** |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+
+**Phase 7 gate: passed with exceptions** (do not start Phase 8 until owner says go).
+
+## Phase 5 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist (bills.create OK; bills.adjust / reports.full / refund 403) | **passed** (route-matrix + repo tests) |
+| 50 parallel bill numbers no dup/gap | **passed** (5.5.1 / numbering) |
+| Day close lock + late entry | **passed** (5.3.9 tests) |
+| Refund / cancel / discount-approval paths | **passed** (5.2.3 / 5.3.6–5.3.8 tests) |
+| Receipt reg no + amount in words + Duplicate | **passed** (5.3.10 / 5.3.11 code+tests) |
+| Billing integrity SQL + intentional fail | **passed** (script test); live Healthchecks alarm **waiting** |
+| Shadow series totals vs sister paper | **waiting** |
+| Opening balances vs paper register | **waiting** (5.2.5) |
+| CA bill form + export approve | **waiting** (5.1.1 / 5.3.12 / 5.5.3) |
+| Fake-data-only scan | **passed** (Fake* seeds/tests) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+| Keyboard use | **passed with exception** — existing patterns; clinic pass Waiting |
+| Receptionist usability 10 tasks | **waiting** (5.5.2) |
+
+**Phase 5 gate: passed with exceptions** (do not start Phase 6 until owner says go).
+
+## Phase 4 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist API (Rx print-only; cert print-only; no diagnosis on cert GET; estimate clinical.view) | **passed** (permissions, certificates, print-log, history-feed, route-matrix) |
+| Master list change does not rewrite issued Rx | **passed** (4.2.1 snapshot test) |
+| Empty `doctor.registration_no` blocks Rx print + certificate finalise | **passed** (4.3.2/4.4.3 tests) |
+| Reprint → Duplicate copy + print_log | **passed** (4.3.5 / print-log tests) |
+| English print (estimate, consent, certificate, blank×20, Rx sample) | **passed** (code + 4.5.1 text snapshots) |
+| Certificate gap-free `MC-{FY}-####` | **passed** (4.4.3) |
+| Medicines list audit record in Settings | **passed** (4.5.4) |
+| Fake-data-only scan | **passed** (seeds/tests Fake*; staff-admin prompt example only) |
+| Print regression 1–8 medicines in CI (`pnpm test:e2e`) | **passed with exception** — text snapshots committed; pixel screenshots deferred (DECISIONS 4.5.1) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check still open |
+| Keyboard use | **passed with exception** — existing patterns; full clinic keyboard pass Waiting |
+| Sister 10 fake Rx on clinic printer (4.5.2) / estimate·consent·cert haan | **waiting** |
+| Clinic printer (4.3.4) | **waiting** |
+
+**Phase 4 gate: passed with exceptions** (do not start Phase 5 until Waiting items that block real patients are cleared / owner says go).
+
+## Phase 3 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist API (notes/restricted/X-ray 403) | **passed** (staff-visits, medical-history, files-permissions, history-feed, phase3-gate) |
+| Finalise lock + addendum / entered-in-error | **passed** (staff-visits + repo tests) |
+| Plan sync on finalise | **passed** (3.6.4) |
+| Upload permissions + no public URL | **passed** (3.7.2/3.7.5) |
+| Consent soft warning on extraction | **passed** (3.8.2) |
+| Chart/timeline &lt;400 rows on fake history | **passed** (tooth-events + fake-clinical seed test) |
+| Fake-data-only scan | **passed** (seeds/tests marked fake) |
+| 10-year fake history opens &lt;1s | **passed with exception** — history feed page test exists (3.5.12); full 10-year seed not loaded this round |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check still open |
+| Keyboard use | **passed with exception** — chart/tabs keyboard tests exist; full clinic keyboard pass Waiting |
+| Doctor usability 5 min consult / 60s follow-up | **waiting** (3.10.3) |
+| Autosave after 30s offline | **passed with exception** — code path covered; manual clinic wifi-off still Waiting |
+| Chart facing/notation sister haan | **waiting** (3.4.3) |
+| X-ray viewer + access_log | **passed** (3.7.4–3.7.5) |
+| B2/storage keys on staging | **waiting** |
+
+**Phase 3 gate: passed with exceptions** (do not start Phase 4 until Waiting items that block real patients are cleared).
+
+## Phase 2 gate (from PLAN.md + owner checklist)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green (typecheck + lint + tests) | **passed** |
+| Role × endpoint matrix (includes new appointment GETs) | **passed** |
+| 50 parallel same-slot booking: one win, no loser audit | **passed** (2.3.4 test) |
+| Search budget &lt;100 rows on token index (5k local seed path) | **passed** (2.1.6 scale test) |
+| No real patient PHI in repo/tests (fake data only) | **passed** |
+| Consent optional; SMS/marketing only when checked | **passed** (2.2.7) |
+| Today/day/quick-book/print/auto-refresh code in place | **passed** (2.4.1–2.4.4, 2.4.7) |
+| Receptionist 10 fake cards &lt;90s each (usability) | **waiting** (needs sister / 2.7.3) |
+| Half-name + last-4 search smoke by receptionist | **waiting** (owner/usability) |
+| Full fake day on Today (10 appts, walk-in, emergency, cancel, no-show) | **waiting** (owner manual) |
+| Aaj list on sister's clinic printer | **waiting** (2.4.4) |
+| Responsive check at 360 / 768 / 1366 (owner eyes) | **waiting** (CSS mobile-first; visual not run this round) |
+| Keyboard-first checks | **waiting** (prior 1.4.x) |
+| 2.5.1 domain events | **skipped this round** (not in HANDOFF path; before formal PLAN gate) |
+| 2.6 paper import | **skipped** (needs owner scope A/B/C) |
+| 2.7.1–2.7.4 formal gate tasks | **partial** — automated pieces covered by existing tests; usability session waiting |
+
+**Phase 2 gate: passed with exceptions** (owner may treat as ready to start Phase 3 only after clearing Waiting items that block real patients).
+
+## Phase 1 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| CI green; push from main deploys staging | **waiting** — CI exists; deploy step omitted by owner; owner must push |
+| Access: doctor/receptionist pages differ; bad email blocked; JWT negatives | **passed with exception** — Google staff login live (1.3.8); Access outer layer optional (card). JWT verifier + tests done (1.3.2) |
+| Role × endpoint matrix | **passed** (1.7.4) |
+| 50 parallel numbering no dup/gap | **passed** (spike 0.6.3) |
+| Backup 7 nights + restore | **waiting** (1.6.3 accounts + run) |
+| Clinic profile + timings → print preview name | **waiting** — timings done (1.5.3); clinic profile/logo deferred (1.5.2 / R2) |
+| Phase 0/1 hours vs plan updated | **waiting** (owner process) |
+
+## Before Phase 2 (hard blockers to *start* Phase 2 code)
+
+None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may implement Phase 2 with fake data.
+
+## Before real patients (go-live blockers — do not put real PHI live until these)
+
+- Staging migrations 0006–0042 applied + `pnpm deploy:staging`; health OK
+- 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
+- 1.6.4 alarms (Healthchecks + UptimeRobot) tested
+- 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
+- 1.5.3 doctor sets real clinic hours (not PLACEHOLDER seed)
+- 1.5.6 / Phase 0 sheets: real visit types, medicines, diagnoses, referrals (or explicit defer)
+- 1.3.4 doctor confirms permission table
+- 1.3.1 Access (or explicit accept Google-only without Access)
+- 1.3.5 securityheaders.com grade noted
+- 1.4.8 clinic printer check; 1.4.3 receptionist PC; 1.4.7 offline banner on clinic PC; keyboard checks
+- Owner push + green CI on main; production env + domain when going live
+- Phase 0 clinic-visit leftovers the doctor still owes
+- No real patient data on staging or in repo ever before go-live rules say so
+
+Waiting on me (owner):
+- **Phase 7**: 7.1.1 sister message-list ok; 7.1.2–7.1.5 gateway/SIM/TRAI/DLT (if ever); 7.9.3–7.9.4 phone test + sister sign-off; 7.3.6 day-cancel wizard; 7.7.3 lawyer privacy paragraph; DRAFT templates doctor confirm
+- Staging: apply migrations **0006–0053** (next free **0054**)
+- **6.1.1 / 6.6.2 / 6.6.3**: sister sign-off on metric defs + dashboard layout; then top-5 fixes
+- **6.5.4**: DRAFT national holidays (Republic / Independence / Gandhi) — sister edit in Settings
+- **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
+- **5.5.3 / 5.5.4**: CA review sample bills+export+day close; then top-5 fixes
+- **5.4.1**: create Healthchecks check + GitHub secret `HEALTHCHECKS_BILLING_URL`; confirm fail ping on bad dump
+- **5.4.2**: blocked until 2.5.1 domain events
+- **5.3.12**: CA open one fake-month CSV and approve columns
+- **5.3.11**: sister approve A5 bill/receipt print on clinic printer
+- **5.2.5**: enter 5 fake/real opening balances from paper register and confirm totals
+- **5.1.1**: CA written answers to docs/CA_QUESTIONS.md (GST, bill form, cash ₹2L, retention, print fields)
+- **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
+- **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
+- **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
+- Staging: apply migrations **0006–0053** (next free **0054**)
+- **6.3.9 / 6.3.10**: baad me (wait/chair; age/gender)
+- **6.4.1**: sister approve monthly report print on clinic printer
+- **6.4.3 / 6.4.4**: baad me (email report; YoY)
+- **HEALTHCHECKS_BILLING_URL** GitHub secret for weekly billing integrity
+- DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
+- **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
+- **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
+- **B2 keys as Worker secrets on staging** (`S3_KEY_ID` / `S3_APP_KEY` via `wrangler secret put`; endpoint/bucket/region already in wrangler staging vars) — then run `pnpm --filter @clinic/worker storage:check`
+- **3.7.1**: sister confirm which RVG/software and whether it exports JPEG/PNG (or only DICOM)
+- **3.6.3**: multi-sitting step tracker deferred (baad me)
+- **3.5.10**: visit templates (Scaling / RCT next / Review) deferred as PLAN "baad me" — confirm later if doctor wants them before Phase 4
+- **3.1.1**: 90-minute clinic visit with doctor — paper chart flow, draft lists (diagnosis, procedures+fees, tooth conditions, medical alerts, quick phrases), FDI vs Palmer and chart facing. Needed for clinical decisions page (sister "haan"). Agent skipped; Phase 3 code continues with DRAFT list seeds until then.
+- 2.4.4: test-print A4 day list on the clinic printer (sister)
+- Staging: apply migrations **0006–0031**, then `pnpm deploy:staging`; curl `/api/staff/health`
+- **3.4.3**: sister confirm chart facing/notation habit ("haan"); default remains dentist+FDI until then
+- 3.2.3 / 3.3.1 DRAFT clinical list seeds (diagnoses/procedures/conditions/allergens/phrases/medical_history_items) — replace after 3.1.1 doctor sign-off
+- 2.1.3: lawyer sign-off on final guardian/DPDP wording (clinic save rule is in place)
+- DRAFT lawyer texts: any consent/under-18 wording marked "DRAFT - lawyer to confirm" in app (list when added)
+- 1.6.3 / 1.6.4 backup + alarm accounts (ACCOUNTS.md); if B2 asks for a card: stop
+- 1.5.2 when R2/card ready; 1.5.6 when Phase 0 sheets exist
+- 1.5.3 real clinic hours; 1.4.8 printer; 1.3.4 permissions; 1.4.2/1.4.4 keyboard; 1.4.7 wifi-off; 1.4.3 receptionist PC; 1.3.5 securityheaders; 1.3.1 Zero Trust card
+- Push for green CI; optional branch protection
+Owner checklist / Cloudflare / Google: unchanged (see prior notes).
+Phase 0 still open: clinic-visit tasks for the owner.
+Open questions: SMS language, rate list language, portal monitor, public-site plan lines (DECISIONS).
+Known issues: agents never push; Today uses FAKE sample data until Phase 2 APIs; staging no R2 until 3.7; Book appointment / Walk-in after new patient land on NotBuiltYet until 2.3.
+Owner's real hours (owner fills): Phase 0: -

@@ -48,4 +48,4 @@ The staff app shows a "Server busy" banner with a link to paper mode when any AP
 
 1. Cloudflare dashboard → Workers & Pages → your Worker → Metrics → Requests.
 2. Check weekly; keep the budget table above updated after `9.4.1` load test.
-3. When 9.2.5 error_log and 9.4.1 cron alerting are live, monitoring is automatic.
+3. 9.2.5 error_log is live locally for browser errors (doctor list at /app/errors); server-side error writes and 9.4.1 cron alerting are not wired yet, so keep checking by hand.

@@ -15,6 +15,7 @@ import {
 } from "../domain/visits";
 import { SEED_MARKER, seedPeople } from "./staging-seed-data";
 import { addDays, at, must, type Flow, type Obj, type SeedReport } from "./staging-seed-core";
+import { seedRequests } from "./staging-seed-requests";
 import { billAndPay, closeSeedDay, prescribe } from "./staging-seed-money";
 
 export type { SeedReport } from "./staging-seed-core";
@@ -37,6 +38,7 @@ export async function runStagingSeed(d1: D1Binding, now: Date = new Date()): Pro
   });
   const report: SeedReport = {
     patients: 0,
+    requests: 0,
     appointments: 0,
     visitsFinal: 0,
     visitsOpen: 0,
@@ -49,6 +51,7 @@ export async function runStagingSeed(d1: D1Binding, now: Date = new Date()): Pro
   };
 
   const ids = await seedPatients(rec, report, now);
+  await seedRequests(doc, rec, ids, report);
   const today = istDate(now);
   let k = 0;
   let refundDone = false;

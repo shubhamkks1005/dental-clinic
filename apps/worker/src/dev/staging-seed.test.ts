@@ -15,6 +15,8 @@ describe("staging seed", () => {
     expect(r.prescriptions).toBeGreaterThan(2);
     expect(r.bills).toBeGreaterThan(5);
     expect(r.refunds).toBe(1);
+    expect(r.requests).toBe(3);
+    expect(r.skipped.length).toBeLessThan(5);
     expect(r.closedDay).toBe("2026-11-16");
     const count = (q: string) => (sqlite.prepare(q).get() as { n: number }).n;
     expect(count("SELECT COUNT(*) n FROM payments WHERE split_mode IS NOT NULL")).toBeGreaterThan(
