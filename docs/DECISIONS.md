@@ -134,3 +134,5 @@
 - 2026-11-23 - **4.4.6 Blank forms:** `/app/print/blank?kind=` prints 20 A4 copies (registration, medical_history, consent) in one click; print_log kind blank_form. - agent (4.4.6)
 - 2026-11-23 - **4.5.1 Print regression:** Playwright compares printable sheet **text** snapshots for sample Rx with 1..8 fake medicines (`/app/print/sample?lines=`). Text snapshots (not pixels) so Mac and CI linux match. - agent (4.5.1)
 - 2026-11-23 - **4.5.4 Medicines list review:** Settings → Medicines shows last review (who/when/itemCount). Button records medicines.list_reviewed. Stale when active item count differs. /me now includes user id. - agent (4.5.4)
+- 2026-11-23 - **5.1.1 CA questions:** Written questions live in docs/CA_QUESTIONS.md. Until CA replies, defaults are gst_mode=off, no cosmetic list, bill-of-supply style, cash ≥₹2L warn only. Marked DRAFT - accountant to confirm. - agent (5.1.1)
+- 2026-11-23 - **Phase 5 start:** Owner authorised Phase 5 after Phase 4 gate passed with exceptions. Earlier leftovers stay under Before real patients / Waiting; not redone. - owner
