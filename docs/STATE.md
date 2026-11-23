@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 6 in progress (history polish 6.7.x). Owner said go; Phase 5 gate leftovers stay under Waiting.
+Phase: 6 gate passed with exceptions. Do not start Phase 7 until owner says go. Phase 5 leftovers stay under Waiting.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
 Phase 3/4/5 leftovers stay under Before real patients / Waiting; not redone.
 PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
@@ -191,6 +191,27 @@ Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not s
 4. Check at 360 / 768 / 1366 (horizontal scroll inside board OK on phone).
 
 
+
+## Phase 6 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Fake numbers hand-count match in tests | **passed** (daily-stats / dashboard / call-lists tests) |
+| Dashboard open reads &lt;2000 rows | **passed** (dashboard.test 6.3.1 / 6.6.1) |
+| Day close blocked with 3 incomplete appts | **passed** (day-close.test) |
+| Sister approved defs, layout, top-4 KPIs | **waiting** (6.1.1 / 6.6.2) |
+| Charts as table + keyboard | **passed with exception** — ChartFrame table toggle + keys; clinic pass Waiting |
+| Setting restore one-click | **passed** (settings-history.test) |
+| Receptionist: full dashboard/reports 403; today-summary OK | **passed** (route-matrix + today-summary) |
+| Incomplete + recall lists on fake data | **passed** (call-lists.test) |
+| Fake-data-only scan | **passed** (Fake* seeds/tests) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+| Keyboard use | **passed with exception** — existing patterns; clinic pass Waiting |
+| 6.6.2 / 6.6.3 sister sign-off + top-5 | **waiting** |
+| 6.3.9 / 6.3.10 / 6.4.3 / 6.4.4 | **skipped** (baad me) |
+
+**Phase 6 gate: passed with exceptions** (do not start Phase 7 until owner says go).
 
 ## Phase 5 gate (from PLAN.md)
 
