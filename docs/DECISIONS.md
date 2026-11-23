@@ -141,3 +141,4 @@
 - 2026-11-23 - **5.2.1 Bills schema:** bills + bill_items; totals always recomputed via computeBillTotals (gst off default). kind normal|opening_balance. Tax category exempt|cosmetic stored for later. Migration 0038. - agent (5.2.1)
 - 2026-11-23 - **5.2.2 Payments:** payments + payment_allocations; auto-allocate oldest dues; leftover = advance. Receipt R-/SR- via counters in same batch. Mode + short reference only (no card/UPI id). Split cash+UPI via split_mode/split_paise. Migration 0039. - agent (5.2.2)
 - 2026-11-23 - **5.2.3–5.2.7:** Refunds doctor-only via bills.adjust; cannot exceed payment−prior refunds. Advance = unallocated payment. Opening balance = bill kind. gst_mode setting default off (DRAFT CA). Issued bills locked at repo (assertDraftEditable); cancel needs reason and zero allocations. - agent (5.2.3–5.2.7)
+- 2026-11-23 - **5.3.10 Amount in words:** English only, Indian lakh/crore; packages/shared/src/amount-words.ts. - agent (5.3.10)
