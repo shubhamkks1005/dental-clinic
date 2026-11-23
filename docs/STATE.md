@@ -31,6 +31,9 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.4.1 DONE locally (weekly workflow + SQL integrity script; intentional over-alloc test). Waiting: HEALTHCHECKS_BILLING_URL + staging export secrets for live alarm. No migration.
 5.4.2 SKIPPED / Waiting (needs 2.5.1 domain events).
 5.5.1 DONE locally (money property loops + 50 parallel bill issue + refund cap; day-close lock covered by 5.3.9 tests; no SQL triggers — repo locks). No migration.
+5.5.2 SKIPPED / Waiting (receptionist usability 10 tasks — needs sister).
+5.5.3 SKIPPED / Waiting (CA review of sample bills/export/day close).
+5.5.4 SKIPPED / Waiting (top-5 fixes after 5.5.2).
 5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
@@ -255,6 +258,8 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
+- **5.5.3 / 5.5.4**: CA review sample bills+export+day close; then top-5 fixes
 - **5.4.1**: create Healthchecks check + GitHub secret `HEALTHCHECKS_BILLING_URL`; confirm fail ping on bad dump
 - **5.4.2**: blocked until 2.5.1 domain events
 - **5.3.12**: CA open one fake-month CSV and approve columns

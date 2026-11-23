@@ -82,6 +82,8 @@ export async function updateDraftBill(repos: Repos, id: string, body: unknown) {
 }
 
 export async function exportBillsMonth(repos: Repos, monthRaw: unknown) {
+  // Permission before input parse so denied roles get 403, not 400.
+  repos.bills.assertExportAllowed();
   const parsed = parseMonthParam(monthRaw);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const rows = await repos.bills.exportMonth(parsed.month);

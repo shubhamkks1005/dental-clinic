@@ -9,6 +9,10 @@ import { billItems, bills, patients, paymentAllocations, payments } from "../sch
 /** 5.3.12 monthly CA export: patient code only, no names. */
 export function billsExportRepo(db: Db, ctx: Ctx) {
   return {
+    assertExportAllowed() {
+      assertAllowed(ctx, "reports.full");
+    },
+
     async exportMonth(month: string): Promise<BillingExportRow[]> {
       assertAllowed(ctx, "reports.full");
       const start = `${month}-01`;

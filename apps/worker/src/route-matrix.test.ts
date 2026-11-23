@@ -20,6 +20,7 @@ function concrete(path: string): string {
     .replace("/lists/:key", "/lists/referral_sources")
     .replace("/users/:id/", "/users/rec-1/")
     .replace("/print-log/preview", "/print-log/preview?kind=day_list&id=x")
+    .replace("/bills/export", "/bills/export?month=2026-11")
     .replace(/:[^/]+/g, "x");
 }
 
