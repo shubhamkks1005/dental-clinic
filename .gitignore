@@ -15,3 +15,6 @@ playwright/.cache/
 
 # Local backup dry-run output (may hold ciphertext; never commit age private keys)
 scripts/backup/.dry-out/
+
+# Generated tree dump
+TREE.txt

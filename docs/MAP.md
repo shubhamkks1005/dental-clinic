@@ -13,6 +13,23 @@
 - docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan; 3.1.2 open-dentist / react-odontogram takeaways
 - docs/PATIENT_HISTORY.md - Unified Patient History spec (History tab on S04/S17; staged Phases 3–6; tasks 3.5.11–15, 4.2.8, 5.3.16, 6.7.x)
 - docs/CA_QUESTIONS.md - 5.1.1 CA billing/tax questions; DRAFT answers until accountant confirms
+- docs/QUOTA.md - 9.2.1 daily Worker request budget table, alert thresholds 50k/80k/95k, Error 1027 explanation, reset 05:30 IST
+- docs/PAPER_KIT.md - 9.2.3 evening paper-kit checklist, blank forms inventory, late-entry label rule
+- docs/THREAT_MODEL.md - 9.3.1 three surfaces (staff+portal, gateway+webhook, backups+CI), ~17 risks with mitigations and task refs
+- docs/SECRETS_ROTATION.md - 9.3.3 secrets table (no values) + 6-month rotation calendar template; pointer to ACCOUNTS.md
+- docs/ACCESS_REVIEW.md - 9.3.4 quarterly access review checklist table (Cloudflare, GitHub, B2, registrar, app staff list)
+- docs/PRIVACY_READINESS.md - 9.3.8 readiness checklist (Yes/Waiting/DRAFT rows) + processors table
+- docs/BREACH_PLAN.md - 9.3.9 contain/notify/record plan (DRAFT - lawyer to confirm); tabletop drill steps
+- docs/RETENTION.md - 9.3.10 retention table (clinical ≥3y DCI, clinic 8y DRAFT, outbox 1y, attempts 90d, etc.) + purge job notes
+- docs/ARCHITECTURE.md - 9.5.1 one-page architecture (Worker+D1+web+adapters), stack table, auth summary, environments
+- docs/FIRST_DAY.md - 9.5.1 new developer first-day guide (nvm, pnpm, local D1, backup:dry-run, pnpm check)
+- docs/USER_MANUAL.md - 9.5.2 English staff manual (doctor + receptionist sections; screenshot placeholders)
+- docs/TRAINING.md - 9.5.3 two 90-minute sessions, mock day, cheat sheet content
+- docs/SUPPORT.md - 9.5.4 problem reporting, P0/P1/P2 priorities, deploy windows, Hypercare
+- docs/RELEASE.md - 9.5.5 local/staging/production, CI pipeline, release steps, rollback, migration checklist
+- docs/GO_NO_GO.md - 10.1.1 go/no-go criteria table with status (all Waiting before go-live)
+- docs/PILOT_PREP.md - 10.1.2–10.1.14 preparation checklists: calendar, responsibilities, hardware, SIM, pre-load A+B, 30 mock scenarios, dress rehearsal, privacy consent prep
+- docs/runbooks/DOWNTIME.md - 9.2.4 decision tree (app down, 1027, D1, bad deploy rollback, paper mode, DNS); phone number placeholders DRAFT
 
 ## Commands (run from repo root, Node 26 and pnpm 12)
 - pnpm dev - builds web once, then runs Vite (5173, proxies /api and /hooks) + wrangler dev (8787) together

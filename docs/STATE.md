@@ -16,7 +16,28 @@ PLAN: Cut A / raasta 2 after Phase 7. Permissions: AUTH_PLAN 4f in packages/db/s
 9.1.8 DONE locally (RESTORE_TIME_TRAVEL.md). **Waiting:** throwaway D1 drill.
 9.1.9 DONE locally (MIGRATION_SAFETY.md). **Waiting:** fake bad-migration rollback note.
 9.1.10 DONE locally (ops_status mig 0051, /hooks/ops-status, dashboard attention). **Waiting:** OPS_WEBHOOK_* secrets + fail-ping → red line test.
-**Migration `0051_ops_status.sql` — owner applies.** Next free: **0052**.
+**Migration `0051_ops_status.sql` — owner applies.**
+9.2.5 PARTIAL locally (mig 0052_error_log + repo errorLog with PHI scrub). **Missing:** POST route (rate limited), browser reporter, UI. Not wired anywhere yet.
+8.2.11 PARTIAL locally (mig 0053_patient_requests + repo + zod types, 30-day due). **Missing:** staff API routes + UI; portal form is later.
+9.2.1 cron: quota monitor + retention purge wired into cron/run.ts (hourly branch). Live GraphQL count is still a stub (returns 0) until owner token.
+**Migrations 0052, 0053 — owner applies (agent did not touch staging).** Next free: **0054**.
+Migration meta: snapshots exist only for 0019-0024 and 0038-0039; later migrations are hand-written SQL + journal entry (checksums.json lock is the guard). Same as 0040-0051; not new.
+9.2.1 DONE locally (docs/QUOTA.md — budget table, thresholds, Error 1027, reset time). **Waiting:** GraphQL analytics token (owner) + real numbers from 9.4.1 load test.
+9.2.3 DONE locally (docs/PAPER_KIT.md — evening checklist, blank forms, late-entry rule). **Waiting:** sister runs one mock paper day (drill).
+9.2.4 DONE locally (docs/runbooks/DOWNTIME.md — decision tree, paper mode, rollback, DNS; phone placeholders). **Waiting:** owner fills phone numbers; rollback drill by developer.
+9.3.1 DONE locally (docs/THREAT_MODEL.md — 3 surfaces, ~17 risks with mitigations and task refs).
+9.3.3 DONE locally (docs/SECRETS_ROTATION.md — secrets table, 6-month calendar; no values). **Waiting:** rotation drill (one secret changed, system still running).
+9.3.4 DONE locally (docs/ACCESS_REVIEW.md — quarterly checklist table).
+9.3.8 DONE locally (docs/PRIVACY_READINESS.md — Yes/Waiting/DRAFT checklist + processors table). **Waiting:** all Waiting rows completed before real patients.
+9.3.9 DONE locally (docs/BREACH_PLAN.md — contain/notify/record DRAFT; tabletop drill steps). **Waiting:** lawyer to confirm; tabletop drill not yet done.
+9.3.10 DONE locally (docs/RETENTION.md — retention table DRAFT). **Waiting:** doctor confirm 8y clinic policy; CA confirm billing retention; purge job (cron/retention-purge.ts) only soft-deletes message_attempts >90d so far; other tables/legal hold still to do.
+9.5.1 DONE locally (docs/ARCHITECTURE.md — one-page system overview; docs/FIRST_DAY.md — new dev onboarding).
+9.5.2 DONE locally (docs/USER_MANUAL.md — English staff manual outline, doctor + receptionist; screenshot placeholders). **Waiting:** screenshots after dress rehearsal.
+9.5.3 DONE locally (docs/TRAINING.md — two 90-min sessions, mock day, cheat sheet). **Waiting:** actual sessions with sister + receptionist.
+9.5.4 DONE locally (docs/SUPPORT.md — P0/P1/P2, deploy windows, Hypercare). **Waiting:** owner fills phone numbers.
+9.5.5 DONE locally (docs/RELEASE.md — full release process, CI, rollback, migration checklist).
+10.1.1 DONE locally (docs/GO_NO_GO.md — criteria table; all Waiting).
+10.1.2–10.1.14 DONE locally (docs/PILOT_PREP.md — all checklists as tables; 30 mock scenarios; Waiting columns). **Waiting:** all items in the Waiting column; live drills not done.
 **Phase 7 owner decision:** no paid SMS/WhatsApp API, no DLT, no card; MESSAGING_MODE=dry_run everywhere; ManualWhatsApp + FakeAdapter; English DRAFT templates; consent required; status opened_in_whatsapp on wa.me tap.
 7.1.1 SKIPPED / Waiting (sister message-list ok). DRAFT English table seeded.
 7.1.2–7.1.5 SKIPPED / Waiting (gateway spike, E2E encryption, SIM/TRAI, Plan B DLT — need phone/SIM/operator/card).
@@ -400,7 +421,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 Waiting on me (owner):
 - **Phase 7**: 7.1.1 sister message-list ok; 7.1.2–7.1.5 gateway/SIM/TRAI/DLT (if ever); 7.9.3–7.9.4 phone test + sister sign-off; 7.3.6 day-cancel wizard; 7.7.3 lawyer privacy paragraph; DRAFT templates doctor confirm
-- Staging: apply migrations **0006–0050** (next free **0051**)
+- Staging: apply migrations **0006–0053** (next free **0054**)
 - **6.1.1 / 6.6.2 / 6.6.3**: sister sign-off on metric defs + dashboard layout; then top-5 fixes
 - **6.5.4**: DRAFT national holidays (Republic / Independence / Gandhi) — sister edit in Settings
 - **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
@@ -414,7 +435,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0006–0050** (next free **0051**)
+- Staging: apply migrations **0006–0053** (next free **0054**)
 - **6.3.9 / 6.3.10**: baad me (wait/chair; age/gender)
 - **6.4.1**: sister approve monthly report print on clinic printer
 - **6.4.3 / 6.4.4**: baad me (email report; YoY)
