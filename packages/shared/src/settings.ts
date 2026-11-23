@@ -73,12 +73,13 @@ export const SETTING_SCHEMAS = {
   "doctor.qualifications": z.string().trim().max(120).optional().default(""),
   "doctor.speciality": z.string().trim().max(80).optional().default(""),
   "doctor.registration_no": z.string().trim().max(40).optional().default(""),
-  // 4.5.4: doctor acknowledged the medicines list version.
+  // 4.5.4: doctor acknowledged the medicines list (itemCount = version at review).
   "medicines.list_reviewed": z
     .object({
       at: z.string().min(1),
       byUserId: z.string().min(1),
       byName: z.string().min(1),
+      itemCount: z.number().int().min(0),
       note: z.string().max(200).optional().default(""),
     })
     .nullable(),

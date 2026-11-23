@@ -7,9 +7,22 @@ import { StaffSettings } from "../staff";
 import { TimingsSettings } from "../timings";
 import { NotBuiltYet, NotFound } from "../../ui/PageMessage";
 import { ConsentTemplatesSettings } from "./ConsentTemplatesSettings";
+import { MedicinesListReview } from "./MedicinesListReview";
 import "./settings.css";
 
 type Section = { path: string; label: string; permission: string; screen: ReactNode };
+
+function listScreen(key: (typeof LIST_KEYS)[number]): ReactNode {
+  if (key === "medicines") {
+    return (
+      <>
+        <ListEditor listKey="medicines" />
+        <MedicinesListReview />
+      </>
+    );
+  }
+  return <ListEditor listKey={key} />;
+}
 
 // S12 Settings: a list of sections beside the open one. Each section shows only for the roles
 // whose permission it needs; later tasks add clinic details, doctor, medicines and more.
@@ -26,7 +39,7 @@ const SECTIONS: Section[] = [
     path: key,
     label: LIST_DEFS[key].title,
     permission: "settings.read",
-    screen: <ListEditor key={key} listKey={key} />,
+    screen: listScreen(key),
   })),
   { path: "staff", label: "Staff", permission: "staff.manage", screen: <StaffSettings /> },
 ];

@@ -1,7 +1,7 @@
 import type { Role } from "@clinic/shared";
 import { api } from "../../api/client";
 
-export type Me = { name: string; role: Role; permissions: string[] };
+export type Me = { id: string; name: string; role: Role; permissions: string[] };
 export type Branding = { clinicName: string | null; logo: string | null };
 
 // Full page navigations (not fetch): Google and, later, Cloudflare Access must see them.
