@@ -232,3 +232,4 @@
 - 2026-11-24 - **D6 Reminders:** confirmation when booked; reminder created for 17:00 the day before and hidden until due. Owner accepted.
 - 2026-11-24 - **D7 Devices:** doctor and receptionist may use all three widths; phone and tablet fixed in Part 3 and Part 5. Owner accepted.
 - 2026-11-24 - **D8 Advance payments:** wanted, built later in Q3.1. Owner accepted.
+- 2026-11-24 - **Q0.7 how a refund is applied (D1):** a refund first takes the part of that payment that was never applied to a bill (the advance), then reduces what the payment paid on bills, newest allocation first. Allocation rows are never edited; the one helper `paidByBill` (packages/db/src/repos/bills-paid.ts) applies it, and bill due, dues list, ready-to-bill, plan items, cancel and the dashboard outstanding all use it. No migration. The statement shows a Refunded column - agent (Q0.7)

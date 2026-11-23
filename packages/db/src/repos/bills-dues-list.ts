@@ -1,9 +1,10 @@
+import { paidByBill } from "./bills-paid";
 import { daysBetweenOn, dueAgeBucket, istDate, type DueAgeBucket } from "@clinic/shared";
-import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
-import { bills, duesCalls, patients, paymentAllocations } from "../schema";
+import { bills, duesCalls, patients } from "../schema";
 import { readyToBillByAppointment } from "./bills-ready";
 
 export type DuesListRow = {
@@ -41,16 +42,7 @@ export async function duesByPatientIds(db: Db, patientIds: string[]): Promise<Ma
   if (open.length === 0) return out;
 
   const ids = open.map((b) => b.id);
-  const paidRows = await db
-    .select({
-      billId: paymentAllocations.billId,
-      paid: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-    })
-    .from(paymentAllocations)
-    .where(and(inArray(paymentAllocations.billId, ids), isNull(paymentAllocations.deletedAt)))
-    .groupBy(paymentAllocations.billId)
-    .all();
-  const paidMap = new Map(paidRows.map((r) => [r.billId, Number(r.paid)]));
+  const paidMap = await paidByBill(db, ids);
 
   for (const b of open) {
     const due = b.totalPaise - (paidMap.get(b.id) ?? 0);
@@ -93,16 +85,7 @@ export function billsDuesListRepo(db: Db, ctx: Ctx) {
       }
 
       const ids = open.map((b) => b.id);
-      const paidRows = await db
-        .select({
-          billId: paymentAllocations.billId,
-          paid: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-        })
-        .from(paymentAllocations)
-        .where(and(inArray(paymentAllocations.billId, ids), isNull(paymentAllocations.deletedAt)))
-        .groupBy(paymentAllocations.billId)
-        .all();
-      const paidMap = new Map(paidRows.map((r) => [r.billId, Number(r.paid)]));
+      const paidMap = await paidByBill(db, ids);
 
       type Acc = {
         patientId: string;

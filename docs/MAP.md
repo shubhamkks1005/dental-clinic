@@ -502,3 +502,6 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - apps/web features/visits visit-autosave.ts notesAsText + "conflict" status, useVisitAutosave.ts - Q1.6 a 409 stops the retry loop and shows a banner (Copy my text, Reload visit)
 - apps/web features/timings WeekForm.tsx - Q1.6 live validation (mode onChange), Save disabled with "Cannot save yet. <Day>: <sentence>"
 - e2e/appointment-actions.spec.ts (Q1.4), e2e/no-silent-failures.spec.ts (Q1.6); e2e/core-loop.spec.ts also covers Q1.2 and Q1.3
+
+- packages/db/src/repos/bills-paid.ts: paidByBill(db, billIds), what each bill has really been paid after refunds (D1). Test: bills-paid.test.ts.
+- apps/web/src/features/billing/billing.css: scoped layout for the Bill screen and payment form (utility classes are not global until Q2.1).

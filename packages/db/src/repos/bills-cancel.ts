@@ -1,11 +1,12 @@
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { bills, paymentAllocations } from "../schema";
+import { bills } from "../schema";
 import { nowUtcSql } from "../sql";
+import { paidByBill } from "./bills-paid";
 import { billsGetRepo, type BillRow } from "./bills-get";
 
 export function billsCancelRepo(db: Db, ctx: Ctx) {
@@ -32,14 +33,8 @@ export function billsCancelRepo(db: Db, ctx: Ctx) {
       if (row.version !== version) throw new ConflictError();
 
       if (row.status === "issued") {
-        const paid = await db
-          .select({
-            sum: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-          })
-          .from(paymentAllocations)
-          .where(and(eq(paymentAllocations.billId, id), isNull(paymentAllocations.deletedAt)))
-          .get();
-        if (Number(paid?.sum ?? 0) > 0) {
+        const paid = (await paidByBill(db, [id])).get(id) ?? 0;
+        if (paid > 0) {
           throw new InvalidError("Refund or move the payments on this bill before cancelling it.");
         }
       }

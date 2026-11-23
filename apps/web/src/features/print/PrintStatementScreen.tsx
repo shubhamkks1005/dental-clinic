@@ -116,6 +116,7 @@ export function PrintStatementScreen() {
               <th>Receipt</th>
               <th>Mode</th>
               <th>Amount</th>
+              <th>Refunded</th>
             </tr>
           </thead>
           <tbody>
@@ -130,6 +131,7 @@ export function PrintStatementScreen() {
                     : ""}
                 </td>
                 <td>{formatRupees(p.amountPaise)}</td>
+                <td>{p.refundedPaise > 0 ? formatRupees(p.refundedPaise) : "—"}</td>
               </tr>
             ))}
           </tbody>

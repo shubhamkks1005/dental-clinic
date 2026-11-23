@@ -1,6 +1,7 @@
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { paidByBill } from "./bills-paid";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import type { Db } from "../client";
-import { billItems, bills, paymentAllocations } from "../schema";
+import { billItems, bills } from "../schema";
 
 export type PlanBillingTotals = {
   billedPaise: number;
@@ -36,25 +37,13 @@ export async function billingTotalsForPlanItems(
     .all();
 
   const billIds = [...new Set(lines.map((l) => l.billId))];
-  const paidByBill = new Map<string, number>();
-  if (billIds.length > 0) {
-    const allocs = await db
-      .select({
-        billId: paymentAllocations.billId,
-        sum: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-      })
-      .from(paymentAllocations)
-      .where(and(inArray(paymentAllocations.billId, billIds), isNull(paymentAllocations.deletedAt)))
-      .groupBy(paymentAllocations.billId)
-      .all();
-    for (const a of allocs) paidByBill.set(a.billId, Number(a.sum));
-  }
+  const paidMap = await paidByBill(db, billIds);
 
   for (const line of lines) {
     if (!line.planItemId) continue;
     const cur = result.get(line.planItemId) ?? { billedPaise: 0, paidPaise: 0 };
     cur.billedPaise += line.lineTotalPaise;
-    const billPaid = paidByBill.get(line.billId) ?? 0;
+    const billPaid = paidMap.get(line.billId) ?? 0;
     if (line.billTotalPaise > 0 && billPaid > 0) {
       cur.paidPaise += Math.floor((billPaid * line.lineTotalPaise) / line.billTotalPaise);
     }

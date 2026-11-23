@@ -1,6 +1,7 @@
-import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { paidByBill } from "./bills-paid";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import type { Db } from "../client";
-import { bills, paymentAllocations } from "../schema";
+import { bills } from "../schema";
 
 /** Outstanding on issued (non-cancelled) bills for a patient, oldest first. */
 export async function openBillDues(
@@ -21,16 +22,7 @@ export async function openBillDues(
   if (open.length === 0) return [];
 
   const ids = open.map((b) => b.id);
-  const paidRows = await db
-    .select({
-      billId: paymentAllocations.billId,
-      paid: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-    })
-    .from(paymentAllocations)
-    .where(and(inArray(paymentAllocations.billId, ids), isNull(paymentAllocations.deletedAt)))
-    .groupBy(paymentAllocations.billId)
-    .all();
-  const paidMap = new Map(paidRows.map((r) => [r.billId, Number(r.paid)]));
+  const paidMap = await paidByBill(db, ids);
 
   return open
     .map((b) => {

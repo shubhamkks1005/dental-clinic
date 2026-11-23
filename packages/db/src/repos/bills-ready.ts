@@ -1,6 +1,7 @@
+import { paidByBill } from "./bills-paid";
 import { and, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
-import { bills, paymentAllocations, visits } from "../schema";
+import { bills, visits } from "../schema";
 
 export type ReadyToBill = { visitId: string; billId: string | null };
 
@@ -36,24 +37,10 @@ export async function readyToBillByAppointment(
       and(inArray(bills.visitId, visitIds), ne(bills.status, "cancelled"), isNull(bills.deletedAt)),
     )
     .all();
-  const paidRows = await db
-    .select({
-      billId: paymentAllocations.billId,
-      paid: sql<number>`coalesce(sum(${paymentAllocations.amountPaise}), 0)`,
-    })
-    .from(paymentAllocations)
-    .where(
-      and(
-        inArray(
-          paymentAllocations.billId,
-          live.map((b) => b.id),
-        ),
-        isNull(paymentAllocations.deletedAt),
-      ),
-    )
-    .groupBy(paymentAllocations.billId)
-    .all();
-  const paid = new Map(paidRows.map((r) => [r.billId, Number(r.paid)]));
+  const paid = await paidByBill(
+    db,
+    live.map((b) => b.id),
+  );
 
   for (const v of finals) {
     if (!v.appointmentId) continue;

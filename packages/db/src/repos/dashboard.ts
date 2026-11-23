@@ -175,7 +175,16 @@ async function outstandingPaise(db: Db): Promise<number> {
     .from(bills)
     .where(and(eq(bills.status, "issued"), isNull(bills.deletedAt)))
     .get();
-  return Math.max(0, Number(row?.value ?? 0));
+  // D1: refunds that went back out of bill payments re-open the due (see bills-paid.ts).
+  const reopened = await db.all<{ value: number }>(sql`
+    select coalesce(sum(max(0, r.refunded - (p.amount_paise - coalesce(a.applied, 0)))), 0) as value
+    from payments p
+    join (select payment_id, sum(amount_paise) as refunded from refunds
+          where deleted_at is null group by payment_id) r on r.payment_id = p.id
+    left join (select payment_id, sum(amount_paise) as applied from payment_allocations
+               where deleted_at is null group by payment_id) a on a.payment_id = p.id
+    where p.deleted_at is null`);
+  return Math.max(0, Number(row?.value ?? 0) + Number(reopened[0]?.value ?? 0));
 }
 
 async function loadCells(
