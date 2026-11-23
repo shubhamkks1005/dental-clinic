@@ -31,3 +31,9 @@ export { pastRecords } from "./past-records";
 export { messageOutbox, messageAttempts, channelState, phoneFlags } from "./message-outbox";
 export { opsStatus, OPS_STATUS_KEYS, OPS_STATUS_VALUES } from "./ops-status";
 export type { OpsStatusKey, OpsStatusValue } from "./ops-status";
+export { errorLog, ERROR_LOG_SOURCES } from "./error-log";
+export {
+  patientRequests,
+  PATIENT_REQUEST_TYPES,
+  PATIENT_REQUEST_STATUSES,
+} from "./patient-requests";
