@@ -20,6 +20,7 @@ export * from "./mobile";
 export * from "./money";
 export * from "./billing-numbers";
 export * from "./billing";
+export * from "./bill-discount";
 export * from "./payments";
 export * from "./dues";
 export * from "./amount-words";

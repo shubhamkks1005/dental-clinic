@@ -1,6 +1,7 @@
 import { amountInWords, formatRupees } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
+import { BillDiscountPanel } from "./BillDiscountPanel";
 import { getBill, issueBill, listPatientBills, type BillDto } from "./api";
 
 /** S09 bill detail: issue draft, print link. */
@@ -105,6 +106,8 @@ export function BillScreen() {
         <p className="muted small">This is not a GST invoice (gst_mode off — DRAFT accountant).</p>
       </div>
 
+      <BillDiscountPanel bill={bill} onUpdated={setBill} onError={(message) => setError(message)} />
+
       {bill.status === "draft" && advancePaise > 0 ? (
         <label className="row gap-sm align-center" style={{ minHeight: 44 }}>
           <input
@@ -118,7 +121,12 @@ export function BillScreen() {
 
       <div className="row wrap gap-sm">
         {bill.status === "draft" ? (
-          <button type="button" className="btn" disabled={busy} onClick={() => void onIssue()}>
+          <button
+            type="button"
+            className="btn"
+            disabled={busy || (bill.discountPaise > 0 && !bill.discountApprovedBy)}
+            onClick={() => void onIssue()}
+          >
             Issue bill
           </button>
         ) : (

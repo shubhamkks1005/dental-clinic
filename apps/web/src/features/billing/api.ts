@@ -49,6 +49,8 @@ export type BillDto = {
   kind: string;
   subtotalPaise: number;
   discountPaise: number;
+  discountReason: string | null;
+  discountApprovedBy: string | null;
   taxPaise: number;
   roundOffPaise: number;
   totalPaise: number;
@@ -91,6 +93,23 @@ export function issueBill(id: string, version: number, opts: { applyAdvance?: bo
   return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/issue`, {
     method: "POST",
     body: { version, applyAdvance: opts.applyAdvance === true },
+  }).then((r) => r.bill);
+}
+
+export function requestBillDiscount(
+  id: string,
+  input: { version: number; discountPaise: number; reason: string },
+) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/discount`, {
+    method: "POST",
+    body: input,
+  }).then((r) => r.bill);
+}
+
+export function approveBillDiscount(id: string, version: number) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/discount/approve`, {
+    method: "POST",
+    body: { version },
   }).then((r) => r.bill);
 }
 

@@ -6,6 +6,7 @@ import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { billItems, bills, patients, settings, visits } from "../schema";
+import { nowUtcSql } from "../sql";
 import { billsGetRepo, type BillRow } from "./bills-get";
 
 async function gstMode(db: Db): Promise<GstMode> {
@@ -48,11 +49,15 @@ export function billsCreateRepo(db: Db, ctx: Ctx) {
         }
       }
 
-      if (input.billDiscountPaise && input.billDiscountPaise > 0 && !input.discountApproved) {
-        throw new InvalidError("A doctor must approve a discount before saving this bill.");
+      // 5.3.6: discount may be requested without approval; issue() blocks until doctor approves.
+      const wantsDiscount =
+        (input.billDiscountPaise != null && input.billDiscountPaise > 0) ||
+        (input.billDiscountPercent != null && input.billDiscountPercent > 0);
+      if (wantsDiscount && !input.discountReason) {
+        throw new InvalidError("Pick a discount reason.");
       }
-      if (input.billDiscountPercent && input.billDiscountPercent > 0 && !input.discountApproved) {
-        throw new InvalidError("A doctor must approve a discount before saving this bill.");
+      if (input.discountApproved && ctx.role !== "doctor") {
+        throw new InvalidError("Only a doctor can approve a discount.");
       }
 
       const mode = await gstMode(db);
@@ -106,7 +111,13 @@ export function billsCreateRepo(db: Db, ctx: Ctx) {
           discountPaise: totals.discountPaise,
           discountReason: input.discountReason ?? null,
           discountApprovedBy:
-            totals.discountPaise > 0 && input.discountApproved ? ctx.userId : null,
+            totals.discountPaise > 0 && input.discountApproved && ctx.role === "doctor"
+              ? ctx.userId
+              : null,
+          discountApprovedAt:
+            totals.discountPaise > 0 && input.discountApproved && ctx.role === "doctor"
+              ? nowUtcSql
+              : null,
           taxPaise: totals.taxPaise,
           roundOffPaise: totals.roundOffPaise,
           totalPaise: totals.totalPaise,

@@ -152,7 +152,7 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/features/billing/ - 5.3.x BillingHome (dues list S09), BillScreen, PatientBillingPanel, api
+- src/features/billing/ - 5.3.x BillingHome (dues list S09), BillScreen, BillDiscountPanel, PatientBillingPanel, api
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/files/ - 3.7.3–3.7.4 prepareImage + PatientFilesTab (grid, viewer, upload; S04/S17)
@@ -223,6 +223,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - migrations/0039_payments.sql - creates payments tables
 - src/repos/payments-create.ts / bills-issue.ts / bills-dues.ts - record payment, issue bill, open dues
 - src/repos/payments-advance.ts / payments-apply-advance.ts - 5.3.5 patient credit + apply to issued bill
+- src/repos/bills-discount.ts - 5.3.6 requestDiscount + approveDiscount (bills.adjust)
+- src/bill-discount.ts - parseRequestBillDiscount / parseApproveBillDiscount
 - src/repos/bills-dues-list.ts / dues-calls.ts - 5.3.4 clinic-wide dues by age bucket + call notes; duesForPatients for appointment cards
 - schema/dues-calls.ts + migrations/0041_dues_calls.sql - append-only dues call notes
 - src/repos/bills-create.ts / bills-get.ts - draft bill create (server totals) + get

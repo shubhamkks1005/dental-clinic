@@ -145,3 +145,4 @@
 - 2026-11-23 - **5.3.1/2/3/16 billing UI+API:** Visit→draft bill; patient Billing tab account+payment; BillScreen issue; history feed bills/payments/refunds; outstanding due on summary. Print/dues list/daily close/discount approval UI still open. - agent
 - 2026-11-23 - **5.3.4 Dues list:** Age buckets 0–30 / 31–60 / 61+ from oldest unpaid bill_on vs IST today. Append-only dues_calls for last-call notes (mig 0041). Appointment/Today cards show "Due" mark; amount only for receptionist. - agent (5.3.4)
 - 2026-11-23 - **5.3.5 Apply advance:** On issue, optional applyAdvance allocates oldest unallocated payment leftovers onto the new bill (no new payment row). - agent (5.3.5)
+- 2026-11-23 - **5.3.6 Discount approval:** Draft may carry unapproved discount+reason; issue requires discountApprovedBy. Receptionist requests; doctor approves via bills.adjust. No advertising (DCI). - agent (5.3.6)

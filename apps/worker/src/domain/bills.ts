@@ -1,9 +1,11 @@
 import type { Repos } from "@clinic/db";
 import {
+  parseApproveBillDiscount,
   parseCreateBill,
   parseDuesCall,
   parseRecordPayment,
   parseRecordRefund,
+  parseRequestBillDiscount,
 } from "@clinic/shared";
 
 export async function createBill(repos: Repos, body: unknown) {
@@ -84,4 +86,18 @@ export async function recordRefund(repos: Repos, body: unknown) {
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const refund = await repos.refunds.record(parsed.value);
   return { ok: true as const, refund };
+}
+
+export async function requestBillDiscount(repos: Repos, id: string, body: unknown) {
+  const parsed = parseRequestBillDiscount(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.requestDiscount(id, parsed.value);
+  return { ok: true as const, bill };
+}
+
+export async function approveBillDiscount(repos: Repos, id: string, body: unknown) {
+  const parsed = parseApproveBillDiscount(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.approveDiscount(id, parsed.value);
+  return { ok: true as const, bill };
 }

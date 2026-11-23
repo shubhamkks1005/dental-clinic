@@ -1,6 +1,7 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
 import {
+  approveBillDiscount,
   cancelBill,
   createBill,
   createBillFromVisit,
@@ -11,6 +12,7 @@ import {
   recordDuesCall,
   recordPayment,
   recordRefund,
+  requestBillDiscount,
 } from "../domain/bills";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
@@ -51,6 +53,20 @@ staffBills.get("/bills/:id", async (c) => {
 staffBills.post("/bills/:id/issue", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
   const result = await issueBill(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ bill: result.bill }));
+});
+
+staffBills.post("/bills/:id/discount", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await requestBillDiscount(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ bill: result.bill }));
+});
+
+staffBills.post("/bills/:id/discount/approve", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await approveBillDiscount(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }));
 });

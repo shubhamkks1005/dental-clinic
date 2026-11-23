@@ -15,6 +15,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
 5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.6 DONE locally (discount request + doctor approve; issue blocked until approved; receptionist cannot approve). No migration.
 5.3.5 DONE locally (apply patient advance on bill issue; advance shown on Billing tab). No migration.
 5.3.4 DONE locally (dues list by age buckets + call notes; appointment/Today Due mark, amount for receptionist only). **Migration `0041_dues_calls.sql` — owner applies.** Screens S09.
 5.3.1 PARTIAL (API createFromVisit + visit UI button; BillScreen issue). Screens S09.
