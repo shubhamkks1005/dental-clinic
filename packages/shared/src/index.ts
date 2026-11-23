@@ -50,6 +50,7 @@ export * from "./patient-search-tokens";
 export * from "./request-id";
 export * from "./routing";
 export * from "./settings";
+export * from "./settings-restore";
 export * from "./staff";
 export * from "./time";
 export * from "./timings";

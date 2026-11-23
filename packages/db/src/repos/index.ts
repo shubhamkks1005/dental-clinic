@@ -16,6 +16,7 @@ import { patientGetRepo } from "./patient-get";
 import { patientsRepo } from "./patients";
 import { patientUpdateRepo } from "./patient-update";
 import { settingsRepo } from "./settings";
+import { settingsHistoryRepo } from "./settings-history";
 import { countersListRepo } from "./counters-list";
 import { staffRepo } from "./staff";
 import { medicalHistoryRepo } from "./medical-history";
@@ -69,6 +70,7 @@ import { refundsCreateRepo } from "./refunds-create";
 export function createRepos(db: Db, ctx: Ctx) {
   return {
     settings: settingsRepo(db, ctx),
+    settingsHistory: settingsHistoryRepo(db, ctx),
     counters: countersListRepo(db, ctx),
     staff: staffRepo(db, ctx),
     lists: listsRepo(db, ctx),

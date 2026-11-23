@@ -10,3 +10,9 @@ export const updateSetting = (
   value: unknown,
   version: number,
 ): Promise<SettingValue> => repos.settings.update(key, value, version);
+
+/** 6.5.2 */
+export const settingHistory = (repos: Repos, key: string) => repos.settingsHistory.history(key);
+
+export const restoreSetting = (repos: Repos, key: string, auditId: string, version: number) =>
+  repos.settingsHistory.restore(key, auditId, version);

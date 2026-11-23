@@ -1,7 +1,7 @@
-import { fail, ok, parseVersionOnly } from "@clinic/shared";
+import { fail, ok, parseRestoreSetting, parseVersionOnly } from "@clinic/shared";
 import { Hono } from "hono";
 import { listCounters } from "../domain/counters";
-import { listSettings, updateSetting } from "../domain/settings";
+import { listSettings, restoreSetting, settingHistory, updateSetting } from "../domain/settings";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -17,6 +17,27 @@ staffSettings.get("/settings", async (c) =>
 staffSettings.get("/counters", async (c) =>
   c.json(ok({ counters: await listCounters(signedIn(c).repos) })),
 );
+
+/** 6.5.2: who/when/before for one setting key. */
+staffSettings.get("/settings/:key/history", async (c) => {
+  const key = c.req.param("key");
+  return c.json(ok({ history: await settingHistory(signedIn(c).repos, key) }));
+});
+
+/** 6.5.2: restore the value from before that audit row (new version). */
+staffSettings.post("/settings/:key/restore", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const parsed = parseRestoreSetting(body);
+  if (!parsed.ok) return c.json(fail("invalid", parsed.message), 400);
+  const key = c.req.param("key");
+  const saved = await restoreSetting(
+    signedIn(c).repos,
+    key,
+    parsed.value.auditId,
+    parsed.value.version,
+  );
+  return c.json(ok({ key, ...saved }));
+});
 
 staffSettings.put("/settings/:key", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);

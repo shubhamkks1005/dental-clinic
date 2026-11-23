@@ -103,3 +103,58 @@ describe("counters list API (6.5.1)", () => {
     ).toBe(200);
   });
 });
+
+describe("settings history / restore (6.5.2)", () => {
+  it("lists history after a change and restores previous value", async () => {
+    expect((await put("clinic.name", doctor, { value: "Wrong Clinic", version: 1 })).status).toBe(
+      200,
+    );
+    const hist = await app.request(
+      `${ORIGIN}/api/staff/settings/clinic.name/history`,
+      { headers: { cookie: doctor } },
+      env,
+    );
+    expect(hist.status).toBe(200);
+    const histBody = (await hist.json()) as {
+      data: { history: { id: string; beforeValue: string }[] };
+    };
+    expect(histBody.data.history[0]?.beforeValue).toBeTruthy();
+    const restoreInit = sameOriginPost(doctor);
+    const restored = await app.request(
+      `${ORIGIN}/api/staff/settings/clinic.name/restore`,
+      {
+        ...restoreInit,
+        method: "POST",
+        headers: {
+          ...(restoreInit.headers as Record<string, string>),
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ auditId: histBody.data.history[0]!.id, version: 2 }),
+      },
+      env,
+    );
+    expect(restored.status).toBe(200);
+    expect(await restored.json()).toMatchObject({
+      data: { value: histBody.data.history[0]!.beforeValue, version: 3 },
+    });
+    const receptionist = await sessionCookie(env, "rec-1@example.test");
+    const denyInit = sameOriginPost(receptionist);
+    expect(
+      (
+        await app.request(
+          `${ORIGIN}/api/staff/settings/clinic.name/restore`,
+          {
+            ...denyInit,
+            method: "POST",
+            headers: {
+              ...(denyInit.headers as Record<string, string>),
+              "content-type": "application/json",
+            },
+            body: JSON.stringify({ auditId: histBody.data.history[0]!.id, version: 3 }),
+          },
+          env,
+        )
+      ).status,
+    ).toBe(403);
+  });
+});

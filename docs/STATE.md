@@ -27,6 +27,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.4.3 SKIPPED / Waiting (baad me — monthly email via Brevo).
 6.4.4 SKIPPED / Waiting (baad me — year-on-year after 12 months).
 6.5.1 DONE locally (Settings hub S12: groups + search; clinic/billing/privacy/numbers/system/prefs/messages; GET /counters). No migration.
+6.5.2 DONE locally (setting history + restore; Timings panels; GET/POST history/restore). **Migration `0046_audit_log_settings_history_idx.sql` — owner applies.**
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
@@ -314,7 +315,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0006–0045** (next free **0046**)
+- Staging: apply migrations **0006–0046** (next free **0047**)
 - **6.3.9 / 6.3.10**: baad me (wait/chair; age/gender)
 - **6.4.1**: sister approve monthly report print on clinic printer
 - **6.4.3 / 6.4.4**: baad me (email report; YoY)

@@ -31,6 +31,16 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/settings/:key/history",
+    access: { kind: "permission", action: "settings.read" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/settings/:key/restore",
+    access: { kind: "permission", action: "settings.write" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/counters",
     access: { kind: "permission", action: "settings.read" },
   },
