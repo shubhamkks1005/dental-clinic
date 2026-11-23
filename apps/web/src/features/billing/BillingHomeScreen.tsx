@@ -1,6 +1,9 @@
 import { formatRupees, type DueAgeBucket } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
+import { sendPatientTemplate } from "../messages/api";
+import { problemText } from "../../api/problem-text";
+import { useToast } from "../../ui/Toast";
 import { CaExportPanel } from "./CaExportPanel";
 import { DailyClosePanel } from "./DailyClosePanel";
 import { listDues, recordDuesCall, type DuesRow } from "./api";
@@ -131,17 +134,20 @@ export function BillingHomeScreen() {
                   </div>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  className="btn secondary"
-                  style={{ alignSelf: "start", minHeight: 44 }}
-                  onClick={() => {
-                    setNoteFor(r.patientId);
-                    setNote("");
-                  }}
-                >
-                  Add call note
-                </button>
+                <div className="row wrap gap-sm">
+                  <button
+                    type="button"
+                    className="btn secondary"
+                    style={{ alignSelf: "start", minHeight: 44 }}
+                    onClick={() => {
+                      setNoteFor(r.patientId);
+                      setNote("");
+                    }}
+                  >
+                    Add call note
+                  </button>
+                  <WhatsAppDuesButton patientId={r.patientId} />
+                </div>
               )}
             </li>
           ))}
@@ -157,5 +163,31 @@ export function BillingHomeScreen() {
       <CaExportPanel />
       <DailyClosePanel />
     </section>
+  );
+}
+
+/** 7.5.3: dues reminder via WhatsApp only (no amount in template beyond “payment pending”). */
+function WhatsAppDuesButton({ patientId }: { patientId: string }) {
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      className="btn"
+      style={{ minHeight: 44 }}
+      disabled={busy}
+      onClick={() => {
+        setBusy(true);
+        void sendPatientTemplate(patientId, "dues")
+          .then(({ waUrl }) => {
+            if (waUrl) window.open(waUrl, "_blank", "noopener,noreferrer");
+            toast({ text: "WhatsApp opened with payment-pending text.", tone: "ok" });
+          })
+          .catch((err) => toast({ text: problemText(err), tone: "error" }))
+          .finally(() => setBusy(false));
+      }}
+    >
+      WhatsApp reminder
+    </button>
   );
 }

@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { formatRupees, type CallListKind, type CallListRow } from "@clinic/shared";
 import { problemText } from "../../api/problem-text";
 import { useToast } from "../../ui/Toast";
+import { sendPatientTemplate } from "../messages/api";
 import { contactCallList, fetchCallList } from "./api";
 
 /** 6.3.7: incomplete treatment + recall lists with contact notes. */
@@ -112,18 +113,47 @@ export function CallListsPanel() {
                 </button>
               </div>
             ) : (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => setNoteFor(r.patientId)}
-              >
-                Contacted
-              </button>
+              <div className="row wrap gap-sm">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setNoteFor(r.patientId)}
+                >
+                  Contacted
+                </button>
+                <WhatsAppOutreachButton patientId={r.patientId} kind={kind} />
+              </div>
             )}
           </li>
         ))}
       </ul>
-      <p className="muted small">Reminder send hooks land in Phase 7.</p>
     </section>
+  );
+}
+
+/** 7.5.1 / 7.5.2: WhatsApp-only outreach; no treatment name in template. */
+function WhatsAppOutreachButton({ patientId, kind }: { patientId: string; kind: CallListKind }) {
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  const templateKey = kind === "recall" ? "recall" : "incomplete";
+  return (
+    <button
+      type="button"
+      className="btn"
+      disabled={busy}
+      style={{ minHeight: 44 }}
+      onClick={() => {
+        setBusy(true);
+        void sendPatientTemplate(patientId, templateKey)
+          .then(({ waUrl }) => {
+            if (waUrl) window.open(waUrl, "_blank", "noopener,noreferrer");
+            toast({ text: "WhatsApp opened.", tone: "ok" });
+          })
+          .catch((err) => toast({ text: problemText(err), tone: "error" }))
+          .finally(() => setBusy(false));
+      }}
+    >
+      Send on WhatsApp
+    </button>
   );
 }

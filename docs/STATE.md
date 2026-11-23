@@ -1,9 +1,41 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 6 gate passed with exceptions. Do not start Phase 7 until owner says go. Phase 5 leftovers stay under Waiting.
+Phase: 7 gate passed with exceptions. Do not start Phase 8 until owner says go. Phase 5/6 leftovers stay under Waiting.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
-Phase 3/4/5 leftovers stay under Before real patients / Waiting; not redone.
-PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+Phase 3/4/5/6 leftovers stay under Before real patients / Waiting; not redone.
+PLAN: Phase 7 messaging — dry_run + manual wa.me (owner). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+**Phase 7 owner decision:** no paid SMS/WhatsApp API, no DLT, no card; MESSAGING_MODE=dry_run everywhere; ManualWhatsApp + FakeAdapter; English DRAFT templates; consent required; status opened_in_whatsapp on wa.me tap.
+7.1.1 SKIPPED / Waiting (sister message-list ok). DRAFT English table seeded.
+7.1.2–7.1.5 SKIPPED / Waiting (gateway spike, E2E encryption, SIM/TRAI, Plan B DLT — need phone/SIM/operator/card).
+7.2.1 DONE locally (message_outbox, attempts, channel_state, phone_flags; dedupe unique; status index). **Migration `0049_message_outbox.sql` — owner applies.**
+7.2.2 DONE locally (MessageChannel + FakeAdapter + ManualWhatsAppAdapter + SmsGateway stub refuses live). No real provider.
+7.2.3 DONE locally (render/lint/segment; English DRAFT templates).
+7.2.4 DONE locally (planMessages pure; quiet hours; consent skip).
+7.2.5 DONE locally (cron messaging tick; claim due; dry_run / needs_human).
+7.2.6 DONE partially (fallback via dump-to-whatsapp + needs_human; full SMS retry chaos deferred with no provider).
+7.2.7 SKIPPED (OTP — Phase 8 portal).
+7.2.8–7.2.9 SKIPPED / Waiting (webhooks + phone heartbeat — need gateway).
+7.2.10 DONE locally (MESSAGING_MODE dry_run; kill via messaging.settings.enabled).
+7.2.11 DONE locally (settings smsDailyCap / otpReserve / dispatchPerTick seeded; cap enforcement light — full 80-msg test deferred).
+7.3.1 DONE locally (S11 Messages board: outgoing / WhatsApp / sent / attention + dry_run bar).
+7.3.2 DONE locally (waLink + Open WhatsApp → opened_in_whatsapp + audit).
+7.3.3 DONE locally (patient Messages tab; consent withdraw cancels queued).
+7.3.4 DONE locally (POST appointments/:id/messages/send-now).
+7.3.5 SKIPPED (baad me inbound inbox + webhook).
+7.3.6 PARTIAL / Waiting (day-cancel wizard UI not built; dump-to-whatsapp exists).
+7.4.1–7.4.3 DONE locally (DRAFT templates seed; Settings Messages panel; messaging.settings).
+7.4.4 SKIPPED (English only per owner).
+7.5.1–7.5.3 DONE locally (call-list + dues WhatsApp buttons; no treatment/amount in text).
+7.5.4–7.5.5 SKIPPED (baad me aftercare/birthday).
+7.6.1 SKIPPED (baad me Brevo).
+7.7.1 DONE locally (sms_reminders consent gates enqueue; withdraw cancels).
+7.7.2 DONE locally (normaliseMobile / waLink / maskMobile — existing + wa tests).
+7.7.3 DONE locally (privacy notice messaging paragraph DRAFT). **Migration `0050_privacy_notice_messaging.sql` — owner applies.**
+7.8.1 PARTIAL (test-mode bar on S11; no live phone-down card).
+7.8.2–7.8.4 SKIPPED / Waiting (SMS phone setup / runbook drill / gateway secrets).
+7.9.1 DONE locally (planner + claim-once tests).
+7.9.2 PARTIAL (adapter fail paths; full webhook chaos skipped).
+7.9.3–7.9.4 SKIPPED / Waiting (7-day phone + sister sign-off).
 **DRAFT - sister to confirm (6.1.1):** metric definitions + top 4 KPIs in DECISIONS.md (plan defaults until haan).
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 6.1.1 SKIPPED / Waiting (sister 45-min sign-off). DRAFT defs + top-4 in DECISIONS.
@@ -213,6 +245,26 @@ Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not s
 
 **Phase 6 gate: passed with exceptions** (do not start Phase 7 until owner says go).
 
+## Phase 7 gate (from PLAN.md + owner dry_run/wa.me decision)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist (board/view OK; developer blocked on patient messages) | **passed** |
+| No real SMS/WhatsApp provider integrated; MESSAGING_MODE dry_run | **passed** |
+| Consent required; withdraw cancels queued | **passed** |
+| Templates English DRAFT; no clinical/amount in body (lint + dues wording) | **passed** |
+| wa.me open → opened_in_whatsapp + audit | **passed** |
+| FakeAdapter claim-once / dry_run path | **passed** |
+| 7.1.2–7.1.5 gateway/SIM/DLT reports | **waiting** |
+| Webhooks / phone heartbeat / 7-day phone test | **waiting** (skipped) |
+| Sister message list + runbook sign-off | **waiting** |
+| Day-cancel wizard (7.3.6) | **partial** |
+| Fake-data-only scan | **passed** |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+
+**Phase 7 gate: passed with exceptions** (do not start Phase 8 until owner says go).
+
 ## Phase 5 gate (from PLAN.md)
 
 | Criterion | Status |
@@ -334,6 +386,8 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **Phase 7**: 7.1.1 sister message-list ok; 7.1.2–7.1.5 gateway/SIM/TRAI/DLT (if ever); 7.9.3–7.9.4 phone test + sister sign-off; 7.3.6 day-cancel wizard; 7.7.3 lawyer privacy paragraph; DRAFT templates doctor confirm
+- Staging: apply migrations **0006–0050** (next free **0051**)
 - **6.1.1 / 6.6.2 / 6.6.3**: sister sign-off on metric defs + dashboard layout; then top-5 fixes
 - **6.5.4**: DRAFT national holidays (Republic / Independence / Gandhi) — sister edit in Settings
 - **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
@@ -347,7 +401,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0006–0048** (next free **0049**)
+- Staging: apply migrations **0006–0050** (next free **0051**)
 - **6.3.9 / 6.3.10**: baad me (wait/chair; age/gender)
 - **6.4.1**: sister approve monthly report print on clinic printer
 - **6.4.3 / 6.4.4**: baad me (email report; YoY)

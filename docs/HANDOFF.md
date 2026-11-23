@@ -1,31 +1,25 @@
 # HANDOFF (for the next AI session)
 
-Written: 2026-11-23 (Phase 6 gate done; do not start Phase 7). Read RUN_PROMPT.md, STATE.md, MAP.md. Fake data only. Never push.
+Written: 2026-11-23 (Phase 7 gate done; do not start Phase 8). Read RUN_PROMPT.md, STATE.md, MAP.md. Fake data only. Never push.
 
 ## Where we are
-- **Phase 6 complete locally** through **6.7.3**. Gate: **passed with exceptions** (see STATE.md).
-- **Do not start Phase 7** until the owner says so.
-- Next free migration: **0049** (0048 past_records).
-- Leftovers carried in STATE Waiting: 6.1.1 / 6.6.2 / 6.6.3 (sister), 6.3.9–10, 6.4.3–4, Phase 5 Waiting items, staging migrations **0006–0048**.
+- **Phase 7 complete locally** (dry_run + manual wa.me). Gate: **passed with exceptions** (see STATE.md).
+- **Do not start Phase 8** until the owner says so.
+- Next free migration: **0051** (0049 message_outbox, 0050 privacy messaging paragraph).
+- Owner decision: no paid SMS/WhatsApp API, no DLT, no card; `MESSAGING_MODE=dry_run` everywhere; receptionist opens `wa.me`.
 
 ## Done this round (local commits; never push)
-| Task | Commit | Notes |
-|------|--------|-------|
-| 6.7.1 | `f2ba7ae` | History chips + date/tooth/q; summary always loaded |
-| 6.7.2 | `6107cee` | A4 history print summary; clinical.view; receptionist 403 |
-| 6.7.3 | `33a8488` | past_records + Added later feed; mig **0048** |
-| Phase 6 gate | (docs) | passed with exceptions in STATE.md |
+See STATE.md Phase 7 Done lines and the final task table in the session summary.
 
-## Skipped / Waiting
-6.1.1; 6.3.9; 6.3.10; 6.4.3; 6.4.4; 6.6.2; 6.6.3; 5.4.2; 5.5.2–5.5.4; prior 3.x/4.x in STATE.
+## Skipped / Waiting (Phase 7)
+7.1.1 sister table ok; 7.1.2–7.1.5 gateway/SIM/DLT/Plan B; 7.2.7 OTP (Phase 8); 7.2.8–7.2.9 webhooks/heartbeat phone; 7.3.5 inbox; 7.4.4 Hinglish; 7.5.4–7.5.5 aftercare/birthday; 7.6.1 Brevo; 7.8.2 phone setup; 7.8.4 gateway secrets; 7.9.3 7-day phone; 7.9.4 sister sign-off. Plus prior Phase 5/6 Waiting.
 
 ## New migrations (owner applies; agent did not touch staging)
-- Apply **0006–0048** then `pnpm deploy:staging`.
-- Next free: **0049**
-- Also: GitHub secret `HEALTHCHECKS_BILLING_URL` for 5.4.1.
+- Apply **0006–0050** then `pnpm deploy:staging`.
+- Next free: **0051**
 
 ## Next task
-Wait for owner: **start Phase 7** (or clear Waiting sister items). Do not begin Phase 7 work until told.
+Wait for owner: **start Phase 8** (or clear Waiting sister/lawyer items). Do not begin Phase 8 until told.
 
 ## Commands
 ```

@@ -16,7 +16,7 @@ import {
 import { ClinicDetailsSettings } from "./ClinicDetailsSettings";
 import { ConsentTemplatesSettings } from "./ConsentTemplatesSettings";
 import { MedicinesListReview } from "./MedicinesListReview";
-import { MessagesComingSoon } from "./MessagesComingSoon";
+import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { NumberSeriesSettings } from "./NumberSeriesSettings";
 import { PreferencesSettings } from "./PreferencesSettings";
 import { PrivacyNoticeSettings } from "./PrivacyNoticeSettings";
@@ -47,7 +47,7 @@ const SCREENS: Record<string, ReactNode> = {
   preferences: <PreferencesSettings />,
   numbers: <NumberSeriesSettings />,
   system: <SystemStatusSettings />,
-  messages: <MessagesComingSoon />,
+  messages: <MessagingSettingsPanel />,
   ...Object.fromEntries(LIST_KEYS.map((key) => [key, listScreen(key)])),
 };
 

@@ -7,6 +7,7 @@ import { getPatient, type PatientDetail } from "./api";
 import { VisitChartPanel } from "../chart";
 import { PatientBillingPanel } from "../billing";
 import { PatientFilesTab } from "../files";
+import { PatientMessagesTab } from "../messages";
 import { PatientHistoryTab, getHistorySummary } from "../history";
 import { PatientVisitsTab } from "../visits/PatientVisitsTab";
 import { PatientAppointmentsTab } from "./PatientAppointmentsTab";
@@ -118,6 +119,8 @@ export function PatientProfileScreen() {
           <PatientFilesTab patientId={patient.id} />
         ) : t.id === "billing" ? (
           <PatientBillingPanel patientId={patient.id} />
+        ) : t.id === "messages" ? (
+          <PatientMessagesTab patientId={patient.id} />
         ) : (
           <PatientAppointmentsTab patientId={patient.id} />
         ),

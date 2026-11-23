@@ -7,7 +7,7 @@ export const PATIENT_PROFILE_TABS = [
   { id: "visits", label: "Visits", ready: true }, // 3.5.9 timeline
   { id: "billing", label: "Billing", ready: true }, // 5.3.3
   { id: "files", label: "Files", ready: true }, // 3.7.4
-  { id: "messages", label: "Messages", ready: false }, // Phase 7
+  { id: "messages", label: "Messages", ready: true }, // 7.3.3
 ] as const;
 
 export type PatientProfileTabId = (typeof PATIENT_PROFILE_TABS)[number]["id"];

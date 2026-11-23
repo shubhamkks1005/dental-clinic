@@ -158,7 +158,15 @@
 - src/features/print/PrintDayCloseScreen.tsx - 5.3.9 A4 day close print
 - src/features/print/PrintBillScreen.tsx / PrintReceiptScreen.tsx - 5.3.11 A5 bill+receipt + Duplicate
 - src/features/print/PrintStatementScreen.tsx - 5.3.3 A4 patient account statement
-- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell; reports = ReportsScreen (6.2.3 S10); messages = NotBuiltYet
+- src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell; reports = ReportsScreen (6.2.3 S10); messages = MessagesScreen (7.3.1 S11)
+- apps/web/src/features/messages/ - 7.3 S11 board + PatientMessagesTab + wa.me API wrappers
+- apps/web/src/features/settings/MessagingSettingsPanel.tsx - 7.4 templates + messaging.settings
+- apps/worker/src/adapters/message-*.ts - 7.2.2 MessageChannel Fake / ManualWhatsApp / SMS stub
+- apps/worker/src/domain/messages.ts + staff-messages.ts + routes/staff-messages.ts - enqueue, board, open WhatsApp
+- apps/worker/src/cron/messaging.ts - 7.2.5 planner+dispatcher tick branch
+- packages/shared/src/messaging.ts + message-render.ts + message-plan.ts - templates, lint, waLink, planner
+- packages/db/src/schema/message-outbox.ts + migrations/0049_message_outbox.sql + 0050_privacy_notice_messaging.sql - outbox tables + notice DRAFT
+- packages/db/src/repos/messages-outbox.ts + messages-plan-load.ts - outbox CRUD + plan loaders
 - src/features/reports/ - S10 dashboard (6.3.3–5): ReportsScreen, RangeControls, DashboardKpis/Charts, AttentionList; api.ts
 - apps/worker src/cron/ - 6.2.3 scheduled branches (daily-stats nightly); entry createWorker adds scheduled()
 - apps/worker src/routes/staff-stats.ts - POST /stats/recompute; GET /dashboard; today-summary; call-lists; stats/export
