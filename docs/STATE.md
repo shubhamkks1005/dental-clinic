@@ -1,7 +1,8 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 5 mid-flight. Gate not run. Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
+Phase: 5 gate done (passed with exceptions). Do not start Phase 6 until owner says so.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
+Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
 PLAN: Phase 5 bills / payments / dues / receipts. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
@@ -158,6 +159,27 @@ Next: 3.7 files → 3.8 consent → 3.9 skip → 3.10 → Phase 3 gate. Do not s
 
 
 
+## Phase 5 gate (from PLAN.md)
+
+| Criterion | Status |
+|-----------|--------|
+| `pnpm check` green | **passed** |
+| Role matrix incl. receptionist (bills.create OK; bills.adjust / reports.full / refund 403) | **passed** (route-matrix + repo tests) |
+| 50 parallel bill numbers no dup/gap | **passed** (5.5.1 / numbering) |
+| Day close lock + late entry | **passed** (5.3.9 tests) |
+| Refund / cancel / discount-approval paths | **passed** (5.2.3 / 5.3.6–5.3.8 tests) |
+| Receipt reg no + amount in words + Duplicate | **passed** (5.3.10 / 5.3.11 code+tests) |
+| Billing integrity SQL + intentional fail | **passed** (script test); live Healthchecks alarm **waiting** |
+| Shadow series totals vs sister paper | **waiting** |
+| Opening balances vs paper register | **waiting** (5.2.5) |
+| CA bill form + export approve | **waiting** (5.1.1 / 5.3.12 / 5.5.3) |
+| Fake-data-only scan | **passed** (Fake* seeds/tests) |
+| Responsive 360/768/1366 | **passed with exception** — CSS mobile-first; owner visual check open |
+| Keyboard use | **passed with exception** — existing patterns; clinic pass Waiting |
+| Receptionist usability 10 tasks | **waiting** (5.5.2) |
+
+**Phase 5 gate: passed with exceptions** (do not start Phase 6 until owner says go).
+
 ## Phase 4 gate (from PLAN.md)
 
 | Criterion | Status |
@@ -269,7 +291,8 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0032–0042** with 0006–0031
+- Staging: apply migrations **0006–0042** (next free still **0043**; no new mig this Phase 5 polish round)
+- **HEALTHCHECKS_BILLING_URL** GitHub secret for weekly billing integrity
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes
