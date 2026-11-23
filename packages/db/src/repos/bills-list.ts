@@ -5,6 +5,7 @@ import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { bills, patients } from "../schema";
 import { openBillDues } from "./bills-dues";
+import { patientAdvancePaise } from "./payments-advance";
 
 export type PatientBillListRow = {
   id: string;
@@ -49,9 +50,7 @@ export function billsListRepo(db: Db, ctx: Ctx) {
       const dueMap = new Map(dues.map((d) => [d.billId, d.duePaise]));
       const outstandingDuePaise = dues.reduce((s, d) => s + d.duePaise, 0);
 
-      // Advance = payments − allocations − refunds for patient (simple: unallocated from payments).
-      // Computed in payments-create as leftover; approximate via SQL in payments-credit later.
-      const advancePaise = 0;
+      const advancePaise = await patientAdvancePaise(db, patientId);
 
       return {
         bills: rows.map((r) => ({

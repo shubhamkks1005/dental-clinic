@@ -38,7 +38,11 @@ export async function issueBill(repos: Repos, id: string, body: unknown) {
   if (!Number.isInteger(version)) {
     return { ok: false as const, message: "Send the bill version to issue it." };
   }
-  const bill = await repos.bills.issue(id, version);
+  const applyAdvance =
+    body && typeof body === "object" && "applyAdvance" in body
+      ? Boolean((body as { applyAdvance: unknown }).applyAdvance)
+      : false;
+  const bill = await repos.bills.issue(id, version, { applyAdvance });
   return { ok: true as const, bill };
 }
 

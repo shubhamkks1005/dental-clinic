@@ -87,10 +87,10 @@ export function createBillFromVisit(visitId: string) {
   }).then((r) => r.bill);
 }
 
-export function issueBill(id: string, version: number) {
+export function issueBill(id: string, version: number, opts: { applyAdvance?: boolean } = {}) {
   return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/issue`, {
     method: "POST",
-    body: { version },
+    body: { version, applyAdvance: opts.applyAdvance === true },
   }).then((r) => r.bill);
 }
 

@@ -49,6 +49,7 @@ import { billsFromVisitRepo } from "./bills-from-visit";
 import { billsDuesListRepo } from "./bills-dues-list";
 import { duesCallsRepo } from "./dues-calls";
 import { paymentsCreateRepo } from "./payments-create";
+import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { refundsCreateRepo } from "./refunds-create";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
@@ -118,6 +119,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     },
     payments: {
       ...paymentsCreateRepo(db, ctx),
+      ...paymentsApplyAdvanceRepo(db, ctx),
     },
     refunds: {
       ...refundsCreateRepo(db, ctx),

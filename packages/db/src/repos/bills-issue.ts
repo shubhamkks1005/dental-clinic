@@ -9,6 +9,7 @@ import { assertAllowed } from "../permissions";
 import { bills, settings } from "../schema";
 import { nowUtcSql } from "../sql";
 import { billsGetRepo, type BillRow } from "./bills-get";
+import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 
 async function shadowSeries(db: Db): Promise<boolean> {
   const row = await db
@@ -34,7 +35,11 @@ export function billsIssueRepo(db: Db, ctx: Ctx) {
   const getRepo = billsGetRepo(db, ctx);
 
   return {
-    async issue(id: string, version: number): Promise<BillRow> {
+    async issue(
+      id: string,
+      version: number,
+      opts: { applyAdvance?: boolean } = {},
+    ): Promise<BillRow> {
       assertAllowed(ctx, "bills.create");
       const row = await db
         .select()
@@ -82,6 +87,11 @@ export function billsIssueRepo(db: Db, ctx: Ctx) {
 
       const updated = results[1] as { id: string }[];
       if (!updated.length) throw new ConflictError();
+
+      // 5.3.5: optional credit from prior unallocated payments.
+      if (opts.applyAdvance) {
+        await paymentsApplyAdvanceRepo(db, ctx).applyAdvanceToBill(id);
+      }
       return getRepo.get(id);
     },
   };

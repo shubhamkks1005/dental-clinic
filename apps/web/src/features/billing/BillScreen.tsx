@@ -1,19 +1,30 @@
 import { amountInWords, formatRupees } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
-import { getBill, issueBill, type BillDto } from "./api";
+import { getBill, issueBill, listPatientBills, type BillDto } from "./api";
 
 /** S09 bill detail: issue draft, print link. */
 export function BillScreen() {
   const { id = "" } = useParams();
   const [bill, setBill] = useState<BillDto | null>(null);
+  const [advancePaise, setAdvancePaise] = useState(0);
+  const [applyAdvance, setApplyAdvance] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     getBill(id)
-      .then(setBill)
+      .then(async (b) => {
+        setBill(b);
+        try {
+          const account = await listPatientBills(b.patientId);
+          setAdvancePaise(account.advancePaise);
+          setApplyAdvance(account.advancePaise > 0);
+        } catch {
+          setAdvancePaise(0);
+        }
+      })
       .catch((e: unknown) => setError(e instanceof Error ? e.message : "Could not load bill."));
   }, [id]);
 
@@ -22,7 +33,9 @@ export function BillScreen() {
     setBusy(true);
     setError(null);
     try {
-      setBill(await issueBill(bill.id, bill.version));
+      setBill(
+        await issueBill(bill.id, bill.version, { applyAdvance: applyAdvance && advancePaise > 0 }),
+      );
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Could not issue bill.");
     } finally {
@@ -91,6 +104,17 @@ export function BillScreen() {
         <p className="muted small">{amountInWords(bill.totalPaise)}</p>
         <p className="muted small">This is not a GST invoice (gst_mode off — DRAFT accountant).</p>
       </div>
+
+      {bill.status === "draft" && advancePaise > 0 ? (
+        <label className="row gap-sm align-center" style={{ minHeight: 44 }}>
+          <input
+            type="checkbox"
+            checked={applyAdvance}
+            onChange={(e) => setApplyAdvance(e.target.checked)}
+          />
+          <span>Apply patient advance ({formatRupees(advancePaise)}) to this bill</span>
+        </label>
+      ) : null}
 
       <div className="row wrap gap-sm">
         {bill.status === "draft" ? (

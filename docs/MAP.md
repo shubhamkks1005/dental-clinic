@@ -222,6 +222,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - payments / payment_allocations / refunds - 5.2.2–5.2.3 (src/schema/payments.ts)
 - migrations/0039_payments.sql - creates payments tables
 - src/repos/payments-create.ts / bills-issue.ts / bills-dues.ts - record payment, issue bill, open dues
+- src/repos/payments-advance.ts / payments-apply-advance.ts - 5.3.5 patient credit + apply to issued bill
 - src/repos/bills-dues-list.ts / dues-calls.ts - 5.3.4 clinic-wide dues by age bucket + call notes; duesForPatients for appointment cards
 - schema/dues-calls.ts + migrations/0041_dues_calls.sql - append-only dues call notes
 - src/repos/bills-create.ts / bills-get.ts - draft bill create (server totals) + get

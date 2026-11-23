@@ -9,6 +9,7 @@ const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
 export function PatientBillingPanel({ patientId }: { patientId: string }) {
   const [bills, setBills] = useState<PatientBillRow[]>([]);
   const [due, setDue] = useState(0);
+  const [advance, setAdvance] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [amountRupees, setAmountRupees] = useState("");
   const [mode, setMode] = useState<(typeof MODES)[number]>("cash");
@@ -19,6 +20,7 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
       .then((r) => {
         setBills(r.bills);
         setDue(r.outstandingDuePaise);
+        setAdvance(r.advancePaise);
       })
       .catch((e: unknown) => {
         setError(e instanceof Error ? e.message : "Could not load bills.");
@@ -51,6 +53,12 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
         <h2 className="title-sm">Account</h2>
         <p className="muted">
           Outstanding: <strong>{formatRupees(due)}</strong>
+          {advance > 0 ? (
+            <>
+              {" "}
+              · Advance: <strong>{formatRupees(advance)}</strong>
+            </>
+          ) : null}
         </p>
       </header>
 
