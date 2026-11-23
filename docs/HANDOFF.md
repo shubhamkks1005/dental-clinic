@@ -5,22 +5,23 @@ Written: 2026-11-23 (Phase 6 started). Read RUN_PROMPT.md, STATE.md, MAP.md. Fak
 ## Where we are
 - **Phase 6 in progress** (dashboard, reports, settings). Owner said start.
 - Phase 5 gate: passed with exceptions — leftovers stay under Waiting (incl. 5.4.2, 5.5.2–5.5.4).
-- Next free migration number: **0044** (0043 = first_arrived_on from 6.2.1).
+- Next free migration number: **0045** (0043 first_arrived_on; 0044 daily_stats).
 - Carry forward all Waiting items under STATE.
 
 ## Done this round (local commits; never push)
 | Task | Commit | Notes |
 |------|--------|-------|
-| Phase 6 start | (this handoff) | 6.1.1 Waiting; DRAFT defs in DECISIONS |
-| 6.2.1 | (pending) | first_arrived_on + backfill |
+| Phase 6 start | (with 6.2.1) | 6.1.1 Waiting; DRAFT defs in DECISIONS |
+| 6.2.1 | `e47a1b7` | first_arrived_on + backfill |
+| 6.2.2 | (pending) | daily_stats + monthly_stats |
 
 ## Skipped / Waiting
 6.1.1 (sister); 5.4.2; 5.5.2–5.5.4; prior 3.x/4.x/5.x skips in STATE.
 Baad me in Phase 6: 6.3.9, 6.3.10, 6.4.3, 6.4.4.
 
 ## New migrations (owner applies; agent did not touch staging)
-- Apply **0006–0043** then `pnpm deploy:staging`.
-- Next free: **0044**
+- Apply **0006–0044** then `pnpm deploy:staging`.
+- Next free: **0045**
 - Also: GitHub secret `HEALTHCHECKS_BILLING_URL` for 5.4.1.
 
 ## Waiting on me

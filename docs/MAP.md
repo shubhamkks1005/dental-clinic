@@ -208,8 +208,12 @@
 All tables also have the standard columns (id, created_at, updated_at, created_by, updated_by, deleted_at, version).
 - patients - patient demographics (src/schema/patients.ts, 2.1.1) - code (unique P-…), full_name, gender, date_of_birth, age_years_at_reg, mobile / no_mobile_reason (XOR), mobile_secondary, area, email, referral_source_id, referred_by, emergency_*, guardian_* (2.1.3), message_language, legacy_ref, first_arrived_on (6.2.1), notes, status (active|archived)
 - migrations/0043_patient_first_arrived_on.sql - 6.2.1 first_arrived_on + index + backfill
+- migrations/0044_daily_stats.sql - 6.2.2 daily_stats + monthly_stats tables
 - src/repos/patient-first-arrived.ts (+ test) - 6.2.1 markFirstArrivedBatch; wired from status/walk-in
+- src/repos/daily-stats.ts (+ queries/parts + test) - 6.2.2 recomputeDay/Month SQL aggregates + upsert
 - packages/shared/src/patient-new.ts (+ test) - 6.2.1 isNewPatientOn (excludes legacy_ref)
+- packages/shared/src/daily-stats.ts - 6.2.2 metric name constants
+- schema/daily-stats.ts - 6.2.2 daily_stats + monthly_stats
 - patient_search - 2.1.6 search tokens (src/schema/patient-search.ts) - patient_id, token (lowercase), kind (name|mobile|mobile_rev|code|legacy); index on token for range queries
 - consents - 2.1.9 append-only consent history (src/schema/consents.ts) - patient_id, type, notice_version, given, given_at, recorded_by, method; withdraw = new row with given=0
 - appointments - 2.3.1 bookings (src/schema/appointments.ts) - patient_id, chair_id, visit_type_id/label (copied), start_at (UTC), date_local + start_min/end_min (IST), status, source, priority, overbook, complaint, cancel_reason, rescheduled_from, arrived/started/ended_at; indexes chair+day+start, patient+day, day+status

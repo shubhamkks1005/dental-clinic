@@ -52,6 +52,7 @@ import { billsUpdateDraftRepo } from "./bills-update-draft";
 import { billsExportRepo } from "./bills-export";
 import { duesCallsRepo } from "./dues-calls";
 import { dayCloseRepo } from "./day-close";
+import { dailyStatsRepo } from "./daily-stats";
 import { paymentsCreateRepo } from "./payments-create";
 import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { paymentsListRepo } from "./payments-list";
@@ -137,6 +138,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     },
     duesCalls: duesCallsRepo(db, ctx),
     dayClose: dayCloseRepo(db, ctx),
+    dailyStats: dailyStatsRepo(db, ctx),
   };
 }
 

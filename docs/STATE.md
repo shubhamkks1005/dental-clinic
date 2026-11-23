@@ -8,6 +8,7 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 6.1.1 SKIPPED / Waiting (sister 45-min sign-off). DRAFT defs + top-4 in DECISIONS.
 6.2.1 DONE locally (first_arrived_on; set on arrived/walk-in; backfill; isNewPatientOn excludes legacy_ref). **Migration `0043_patient_first_arrived_on.sql` — owner applies.**
+6.2.2 DONE locally (daily_stats + monthly_stats; SQL aggregates; INSERT OR REPLACE recompute; hand-count test). **Migration `0044_daily_stats.sql` — owner applies.**
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
@@ -295,7 +296,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0006–0043** (next free **0044** after 6.2.1)
+- Staging: apply migrations **0006–0044** (next free **0045**)
 - **HEALTHCHECKS_BILLING_URL** GitHub secret for weekly billing integrity
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
