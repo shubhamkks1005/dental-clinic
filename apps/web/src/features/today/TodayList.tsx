@@ -1,4 +1,4 @@
-import type { AppointmentStatus } from "@clinic/shared";
+import { formatRupees, type AppointmentStatus } from "@clinic/shared";
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { AlertsStrip } from "../medical-history";
@@ -41,6 +41,15 @@ export function TodayList({ rows, busyId, onStatus }: Props) {
                   {row.noMobile ? <span className="today-no-mobile"> No mobile</span> : null}
                   {row.priority === "emergency" ? (
                     <span className="today-emergency"> Emergency</span>
+                  ) : null}
+                  {row.hasDue ? (
+                    <span className="small muted">
+                      {" "}
+                      · Due
+                      {row.duePaise != null && row.duePaise > 0
+                        ? ` ${formatRupees(row.duePaise)}`
+                        : ""}
+                    </span>
                   ) : null}
                 </span>
                 <span className="small muted">{row.visit}</span>

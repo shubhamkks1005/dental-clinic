@@ -1,4 +1,32 @@
+import type { DueAgeBucket } from "@clinic/shared";
 import { api } from "../../api/client";
+
+export type DuesRow = {
+  patientId: string;
+  patientCode: string;
+  patientName: string;
+  duePaise: number;
+  oldestBillOn: string;
+  daysOutstanding: number;
+  bucket: DueAgeBucket;
+  lastCallNote: string | null;
+  lastCallOn: string | null;
+};
+
+export function listDues() {
+  return api<{
+    rows: DuesRow[];
+    totalDuePaise: number;
+    byBucket: Record<DueAgeBucket, number>;
+  }>("/api/staff/bills/dues");
+}
+
+export function recordDuesCall(patientId: string, note: string) {
+  return api<{ call: { id: string; calledOn: string } }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/dues-calls`,
+    { method: "POST", body: { note } },
+  ).then((r) => r.call);
+}
 
 export type BillItemDto = {
   id: string;

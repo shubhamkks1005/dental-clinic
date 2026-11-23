@@ -25,6 +25,8 @@ export type TodayListRow = {
   priority: "normal" | "emergency";
   hasAlert: boolean;
   hasRestrictedAlert: boolean;
+  hasDue: boolean;
+  duePaise: number | null;
   actions: { status: DayAppointment["status"]; label: string }[];
   version: number;
   startAt: string;
@@ -79,6 +81,8 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     priority: a.priority,
     hasAlert: a.alertFlags?.hasAlert ?? false,
     hasRestrictedAlert: a.alertFlags?.hasRestricted ?? false,
+    hasDue: a.hasDue ?? false,
+    duePaise: a.duePaise ?? null,
     actions: statusActionButtons(a.status, {
       startAt: new Date(a.startAt),
       statusChangedAt: new Date(a.updatedAt),

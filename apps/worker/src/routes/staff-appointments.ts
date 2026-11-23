@@ -16,7 +16,8 @@ import type { AppEnv } from "../types";
 export const staffAppointments = new Hono<AppEnv>();
 
 staffAppointments.get("/appointments", async (c) => {
-  const result = await listDayAppointments(signedIn(c).repos, c.req.query("date"));
+  const { repos, ctx } = signedIn(c);
+  const result = await listDayAppointments(repos, c.req.query("date"), ctx.role);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(
     ok({

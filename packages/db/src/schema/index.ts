@@ -23,3 +23,4 @@ export { certificates } from "./certificates";
 export { printLog } from "./print-log";
 export { bills, billItems } from "./bills";
 export { payments, paymentAllocations, refunds } from "./payments";
+export { duesCalls } from "./dues-calls";

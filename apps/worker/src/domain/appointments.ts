@@ -8,6 +8,7 @@ import {
   parseRescheduleAppointment,
   parseWalkInAppointment,
   type Holiday,
+  type Role,
   type Timings,
 } from "@clinic/shared";
 
@@ -88,6 +89,7 @@ const DATE_LOCAL = /^\d{4}-\d{2}-\d{2}$/;
 export async function listDayAppointments(
   repos: Repos,
   dateRaw: string | undefined,
+  role: Role,
   now: Date = new Date(),
 ) {
   const dateLocal = dateRaw && dateRaw.length > 0 ? dateRaw : istDate(now);
@@ -100,10 +102,23 @@ export async function listDayAppointments(
   const flags = await repos.medicalHistory.alertFlagsForPatients(
     appointments.map((a) => a.patientId),
   );
-  const withFlags = appointments.map((a) => ({
-    ...a,
-    alertFlags: flags.get(a.patientId) ?? { hasAlert: false, hasRestricted: false },
-  }));
+  // 5.3.4: due mark on cards; amount only for receptionist.
+  let dues = new Map<string, number>();
+  try {
+    dues = await repos.bills.duesForPatients(appointments.map((a) => a.patientId));
+  } catch {
+    dues = new Map();
+  }
+  const showDueAmount = role === "receptionist";
+  const withFlags = appointments.map((a) => {
+    const duePaise = dues.get(a.patientId) ?? 0;
+    return {
+      ...a,
+      alertFlags: flags.get(a.patientId) ?? { hasAlert: false, hasRestricted: false },
+      hasDue: duePaise > 0,
+      duePaise: showDueAmount && duePaise > 0 ? duePaise : null,
+    };
+  });
   const { timings, holidays } = await clinicClock(repos);
   const window = dayWindow(dateLocal, timings, holidays);
   return {

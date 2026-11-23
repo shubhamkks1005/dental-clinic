@@ -1,11 +1,28 @@
 import type { Repos } from "@clinic/db";
-import { parseCreateBill, parseRecordPayment, parseRecordRefund } from "@clinic/shared";
+import {
+  parseCreateBill,
+  parseDuesCall,
+  parseRecordPayment,
+  parseRecordRefund,
+} from "@clinic/shared";
 
 export async function createBill(repos: Repos, body: unknown) {
   const parsed = parseCreateBill(body);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const bill = await repos.bills.create(parsed.value);
   return { ok: true as const, bill };
+}
+
+export async function listDues(repos: Repos) {
+  const data = await repos.bills.listDues();
+  return { ok: true as const, ...data };
+}
+
+export async function recordDuesCall(repos: Repos, patientId: string, body: unknown) {
+  const parsed = parseDuesCall(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const call = await repos.duesCalls.record(patientId, parsed.value);
+  return { ok: true as const, call };
 }
 
 export async function getBill(repos: Repos, id: string) {

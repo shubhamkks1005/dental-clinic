@@ -6,7 +6,9 @@ import {
   createBillFromVisit,
   getBill,
   issueBill,
+  listDues,
   listPatientBills,
+  recordDuesCall,
   recordPayment,
   recordRefund,
 } from "../domain/bills";
@@ -16,6 +18,24 @@ import type { AppEnv } from "../types";
 export const staffBills = new Hono<AppEnv>();
 
 // 5.3.x billing. Permissions enforced in repos (bills.create / bills.adjust).
+staffBills.get("/bills/dues", async (c) => {
+  const result = await listDues(signedIn(c).repos);
+  return c.json(
+    ok({
+      rows: result.rows,
+      totalDuePaise: result.totalDuePaise,
+      byBucket: result.byBucket,
+    }),
+  );
+});
+
+staffBills.post("/patients/:id/dues-calls", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await recordDuesCall(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ call: result.call }), 201);
+});
+
 staffBills.post("/bills", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
   const result = await createBill(signedIn(c).repos, body);

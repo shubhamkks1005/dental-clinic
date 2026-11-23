@@ -152,7 +152,7 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/features/billing/ - 5.3.x BillingHome, BillScreen, PatientBillingPanel, api (S09)
+- src/features/billing/ - 5.3.x BillingHome (dues list S09), BillScreen, PatientBillingPanel, api
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet
 - src/features/appointments/ - 2.4.1 day view (S08) + 2.4.2 QuickBookDialog (S07): AppointmentsScreen, DayView, DayCard, DayDetails, QuickBookDialog, QuickBookPatient, api.ts, day-view.css, quick-book.css, index.ts
 - src/features/files/ - 3.7.3–3.7.4 prepareImage + PatientFilesTab (grid, viewer, upload; S04/S17)
@@ -222,6 +222,8 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - payments / payment_allocations / refunds - 5.2.2–5.2.3 (src/schema/payments.ts)
 - migrations/0039_payments.sql - creates payments tables
 - src/repos/payments-create.ts / bills-issue.ts / bills-dues.ts - record payment, issue bill, open dues
+- src/repos/bills-dues-list.ts / dues-calls.ts - 5.3.4 clinic-wide dues by age bucket + call notes; duesForPatients for appointment cards
+- schema/dues-calls.ts + migrations/0041_dues_calls.sql - append-only dues call notes
 - src/repos/bills-create.ts / bills-get.ts - draft bill create (server totals) + get
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by
@@ -353,6 +355,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/money.test.ts - format + 5.1.3 rounding / allocation / cap tests
 - src/billing-numbers.ts - 5.1.2 formatBillingNo / shortFinancialYear (B/R/F or shadow S*)
 - src/billing-numbers.test.ts - series shape and shadow prefix
+- src/dues.ts (+ test) - 5.3.4 dueAgeBucket / daysBetweenOn / parseDuesCall
 - src/time.ts - istDate() (YYYY-MM-DD in IST), istHour(), istMinutes(), addIstDays(), istLocalToUtc(), istLongDate() ("Sunday, 22 November"), istDateTime() ("22 Nov 2026, 6:10 pm"), parseDisplayDate() / formatDisplayDate() (THE DD/MM/YYYY rule, real dates only), financialYearOf() ("2026-27", April-March by IST date)
 - src/timings.ts (+ test) - 1.5.3 timingsSchema (week mon..sun: open/start/end/lunch, slotMinutes from SLOT_LENGTHS, chairs 1-10), holidaysSchema (real distinct dates), DAY_KEYS/DAY_NAMES, dayKeyOf, toMinutes/toHhmm, workingSlots(date, timings, holidays) = base slot list for the Phase 2 calendar (2.3.3 removes booked time)
 - src/settings.ts (+ test) - 1.5.1 SETTING_SCHEMAS (+ privacy_notice, book_ahead, stale_months, chart.view); isSettingKey, parseSettingValue

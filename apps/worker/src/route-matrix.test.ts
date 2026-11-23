@@ -228,6 +228,9 @@ function bodyFor(method: string, path: string): string | undefined {
       reason: "Matrix refund",
     });
   }
+  if (path === "/api/staff/patients/:id/dues-calls" && method === "POST") {
+    return JSON.stringify({ note: "Fake matrix call note" });
+  }
   if (path.endsWith("/role")) {
     return JSON.stringify({ role: "receptionist", version: 1 });
   }

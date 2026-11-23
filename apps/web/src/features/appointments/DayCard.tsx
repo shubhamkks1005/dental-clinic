@@ -1,4 +1,9 @@
-import { APPOINTMENT_STATUS_LABEL, appointmentStatusTone, toHhmm } from "@clinic/shared";
+import {
+  APPOINTMENT_STATUS_LABEL,
+  appointmentStatusTone,
+  formatRupees,
+  toHhmm,
+} from "@clinic/shared";
 import type { CSSProperties, DragEvent } from "react";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { AlertsStrip } from "../medical-history";
@@ -41,6 +46,13 @@ export function DayCard({ row, dayStartMin, selected, onSelect, onDragStart }: P
       <span className="day-card-name">
         {row.patientName}
         {row.alertFlags?.hasAlert ? <AlertsStrip mode="icon" flags={row.alertFlags} /> : null}
+        {row.hasDue ? (
+          <span className="small" title="Outstanding due">
+            {" "}
+            · Due
+            {row.duePaise != null && row.duePaise > 0 ? ` ${formatRupees(row.duePaise)}` : ""}
+          </span>
+        ) : null}
       </span>
       <span className="day-card-visit small muted">{row.visitTypeLabel}</span>
       <StatusBadge tone={tone} label={APPOINTMENT_STATUS_LABEL[row.status]} />

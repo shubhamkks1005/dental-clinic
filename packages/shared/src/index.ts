@@ -21,6 +21,7 @@ export * from "./money";
 export * from "./billing-numbers";
 export * from "./billing";
 export * from "./payments";
+export * from "./dues";
 export * from "./amount-words";
 export * from "./paging";
 export * from "./patient-age";

@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 5 mid-flight (HANDOFF written; context stop). Gate not run. Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
+Phase: 5 mid-flight. Gate not run. Phase 3/4 leftovers stay under Before real patients / Waiting; not redone.
 PLAN: Phase 5 bills / payments / dues / receipts. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
 **DRAFT - accountant to confirm:** tax defaults (gst_mode off); see docs/CA_QUESTIONS.md.
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
@@ -15,6 +15,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
 5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.4 DONE locally (dues list by age buckets + call notes; appointment/Today Due mark, amount for receptionist only). **Migration `0041_dues_calls.sql` — owner applies.** Screens S09.
 5.3.1 PARTIAL (API createFromVisit + visit UI button; BillScreen issue). Screens S09.
 5.3.2 PARTIAL (payment API + PatientBillingPanel modes/full/half; cash ₹2L warn).
 5.3.3 PARTIAL (patient bills list + outstanding on Billing tab).
@@ -228,7 +229,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 
 ## Before real patients (go-live blockers — do not put real PHI live until these)
 
-- Staging migrations 0006–0040 applied + `pnpm deploy:staging`; health OK
+- Staging migrations 0006–0041 applied + `pnpm deploy:staging`; health OK
 - 1.6.3 backup: accounts/secrets, 7 green nights, one restore drill
 - 1.6.4 alarms (Healthchecks + UptimeRobot) tested
 - 1.5.2 clinic profile (or accepted placeholder) so printed docs show real clinic details
@@ -248,7 +249,7 @@ Waiting on me (owner):
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview
 - **4.1.2**: doctor sign each DRAFT medicine row (dose/instruction) on printout
 - **doctor.registration_no**: fill in Settings (seed is empty; blocks Rx/certificate finalise/print)
-- Staging: apply migrations **0032–0040** with 0006–0031
+- Staging: apply migrations **0032–0041** with 0006–0031
 - DRAFT lawyer + doctor: estimate disclaimer (4.4.1); consent templates (3.8.1/4.4.2); certificate CERTIFICATE_DRAFT_BANNER (4.4.3)
 - **3.9.1–3.9.2**: records demand register/bundle deferred (baad me); paper until then
 - **3.10.3 / 3.10.4**: doctor usability session + top-5 fixes

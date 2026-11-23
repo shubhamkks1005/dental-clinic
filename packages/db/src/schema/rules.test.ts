@@ -59,6 +59,7 @@ describe("table rules (1.2.1)", () => {
       "certificates",
       "consents",
       "counters",
+      "dues_calls",
       "files",
       "list_items",
       "medical_history",

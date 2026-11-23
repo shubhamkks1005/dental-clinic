@@ -288,6 +288,13 @@
       "when": 1795470000000,
       "tag": "0040_billing_gst_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "6",
+      "when": 1795471000000,
+      "tag": "0041_dues_calls",
+      "breakpoints": true
     }
   ]
 }

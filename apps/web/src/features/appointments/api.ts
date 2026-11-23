@@ -24,6 +24,9 @@ export type DayAppointment = {
   version: number;
   /** 3.3.2 icon-only; never clinical labels. */
   alertFlags?: { hasAlert: boolean; hasRestricted: boolean };
+  /** 5.3.4: unpaid balance mark; duePaise only for receptionist. */
+  hasDue?: boolean;
+  duePaise?: number | null;
 };
 
 export type DayAppointmentsReply = {
