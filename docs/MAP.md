@@ -152,7 +152,7 @@
 - src/ui/role-label.ts - ROLE_LABEL (Doctor, Receptionist, Developer (support))
 - src/main.tsx - loads base.css and ui.css FIRST (screen CSS must load after), then mounts React with a data router (createBrowserRouter, one catch-all route rendering App; needed for useBlocker)
 - src/App.tsx - TooltipProvider + ToastProvider, OfflineBanner + ErrorBoundary around the top routes: / LandingPage, /denied AccessDenied, /app/* RequireStaff(StaffRoutes), /my/* PortalRoutes (static), else NotFound
-- src/features/billing/ - 5.3.x BillingHome, DailyClosePanel, BillScreen, BillDraftItems, BillDiscountPanel, BillCancelPanel, RefundPanel, PatientBillingPanel, api (S09)
+- src/features/billing/ - 5.3.x BillingHome, DailyClosePanel, BillScreen, BillDraftItems, BillDiscountPanel, BillCancelPanel, RefundPanel, PatientBillingPanel, PaymentTakeForm, api (S09)
 - src/features/print/PrintDayCloseScreen.tsx - 5.3.9 A4 day close print
 - src/features/print/PrintBillScreen.tsx / PrintReceiptScreen.tsx - 5.3.11 A5 bill+receipt + Duplicate
 - src/routes/StaffRoutes.tsx - staff route tree: print/* = PrintRoutes (no frame); everything else builds StaffShell with the role's menu items, UserCard and the New patient flag; index = Today (developer -> Settings); appointments = AppointmentsScreen (2.4.1 day view); patients = PatientsScreen; patients/new = NewPatientScreen; patients/:id = PatientProfileScreen (2.2.2); patients/:id/consents kept; settings/*; more; billing/messages/reports = NotBuiltYet

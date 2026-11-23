@@ -68,4 +68,21 @@ describe("payments allocation (5.2.2)", () => {
     });
     expect(pay.advancePaise).toBe(50_00);
   });
+
+  it("records cash + UPI split on one payment (5.3.2)", async () => {
+    await issuedBill(150_000, "Split bill");
+    const pay = await repos(receptionist).payments.record({
+      patientId: PATIENT_ID,
+      amountPaise: 150_000,
+      mode: "cash",
+      splitMode: "upi",
+      splitPaise: 50_000,
+      reference: "fake-ref",
+      dayLocal: "2026-11-23",
+    });
+    expect(pay.mode).toBe("cash");
+    expect(pay.splitMode).toBe("upi");
+    expect(pay.splitPaise).toBe(50_000);
+    expect(pay.amountPaise).toBe(150_000);
+  });
 });

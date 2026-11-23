@@ -24,7 +24,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.3.5 DONE locally (apply patient advance on bill issue; advance shown on Billing tab). No migration.
 5.3.4 DONE locally (dues list by age buckets + call notes; appointment/Today Due mark, amount for receptionist only). **Migration `0041_dues_calls.sql` — owner applies.** Screens S09.
 5.3.1 DONE locally (createFromVisit + draft line edit with fee-change reason + Issue; S09). No migration.
-5.3.2 PARTIAL (payment API + PatientBillingPanel modes/full/half; cash ₹2L warn).
+5.3.2 DONE locally (split cash+UPI UI + reference; PaymentTakeForm; receipt shows both). No migration.
 5.3.3 PARTIAL (patient bills list + outstanding on Billing tab).
 5.3.16 DONE locally (history bill/payment/refund sources; summary outstanding due). No migration.
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
