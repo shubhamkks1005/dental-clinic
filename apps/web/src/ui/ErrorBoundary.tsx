@@ -1,5 +1,6 @@
 import { shortRequestId } from "@clinic/shared";
 import { Component, type ReactNode } from "react";
+import { CopyButton } from "./CopyButton";
 
 type State = { errorId: string | null };
 
@@ -27,7 +28,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
         </p>
         <button type="button" className="btn btn-primary" onClick={() => window.location.reload()}>
           Reload
-        </button>
+        </button>{" "}
+        <CopyButton text={this.state.errorId} label="Copy Error ID" />
       </section>
     );
   }

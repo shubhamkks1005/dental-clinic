@@ -95,6 +95,8 @@
 - src/dev/dev-guard.test.ts - stub stays local: wrangler main per env, AUTH_MODE per env, no imports of dev code, prod app has no dev-login
 - src/dev/staging-seed.ts - staging seed orchestrator (fake clinic via domain functions); staging-seed-core.ts shared types/helpers; staging-seed-money.ts rx, bills, payments, refund, day close; staging-seed-data.ts fake people; staging-seed.test.ts
 - scripts/seed-staging.mjs - CLI: refuses unless --staging (staging D1 id from wrangler.jsonc) or --local; idempotent via notes marker; `pnpm --filter @clinic/worker db:seed:staging -- --staging`
+- docs/TESTING.md - tester guide: 10-task receptionist script (5.5.2), doctor and receptionist day flows, bug templates
+- (web) src/api/last-request.ts (+test) - in-memory last Error ID; src/ui/CopyButton.tsx; More screen Help card and crash page show a copyable Error ID
 - src/public-routes.ts - PUBLIC_API (start, callback, branding, health), cookie names
 - src/types.ts - Bindings (Env + secrets) and Variables (db, requestId, session, ctx, repos)
 - src/http.ts - COOKIE_BASE (__Host-, HttpOnly, Secure, SameSite=Lax, Path=/), signedIn(c)

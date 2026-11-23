@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { lastRequestId } from "../../api/last-request";
+import { CopyButton } from "../../ui/CopyButton";
 import { icons } from "../../ui/icons";
 import { moreItems } from "../../ui/shell/nav-items";
 import { useMe, UserCard } from "../auth";
@@ -24,6 +26,24 @@ export function MoreScreen() {
           ))}
         </nav>
       )}
+      <HelpCard />
     </div>
+  );
+}
+
+// For bug reports: the Error ID of the last thing the app asked the server.
+function HelpCard() {
+  const id = lastRequestId();
+  return (
+    <section className="card more-card" aria-label="Help">
+      <h2>Help</h2>
+      {id ? (
+        <p>
+          Last Error ID: <strong>{id}</strong> <CopyButton text={id} />
+        </p>
+      ) : (
+        <p className="muted">No Error ID yet. Open a screen, then come back here.</p>
+      )}
+    </section>
   );
 }

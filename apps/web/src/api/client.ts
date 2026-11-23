@@ -1,4 +1,5 @@
 import { REQUEST_ID_HEADER, shortRequestId, type ApiReply } from "@clinic/shared";
+import { recordRequestId } from "./last-request";
 import { startPageAfter401 } from "./session-end";
 
 // The one typed API client. Feature folders wrap it in small functions; components never fetch.
@@ -35,6 +36,7 @@ export async function api<T>(
   });
   const requestId = response.headers.get(REQUEST_ID_HEADER);
   const errorId = requestId ? shortRequestId(requestId) : null;
+  recordRequestId(errorId);
   const reply = (await response.json().catch(() => null)) as ApiReply<T> | null;
   if (!reply) {
     throw new ApiError(
@@ -68,6 +70,7 @@ export async function apiForm<T>(path: string, form: FormData): Promise<T> {
   });
   const requestId = response.headers.get(REQUEST_ID_HEADER);
   const errorId = requestId ? shortRequestId(requestId) : null;
+  recordRequestId(errorId);
   const reply = (await response.json().catch(() => null)) as ApiReply<T> | null;
   if (!reply) {
     throw new ApiError(
