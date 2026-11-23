@@ -32,6 +32,9 @@ PLAN: Phase 6 dashboard / reports / settings hub. Permissions: AUTH_PLAN 4f in p
 6.5.4 DONE locally (yearly holidays + national templates + booking block). No migration. DRAFT national list for sister.
 6.5.5 DONE locally (Preferences chart.view in hub; covered with 6.5.1/6.5.3). No migration.
 6.5.6 DONE locally (SETTING_HELP for every key; UI lines on clinic/billing/privacy/prefs/tunables; test). No migration.
+6.6.1 DONE locally (dashboard rowsRead &lt;2000 already asserted in dashboard.test 6.3.1). No migration.
+6.6.2 SKIPPED / Waiting (sister sign-off on dashboard layout/defs — needs 6.1.1).
+6.6.3 SKIPPED / Waiting (top-5 fixes after 6.6.2).
 Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.9.2, 4.3.4, 4.4.4, 4.4.5, 4.4.7, 4.4.8, 4.5.2.
 5.1.1 DONE locally (CA questions page docs/CA_QUESTIONS.md; answers DRAFT until CA). No migration.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
@@ -307,7 +310,8 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
-- **6.1.1**: sister 45-min sign-off on metric definitions table + choose top 4 dashboard KPIs (DRAFT defaults in DECISIONS until then)
+- **6.1.1 / 6.6.2 / 6.6.3**: sister sign-off on metric defs + dashboard layout; then top-5 fixes
+- **6.5.4**: DRAFT national holidays (Republic / Independence / Gandhi) — sister edit in Settings
 - **5.5.2**: receptionist 10-task usability session (visit bill, split pay, advance, partial, discount ask, refund ask, day close, dues, reprint, fix wrong bill)
 - **5.5.3 / 5.5.4**: CA review sample bills+export+day close; then top-5 fixes
 - **5.4.1**: create Healthchecks check + GitHub secret `HEALTHCHECKS_BILLING_URL`; confirm fail ping on bad dump
