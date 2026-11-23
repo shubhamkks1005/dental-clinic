@@ -25,6 +25,7 @@ import { visitHistorySource } from "./history-feed-visits";
 import { prescriptionHistorySource } from "./history-feed-prescriptions";
 import { certificateHistorySource } from "./history-feed-certificates";
 import { billHistorySource, paymentHistorySource, refundHistorySource } from "./history-feed-bills";
+import { pastRecordHistorySource } from "./history-feed-past-records";
 
 function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
   const fileKinds = historyFileKindsForRole(ctx.role);
@@ -52,6 +53,7 @@ function sourcesForCtx(db: Db, ctx: Ctx): HistorySource[] {
     amendmentHistorySource(db),
     prescriptionHistorySource(db, { includeMedicines: true }),
     certificateHistorySource(db, { includeClinical: true }),
+    pastRecordHistorySource(db),
   ];
 }
 

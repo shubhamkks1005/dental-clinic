@@ -40,6 +40,44 @@
   border-color: var(--brand, #1e4fa3);
 }
 
+.history-doctor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: start;
+}
+
+.history-past-form {
+  display: grid;
+  gap: var(--s3);
+  width: 100%;
+  max-width: 28rem;
+  padding: var(--s4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+
+.history-past-form label {
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.history-past-form input,
+.history-past-form textarea,
+.history-past-form select {
+  min-height: 44px;
+  width: 100%;
+}
+
+.history-past-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
 .history-filter-extras {
   display: grid;
   grid-template-columns: 1fr 1fr;

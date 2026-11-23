@@ -67,6 +67,7 @@ describe("table rules (1.2.1)", () => {
       "medical_history",
       "monthly_stats",
       "outreach_contacts",
+      "past_records",
       "patient_search",
       "patients",
       "payment_allocations",

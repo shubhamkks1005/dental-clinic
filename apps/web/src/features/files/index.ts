@@ -9,4 +9,4 @@ export {
 } from "./prepare-size";
 export { PatientFilesTab } from "./PatientFilesTab";
 export { StorageUsagePanel } from "./StorageUsagePanel";
-export { fileContentUrl, listPatientFiles, uploadPatientFile } from "./api";
+export { fileContentUrl, listPatientFiles, uploadPatientFile, type FileRow } from "./api";

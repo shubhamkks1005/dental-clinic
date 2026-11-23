@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "./index";
-import { addStaff, makeEnv, ORIGIN, sessionCookie } from "./testing/app-env";
+import { addStaff, makeEnv, ORIGIN, sameOriginPost, sessionCookie } from "./testing/app-env";
 
 let env: ReturnType<typeof makeEnv>["env"];
 let sqlite: ReturnType<typeof makeEnv>["sqlite"];
@@ -127,6 +127,34 @@ describe("staff history (3.5.11 / 3.5.12)", () => {
     const doc = await get("doc@example.test", "/api/staff/patients/p-hist/history?limit=50");
     const docBody = (await doc.json()) as { data: { entries: { type: string }[] } };
     expect(docBody.data.entries.some((e) => e.type === "visit")).toBe(true);
+  });
+
+  it("past record create is doctor-only (6.7.3)", async () => {
+    const cookie = await sessionCookie(env, "doc@example.test");
+    const init = sameOriginPost(cookie);
+    const res = await app.request(
+      `${ORIGIN}/api/staff/patients/p-hist/history/past-records`,
+      {
+        ...init,
+        headers: { ...(init.headers as Record<string, string>), cookie },
+        body: JSON.stringify({ recordedOn: "2018-03-01", body: "Fake paper note" }),
+      },
+      env,
+    );
+    expect(res.status).toBe(201);
+
+    const recCookie = await sessionCookie(env, "rec@example.test");
+    const recInit = sameOriginPost(recCookie);
+    const forbidden = await app.request(
+      `${ORIGIN}/api/staff/patients/p-hist/history/past-records`,
+      {
+        ...recInit,
+        headers: { ...(recInit.headers as Record<string, string>), cookie: recCookie },
+        body: JSON.stringify({ recordedOn: "2018-03-01", body: "Should fail" }),
+      },
+      env,
+    );
+    expect(forbidden.status).toBe(403);
   });
 
   it("print summary is doctor-only (6.7.2)", async () => {

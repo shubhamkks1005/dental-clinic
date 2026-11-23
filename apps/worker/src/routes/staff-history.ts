@@ -1,6 +1,11 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
-import { getHistoryPrintSummary, getHistorySummary, listHistoryFeed } from "../domain/history";
+import {
+  createPastRecord,
+  getHistoryPrintSummary,
+  getHistorySummary,
+  listHistoryFeed,
+} from "../domain/history";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -16,6 +21,14 @@ staffHistory.get("/patients/:id/history/summary", async (c) => {
 staffHistory.get("/patients/:id/history/print-summary", async (c) => {
   const result = await getHistoryPrintSummary(signedIn(c).repos, c.req.param("id"));
   return c.json(ok({ summary: result.summary }));
+});
+
+// 6.7.3: doctor-only past/paper note.
+staffHistory.post("/patients/:id/history/past-records", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await createPastRecord(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ record: result.record }), 201);
 });
 
 // 3.5.12 / 6.7.1: merged newest-first feed with cursor pagination + filters.

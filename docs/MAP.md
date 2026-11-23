@@ -180,6 +180,8 @@
 - src/repos/history-summary.ts (+ test) - 3.5.11 pinned strip; access_log view; receptionist alert labels empty
 - src/repos/history-feed*.ts (+ test) - 3.5.12–14 / 6.7.1 merge feed; chip/date/tooth/q filters; role sources; cursor
 - src/repos/history-print-summary.ts (+ test) - 6.7.2 doctor print payload (patient, allergies, visits, treatments)
+- src/repos/past-records.ts (+ history-feed-past-records + test) - 6.7.3 Added later notes; mig 0048
+- migrations/0048_past_records.sql - 6.7.3 past_records table
 - packages/shared/src/history-feed.ts (+ test) - cursor + 6.7.1 chip/date/tooth/q query parse + resolveHistoryFeedFilters
 - migrations/0029_files_patient_history_idx.sql - 3.5.13 files (patient_id, created_at) for history feed
 - migrations/0036_certificates.sql - 4.4.3 medical certificates table

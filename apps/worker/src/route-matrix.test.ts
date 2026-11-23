@@ -184,6 +184,12 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/print-log" && method === "POST") {
     return JSON.stringify({ documentKind: "day_list", documentId: "day-2026-11-23" });
   }
+  if (path === "/api/staff/patients/:id/history/past-records" && method === "POST") {
+    return JSON.stringify({
+      recordedOn: "2020-01-15",
+      body: "Matrix past paper note",
+    });
+  }
   if (path === "/api/staff/certificates" && method === "POST") {
     return JSON.stringify({
       patientId: "p1",

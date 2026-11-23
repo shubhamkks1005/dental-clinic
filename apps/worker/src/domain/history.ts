@@ -1,5 +1,5 @@
 import type { Repos } from "@clinic/db";
-import { parseHistoryFeedQuery } from "@clinic/shared";
+import { parseCreatePastRecord, parseHistoryFeedQuery } from "@clinic/shared";
 
 export async function getHistorySummary(repos: Repos, patientId: string) {
   const summary = await repos.history.getSummary(patientId);
@@ -24,4 +24,11 @@ export async function listHistoryFeed(repos: Repos, patientId: string, query: un
 export async function getHistoryPrintSummary(repos: Repos, patientId: string) {
   const summary = await repos.history.getPrintSummary(patientId);
   return { ok: true as const, summary };
+}
+
+export async function createPastRecord(repos: Repos, patientId: string, body: unknown) {
+  const parsed = parseCreatePastRecord(body);
+  if (!parsed.ok) return parsed;
+  const row = await repos.pastRecords.create(patientId, parsed.value);
+  return { ok: true as const, record: row };
 }

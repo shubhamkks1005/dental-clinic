@@ -62,3 +62,13 @@ export function listHistoryFeed(patientId: string, opts?: HistoryFeedQuery) {
     `/api/staff/patients/${encodeURIComponent(patientId)}/history${qs ? `?${qs}` : ""}`,
   );
 }
+
+export function createPastRecord(
+  patientId: string,
+  body: { recordedOn: string; body: string; fileId?: string },
+) {
+  return api<{ record: { id: string } }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/history/past-records`,
+    { method: "POST", body: JSON.stringify(body) },
+  ).then((r) => r.record);
+}
