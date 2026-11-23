@@ -22,6 +22,7 @@ function actionForKind(kind: PrintDocumentKind): Action {
   if (kind === "certificate") return "certificates.print";
   // Estimate sheet is clinical (plan) — doctor only (AUTH_PLAN 4f).
   if (kind === "estimate") return "clinical.view";
+  if (kind === "bill" || kind === "receipt") return "bills.create";
   return "patients.view";
 }
 

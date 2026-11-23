@@ -36,9 +36,11 @@ export function PatientBillingPanel({ patientId }: { patientId: string }) {
     setSaving(true);
     setError(null);
     try {
-      await recordPayment({ patientId, amountPaise: paise, mode });
+      const pay = await recordPayment({ patientId, amountPaise: paise, mode });
       setAmountRupees("");
       load();
+      // 5.3.2 / 5.3.11: open receipt print after payment.
+      window.open(`/app/print/receipt/${encodeURIComponent(pay.id)}`, "_blank", "noopener");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Payment failed.");
     } finally {

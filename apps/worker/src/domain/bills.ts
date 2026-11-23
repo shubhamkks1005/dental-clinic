@@ -81,6 +81,11 @@ export async function listPatientPayments(repos: Repos, patientId: string) {
   return { ok: true as const, payments };
 }
 
+export async function getPayment(repos: Repos, id: string) {
+  const payment = await repos.payments.get(id);
+  return { ok: true as const, payment };
+}
+
 export async function recordPayment(repos: Repos, body: unknown) {
   const parsed = parseRecordPayment(body);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };

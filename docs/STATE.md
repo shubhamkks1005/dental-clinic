@@ -15,6 +15,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.2.6 DONE locally (billing.gst_mode default off; tax when on). **Migration `0040_billing_gst_mode.sql` — owner applies. DRAFT - accountant to confirm.**
 5.2.7 DONE locally (assertDraftEditable + cancel blocks paid bills). No migration.
 5.3.10 DONE locally (amountInWords English lakh/crore). No migration.
+5.3.11 DONE locally (A5 bill+receipt print; amount in words; reg no; not GST note; Duplicate via print_log; receipt opens after payment). Waiting: sister printer haan. No migration.
 5.3.9 DONE locally (daily cash close by mode; counted cash; note if difference; lock day; late entry; doctor reopen; print). **Migration `0042_day_closes.sql` — owner applies.**
 5.3.8 DONE locally (doctor cancel UI on BillScreen; paid bills blocked; number kept). No migration.
 5.3.7 DONE locally (doctor refund UI on Billing tab; payments list + full refund path test). No migration.
@@ -248,6 +249,7 @@ None. Gate treated as **passed with exceptions** (owner 2026-11-22). Agent may i
 - No real patient data on staging or in repo ever before go-live rules say so
 
 Waiting on me (owner):
+- **5.3.11**: sister approve A5 bill/receipt print on clinic printer
 - **5.2.5**: enter 5 fake/real opening balances from paper register and confirm totals
 - **5.1.1**: CA written answers to docs/CA_QUESTIONS.md (GST, bill form, cash ₹2L, retention, print fields)
 - **4.3.4 / 4.5.2 / 4.3.3**: clinic printer + sister haan on 10 fake Rx / Rx preview

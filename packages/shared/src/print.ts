@@ -7,6 +7,8 @@ export const PRINT_DOCUMENT_KINDS = [
   "certificate",
   "blank_form",
   "day_list",
+  "bill",
+  "receipt",
 ] as const;
 export type PrintDocumentKind = (typeof PRINT_DOCUMENT_KINDS)[number];
 

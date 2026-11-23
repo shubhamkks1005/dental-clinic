@@ -96,6 +96,13 @@ export type BillDto = {
   cancelReason: string | null;
   version: number;
   items: BillItemDto[];
+  payments?: {
+    paymentId: string;
+    amountPaise: number;
+    mode: string;
+    receiptNo: string | null;
+    dayLocal: string;
+  }[];
 };
 
 export type PatientBillRow = {

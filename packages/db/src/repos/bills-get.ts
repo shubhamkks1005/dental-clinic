@@ -3,7 +3,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { billItems, bills } from "../schema";
+import { billItems, bills, paymentAllocations, payments } from "../schema";
 
 export type BillItemRow = {
   id: string;
@@ -45,6 +45,14 @@ export type BillRow = {
   issuedBy: string | null;
   version: number;
   items: BillItemRow[];
+  /** Payments allocated to this bill (for print). */
+  payments: {
+    paymentId: string;
+    amountPaise: number;
+    mode: string;
+    receiptNo: string | null;
+    dayLocal: string;
+  }[];
 };
 
 const billCols = {
@@ -102,7 +110,21 @@ export function billsGetRepo(db: Db, ctx: Ctx) {
         .where(and(eq(billItems.billId, id), isNull(billItems.deletedAt)))
         .orderBy(asc(billItems.sortOrder))
         .all();
-      return { ...row, items };
+
+      const payRows = await db
+        .select({
+          paymentId: paymentAllocations.paymentId,
+          amountPaise: paymentAllocations.amountPaise,
+          mode: payments.mode,
+          receiptNo: payments.receiptNo,
+          dayLocal: payments.dayLocal,
+        })
+        .from(paymentAllocations)
+        .innerJoin(payments, eq(payments.id, paymentAllocations.paymentId))
+        .where(and(eq(paymentAllocations.billId, id), isNull(paymentAllocations.deletedAt)))
+        .all();
+
+      return { ...row, items, payments: payRows };
     },
   };
 }

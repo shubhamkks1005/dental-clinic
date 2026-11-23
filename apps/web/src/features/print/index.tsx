@@ -3,10 +3,12 @@ import { NotFound } from "../../ui/PageMessage";
 import { PrintBlankFormsScreen } from "./PrintBlankFormsScreen";
 import { PrintCertificateScreen } from "./PrintCertificateScreen";
 import { PrintConsentScreen } from "./PrintConsentScreen";
+import { PrintBillScreen } from "./PrintBillScreen";
 import { PrintDayCloseScreen } from "./PrintDayCloseScreen";
 import { PrintDayListScreen } from "./PrintDayListScreen";
 import { PrintEstimateScreen } from "./PrintEstimateScreen";
 import { PrintPrescriptionScreen } from "./PrintPrescriptionScreen";
+import { PrintReceiptScreen } from "./PrintReceiptScreen";
 import { PrintSampleScreen } from "./PrintSampleScreen";
 
 // /app/print/*: print screens open without the app frame (menu, top bar, tabs).
@@ -16,6 +18,8 @@ export function PrintRoutes() {
       <Route path="sample" element={<PrintSampleScreen />} />
       <Route path="day" element={<PrintDayListScreen />} />
       <Route path="day-close" element={<PrintDayCloseScreen />} />
+      <Route path="bill/:id" element={<PrintBillScreen />} />
+      <Route path="receipt/:id" element={<PrintReceiptScreen />} />
       <Route path="prescription/:id" element={<PrintPrescriptionScreen />} />
       <Route path="estimate/:patientId" element={<PrintEstimateScreen />} />
       <Route path="consent/:patientId" element={<PrintConsentScreen />} />

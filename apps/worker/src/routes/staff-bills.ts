@@ -8,6 +8,7 @@ import {
   createBillFromVisit,
   dayCloseSummary,
   getBill,
+  getPayment,
   issueBill,
   listDues,
   listPatientBills,
@@ -108,6 +109,11 @@ staffBills.post("/payments", async (c) => {
   const result = await recordPayment(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ payment: result.payment }), 201);
+});
+
+staffBills.get("/payments/:id", async (c) => {
+  const result = await getPayment(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ payment: result.payment }));
 });
 
 staffBills.get("/day-close", async (c) => {

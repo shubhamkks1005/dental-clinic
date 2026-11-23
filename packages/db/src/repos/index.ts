@@ -53,6 +53,7 @@ import { dayCloseRepo } from "./day-close";
 import { paymentsCreateRepo } from "./payments-create";
 import { paymentsApplyAdvanceRepo } from "./payments-apply-advance";
 import { paymentsListRepo } from "./payments-list";
+import { paymentsGetRepo } from "./payments-get";
 import { refundsCreateRepo } from "./refunds-create";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
@@ -125,6 +126,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...paymentsCreateRepo(db, ctx),
       ...paymentsApplyAdvanceRepo(db, ctx),
       ...paymentsListRepo(db, ctx),
+      ...paymentsGetRepo(db, ctx),
     },
     refunds: {
       ...refundsCreateRepo(db, ctx),
