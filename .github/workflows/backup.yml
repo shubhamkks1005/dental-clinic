@@ -1,5 +1,5 @@
-# 1.6.3 nightly D1 backup (staging first). ~02:30 IST = 21:00 UTC.
-# Needs owner secrets (see docs/ACCOUNTS.md). workflow_dispatch for a manual test run.
+# 1.6.3 / 9.1.3 nightly D1 backup (staging first). ~02:30 IST = 21:00 UTC.
+# Skips cleanly until owner adds secrets (docs/ACCOUNTS.md §1.6.3).
 name: Backup
 
 on:
@@ -23,16 +23,35 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Require secrets or skip
+        id: gate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_BACKUP }}
+          AGE_RECIPIENT: ${{ vars.AGE_RECIPIENT }}
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          HEALTHCHECKS_BACKUP_URL: ${{ secrets.HEALTHCHECKS_BACKUP_URL }}
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] || [ -z "${AGE_RECIPIENT:-}" ] || [ -z "${B2_KEY_ID:-}" ] || [ -z "${HEALTHCHECKS_BACKUP_URL:-}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Backup secrets/vars not set — skipping (see docs/ACCOUNTS.md section 1.6.3)"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        if: steps.gate.outputs.skip == 'false'
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: steps.gate.outputs.skip == 'false'
         with:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - if: steps.gate.outputs.skip == 'false'
+        run: pnpm install --frozen-lockfile
 
       - name: Install age and AWS CLI (B2 S3 API)
+        if: steps.gate.outputs.skip == 'false'
         run: |
           set -euo pipefail
           curl -fsSL "https://github.com/FiloSottile/age/releases/download/v1.2.1/age-v1.2.1-linux-amd64.tar.gz" \
@@ -42,6 +61,7 @@ jobs:
           aws --version
 
       - name: Run backup pipeline
+        if: steps.gate.outputs.skip == 'false'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN_BACKUP }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
@@ -53,10 +73,12 @@ jobs:
           B2_BUCKET: ${{ vars.B2_BUCKET }}
           B2_ENDPOINT: ${{ vars.B2_ENDPOINT }}
           HEALTHCHECKS_BACKUP_URL: ${{ secrets.HEALTHCHECKS_BACKUP_URL }}
+          OPS_WEBHOOK_URL: ${{ secrets.OPS_WEBHOOK_URL }}
+          OPS_WEBHOOK_SECRET: ${{ secrets.OPS_WEBHOOK_SECRET }}
         run: bash scripts/backup/run.sh
 
       - name: Signal failure to Healthchecks
-        if: failure()
+        if: failure() && steps.gate.outputs.skip == 'false'
         env:
           HEALTHCHECKS_BACKUP_URL: ${{ secrets.HEALTHCHECKS_BACKUP_URL }}
         run: |

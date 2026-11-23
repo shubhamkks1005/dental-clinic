@@ -48,6 +48,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "message_attempts",
       "message_outbox",
       "monthly_stats",
+      "ops_status",
       "outreach_contacts",
       "past_records",
       "patient_search",

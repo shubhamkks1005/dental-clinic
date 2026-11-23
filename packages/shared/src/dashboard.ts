@@ -51,6 +51,8 @@ export type DashboardPayload = {
   busyHeat: { row: string; col: string; value: number }[];
   /** Rows returned from stats tables (+ live today aggregates counted as 1 each). */
   rowsRead: number;
+  /** 9.1.10: backup / ops lines for Things to watch (no PHI). */
+  attention?: { backup: { tone: "ok" | "warn" | "bad"; text: string } };
 };
 
 export type StatCell = { period: string; metric: string; dim: string; value: number };

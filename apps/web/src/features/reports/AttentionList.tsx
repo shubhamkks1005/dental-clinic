@@ -1,7 +1,11 @@
 import { Link } from "react-router";
 
-/** 6.3.3: "Things to watch" — stubs until 6.3.7 call lists / backup status. */
-export function AttentionList() {
+type BackupLine = { tone: "ok" | "warn" | "bad"; text: string };
+
+/** 6.3.3 / 9.1.10: Things to watch — dues, call lists, visits, last backup. */
+export function AttentionList({ backup }: { backup?: BackupLine | null }) {
+  const backupClass =
+    backup?.tone === "bad" ? "notice error" : backup?.tone === "warn" ? "notice warning" : "muted";
   return (
     <section className="dash-attention card">
       <h2>Things to watch</h2>
@@ -13,7 +17,7 @@ export function AttentionList() {
         <li>
           <Link to="/app">Incomplete visits</Link> — drafts on Today
         </li>
-        <li>Storage and last backup — Settings when those panels are ready</li>
+        <li className={backupClass}>{backup?.text ?? "Last backup: not reported yet"}</li>
       </ul>
     </section>
   );

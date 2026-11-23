@@ -1,0 +1,35 @@
+# 9.1.2: prove GitHub scheduled workflows fire on this repo.
+# Default: workflow_dispatch only. Owner enables the cron for 3 days, then disables it.
+# Never prints secrets. Ping body is stamp only.
+name: Schedule spike
+
+on:
+  workflow_dispatch:
+  # Owner: uncomment for a 3-day test, then comment again.
+  # schedule:
+  #   - cron: "*/15 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Record schedule fire
+        env:
+          HEALTHCHECKS_SCHEDULE_SPIKE_URL: ${{ secrets.HEALTHCHECKS_SCHEDULE_SPIKE_URL }}
+        run: |
+          set -euo pipefail
+          STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+          echo "schedule spike fired at=${STAMP}"
+          if [ -n "${HEALTHCHECKS_SCHEDULE_SPIKE_URL:-}" ]; then
+            curl -fsS -m 30 -X POST \
+              -H "Content-Type: text/plain" \
+              --data "ok at=${STAMP}" \
+              "$HEALTHCHECKS_SCHEDULE_SPIKE_URL" >/dev/null
+            echo "healthchecks ping sent"
+          else
+            echo "no HEALTHCHECKS_SCHEDULE_SPIKE_URL secret; local record only"
+          fi

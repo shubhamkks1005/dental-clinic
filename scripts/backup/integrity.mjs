@@ -1,14 +1,19 @@
 #!/usr/bin/env node
-// 1.6.3: load a D1 SQL export into a throwaway SQLite DB and refuse a bad dump.
+// 1.6.3 / 9.1.3: load a D1 SQL export into throwaway SQLite; refuse a bad dump.
 // Usage: node scripts/backup/integrity.mjs path/to/export.sql
 import { readFileSync, unlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { DatabaseSync } from "node:sqlite";
+import { checkBillingIntegrity } from "../billing-integrity/check.mjs";
 
 const REQUIRED = ["users", "settings", "counters", "audit_log", "access_log", "files"];
 
+/**
+ * @param {string} sql
+ * @returns {{ tables: string[], billingOk: boolean }}
+ */
 export function checkDumpSql(sql) {
   const path = join(tmpdir(), `clinic-backup-check-${process.pid}-${Date.now()}.db`);
   const db = new DatabaseSync(path);
@@ -26,7 +31,16 @@ export function checkDumpSql(sql) {
     );
     const missing = REQUIRED.filter((t) => !names.has(t));
     if (missing.length) throw new Error(`Dump is missing tables: ${missing.join(", ")}`);
-    return { tables: [...names].sort() };
+
+    let billingOk = true;
+    if (names.has("bills") && names.has("payments")) {
+      const billing = checkBillingIntegrity(db);
+      if (!billing.ok) {
+        throw new Error(`billing integrity failed: ${billing.problems.join("; ")}`);
+      }
+      billingOk = true;
+    }
+    return { tables: [...names].sort(), billingOk };
   } finally {
     db.close();
     try {
@@ -45,5 +59,8 @@ if (isMain) {
     process.exit(2);
   }
   const result = checkDumpSql(readFileSync(file, "utf8"));
-  console.log(JSON.stringify({ ok: true, ...result }));
+  // Never print dump contents — table names only.
+  console.log(
+    JSON.stringify({ ok: true, tableCount: result.tables.length, billingOk: result.billingOk }),
+  );
 }

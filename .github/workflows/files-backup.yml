@@ -1,0 +1,81 @@
+# 9.1.4 weekly R2 → B2 file copy (copy, not sync). Skips cleanly until owner adds secrets.
+name: Files backup
+
+on:
+  schedule:
+    - cron: "0 22 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: files-backup
+  cancel-in-progress: false
+
+jobs:
+  r2-to-b2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Require secrets or skip
+        id: gate
+        env:
+          B2_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CRYPT_PASSWORD: ${{ secrets.RCLONE_CRYPT_PASSWORD }}
+          HEALTHCHECKS_FILES_BACKUP_URL: ${{ secrets.HEALTHCHECKS_FILES_BACKUP_URL }}
+        run: |
+          if [ -z "${B2_KEY_ID:-}" ] || [ -z "${R2_ACCESS_KEY_ID:-}" ] || [ -z "${RCLONE_CRYPT_PASSWORD:-}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Files backup secrets not set — skipping (see docs/ACCOUNTS.md / docs/BACKUP.md)"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install rclone
+        if: steps.gate.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+          curl -fsSL https://downloads.rclone.org/rclone-current-linux-amd64.zip -o /tmp/rclone.zip
+          sudo unzip -o /tmp/rclone.zip -d /tmp
+          sudo mv /tmp/rclone-*/rclone /usr/local/bin/rclone
+          rclone version
+
+      - name: Copy R2 to B2 (encrypted remote)
+        if: steps.gate.outputs.skip == 'false'
+        env:
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ vars.R2_S3_ENDPOINT }}
+          RCLONE_CONFIG_R2_ACL: private
+          RCLONE_CONFIG_B2_TYPE: s3
+          RCLONE_CONFIG_B2_PROVIDER: Other
+          RCLONE_CONFIG_B2_ACCESS_KEY_ID: ${{ secrets.B2_KEY_ID }}
+          RCLONE_CONFIG_B2_SECRET_ACCESS_KEY: ${{ secrets.B2_APPLICATION_KEY }}
+          RCLONE_CONFIG_B2_ENDPOINT: ${{ vars.B2_ENDPOINT }}
+          RCLONE_CONFIG_B2_ACL: private
+          B2_FILES_PREFIX: ${{ vars.B2_FILES_PREFIX }}
+          R2_BUCKET: ${{ vars.R2_BUCKET }}
+          B2_BUCKET: ${{ vars.B2_BUCKET }}
+          HEALTHCHECKS_FILES_BACKUP_URL: ${{ secrets.HEALTHCHECKS_FILES_BACKUP_URL }}
+          RCLONE_CONFIG_CRYPT_TYPE: crypt
+          RCLONE_CONFIG_CRYPT_REMOTE: b2:${{ vars.B2_BUCKET }}/${{ vars.B2_FILES_PREFIX }}
+          RCLONE_CONFIG_CRYPT_PASSWORD: ${{ secrets.RCLONE_CRYPT_PASSWORD }}
+          RCLONE_CONFIG_CRYPT_PASSWORD2: ${{ secrets.RCLONE_CRYPT_PASSWORD2 }}
+        run: bash scripts/backup/files-copy.sh
+
+      - name: Signal failure to Healthchecks
+        if: failure() && steps.gate.outputs.skip == 'false'
+        env:
+          HEALTHCHECKS_FILES_BACKUP_URL: ${{ secrets.HEALTHCHECKS_FILES_BACKUP_URL }}
+        run: |
+          if [ -n "${HEALTHCHECKS_FILES_BACKUP_URL:-}" ]; then
+            curl -fsS -m 30 "${HEALTHCHECKS_FILES_BACKUP_URL}/fail" || true
+          fi

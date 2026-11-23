@@ -49,5 +49,6 @@
   "0047_tunable_settings.sql": "52fb028c228ac2b0346fda23c1efddb6f2c32bf2b32a5b345807bcc8364c82f8",
   "0048_past_records.sql": "0016d97480eea90fbcfae1119a48749f628c2346be37d81d742055bb1dcd56e2",
   "0049_message_outbox.sql": "4644b1d892e3d25b453ae60dc1150f4687899d40318604d610f261c810fe7a9b",
-  "0050_privacy_notice_messaging.sql": "5cec29f5bdb9c837bdb90ac1dafe1caab248428f6da8464006264611e0f5fd7a"
+  "0050_privacy_notice_messaging.sql": "5cec29f5bdb9c837bdb90ac1dafe1caab248428f6da8464006264611e0f5fd7a",
+  "0051_ops_status.sql": "913fa91d2050384572eb3b3f5ab356efce144f7ea64e2c140c96c40f52cdab67"
 }

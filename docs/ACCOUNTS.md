@@ -36,6 +36,10 @@ The Cloudflare account was created with the owner's personal Gmail via Google lo
 | B2 application key | upload encrypted dumps (1.6.3) | GitHub secrets `B2_KEY_ID` + `B2_APPLICATION_KEY`; variables `B2_BUCKET` + optional `B2_ENDPOINT` | bucket write only, this backup bucket | - | - | - |
 | Healthchecks backup check | dead-man ping after backup (1.6.3 / 1.6.4) | GitHub secret `HEALTHCHECKS_BACKUP_URL` (the ping URL, not the login) | - | - | - | - |
 | Healthchecks billing integrity | weekly billing SQL re-add fail alarm (5.4.1) | GitHub secret `HEALTHCHECKS_BILLING_URL` (ping URL only) | - | - | - | - |
+| Healthchecks schedule spike | 9.1.2 prove GH schedule fires | GitHub secret `HEALTHCHECKS_SCHEDULE_SPIKE_URL` (optional) | - | - | - | - |
+| Healthchecks files / PC copy | 9.1.4 / 9.1.5 | GitHub secrets `HEALTHCHECKS_FILES_BACKUP_URL` / PC env only | - | - | - | - |
+| OPS_WEBHOOK_SECRET | 9.1.10 dashboard backup line | Worker secret + GitHub secret `OPS_WEBHOOK_SECRET`; URL in `OPS_WEBHOOK_URL` | - | - | - | - |
+| R2 + rclone crypt (files backup) | 9.1.4 | GitHub secrets `R2_*` + `RCLONE_CRYPT_PASSWORD`(+2); vars `R2_BUCKET`, `R2_S3_ENDPOINT`, `B2_FILES_PREFIX` | - | - | - | - |
 | UptimeRobot monitor | hit `/api/staff/health` every 5 min (1.6.4) | UptimeRobot account only (no repo secret) | - | - | - | - |
 
 Add a row before creating any new token (B2, Healthchecks, Brevo, SMS gateway, domain).

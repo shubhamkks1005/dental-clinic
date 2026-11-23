@@ -1,4 +1,6 @@
 # DECISIONS (date - decision - why - by)
+- 2026-11-23 - Backup design (9.1.1): three layers (Time Travel / nightly age→B2 / weekly PC+files); export 02:30 IST; retention 30d/12m/3y default until sister confirms; Healthchecks dead-man; schedule spike must prove GH cron before relying on it (9.1.2 workflow_dispatch-only until owner enables 15-min cron 3 days) - plan + agent
+- 2026-11-23 - Ops status (9.1.10): `ops_status` table + signed POST `/hooks/ops-status` (sha256 base64url of `secret\\nbody`); dashboard AttentionList shows last backup line; no PHI in detail_json - agent
 - 2026-11-21 - No public website in this repo; portal only for patients to view their own data - owner scope - owner
 - 2026-11-21 - Portal is read-only; appointments are booked by phone - owner scope - owner
 - 2026-11-21 - Code is written by AI from the plan; owner reviews and tests - owner process - owner

@@ -1,5 +1,6 @@
 import {
   addIstDays,
+  backupAttentionLine,
   buildDashboardFromCells,
   istDate,
   parseDashboardRange,
@@ -15,7 +16,14 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, bills, dailyStats, monthlyStats, paymentAllocations } from "../schema";
+import {
+  appointments,
+  bills,
+  dailyStats,
+  monthlyStats,
+  opsStatus,
+  paymentAllocations,
+} from "../schema";
 import { computeDayStatRows, computeMonthStatRows } from "./daily-stats-queries";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
@@ -45,14 +53,30 @@ async function loadPayload(
   }
   const kpis = await loadKpis(db, today);
   const heat = await loadBusyHeat(db, range.from, range.to);
-  return buildDashboardFromCells(
+  const backupRow = await db.select().from(opsStatus).where(eq(opsStatus.key, "backup_d1")).get();
+  const payload = buildDashboardFromCells(
     range,
     primary.cells,
     compare.cells,
-    primary.rowsRead + compare.rowsRead + kpis.rowsRead + heat.rowsRead,
+    primary.rowsRead + compare.rowsRead + kpis.rowsRead + heat.rowsRead + 1,
     kpis.value,
     heat.cells,
   );
+  let detail: { sizeBytes?: number } = {};
+  if (backupRow?.detailJson) {
+    try {
+      detail = JSON.parse(backupRow.detailJson) as { sizeBytes?: number };
+    } catch {
+      detail = {};
+    }
+  }
+  payload.attention = {
+    backup: backupAttentionLine(
+      backupRow ? { status: backupRow.status, checkedAt: backupRow.checkedAt, detail } : null,
+      now.getTime(),
+    ),
+  };
+  return payload;
 }
 
 async function loadKpis(

@@ -12,3 +12,6 @@ playwright/.cache/
 # Secrets: never commit
 .dev.vars*
 .env*
+
+# Local backup dry-run output (may hold ciphertext; never commit age private keys)
+scripts/backup/.dry-out/

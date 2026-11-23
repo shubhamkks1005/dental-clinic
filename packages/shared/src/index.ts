@@ -18,6 +18,7 @@ export * from "./prescriptions";
 export * from "./print";
 export * from "./mobile";
 export * from "./messaging";
+export * from "./ops-status";
 export * from "./message-render";
 export * from "./message-plan";
 export * from "./money";

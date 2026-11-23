@@ -1,9 +1,22 @@
 # STATE
 Last updated: 2026-11-23
-Phase: 7 gate passed with exceptions. Do not start Phase 8 until owner says go. Phase 5/6 leftovers stay under Waiting.
+Phase: Owner authorised Cut A path: backup min (1.6.3/1.6.4 + 9.1.x) → Phase 9 core → 8.10 + 8.2.11 → 10.1 (stop before 10.2 pilot). Phase 7 leftovers stay under Waiting.
 RUN_PROMPT.md: standing rules for every session; AGENTS.md points to it.
 Phase 3/4/5/6 leftovers stay under Before real patients / Waiting; not redone.
-PLAN: Phase 7 messaging — dry_run + manual wa.me (owner). Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+PLAN: Cut A / raasta 2 after Phase 7. Permissions: AUTH_PLAN 4f in packages/db/src/permissions.ts only.
+1.6.3 DONE locally (pipeline + dry-run + billing-on-dump + fixture). **Waiting:** owner ACCOUNTS §1.6.3 (B2/age/HC/CF token), 7 green nights, one restore drill.
+1.6.4 DONE locally (docs/ALARMS.md). **Waiting:** Healthchecks + UptimeRobot create + both alarm tests.
+9.1.1 DONE locally (docs/BACKUP.md + DECISIONS). **Waiting:** sister read.
+9.1.2 DONE locally (schedule-spike.yml dispatch-only). **Waiting:** owner enable 15-min cron 3 days + HC secret; pick schedule vs workflow_dispatch fallback.
+9.1.3 DONE locally (integrity+billing refuse bad dump; age; sha256; B2; HC; workflow skips without secrets).
+9.1.4 DONE locally (files-backup.yml + files-copy dry-run). **Waiting:** R2/rclone crypt secrets + one file restore proof.
+9.1.5 DONE locally (clinic-pc-copy.md). **Waiting:** PC setup + 3 weeks + off-week alert.
+9.1.6 DONE locally (docs/runbooks/KEYS.md). **Waiting:** sister decrypt without developer.
+9.1.7 DONE locally (RESTORE_B2.md + dry-run path). **Waiting:** measured restore time on laptop.
+9.1.8 DONE locally (RESTORE_TIME_TRAVEL.md). **Waiting:** throwaway D1 drill.
+9.1.9 DONE locally (MIGRATION_SAFETY.md). **Waiting:** fake bad-migration rollback note.
+9.1.10 DONE locally (ops_status mig 0051, /hooks/ops-status, dashboard attention). **Waiting:** OPS_WEBHOOK_* secrets + fail-ping → red line test.
+**Migration `0051_ops_status.sql` — owner applies.** Next free: **0052**.
 **Phase 7 owner decision:** no paid SMS/WhatsApp API, no DLT, no card; MESSAGING_MODE=dry_run everywhere; ManualWhatsApp + FakeAdapter; English DRAFT templates; consent required; status opened_in_whatsapp on wa.me tap.
 7.1.1 SKIPPED / Waiting (sister message-list ok). DRAFT English table seeded.
 7.1.2–7.1.5 SKIPPED / Waiting (gateway spike, E2E encryption, SIM/TRAI, Plan B DLT — need phone/SIM/operator/card).

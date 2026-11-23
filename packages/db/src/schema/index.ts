@@ -29,3 +29,5 @@ export { dailyStats, monthlyStats } from "./daily-stats";
 export { outreachContacts, OUTREACH_LIST_KINDS } from "./outreach-contacts";
 export { pastRecords } from "./past-records";
 export { messageOutbox, messageAttempts, channelState, phoneFlags } from "./message-outbox";
+export { opsStatus, OPS_STATUS_KEYS, OPS_STATUS_VALUES } from "./ops-status";
+export type { OpsStatusKey, OpsStatusValue } from "./ops-status";

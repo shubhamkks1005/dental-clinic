@@ -137,7 +137,7 @@ export function ReportsScreen() {
           <DashboardKpis kpis={data.kpis} />
           <DashboardCharts data={data} />
           <CallListsPanel />
-          <AttentionList />
+          <AttentionList backup={data.attention?.backup} />
         </>
       ) : null}
     </div>

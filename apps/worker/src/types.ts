@@ -15,6 +15,8 @@ export type Bindings = Env & {
   S3_APP_KEY?: string;
   /** Test-only in-memory adapter (never set in wrangler). */
   __testStorage?: import("./adapters/storage").StorageAdapter;
+  /** 9.1.10 signed ops status webhook (GitHub Actions). */
+  OPS_WEBHOOK_SECRET?: string;
 };
 
 // Set by the session middleware. session/ctx/repos exist only on signed-in routes.

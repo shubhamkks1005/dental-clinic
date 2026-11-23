@@ -68,6 +68,7 @@ import { paymentsGetRepo } from "./payments-get";
 import { refundsCreateRepo } from "./refunds-create";
 import { messagesOutboxRepo } from "./messages-outbox";
 import { messagesPlanLoadRepo } from "./messages-plan-load";
+import { opsStatusRepo } from "./ops-status";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
 // domain functions; route files never touch the database (apps/worker architecture test).
@@ -159,6 +160,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     statsExport: statsExportRepo(db, ctx),
     messages: messagesOutboxRepo(db, ctx),
     messagesPlan: messagesPlanLoadRepo(db, ctx),
+    opsStatus: opsStatusRepo(db, ctx),
   };
 }
 

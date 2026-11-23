@@ -20,7 +20,8 @@
     "db:migrate": "pnpm --filter @clinic/worker db:migrate",
     "db:seed": "pnpm --filter @clinic/worker db:seed",
     "deploy:staging": "pnpm build && pnpm --filter @clinic/worker deploy:staging",
-    "spike:d1": "pnpm --filter @clinic/worker spike:d1"
+    "spike:d1": "pnpm --filter @clinic/worker spike:d1",
+    "backup:dry-run": "BACKUP_DRY_RUN=1 bash scripts/backup/run.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",

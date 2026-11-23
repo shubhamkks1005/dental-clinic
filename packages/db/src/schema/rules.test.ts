@@ -69,6 +69,7 @@ describe("table rules (1.2.1)", () => {
       "message_attempts",
       "message_outbox",
       "monthly_stats",
+      "ops_status",
       "outreach_contacts",
       "past_records",
       "patient_search",

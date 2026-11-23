@@ -6,7 +6,7 @@ import { migratedSqlite } from "./test-db";
 // Query-plan guard (1.2.8). D1 free allows 5 million rows read per day, so a hot query must never
 // read a whole growing table. Only these tables stay small (a few staff, settings keys, counters);
 // every other table, including any new one, must be reached through an index.
-export const SMALL_TABLES = new Set(["users", "settings", "counters"]);
+export const SMALL_TABLES = new Set(["users", "settings", "counters", "ops_status"]);
 
 export type RanStatement = { sql: string; params: unknown[] };
 

@@ -6,6 +6,9 @@
 - docs/DESIGN.md - look and feel, Screen map (S01-S19), patient number, colours, type, layout, words, print; every screen follows it
 - docs/design/align-dentistry-screens.pdf - mockups: p1 note, p2-3 DESIGN.md copy, then one screen per page with caption S01-S19 (screen N is on page N+3). Reference only; a newer PDF from the owner replaces it and becomes the source of truth
 - docs/ACCOUNTS.md - register of accounts, tokens and where each secret is stored (never the values)
+- docs/BACKUP.md - 9.1.1 backup design (layers, schedule, retention, local dry-run)
+- docs/ALARMS.md - 1.6.4 / 9.1.10 Healthchecks + UptimeRobot setup (no secret values)
+- docs/runbooks/ - RESTORE_B2, RESTORE_TIME_TRAVEL, MIGRATION_SAFETY, KEYS (9.1.6–9.1.9)
 - docs/AUTH_PLAN.md - staff "Sign in with Google" plan (task 1.3.8): flow, sessions, deny-by-default, staff rules, permission table, dev stub, landing page, owner's Google setup, risks
 - docs/DECISIONS.md - all decisions incl. T1-T10 tech decisions from the plan; 3.1.2 open-dentist / react-odontogram takeaways
 - docs/PATIENT_HISTORY.md - Unified Patient History spec (History tab on S04/S17; staged Phases 3–6; tasks 3.5.11–15, 4.2.8, 5.3.16, 6.7.x)
@@ -26,7 +29,12 @@
 
 ## CI (.github)
 - .github/workflows/ci.yml - on every push: job "check" (pnpm check) then Playwright Chromium smoke (`pnpm test:e2e`); job "secret-scan" (gitleaks). No deploy yet. Actions pinned by commit SHA
-- .github/workflows/backup.yml - 1.6.3 nightly D1 backup (21:00 UTC ≈ 02:30 IST) + workflow_dispatch: export staging D1, integrity check, age encrypt, B2 upload, Healthchecks ping (secrets/vars in ACCOUNTS.md)
+- .github/workflows/backup.yml - 1.6.3/9.1.3 nightly D1 backup (skips if secrets missing); optional ops webhook
+- .github/workflows/files-backup.yml - 9.1.4 weekly R2→B2 rclone copy (skips if secrets missing)
+- .github/workflows/schedule-spike.yml - 9.1.2 GH schedule proof (dispatch-only until owner enables cron)
+- scripts/backup/ - run.sh, integrity.mjs, files-copy.sh, ops-ping.mjs, fixture-dump.sql, fixtures/, clinic-pc-copy.md
+- packages/db ops_status + mig 0051 - 9.1.10 last backup/quota status (no PHI)
+- apps/worker /hooks/ops-status + domain/ops-status - signed ops ping for dashboard AttentionList
 - .github/workflows/billing-integrity.yml - 5.4.1 weekly billing SQL re-add on D1 export + Healthchecks
 - scripts/billing-integrity/check.mjs - 5.4.1 paid≤total, alloc+refund≤payment, due≥0
 - .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown

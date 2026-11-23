@@ -7,6 +7,7 @@ import { csrfGuard } from "./middleware/csrf";
 import { apiHeaders } from "./middleware/headers";
 import { requestId } from "./middleware/request-id";
 import { requestLog } from "./middleware/request-log";
+import { hooksContext } from "./middleware/hooks-context";
 import { requireStaff } from "./middleware/session";
 import { PUBLIC_API } from "./public-routes";
 import { hooks } from "./routes/hooks";
@@ -31,6 +32,7 @@ export function createApp(options: AppOptions = {}) {
   app.use("/hooks/*", requestLog());
   app.use("/api/*", apiHeaders());
   app.use("/hooks/*", apiHeaders());
+  app.use("/hooks/*", hooksContext());
   app.use("/api/*", csrfGuard());
   app.use("/api/staff/*", accessJwt());
   app.use("/api/*", requireStaff(publicPaths));
