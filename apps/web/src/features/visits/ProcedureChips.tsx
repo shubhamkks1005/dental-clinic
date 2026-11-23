@@ -4,7 +4,7 @@ import { ApiError } from "../../api/client";
 import { formatMoney } from "../../ui/format";
 import { getList } from "../lists";
 import { addVisitProcedure, type VisitProcedure } from "./api";
-import type { ChartSelection } from "./VisitProcedures";
+import type { ChartSelection } from "./chart-selection";
 
 type Props = {
   visitId: string;
@@ -113,6 +113,7 @@ export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdd
       {more && (
         <select
           className="input v1-select"
+          autoFocus
           aria-label="More procedures"
           value=""
           disabled={busy}

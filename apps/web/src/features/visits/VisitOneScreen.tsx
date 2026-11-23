@@ -93,7 +93,7 @@ export function VisitOneScreen(props: Props) {
               onStatusChange={setRxStatus}
             />
           </section>
-          <VisitContextPanel patientId={patient.id} currentVisitId={visit.id} recent={recent} />
+          <VisitContextPanel patientId={patient.id} current={visit} recent={recent} />
         </aside>
       </div>
       {isDraft && canEdit ? (

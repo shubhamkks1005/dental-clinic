@@ -16,36 +16,9 @@
   min-height: 44px;
 }
 
-.visit-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.visit-head-text h1 {
-  margin: 0;
-  font-size: 22px;
-  color: var(--navy, #0f2a5c);
-}
-
-.visit-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .visit-body.is-void {
   text-decoration: line-through;
   opacity: 0.85;
-}
-
-.visit-finalise {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
 }
 
 .visit-addenda {
@@ -96,10 +69,6 @@
 
 .visit-head.is-void h1 {
   text-decoration: line-through;
-}
-
-.visit-main {
-  min-width: 0;
 }
 
 .visit-side {
@@ -160,19 +129,6 @@ a.visit-side-link:focus-visible {
   color: var(--muted, #5b6b7b);
 }
 
-.visit-today {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.visit-notes,
-.visit-dx {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .visit-section-title {
   margin: 0;
   font-size: 16px;
@@ -192,10 +148,6 @@ a.visit-side-link:focus-visible {
   font-size: 12px;
 }
 
-.visit-field-narrow {
-  max-width: 120px;
-}
-
 .visit-vitals {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -210,13 +162,6 @@ a.visit-side-link:focus-visible {
   padding: 0 4px;
   font-size: 12px;
   color: var(--muted, #5b6b7b);
-}
-
-.visit-notes-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
 }
 
 .visit-save-chip {
@@ -244,49 +189,8 @@ a.visit-side-link:focus-visible {
   background: #fee2e2;
 }
 
-.visit-dx-list {
-  margin: 0;
-  padding-left: 18px;
-}
-
-.visit-dx-add {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: flex-end;
-}
-
 .visit-dx-add .visit-field {
   flex: 1 1 180px;
-}
-
-.visit-chart-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.visit-proc {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.visit-proc-list {
-  margin: 0;
-  padding-left: 18px;
-}
-
-.visit-proc-add {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.visit-stub-title {
-  margin: 0 0 8px;
-  font-size: 16px;
-  color: var(--navy, #0f2a5c);
 }
 
 @media (min-width: 768px) {
@@ -312,22 +216,6 @@ a.visit-side-link:focus-visible {
   display: grid;
   gap: 4px;
   margin-top: 4px;
-}
-
-.visit-patient-facts,
-.visit-patient-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 12px;
-  margin: 0;
-  font-size: 14px;
-}
-
-.visit-patient-links a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
 }
 
 .visit-next {

@@ -63,7 +63,7 @@ export type VisitSummary = VisitOpened & {
 export type VisitRecent = {
   id: string;
   visitDateLocal: string;
-  status: "draft" | "final";
+  status: "draft" | "final" | "void";
   chiefComplaint: string | null;
 };
 

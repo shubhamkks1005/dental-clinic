@@ -15,6 +15,7 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
   const [asError, setAsError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   if (visit.status === "draft") return null;
 
@@ -34,6 +35,7 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
       setBody("");
       setReason("");
       setAsError(false);
+      setOpen(false);
     } catch (err: unknown) {
       setError(
         err instanceof ApiError
@@ -69,7 +71,14 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
           ))}
         </ul>
       )}
-      {canEdit && visit.status !== "void" && (
+      {canEdit && visit.status !== "void" && !open && (
+        <div>
+          <button type="button" className="btn" onClick={() => setOpen(true)}>
+            Add addendum
+          </button>
+        </div>
+      )}
+      {canEdit && visit.status !== "void" && open && (
         <div className="visit-addenda-form">
           <label className="visit-field">
             <span>Addendum</span>
@@ -105,7 +114,15 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
             disabled={busy || !body.trim() || !reason.trim()}
             onClick={() => void submit()}
           >
-            Add addendum
+            Save addendum
+          </button>
+          <button
+            type="button"
+            className="btn btn-quiet"
+            disabled={busy}
+            onClick={() => setOpen(false)}
+          >
+            Cancel
           </button>
         </div>
       )}

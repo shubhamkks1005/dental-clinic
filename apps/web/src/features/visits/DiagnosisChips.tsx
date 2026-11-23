@@ -76,6 +76,7 @@ export function DiagnosisChips({ visitId, diagnoses, diagnosisList, readOnly, on
         <div className="v1-add-row">
           <input
             className="input"
+            autoFocus
             list="v1-dx-options"
             aria-label="Diagnosis"
             value={query}

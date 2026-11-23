@@ -10,7 +10,7 @@ import type { useVisitNotes } from "./useVisitNotes";
 import { VisitConflictBanner } from "./VisitConflictBanner";
 import { VisitMoreNotes } from "./VisitMoreNotes";
 import { VisitNoteField } from "./VisitNoteField";
-import type { ChartSelection } from "./VisitProcedures";
+import type { ChartSelection } from "./chart-selection";
 
 type Props = {
   visit: VisitSummary;

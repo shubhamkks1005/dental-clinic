@@ -1,15 +1,20 @@
-import { formatClockTime, istDate } from "@clinic/shared";
+import { formatClockTime, pickNextAppointment } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { listPatientBills } from "../billing";
 import { listPatientAppointments, type PatientAppointmentRow } from "../patients/api";
 import { formatDate, formatMoney } from "../../ui/format";
-import type { VisitRecent } from "./api";
+import type { VisitRecent, VisitSummary } from "./api";
 import { RecentVisitsSide } from "./RecentVisitsSide";
 
-type Props = { patientId: string; currentVisitId: string; recent: VisitRecent[] };
+type Props = {
+  patientId: string;
+  /** The open visit, so its row shows the live status and complaint (PA-F10). */
+  current: Pick<VisitSummary, "id" | "status" | "chiefComplaint">;
+  recent: VisitRecent[];
+};
 
 /** Right-hand context: last visits, what the patient still owes, the next appointment. */
-export function VisitContextPanel({ patientId, currentVisitId, recent }: Props) {
+export function VisitContextPanel({ patientId, current, recent }: Props) {
   const [due, setDue] = useState<number | null>(null);
   const [next, setNext] = useState<PatientAppointmentRow | null | undefined>(undefined);
 
@@ -19,14 +24,7 @@ export function VisitContextPanel({ patientId, currentVisitId, recent }: Props) 
       .then((r) => !cancelled && setDue(r.outstandingDuePaise))
       .catch(() => !cancelled && setDue(null));
     listPatientAppointments(patientId)
-      .then((rows) => {
-        if (cancelled) return;
-        const today = istDate(new Date());
-        const upcoming = rows
-          .filter((a) => a.dateLocal >= today && ["scheduled", "confirmed"].includes(a.status))
-          .sort((a, b) => a.startAt.localeCompare(b.startAt));
-        setNext(upcoming[0] ?? null);
-      })
+      .then((rows) => !cancelled && setNext(pickNextAppointment(rows, new Date())))
       .catch(() => !cancelled && setNext(undefined));
     return () => {
       cancelled = true;
@@ -35,7 +33,14 @@ export function VisitContextPanel({ patientId, currentVisitId, recent }: Props) 
 
   return (
     <>
-      <RecentVisitsSide visits={recent} currentVisitId={currentVisitId} />
+      <RecentVisitsSide
+        currentVisitId={current.id}
+        visits={recent.map((r) =>
+          r.id === current.id
+            ? { ...r, status: current.status, chiefComplaint: current.chiefComplaint }
+            : r,
+        )}
+      />
       <section className="card v1-balance" aria-label="Balance and next appointment">
         <div>
           <p className="v1-label">Balance due</p>

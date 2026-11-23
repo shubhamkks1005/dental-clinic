@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { copyPreviousPrescription, revisePrescription } from "./api";
 import { RxLinesTable } from "./RxLinesTable";
+import { RxMetaFields } from "./RxMetaFields";
 import { useVisitPrescription } from "./useVisitPrescription";
 import "./prescriptions.css";
 
@@ -171,39 +172,13 @@ export function VisitMedicinesPanel({
         onSave={(next) => void rxState.saveLines(next)}
       />
 
-      {!compact && (
-        <div className="rx-meta">
-          <label>
-            Advice
-            <textarea
-              value={rxState.advice}
-              disabled={locked || busy}
-              rows={2}
-              onChange={(e) => rxState.setAdvice(e.target.value)}
-              onBlur={() => void rxState.saveMeta()}
-            />
-          </label>
-          <label>
-            Follow-up date
-            <input
-              type="date"
-              value={rxState.followUpOn}
-              disabled={locked || busy}
-              onChange={(e) => rxState.setFollowUpOn(e.target.value)}
-              onBlur={() => void rxState.saveMeta()}
-            />
-          </label>
-          <label>
-            Weight (kg)
-            <input
-              inputMode="numeric"
-              value={rxState.weightKg}
-              disabled={locked || busy}
-              onChange={(e) => rxState.setWeightKg(e.target.value)}
-              onBlur={() => void rxState.saveMeta()}
-            />
-          </label>
-        </div>
+      {compact ? (
+        <details className="v1-more">
+          <summary>More: advice, follow-up, weight</summary>
+          <RxMetaFields rx={rxState} locked={locked} busy={busy} />
+        </details>
+      ) : (
+        <RxMetaFields rx={rxState} locked={locked} busy={busy} />
       )}
 
       {rx && (
