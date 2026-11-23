@@ -9,9 +9,10 @@ Written: 2026-11-23 (after the UI/UX audit). Read RUN_PROMPT.md, then docs/PHASE
 - Next free migration: **0056** (0054 and 0055 are new and still to be applied by the owner on staging).
 
 ## Next task
-**Part 1 (bugs and money safety): (Q0.1-Q0.3 done)  Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
+**Part 1 (bugs and money safety): (Q0.1-Q0.4 done)  Q0.4, Q0.5, Q0.6, Q0.7, then Gate Q0.G.** Do them in this order in one session, committing after each. Task text and "Done when" are in docs/PHASE_Q.md section 1. The 5 Parts and what each delivers are in the "The 5 Parts" table there. Q0.7 needs decision D1 (see "Proposed defaults"); if the owner has not answered, write it under "Waiting on me" and finish Part 1 without it.
 
 ## Done in Phase Q
+- Q0.4 Booking without a note (C4), 2026-11-23 (git log "Q0.4"). Dialog sends undefined; shared test for empty note; e2e/booking.spec.ts fails with the old code. Only QuickBookDialog had the pattern.
 - Q0.3 Prescription Issue works (C3), 2026-11-23 (git log "Q0.3"). saveMeta returns the saved rx, Issue uses its version; core-loop e2e issues, reloads, opens print; fails again if fix reverted.
 - Q0.2 Fix double JSON encoding (C1), 2026-11-23 (git log "Q0.2"). 14 files lost the extra JSON.stringify (6 named + 8 print screens, same bug); api() throws on a string body; e2e/core-loop.spec.ts doctor half passes with no 4xx/5xx. Runner repair removed.
 - Q0.1 Browser tests can run, 2026-11-23 (hash in git log, message starts "Q0.1"). `pnpm test:e2e`: 15 pass on a fresh scratch DB.

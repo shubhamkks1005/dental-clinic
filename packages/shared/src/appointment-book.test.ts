@@ -38,4 +38,19 @@ describe("book appointment body (2.3.4)", () => {
       }).ok,
     ).toBe(false);
   });
+
+  it("accepts an empty or missing note (Q0.4: the dialog used to send null)", () => {
+    const base = {
+      patientId: "p1",
+      visitTypeId: "v1",
+      dateLocal: "2026-11-24",
+      startMin: 675,
+      source: "phone",
+    };
+    for (const complaint of [undefined, "", "   "]) {
+      const r = parseBookAppointment({ ...base, complaint });
+      expect(r.ok).toBe(true);
+      if (r.ok) expect(r.value.complaint).toBeNull();
+    }
+  });
 });

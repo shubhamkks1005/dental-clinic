@@ -97,7 +97,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked }: Props) {
         dateLocal: slot.dateLocal,
         startMin: slot.startMin,
         source: "phone",
-        complaint: note.trim() || null,
+        complaint: note.trim() || undefined,
       });
       onBooked(slot);
       onClose();
