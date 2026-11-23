@@ -218,6 +218,9 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - bills / bill_items - 5.2.1 billing (src/schema/bills.ts) - patient, visit?, bill_no/period, status draft|issued|cancelled, kind, money columns (paise), items with tax_category
 - migrations/0037_billing_shadow_series.sql - seeds billing.shadow_series true
 - migrations/0038_bills.sql - creates bills + bill_items
+- payments / payment_allocations / refunds - 5.2.2–5.2.3 (src/schema/payments.ts)
+- migrations/0039_payments.sql - creates payments tables
+- src/repos/payments-create.ts / bills-issue.ts / bills-dues.ts - record payment, issue bill, open dues
 - src/repos/bills-create.ts / bills-get.ts - draft bill create (server totals) + get
 - counters - every gap-free number (src/schema/counters.ts) - name (patient_code|prescription|bill|receipt|refund|certificate), period ('all' or '2026-27'), value >= 0; unique (name, period)
 - audit_log - append-only change history (src/schema/audit-log.ts) - action (create|update|delete|restore), table_name, row_id, before_json, after_json, request_id; who = created_by

@@ -8,6 +8,7 @@ Skipped earlier (baad me, still skipped): 3.1.1, 3.5.10, 3.6.3, 3.7.8, 3.9.1, 3.
 5.1.2 DONE locally (B/R/F + shadow SB/SR/SF numbers; 50 parallel bill counter). **Migration `0037_billing_shadow_series.sql` — owner applies.**
 5.1.3 DONE locally (paise helpers: half-up discount, round-off ≤99, allocate, bill cap, cash warn). No migration.
 5.2.1 DONE locally (bills + bill_items; server computeBillTotals; create draft). **Migration `0038_bills.sql` — owner applies.**
+5.2.2 DONE locally (payments + allocations + receipt no; issue helper). **Migration `0039_payments.sql` — owner applies.**
 4.5.4 DONE locally (medicines list review record in Settings; itemCount version; stale prompt). No migration.
 4.5.1 DONE locally (Playwright text snapshots Rx 1–8 meds; CI via test:e2e). No migration.
 4.4.6 DONE locally (blank registration / medical history / consent ×20 print). No migration.
