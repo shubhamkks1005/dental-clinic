@@ -1,8 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "./context";
 import { authRepo } from "./repos/auth";
+import { computeMonthStatRows } from "./repos/daily-stats-queries";
 import { createRepos } from "./repos/index";
+import { rebuildPatientSearchStatements } from "./search/patient-tokens";
+import { KNOWN_SCANS, type KnownScan } from "./testing/known-scans";
 import { fullScans, queryPlan, recordingDb, scansIn } from "./testing";
+import { firstPage } from "@clinic/shared";
 
 // 1.2.8: every statement the repositories run reaches growing tables through an index.
 // New tables are "big" by default (testing/query-plan.ts), so the patient search in Phase 2
@@ -91,4 +95,81 @@ describe("query-plan guard (1.2.8)", () => {
     expect(t.ran.length).toBeGreaterThan(10);
     expect(scansIn(t.sqlite, t.ran)).toEqual([]);
   });
+
+  // S2.2.3: the growing-table queries of the busy screens. A scan that is known and waits for an
+  // index in S5.1 is named in KNOWN_SCANS (it shows in the test report and does not fail the test).
+  // Any other scan fails. When S5.1 adds the index its entry must go (its test fails until then).
+  describe("hot screens (S2.2.3)", () => {
+    const NOW = new Date("2026-11-23T06:30:00.000Z");
+    const rec: Ctx = { userId: "rec-1", role: "receptionist", requestId: "req-h" };
+    const PATIENT = "01M85PATIENTPLANTEST001";
+
+    async function runHotQueries(): Promise<(typeof t)["ran"]> {
+      t.sqlite
+        .prepare(
+          `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
+           VALUES (?, 'system', 'system', 'P-009901', 'Fake Plan Patient', 'female', 30, '+919900009901', 'active')`,
+        )
+        .run(PATIENT);
+      await t.db.batch(
+        rebuildPatientSearchStatements(
+          t.db,
+          PATIENT,
+          {
+            fullName: "Fake Plan Patient",
+            code: "P-009901",
+            mobile: "+919900009901",
+            mobileSecondary: null,
+            legacyRef: null,
+          },
+          "system",
+        ) as never,
+      );
+      const doc = createRepos(t.db, doctor);
+      const front = createRepos(t.db, rec);
+      t.ran.length = 0;
+
+      // Dashboard: day grain (this month, with compare) and month grain (12 months).
+      await doc.dashboard.get({ range: "this_month", compare: "1" }, NOW);
+      await doc.dashboard.get({ range: "12m" }, NOW);
+      await computeMonthStatRows(t.db, "2026-11");
+      // Dues, draft lists.
+      await front.bills.listDues(NOW);
+      await front.bills.duesForPatients([PATIENT]);
+      await doc.visits.listDrafts();
+      await doc.prescriptions.listDrafts();
+      // Patients list: plain, search, both quick filters, balance-due ids, and its extras.
+      const list = front.patients.list;
+      await list(firstPage(), { now: NOW });
+      await list({ ...firstPage(), q: "fake" }, { now: NOW });
+      await list(firstPage(), { filter: "new_month", now: NOW });
+      await list(firstPage(), { filter: "inactive_6m", now: NOW });
+      await list(firstPage(), { status: "all", onlyIds: [PATIENT], now: NOW });
+      await front.patients.visitAndNext([PATIENT], NOW);
+      // Appointments: one day, and a week.
+      await front.appointments.listForDay("2026-11-23");
+      await front.appointments.listForRange("2026-11-23", "2026-11-29");
+      return t.ran;
+    }
+
+    it("reads the busy screens through indexes, except the known scans", async () => {
+      const ran = await runHotQueries();
+      expect(ran.length).toBeGreaterThan(20);
+      const found = uniqueScans(scansIn(t.sqlite, ran));
+      expect(found.filter((line) => !isKnownScan(line))).toEqual([]);
+    });
+
+    // One test per known scan, so the list shows in the test report. When S5.1 adds the index the
+    // test for that entry fails: delete the entry then.
+    it.each(KNOWN_SCANS.map((k) => [k.name, k] as const))("%s", async (_name, known) => {
+      const found = uniqueScans(scansIn(t.sqlite, await runHotQueries()));
+      expect(found.some((line) => matches(known, line))).toBe(true);
+    });
+  });
 });
+
+// Same scan from the same statement shows once; white space is collapsed so snippets are short.
+const uniqueScans = (lines: string[]) => [...new Set(lines.map((l) => l.replace(/\s+/g, " ")))];
+const matches = (k: KnownScan, line: string) =>
+  line.startsWith(`${k.scan} `) && line.includes(" <- ") && line.includes(k.sqlHas);
+const isKnownScan = (line: string) => KNOWN_SCANS.some((k) => matches(k, line));
