@@ -113,14 +113,16 @@ export function ItemForm({
       <Field label="Name" error={errors.label?.message}>
         {(p) => <TextInput className="input" autoComplete="off" {...p} {...register("label")} />}
       </Field>
-      {def.fields.map((f) => (
-        <ExtraField
-          key={f.name}
-          field={f}
-          register={register}
-          error={errors.data?.[f.name]?.message as string | undefined}
-        />
-      ))}
+      {def.fields
+        .filter((f) => !(f.kind === "text" && f.hidden))
+        .map((f) => (
+          <ExtraField
+            key={f.name}
+            field={f}
+            register={register}
+            error={errors.data?.[f.name]?.message as string | undefined}
+          />
+        ))}
       <div className="item-form-actions">
         <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : submitLabel}

@@ -247,3 +247,52 @@
   gap: var(--s5);
   min-width: 0;
 }
+
+/* Clinic and doctor: form on the left, live prescription preview on the right (from 1024 px). */
+.clinic-two {
+  display: grid;
+  gap: var(--s4);
+  align-items: start;
+}
+.settings-part {
+  margin: var(--s4) 0 var(--s2);
+}
+.settings-warn {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+  border-radius: var(--radius-control);
+  padding: var(--s1) var(--s2);
+  font-size: 0.875rem;
+}
+.input.input-warn {
+  border-color: #d97706;
+}
+.link-button {
+  min-height: 44px;
+  padding: 0 var(--s2);
+  background: none;
+  border: 0;
+  color: var(--primary, #1e4fa3);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.clinic-preview {
+  display: grid;
+  gap: var(--s2);
+}
+.clinic-preview-sheet {
+  zoom: 0.55;
+  border: 1px solid var(--border);
+  background: #fff;
+  overflow: hidden;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .clinic-two {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+  .clinic-preview {
+    position: sticky;
+    top: var(--s4);
+  }
+}

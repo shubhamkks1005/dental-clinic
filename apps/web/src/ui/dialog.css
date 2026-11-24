@@ -33,3 +33,19 @@
 body:has(dialog[open]) {
   overflow: hidden;
 }
+
+/* Drawer: pinned to the right edge, full height, full width on a phone. */
+.dialog.dialog-drawer {
+  width: min(28rem, 100vw);
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 0 0 auto;
+  border-radius: var(--radius-card) 0 0 var(--radius-card);
+  overflow-y: auto;
+}
+
+@media (max-width: 480px) {
+  .dialog.dialog-drawer {
+    border-radius: 0;
+  }
+}

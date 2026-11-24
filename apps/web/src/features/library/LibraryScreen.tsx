@@ -2,8 +2,8 @@ import { isListKey, LIST_DEFS, type ListKey } from "@clinic/shared";
 import { NavLink, Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import { PageHeader } from "../../ui/page/Page";
 import { NotFound } from "../../ui/PageMessage";
-import { ListEditor } from "../lists";
 import { MedicinesListReview } from "../settings";
+import { LibraryList } from "./LibraryList";
 import "./library.css";
 
 // Library.dc.html: the doctor's own lists, tabs first. Medicines come first because they are what
@@ -25,7 +25,7 @@ function ListTab() {
   if (!isListKey(key)) return <NotFound />;
   return (
     <>
-      <ListEditor key={key} listKey={key} />
+      <LibraryList key={key} listKey={key} />
       {key === "medicines" ? <MedicinesListReview /> : null}
     </>
   );

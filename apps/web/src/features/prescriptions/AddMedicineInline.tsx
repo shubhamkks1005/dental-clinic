@@ -2,9 +2,7 @@ import type { ListItem } from "@clinic/shared";
 import { useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { Select, TextInput } from "../../ui/form";
-import { addItem } from "../lists";
-
-const FORMS = ["Tablet", "Capsule", "Syrup", "Gel", "Mouthwash", "Ointment", "Drops", "Other"];
+import { addItem, MEDICINE_FORMS, newMedicineInput } from "../lists";
 
 type Props = {
   /** What the doctor typed in the search box. */
@@ -29,21 +27,10 @@ export function AddMedicineInline({ name, onAdded, onCancel }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const list = await addItem("medicines", {
-        label: label.trim(),
-        data: {
-          brand: "",
-          form,
-          strength: strength.trim(),
-          default_dose: "As directed",
-          default_frequency: "As directed",
-          default_days: "As directed",
-          timing: "As directed",
-          instruction: "",
-          tags: "",
-          category: "",
-        },
-      });
+      const list = await addItem(
+        "medicines",
+        newMedicineInput({ label, strength, form, reviewed: false }),
+      );
       const added = list.find((i) => i.label === label.trim());
       if (added) onAdded(added);
     } catch (err) {
@@ -71,7 +58,7 @@ export function AddMedicineInline({ name, onAdded, onCancel }: Props) {
       <label>
         Form
         <Select value={form} onChange={(e) => setForm(e.target.value)}>
-          {FORMS.map((f) => (
+          {MEDICINE_FORMS.map((f) => (
             <option key={f}>{f}</option>
           ))}
         </Select>

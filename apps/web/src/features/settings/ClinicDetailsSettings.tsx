@@ -1,27 +1,20 @@
-import { SETTING_HELP, type SettingKey } from "@clinic/shared";
+import { istDateTime, SETTING_HELP } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
-import { TextInput, Textarea } from "../../ui/form";
-
-type Field = { key: SettingKey; label: string; multiline?: boolean };
-
-const FIELDS: Field[] = [
-  { key: "clinic.name", label: "Clinic name" },
-  { key: "clinic.tagline", label: "Tagline" },
-  { key: "clinic.kind", label: "Kind of clinic" },
-  { key: "clinic.address", label: "Address", multiline: true },
-  { key: "clinic.phone", label: "Phone" },
-  { key: "clinic.email", label: "Email" },
-  { key: "clinic.instagram", label: "Instagram name" },
-  { key: "doctor.name", label: "Doctor name" },
-  { key: "doctor.qualifications", label: "Qualifications" },
-  { key: "doctor.speciality", label: "Speciality" },
-  { key: "doctor.extra_line", label: "Extra line under speciality" },
-  { key: "doctor.registration_no", label: "Registration number" },
-];
+import { Select, TextInput, Textarea } from "../../ui/form";
+import { ClinicPreview } from "./ClinicPreview";
+import { clinicLastSaved } from "./clinic-last-saved";
+import {
+  ALL_CLINIC_FIELDS as FIELDS,
+  CLINIC_FIELDS,
+  DOCTOR_FIELDS,
+  fieldWarnings,
+  type ClinicField,
+} from "./clinic-fields";
+import { SettingHistoryPanel } from "./SettingHistoryPanel";
 
 type Row = { value: string; version: number };
 
@@ -33,6 +26,9 @@ export function ClinicDetailsSettings() {
   const [problem, setProblem] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [last, setLast] = useState<{ at: string; byName: string } | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyKey, setHistoryKey] = useState<ClinicField["key"]>("doctor.registration_no");
 
   const load = useCallback(() => {
     Promise.all(FIELDS.map((f) => getSetting<string>(f.key).then((r) => [f.key, r] as const)))
@@ -52,6 +48,11 @@ export function ClinicDetailsSettings() {
   }, []);
 
   useEffect(load, [load]);
+  useEffect(() => {
+    clinicLastSaved()
+      .then(setLast)
+      .catch(() => setLast(null));
+  }, [saved]);
 
   const dirty =
     rows !== null && FIELDS.some((f) => (draft[f.key] ?? "") !== (rows[f.key]?.value ?? ""));
@@ -101,55 +102,106 @@ export function ClinicDetailsSettings() {
     );
   }
 
+  const warnings = fieldWarnings(draft);
+  const renderField = (f: ClinicField) => (
+    <label key={f.key} className="settings-field">
+      <span>{f.label}</span>
+      {f.multiline ? (
+        <Textarea
+          className={`input${warnings[f.key] ? " input-warn" : ""}`}
+          rows={3}
+          value={draft[f.key] ?? ""}
+          disabled={!canEdit || busy}
+          aria-describedby={warnings[f.key] ? `warn-${f.key}` : undefined}
+          onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
+        />
+      ) : (
+        <TextInput
+          className={`input${warnings[f.key] ? " input-warn" : ""}`}
+          value={draft[f.key] ?? ""}
+          disabled={!canEdit || busy}
+          aria-describedby={warnings[f.key] ? `warn-${f.key}` : undefined}
+          onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
+        />
+      )}
+      {warnings[f.key] ? (
+        <span id={`warn-${f.key}`} className="settings-warn">
+          {warnings[f.key]}
+        </span>
+      ) : (
+        <span className="muted settings-help">{SETTING_HELP[f.key]}</span>
+      )}
+    </label>
+  );
+
   return (
-    <section className="card settings-panel">
-      <UnsavedChangesGuard dirty={dirty} />
-      <h2>Clinic details</h2>
-      <p className="muted">Shown on prescriptions, bills and receipts. Logo upload comes later.</p>
-      {problem ? (
-        <p className="notice notice-error" role="alert">
-          {problem}
-        </p>
-      ) : null}
-      <div className="settings-fields">
-        {FIELDS.map((f) => (
-          <label key={f.key} className="settings-field">
-            <span>{f.label}</span>
-            {f.multiline ? (
-              <Textarea
-                className="input"
-                rows={3}
-                value={draft[f.key] ?? ""}
-                disabled={!canEdit || busy}
-                onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
-              />
-            ) : (
-              <TextInput
-                className="input"
-                value={draft[f.key] ?? ""}
-                disabled={!canEdit || busy}
-                onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
-              />
-            )}
-            <span className="muted settings-help">{SETTING_HELP[f.key]}</span>
-          </label>
-        ))}
-      </div>
-      {canEdit ? (
-        <p className="settings-actions">
+    <div className="clinic-two">
+      <section className="card settings-panel">
+        <UnsavedChangesGuard dirty={dirty} />
+        <h2>Clinic and doctor</h2>
+        <p className="muted small">
+          {last ? (
+            <>
+              Last saved {istDateTime(new Date(last.at))} by {last.byName} ·{" "}
+            </>
+          ) : (
+            "Not changed yet · "
+          )}
           <button
             type="button"
-            className="btn"
-            disabled={!dirty || busy}
-            onClick={() => void save()}
+            className="link-button"
+            onClick={() => setShowHistory(!showHistory)}
           >
-            {busy ? "Saving…" : "Save"}
+            History
           </button>
-          {saved ? <span className="muted">Saved.</span> : null}
         </p>
-      ) : (
-        <p className="muted">View only. Ask the doctor to change these.</p>
-      )}
-    </section>
+        {problem ? (
+          <p className="notice notice-error" role="alert">
+            {problem}
+          </p>
+        ) : null}
+        <h3 className="settings-part">Clinic</h3>
+        <div className="settings-fields">{CLINIC_FIELDS.map(renderField)}</div>
+        <h3 className="settings-part">Doctor</h3>
+        <div className="settings-fields">{DOCTOR_FIELDS.map(renderField)}</div>
+        {canEdit ? (
+          <p className="settings-actions">
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={!dirty || busy}
+              onClick={() => void save()}
+            >
+              {busy ? "Saving…" : "Save changes"}
+            </button>
+            <button type="button" className="btn" disabled={!dirty || busy} onClick={load}>
+              Cancel
+            </button>
+            {saved ? <span className="muted">Saved.</span> : null}
+          </p>
+        ) : (
+          <p className="muted">View only. Ask the doctor to change these.</p>
+        )}
+        {showHistory ? (
+          <>
+            <label className="settings-field">
+              <span>History of</span>
+              <Select
+                value={historyKey}
+                onChange={(e) => setHistoryKey(e.target.value as ClinicField["key"])}
+              >
+                {FIELDS.map((f) => (
+                  <option key={f.key} value={f.key}>
+                    {f.label}
+                  </option>
+                ))}
+              </Select>
+            </label>
+            <SettingHistoryPanel key={historyKey} settingKey={historyKey} onRestored={load} />
+          </>
+        ) : null}
+      </section>
+      <ClinicPreview draft={draft} />
+    </div>
   );
 }

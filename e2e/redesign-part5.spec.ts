@@ -101,9 +101,11 @@ test("Q2.13 Settings has 8 items and a setup card; Library takes the lists; new 
 
   // Add a visit type in the Library.
   await page.goto("/app/library/visit_types");
-  await page.locator('input[name="label"]').fill(`Chip Check ${stamp}`);
-  await page.locator('input[name="data.minutes"]').fill("20");
-  await page.getByRole("button", { name: "Add", exact: true }).click();
+  await page.getByRole("button", { name: "+ Add visit type" }).click();
+  const drawer = page.locator("dialog[open]");
+  await drawer.getByLabel("Name").fill(`Chip Check ${stamp}`);
+  await drawer.getByLabel(/Usual length/).fill("20");
+  await drawer.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText(`Chip Check ${stamp}`).first()).toBeVisible();
 
   await page.setViewportSize({ width: 360, height: 740 });
@@ -174,5 +176,9 @@ test("Q2.13 inside a visit, a medicine that is not in the list can be added to i
 
   // It is now in the Library list.
   await page.goto("/app/library/medicines");
-  await expect(page.getByText(drug).first()).toBeVisible();
+  await page.getByRole("searchbox").fill(drug);
+  const added = page.locator("li.library-row", { hasText: drug });
+  await expect(added).toBeVisible();
+  // Added from a visit, not typed in the Library: it waits for the doctor to confirm.
+  await expect(added).toContainText("DRAFT - doctor to confirm");
 });

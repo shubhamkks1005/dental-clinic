@@ -29,6 +29,11 @@ function change(toChange: (body: unknown, version: number) => ListChange | strin
   };
 }
 
+// Library: small read-only count per medicine (doctor only), placed before the :key routes.
+staffLists.get("/library/medicine-usage", async (c) =>
+  c.json(ok({ counts: await signedIn(c).repos.prescriptions.medicineUsage30d() })),
+);
+
 staffLists.get("/lists/:key", async (c) =>
   c.json(ok({ items: await listItemsOf(signedIn(c).repos, c.req.param("key")) })),
 );

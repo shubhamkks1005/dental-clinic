@@ -40,6 +40,7 @@ import { prescriptionsDraftRepo } from "./prescriptions-draft";
 import { prescriptionsDraftsListRepo } from "./prescriptions-drafts-list";
 import { prescriptionsGetRepo } from "./prescriptions-get";
 import { prescriptionsIssueRepo } from "./prescriptions-issue";
+import { prescriptionsUsageRepo } from "./prescriptions-usage";
 import { printLogRepo } from "./print-log";
 import { certificatesGetRepo } from "./certificates-get";
 import { certificatesWriteRepo } from "./certificates-write";
@@ -129,6 +130,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...prescriptionsDraftRepo(db, ctx),
       ...prescriptionsDraftsListRepo(db, ctx),
       ...prescriptionsIssueRepo(db, ctx),
+      ...prescriptionsUsageRepo(db, ctx),
     },
     printLog: printLogRepo(db, ctx),
     certificates: {

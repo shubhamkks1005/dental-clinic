@@ -8,11 +8,20 @@ type Props = {
   children: ReactNode;
   // "alertdialog" for questions that need an answer (confirm): no closing by clicking outside.
   role?: "dialog" | "alertdialog";
+  /** "drawer" slides in from the right edge (see Drawer.tsx). */
+  variant?: "center" | "drawer";
 };
 
 // 1.4.2: modal dialog on the browser's own <dialog> (focus stays inside, the page behind is
 // inert, Esc closes). Not Radix: its scroll lock injects a <style> tag our CSP blocks.
-export function Dialog({ open, onClose, title, children, role = "dialog" }: Props) {
+export function Dialog({
+  open,
+  onClose,
+  title,
+  children,
+  role = "dialog",
+  variant = "center",
+}: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const opener = useRef<Element | null>(null);
   const titleId = useId();
@@ -37,7 +46,7 @@ export function Dialog({ open, onClose, title, children, role = "dialog" }: Prop
   return (
     <dialog
       ref={ref}
-      className="dialog"
+      className={variant === "drawer" ? "dialog dialog-drawer" : "dialog"}
       role={role === "alertdialog" ? "alertdialog" : undefined}
       aria-labelledby={titleId}
       onClose={handleClose}

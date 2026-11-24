@@ -197,7 +197,12 @@
 - apps/worker/src/domain/bills.ts (+ bills.test.ts): createBillFromVisit issues at once unless reviewFirst (D5)
 - e2e/data-billing-hub.spec.ts: Q2.3 hub tabs, Bills search, keyboard tabs, printed bill has no internal sentences
 - src/features/history/history-status.ts (+ test) - history row status to shared words
-- src/features/library/ - placeholder Library page (doctor only) until Q2.13
+- src/features/library/ - Library (doctor only, Q2.13): LibraryScreen (tabs), LibraryList (table, search, filter chips All/Needs review/Hidden, Reorder mode, Show more), LibraryRow, LibraryDrawer (Add or Edit in a right-side Drawer), MedicineAddForm (name, strength, form; More details collapsed; Save and add another), library-view.ts (+test: needsReview, filters, per-list columns incl. fee in rupees, minutes), api.ts (medicine usage); data-only `reviewed` field on medicines drives "Needs review" (no migration)
+- src/ui/Drawer.tsx - right-side panel on the same native <dialog> as Dialog (variant "drawer" in Dialog.tsx + dialog.css)
+- packages/db/src/repos/prescriptions-usage.ts (+test) - repos.prescriptions.medicineUsage30d(): issued prescriptions per medicine in 30 days, counts only, doctor only; worker route GET /api/staff/library/medicine-usage
+- src/features/lists/medicine-input.ts - newMedicineInput() ("As directed" defaults, reviewed flag) used by the Library drawer and the visit's Add to my list
+- src/features/settings/ClinicDetailsSettings.tsx - Clinic and doctor page (Clinic and Doctor parts, amber warnings, Last saved, History) + ClinicPreview.tsx (live prescription preview via print/clinic-header.ts and ui/print), clinic-fields.ts (+test), clinic-last-saved.ts
+- e2e/library.spec.ts, e2e/settings-clinic.spec.ts - Q2.13 browser specs (drawer, chips, Reorder, columns, preview, amber, keyboard and focus, 360/768/1366)
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible
 - src/ui/names.ts (+ test) - shortName ("Dr. Nidhi"), initials (title skipped)

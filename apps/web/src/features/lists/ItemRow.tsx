@@ -45,7 +45,7 @@ export function ItemRow({
     .map((f) => {
       const v = item.data[f.name];
       if (f.kind === "number") return `${v ?? "-"} ${f.suffix}`;
-      if (f.kind === "text" && v) return plainWord(String(v));
+      if (f.kind === "text" && !f.hidden && v) return plainWord(String(v));
       return null;
     })
     .filter(Boolean)

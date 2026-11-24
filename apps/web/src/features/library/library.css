@@ -29,3 +29,157 @@
   color: inherit;
   min-height: 44px;
 }
+
+/* Table per list (Library.dc.html). Phone and tablet: each row is a card; from 1024 px it is a table line. */
+.library-panel {
+  display: grid;
+  gap: var(--s3);
+}
+.library-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+.library-top-actions,
+.library-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.library-filters {
+  display: grid;
+  gap: var(--s2);
+}
+.library-chips .pill {
+  min-height: 44px;
+}
+.library-head {
+  display: none;
+}
+.library-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s2);
+}
+.library-row {
+  display: grid;
+  gap: var(--s2);
+  padding: var(--s3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+.library-row.is-hidden .library-name strong {
+  color: var(--muted);
+}
+.library-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2);
+  min-width: 0;
+}
+.library-cell::before {
+  content: attr(data-head) ": ";
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.library-draft {
+  font-size: 0.75rem;
+  color: var(--warn-text, #8a5a00);
+  background: var(--warn-bg, #fff4d6);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.library-actions {
+  display: flex;
+  gap: var(--s2);
+}
+.library-actions .btn {
+  min-height: 44px;
+  min-width: 44px;
+}
+.library-add,
+.library-add label,
+.library-more-details {
+  display: grid;
+  gap: var(--s2);
+}
+.library-add {
+  gap: var(--s3);
+}
+.library-forms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.library-forms legend {
+  margin-bottom: var(--s2);
+}
+.library-forms .pill {
+  min-height: 44px;
+  cursor: pointer;
+}
+.library-forms .pill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.library-forms .pill:focus-within {
+  outline: 2px solid var(--focus, #1e4fa3);
+  outline-offset: 2px;
+}
+.library-add-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.library-add-actions .btn {
+  min-height: 44px;
+}
+@media (min-width: 1024px) {
+  .library-head,
+  .library-row {
+    grid-template-columns: minmax(10rem, 2fr) repeat(var(--extra, 2), minmax(6rem, 1fr)) minmax(
+        8rem,
+        auto
+      );
+    align-items: center;
+  }
+  .library-head {
+    display: grid;
+    gap: var(--s2);
+    padding: 0 var(--s3);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .library-head[data-cols="3"],
+  .library-rows[data-cols="3"] .library-row {
+    --extra: 1;
+  }
+  .library-head[data-cols="4"],
+  .library-rows[data-cols="4"] .library-row {
+    --extra: 2;
+  }
+  .library-head[data-cols="5"],
+  .library-rows[data-cols="5"] .library-row {
+    --extra: 3;
+  }
+  .library-head[data-cols="2"],
+  .library-rows[data-cols="2"] .library-row {
+    --extra: 0;
+  }
+  .library-cell::before {
+    content: none;
+  }
+  .library-actions {
+    justify-content: flex-end;
+  }
+}

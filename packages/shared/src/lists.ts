@@ -26,6 +26,8 @@ export type TextListField = {
   kind: "text";
   max: number;
   optional?: boolean;
+  /** Kept in the item but never shown in a form (set by the Library, not typed). */
+  hidden?: boolean;
 };
 
 export type ListField = NumberListField | ColourListField | TextListField;
@@ -126,6 +128,8 @@ export const LIST_DEFS = {
       { name: "instruction", label: "Instruction", kind: "text", max: 200, optional: true },
       { name: "tags", label: "Tags", kind: "text", max: 120, optional: true },
       { name: "category", label: "Category", kind: "text", max: 40, optional: true },
+      // "yes" once the doctor added or saved it in the Library; blank means "Needs review".
+      { name: "reviewed", label: "Reviewed", kind: "text", max: 3, optional: true, hidden: true },
     ],
   },
   // 4.1.5 everyday combos; items = pipe-separated generic names from the medicines list.
@@ -198,7 +202,9 @@ const textRule = (f: TextListField) => {
 const fieldRule = (f: ListField) => {
   if (f.kind === "number") return numberRule(f);
   if (f.kind === "colour") return colourRule;
-  return textRule(f);
+  return f.hidden
+    ? (textRule(f).default("") as unknown as ReturnType<typeof textRule>)
+    : textRule(f);
 };
 
 // The rule for one item of a list: a name plus that list's extra fields.
