@@ -1,4 +1,5 @@
 import { clinicWorkingIntervals } from "./booking-rules";
+import type { CurrentBreak } from "./breaks";
 import type { Holiday, Timings } from "./timings";
 
 export type DayWindow = {
@@ -10,12 +11,19 @@ export type DayWindow = {
   closed: boolean;
 };
 
+/** Who last changed the order of the day list, and when ("Order updated by Priya at 10:48 AM"). */
+export type LastOrderChange = { byName: string | null; at: string };
+
 /** One day of the staff appointment list; the same shape for the day view and each day of a range. */
 export type AppointmentDayReply<A> = {
   dateLocal: string;
   serverNow: string;
   window: DayWindow;
   appointments: A[];
+  /** Newest queue change of the day, or null. In a week range: today only. */
+  lastOrderChange: LastOrderChange | null;
+  /** The doctor's break that is on now, or null. In a week range: today only. */
+  currentBreak: CurrentBreak | null;
 };
 
 /** S3.2.2: GET /appointments/range replies with the days in order, from first to last. */

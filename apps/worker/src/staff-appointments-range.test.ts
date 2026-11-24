@@ -23,7 +23,14 @@ describe("GET /api/staff/appointments/range", () => {
     const days = r.body.data.days as { dateLocal: string; appointments: { id: string }[] }[];
     expect(days.map((d) => d.dateLocal)).toEqual(WEEK_DAYS);
     for (const d of days) {
-      expect(Object.keys(d).sort()).toEqual(["appointments", "dateLocal", "serverNow", "window"]);
+      expect(Object.keys(d).sort()).toEqual([
+        "appointments",
+        "currentBreak",
+        "dateLocal",
+        "lastOrderChange",
+        "serverNow",
+        "window",
+      ]);
     }
     expect(days.map((d) => d.appointments.map((a) => a.id))).toEqual([
       ["a-mon-1", "a-mon-2"],

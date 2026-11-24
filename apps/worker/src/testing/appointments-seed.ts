@@ -111,12 +111,19 @@ export type SeenAppointment = {
   duePaise: number | null;
   readyToBill: { billId: string | null } | null;
   alertFlags: { hasAlert: boolean; hasRestricted: boolean };
+  queueOrder: number | null;
+  steppedOutAt: string | null;
+  skipCount: number;
+  lateAt: string | null;
+  queueChangedAt: string | null;
 };
 export type SeenDay = {
   dateLocal: string;
   serverNow: string;
   window: unknown;
   appointments: SeenAppointment[];
+  lastOrderChange: { byName: string | null; at: string } | null;
+  currentBreak: { id: string; minutes: number; label: string } | null;
 };
 
 export async function getAs(env: Bindings, email: string, path: string) {

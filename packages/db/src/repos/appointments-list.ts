@@ -4,7 +4,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, patients } from "../schema";
+import { appointments, patients, users } from "../schema";
 
 export type PatientAppointmentRow = {
   id: string;
@@ -92,6 +92,13 @@ export type DayAppointmentRow = {
   endedAt: string | null;
   updatedAt: string;
   version: number;
+  // Part T: the doctor's saved order and its flags.
+  queueOrder: number | null;
+  steppedOutAt: string | null;
+  skipCount: number;
+  lateAt: string | null;
+  queueChangedAt: string | null;
+  queueChangedBy: string | null;
 };
 
 const DAY_COLUMNS = {
@@ -117,6 +124,12 @@ const DAY_COLUMNS = {
   endedAt: appointments.endedAt,
   updatedAt: appointments.updatedAt,
   version: appointments.version,
+  queueOrder: appointments.queueOrder,
+  steppedOutAt: appointments.steppedOutAt,
+  skipCount: appointments.skipCount,
+  lateAt: appointments.lateAt,
+  queueChangedAt: appointments.queueChangedAt,
+  queueChangedBy: appointments.queueChangedBy,
 };
 
 type RawDayRow = Omit<DayAppointmentRow, "status" | "priority"> & {
@@ -144,6 +157,17 @@ export function appointmentsListRepo(db: Db, ctx: Ctx) {
         .orderBy(asc(appointments.startMin), asc(appointments.createdAt))
         .all();
       return typed(rows);
+    },
+
+    /** The name in "Order updated by ..." (one small read, only when a row has a queue change). */
+    async queueChangerName(userId: string): Promise<string | null> {
+      assertAllowed(ctx, "appointments.manage");
+      const row = await db
+        .select({ name: users.name })
+        .from(users)
+        .where(eq(users.id, userId))
+        .get();
+      return row?.name ?? null;
     },
 
     /** S3.2.2: every day from..to (both included) in one query; date_local range uses the day index. */

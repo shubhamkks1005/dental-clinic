@@ -9,6 +9,7 @@ import {
   type Role,
 } from "@clinic/shared";
 import { clinicClock } from "./appointments";
+import { loadQueueExtras } from "./appointments-queue-extras";
 
 const DATE_LOCAL = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -42,6 +43,8 @@ function withMarks(rows: DayRows, marks: Awaited<ReturnType<typeof loadMarks>>, 
     const ready = marks.ready.get(a.id);
     return {
       ...a,
+      // The user id of who moved the row stays on the server (JSON leaves out undefined).
+      queueChangedBy: undefined,
       alertFlags: marks.flags.get(a.patientId) ?? none,
       hasDue: duePaise > 0,
       readyToBill: ready ? { billId: ready.billId } : null,
@@ -65,9 +68,10 @@ export async function listDayAppointments(
   }
   // listForDay asserts appointments.manage first so denied roles get 403.
   const rows = await repos.appointments.listForDay(dateLocal);
-  const [marks, { timings, holidays }] = await Promise.all([
+  const [marks, { timings, holidays }, extras] = await Promise.all([
     loadMarks(repos, rows, role),
     clinicClock(repos),
+    loadQueueExtras(repos, rows, dateLocal === istDate(now), dateLocal),
   ]);
   return {
     ok: true as const,
@@ -75,6 +79,7 @@ export async function listDayAppointments(
     serverNow: now.toISOString(),
     window: dayWindow(dateLocal, timings, holidays),
     appointments: withMarks(rows, marks, role),
+    ...extras,
   };
 }
 
@@ -107,9 +112,19 @@ export async function listRangeAppointments(
     return { ok: false as const, message: problem };
   }
   const rows = await repos.appointments.listForRange(from, to);
-  const [marks, { timings, holidays }] = await Promise.all([
+  const today = istDate(now);
+  const inRange = today >= from && today <= to;
+  const [marks, { timings, holidays }, todayExtras] = await Promise.all([
     loadMarks(repos, rows, role),
     clinicClock(repos),
+    inRange
+      ? loadQueueExtras(
+          repos,
+          rows.filter((a) => a.dateLocal === today),
+          true,
+          today,
+        )
+      : Promise.resolve(null),
   ]);
   const marked = withMarks(rows, marks, role);
   const serverNow = now.toISOString();
@@ -120,6 +135,8 @@ export async function listRangeAppointments(
       serverNow,
       window: dayWindow(d, timings, holidays),
       appointments: marked.filter((a) => a.dateLocal === d),
+      lastOrderChange: d === today ? (todayExtras?.lastOrderChange ?? null) : null,
+      currentBreak: d === today ? (todayExtras?.currentBreak ?? null) : null,
     });
   }
   return { ok: true as const, days };

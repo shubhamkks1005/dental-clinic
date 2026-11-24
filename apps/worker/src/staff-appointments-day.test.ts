@@ -19,7 +19,9 @@ describe("GET /api/staff/appointments?date= (day list)", () => {
     expect(r.body.data.dateLocal).toBe(WEEK_DAYS[0]);
     expect(Object.keys(r.body.data).sort()).toEqual([
       "appointments",
+      "currentBreak",
       "dateLocal",
+      "lastOrderChange",
       "serverNow",
       "window",
     ]);

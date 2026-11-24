@@ -36,6 +36,26 @@ export function settingsRepo(db: Db, ctx: Ctx) {
       return { value: JSON.parse(row.valueJson), version: row.version };
     },
 
+    /** Several settings in ONE read (speed rule 1). Every key must exist, like get(). */
+    async getMany(keys: readonly string[]): Promise<Map<string, SettingValue>> {
+      for (const key of keys) {
+        assertAllowed(ctx, key.startsWith("billing.") ? "settings.billing" : "settings.read");
+      }
+      const known = keys.filter(isSettingKey);
+      const rows = known.length
+        ? await db
+            .select({ key: settings.key, valueJson: settings.valueJson, version: settings.version })
+            .from(settings)
+            .where(and(inArray(settings.key, known), isNull(settings.deletedAt)))
+        : [];
+      const out = new Map<string, SettingValue>();
+      for (const row of rows) {
+        out.set(row.key, { value: JSON.parse(row.valueJson), version: row.version });
+      }
+      for (const key of keys) if (!out.has(key)) throw new NotFoundError(`The setting "${key}"`);
+      return out;
+    },
+
     // expectedVersion is the version the user saw. If someone saved since, nothing changes
     // and ConflictError (409) tells the user to reload (1.2.7). A value outside its rule is
     // refused before anything is written (1.5.1).

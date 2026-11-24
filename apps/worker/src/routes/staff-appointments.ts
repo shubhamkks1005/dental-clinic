@@ -26,6 +26,8 @@ staffAppointments.get("/appointments", async (c) => {
       serverNow: result.serverNow,
       window: result.window,
       appointments: result.appointments,
+      lastOrderChange: result.lastOrderChange,
+      currentBreak: result.currentBreak,
     }),
   );
 });

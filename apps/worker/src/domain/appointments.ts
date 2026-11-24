@@ -12,11 +12,12 @@ import {
 } from "@clinic/shared";
 
 export async function clinicClock(repos: Repos) {
-  const [timings, holidays] = await Promise.all([
-    repos.settings.get("clinic.timings"),
-    repos.settings.get("clinic.holidays"),
-  ]);
-  return { timings: timings.value as Timings, holidays: holidays.value as Holiday[] };
+  // One read for both (speed rule 1: the day list was at the 10-query limit).
+  const both = await repos.settings.getMany(["clinic.timings", "clinic.holidays"]);
+  return {
+    timings: both.get("clinic.timings")?.value as Timings,
+    holidays: both.get("clinic.holidays")?.value as Holiday[],
+  };
 }
 
 export async function bookAppointment(repos: Repos, body: unknown, now: Date = new Date()) {
