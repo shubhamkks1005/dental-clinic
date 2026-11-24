@@ -3,6 +3,7 @@
 Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (only the section of the task below). Fake data only. Never push, never deploy, never apply migrations (give the owner the command).
 
 ## Where we are
+- New laptop or fresh clone: follow docs/SETUP_NEW_LAPTOP.md (the AI guides the owner; the owner pushes).
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
 - Phase Q Parts 1 to 5 are done (see "Done in Phase Q"). Part 5 gate: passed (STATE.md "Part 5"; all 18 runner flows ran on a seeded scratch DB).

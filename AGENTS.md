@@ -5,6 +5,7 @@ Staff app + read-only patient portal. NO public website in this repo.
 The human owner is a developer who gives you tasks; the doctor (his sister) is not technical.
 
 ## Start of every session (do this first, nothing else)
+0. Fresh clone or "new laptop" (no node_modules)? Read docs/SETUP_NEW_LAPTOP.md first and guide the owner through it.
 1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), docs/FIXES.md (the owner's bug and polish list, work it top to bottom), and docs/MAP.md (what each file does).
 1b. Current phase is Phase Q (docs/PHASE_Q.md): read the section of the task named in HANDOFF.md. Product audit and designs: docs/product-audit/, docs/ui-audit/, docs/design/proposal/.
 2. Do NOT read the whole codebase. Find files with search (grep/ripgrep), then read only the lines you need.
