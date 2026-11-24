@@ -1,5 +1,8 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import { afterAll, describe, expect, it } from "vitest";
 import { migratedSqlite } from "../testing";
+import { DB_MIGRATIONS } from "../testing/paths";
 
 const db = migratedSqlite();
 afterAll(() => db.close());
@@ -67,5 +70,47 @@ describe("appointments queue columns (T1.2)", () => {
       .all()
       .find((c) => c.name === "skip_count");
     expect(String(d?.dflt_value)).toBe("0");
+  });
+});
+
+// T1.G: 0057 must also work on a database that already has appointments (an older scratch DB).
+describe("0057 on a database that already has data", () => {
+  it("keeps every existing appointment and gives it the new defaults", () => {
+    const old = new DatabaseSync(":memory:");
+    const files = readdirSync(DB_MIGRATIONS)
+      .filter((f) => f.endsWith(".sql"))
+      .sort();
+    for (const file of files.filter((f) => !f.startsWith("0057"))) {
+      old.exec(readFileSync(`${DB_MIGRATIONS}${file}`, "utf8"));
+    }
+    old
+      .prepare(
+        `INSERT INTO appointments (
+           id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+           start_at, date_local, start_min, end_min, status, source, priority, overbook
+         ) VALUES ('old1', 's', 's', 'p', '1', 'vt', 'Consultation', '2026-11-20T05:00:00.000Z', '2026-11-20', 600, 630, 'completed', 'phone', 'normal', 0)`,
+      )
+      .run();
+    const sql57 = files.find((f) => f.startsWith("0057")) as string;
+    old.exec(readFileSync(`${DB_MIGRATIONS}${sql57}`, "utf8"));
+    const row = old.prepare("SELECT * FROM appointments WHERE id = 'old1'").get() as Record<
+      string,
+      unknown
+    >;
+    expect(row).toMatchObject({
+      status: "completed",
+      skip_count: 0,
+      queue_order: null,
+      late_at: null,
+      stepped_out_at: null,
+    });
+    expect(
+      old
+        .prepare(
+          "SELECT COUNT(*) AS n FROM settings WHERE key IN ('appointments.late_after_minutes','today.running_late_after_minutes')",
+        )
+        .get()?.n,
+    ).toBe(2);
+    old.close();
   });
 });
