@@ -567,3 +567,16 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - Worker: GET /api/staff/prescriptions/drafts (domain listDraftPrescriptions, db prescriptions-drafts-list.ts) feeds "Prescription not issued" in the doctor's Waiting for you (today/useDoctorTodos.tsx).
 - e2e: calendar-booking, new-patient-form, redesign-part5 (chrome, Reports, Settings, Library, Add to my list).
 - docs/SETUP_NEW_LAPTOP.md - how to set up the repo on a second laptop (tools, clone, variables, database, checks, pushing rules); the AI reads it on a fresh clone
+
+## Part S speed files (2026-11-24)
+- apps/worker/src/cron/run.ts (+ run.test.ts) - S1.2.2 each cron job (stats, messaging, quota, retention) runs in its own try/catch (runJob); a failure logs only the job id and error type
+- apps/web/public/_headers - S2.1.1 also long-cache rules: /assets/* is `public, max-age=31536000, immutable`; /fonts/* is `public, max-age=31536000` (font name has no hash, so not immutable); index.html gets no cache header. src/headers.test.ts checks this
+- apps/web/src/features/patients/latest-only.ts (+ test) - S2.3.5 ticket guard: only the newest async reply is applied; PatientSearch uses it and shows "Searching…"
+- apps/web/src/features/prescriptions/useVisitPrescription.ts - S2.3.1 allergens now load in the same Promise.all as the other lists
+- packages/db/src/repos/bills-paid.ts - S1.3.2 inChunks (90 ids per IN list) used by paidByBill; issuedBillPaidSql(): the D1 refund rule as one SQL fragment (keep in step with paidByBill; a test compares them)
+- packages/db/src/repos/bills-dues-list.ts - S1.3.1 listDues is one SQL query (per patient, due > 0); duesByPatientIds and last-call lookups are chunked
+- packages/db/src/repos/bills-dues-scale.test.ts - S1.3.3 150 issued bills with part-paid, refunded and unpaid cases
+- packages/db/src/repos/stats-range.ts (+ test) - S2.2.1 stats date math: addMonthsYm, dayPeriod, monthPeriod, inDays, inUtc (month filters are ranges, not LIKE)
+- packages/db/src/repos/daily-stats-parts.ts / daily-stats-queries.ts - S1.1.1 parts now build the queries; computeDayStatRows and computeMonthStatRows send them in ONE db.batch
+- packages/db/src/repos/dashboard.ts + dashboard-kpis.ts - S1.1.2/S1.1.3 yesterday and last month come from stored daily_stats / monthly_stats (live compute only if missing); today is computed once; this month's KPI is still live
+- packages/db/src/repos/stats-query-count.test.ts - S1.1.x/S1.2.1 round trips: dashboard 63 -> 6, recompute 48 -> 8

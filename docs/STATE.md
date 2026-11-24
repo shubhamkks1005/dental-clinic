@@ -125,3 +125,12 @@ Phase 0 still open: clinic-visit tasks for the owner.
 Open questions: SMS language, rate list language, portal monitor, public-site plan lines (DECISIONS).
 Known issues: agents never push; Today uses FAKE sample data until Phase 2 APIs; staging no R2 until 3.7; Book appointment / Walk-in after new patient land on NotBuiltYet until 2.3.
 Owner's real hours (owner fills): Phase 0: -
+
+## Part S: Speed, Wave 1 and 2 (2026-11-24, local commits on main, not pushed)
+- W1 e958259: S0.1.1 Server-Timing, S0.1.2 bundle budget, S0.1.3 100-values guard (see the W1 section above).
+- W2 aa7241f: S1.2.2 cron jobs isolated, S2.1.1 long cache for /assets and /fonts (fonts not immutable: no hash in name; revisit in S5.2.1).
+- W2 40244f2: S2.3.1 allergens in Promise.all, S2.3.3 Link on landing, S2.3.5 search drops stale replies (counter, old request still finishes on the server).
+- W2 8d29da7: S1.3.1-S1.3.3 Dues in one SQL query, IN lists in chunks of 90. The D1 refund rule now lives twice (JS paidByBill, SQL issuedBillPaidSql): change both. Not yet run on real D1 (window functions): open Dues on staging.
+- W2 bf7a5ec: S1.1.1-S1.1.3, S1.2.1, S2.2.1, S2.2.2. Dashboard 63 -> 6 round trips, recompute 48 -> 8. Numbers unchanged (old tests pass). This month's KPI still live. visits and refunds have no index starting with the month column (S5.1). today-summary.ts still has date(approved_at,...) (S2.2.4).
+- Server-Timing counts every statement of a batch, so the header shows ~32-54 queries for the dashboard while real round trips are 6 (S0.1.4 fixes the header).
+- Owner next: S0.2.x on staging (region, Reports and Dues open, curl -I on an asset, Lighthouse). S0.3.1 decision (rules into AGENTS.md) open.

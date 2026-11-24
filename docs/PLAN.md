@@ -6611,3 +6611,68 @@ Q3.5 Patient portal (Phase 8). Sirf Gate A aur owner ke go-ahead ke baad.
 Q3.6 Customer discovery (code nahi). Receptionist ko docs/TESTING.md ke 10 kaam bina madad ke karte dekho aur samay naapo; doctor ki visit dekho; doosre clinics se bhasha, GST aur login ke baare me poocho. Notes docs/product-audit/ me.
 
 Done jab (poora phase): docs/TESTING.md ke 10 receptionist kaam bina madad ke 20 minute se kam me; doctor Today se "Ready to bill" tak ek screen par do minute se kam me; core-loop test CI me pass; kisi screen par 360, 768, 1366 px par sideways scroll nahi; koi failed save chup nahi.
+
+## Part S: Speed (2026-11-24, audit ke baad)
+Source: performance audit (chat, 2026-11-24). Effort: S = kuchh ghante, M = ~1 din, L = 2-3 din. Owner ke approval ke bina koi S-task shuru nahi hota; ek AI ek task, apni files tak.
+Speed rules (AGENTS.md me tabhi jayenge jab owner haan kahe, S0.3.1): (1) ek API request me ~10 se kam D1 queries, hard limit 50; independent reads Promise.all ya db.batch me; loop me await nahi. (2) IN(...) me 90 se zyada values nahi; bina limit ki list nahi, SQL me jodo. (3) date filter range se (>=, <), LIKE ya column pe date() nahi; nayi query pe EXPLAIN QUERY PLAN aur query-plan.test.ts. (4) har list API paged. (5) naya screen = alag lazy chunk; bundle budget pass; nayi library poochh ke. (6) screen ki independent requests ek round me. (7) settings/lists client pe cache ho sakti hain, patient aur paise ka data no-store. (8) screen blank nahi, skeleton; refresh fail ho to purana data rahe. (9) har button useSubmitOnce; optimistic sirf status/notes pe, paise/number/finalise pe kabhi nahi. (10) search 250 ms debounce + purani request cancel. (11) polling sirf visible tab me, ek screen = ek request. (12) naapo, andaza nahi: Server-Timing, pehle aur baad ka number.
+Parallel rule: ek wave me AI alag files par kaam kare, alag git branch/worktree me; MAP.md aur STATE.md parallel AI nahi chhute, unka badlav final message me likhe, owner baad me ek saath daalta hai. Waves: W1 S0.1 akela; W2 = Group A (S1.1, S1.2.1, S2.2.1, S2.2.2) + B (S1.3) + C/D (S1.2.2, S2.1) + E (S2.3.1, S2.3.3, S2.3.5) ek saath; W3 S2.2.3, S2.3.2, S2.3.4 then S3.1; W4 S3.2-S3.4; W5 Phase 4; W6 Phase 5.
+
+### Phase 0: Pehle naapo
+S0.1.1 Server-Timing (S). Har /api reply me Server-Timing header: kul ms, DB ms, queries ki ginti. Files: apps/worker/src/middleware/request-log.ts, packages/db/src/client.ts. Done jab: DevTools me dikhe, test pass.
+S0.1.2 Bundle budget test (S). Abhi ki size (JS 1.03 MB raw, 288 KB gzip) pe limit; bada hone pe CI fail. Naya script + CI. Done jab: limit todne pe test fail.
+S0.1.4 Server-Timing: batch = 1 round trip; header shows round trips and statements apart (S). apps/worker, packages/db/src/timing.ts (+tests). Done jab: dashboard header me round trips ~6 dikhe.
+S0.1.3 100-values guard (S). packages/db/src/testing me: koi query 100 se zyada bound values bheje to test fail. Done jab: 101 values pe error.
+S0.2.1 (owner) wrangler d1 info dental-clinic-staging: region likho. S0.2.2 (owner) staging pe Reports kholo, chalta hai ya fail. S0.2.3 (owner) curl -I ek asset pe, cache header likho. S0.2.4 (owner) Lighthouse mobile: /, Today, ek visit, ek print page; baseline docs/PERF_BASELINE.md me.
+S0.3.1 (owner ka faisla) upar ke 12 rules AGENTS.md me chhote roop me.
+
+### Phase 1: Jo toot sakta hai
+S1.1.1 Stats queries batch me (M). computeDayStatRows/computeMonthStatRows ki 11 queries ek db.batch me. Files: packages/db/src/repos/daily-stats-queries.ts, daily-stats-parts.ts. Done jab: stats tests ke numbers same.
+S1.1.2 Dashboard stored data se (M). Kal aur pichhla mahina daily_stats/monthly_stats se, aaj ka sirf ek baar live. File: packages/db/src/repos/dashboard.ts. Done jab: dashboard tests same, <=10 queries.
+S1.1.3 Dashboard ki baaki queries ek batch me (S). Done jab: staging pe Reports khule.
+S1.2.1 Recompute aur cron ki query ginti (S). recomputeRecentDays (daily-stats.ts) S1.1.1 ke baad 50 se kaafi kam; test me ginti.
+S1.2.2 Cron me har job ka alag try/catch (S). apps/worker/src/cron/run.ts. Done jab: stats fail ho to bhi messaging tick chale (test).
+S1.3.1 listDues SQL me (M). GROUP BY patient HAVING due > 0; refund rule D1 same. File: packages/db/src/repos/bills-dues-list.ts.
+S1.3.2 paidByBill me IDs 90-90 ke tukde (S). File: bills-paid.ts. Day list ke dues nishaan isi se bachte hain.
+S1.3.3 Test: 150 issued bills + refund cases (S).
+Checkpoint: staging pe Reports aur Dues chalein; Server-Timing numbers likho.
+
+### Phase 2: Jaldi asar
+S2.1.1 /assets/* pe public, max-age=31536000, immutable; /fonts/* lamba cache; index.html ko nahi (S). apps/web/public/_headers + headers test.
+S2.1.2 Smart Placement sirf staging pe aazmao, Server-Timing se pehle/baad compare; fayda ho tabhi rakho (S, owner staging chalaye). apps/worker/wrangler.jsonc.
+S2.2.1 Month LIKE 'YYYY-MM-%' ki jagah date range: payments, appointments, visits, patients (S). daily-stats-queries.ts, daily-stats-parts.ts. Done jab: EXPLAIN me index.
+S2.2.2 Refund query me date(approved_at,...) ki jagah UTC range (S). daily-stats-parts.ts, dashboard.ts.
+S2.2.4 today-summary.ts me date(approved_at,...) hatao, UTC range lagao (S). packages/db/src/repos/today-summary.ts.
+S2.2.5 shared/dashboard-range.ts ki private addMonthsYm copy hatao, stats-range.ts wala ek hi rakho (S).
+S2.1.3 (Low) /assets/* me file na mile to 404 aaye, index.html nahi (staging pe dekha: jhootha /assets/x.js 200 text/html immutable deta hai, SPA fallback ki wajah se). Run_worker_first me /assets/* jodke Worker se 404 do, ya assets config dekho (S).
+S2.2.3 query-plan.test.ts me dashboard, dues, drafts, patient list, day list ki queries jodo (S).
+S2.3.1 allergens ko visit ke Promise.all me (S). apps/web/src/features/prescriptions/useVisitPrescription.ts.
+S2.3.2 Week view me same din ki duplicate request band (S). AppointmentsScreen.tsx.
+S2.3.3 LandingPage me <a href="/app"> ki jagah <Link> (S). features/auth/LandingPage.tsx.
+S2.3.4 Refresh fail pe purana data rakho + "Couldn't refresh" note (S). useTodayModel.ts, AppointmentsScreen.tsx, useWeek.ts.
+S2.3.5 Search me purani request cancel + "Searching..." (S). features/patients/PatientSearch.tsx.
+Checkpoint: Lighthouse dobara, S0.2.4 se compare.
+
+### Phase 3: App aur API tez
+S3.1.1 React.lazy: print, settings, library, reports, billing, certificates, messages, requests, errors, style-guide (M). apps/web/src/routes/StaffRoutes.tsx. Done jab: e2e aur smoke pass, CSP error nahi.
+S3.1.2 Vendor libraries ka alag chunk (S). apps/web/vite.config.ts.
+S3.1.3 Bundle budget: abhi total JS naapta hai (lazy chunks bhi), isliye pehli-load ka alag limit jodo (index.html jo scripts load kare unka size) aur total limit tight karo (S).
+S3.2.1 Day list me flags, dues, ready-to-bill, clinic settings ek saath (M). apps/worker/src/domain/appointments.ts.
+S3.2.2 Week ke liye range endpoint GET /appointments?from=&to= (M); route-matrix update; useWeek me 1 request.
+S3.3.1 Visit screen: lists getVisit ke saath shuru, 4 round se 2 (M). features/visits/useVisitData.ts + panels.
+S3.3.2 (optional) getVisit reply me patient bhi.
+S3.4.1 Patients list: last visit, next appointment, dues ek saath (S). packages/db/src/repos/patients.ts, apps/worker/src/domain/patients.ts.
+Checkpoint + owner ka faisla: React Query ya apna cache.
+
+### Phase 4: Click karte hi kaam ho gaya lage
+S4.1.1 Cache layer (L). S4.1.2 lists, settings, /me, branding lamba cache, save pe refresh. S4.1.3 Today, Appointments, profile tabs, visit: purana data turant, naya background me. S4.1.4 Login ke baad aaj ke appointments (doctor: drafts) prefetch. S4.1.5 (low) search result pe hover prefetch.
+S4.2.1 /me ke intezaar me blank nahi, shell turant (S). features/auth/RequireStaff.tsx.
+S4.2.2 Skeleton component; Today, day list, profile header, visit, patients table; layout shift nahi; 360/768/1366 check (M).
+S4.2.3 Har save button pe useSubmitOnce + "Saving..." audit (S).
+S4.3.1 Appointment status optimistic, error pe wapas + toast; paise/bill/number/finalise pe nahi (S-M).
+S4.3.2 Save ke baad reply seedha cache me, list dobara nahi (S).
+
+### Phase 5: Baad me
+S5.1.1 patients indexes (status, deleted_at, created_at) aur (status, full_name). S5.1.2 draft visits/prescriptions partial index. S5.1.4 visits (visit_date_local) aur refunds (approved_at) par index, month stats ke liye. S5.1.3 bills (bill_on, created_at), daily_stats (updated_by, updated_at). Ek migration + db:lock; ek hi AI.
+S5.2.1 Font Latin + rupee subset (OFL.txt saath), phir naapo. S5.2.2 PWA sirf JS/CSS/font (owner faisla). S5.2.3 zod/mini aazmao.
+S5.3.1 Prescription list N+1 hatao (prescriptions-issue.ts), bina use ka listForPatient hatao. S5.3.2 Phone pe visit typing profile; zaroorat ho tabhi memo.
+S5.4.1 Aakhri Lighthouse + Server-Timing, baseline se compare, docs update.
