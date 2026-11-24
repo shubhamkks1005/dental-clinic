@@ -34,7 +34,6 @@ export type ConfirmState = {
 
 type Deps = {
   model: DoctorModel;
-  now: Date;
   patch: (fn: (r: DayAppointmentsReply) => DayAppointmentsReply) => void;
   load: () => void;
   hide: (key: string) => void;
@@ -44,7 +43,7 @@ const LIFT_MS = 170;
 const SETTLE_MS = 470;
 
 /** Everything the doctor can do on Today, with the animation and the server call for each. */
-export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
+export function useDoctorActions({ model, patch, load, hide }: Deps) {
   const toast = useToast();
   const navigate = useNavigate();
   const guard = useRef(createSubmitGuard());
@@ -54,7 +53,6 @@ export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
   const [spotlightId, setSpotlightId] = useState<string | null>(null);
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [chairHold, setChairHold] = useState<string | null>(null);
   const [cancelRow, setCancelRow] = useState<{ row: DoctorRow; mode: "cancel" | "missed" } | null>(
     null,
   );
@@ -129,7 +127,6 @@ export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
       const card = document.getElementById("td-chair");
       const el = rowEl(row.id);
       let undo = () => {};
-      setChairHold(row.id);
       const saved = changeAppointmentStatus(row.id, {
         status: "in_chair",
         version: row.version,
@@ -148,11 +145,9 @@ export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
       const result = await saved;
       if (result instanceof Error) {
         undo();
-        setChairHold(null);
         fail(result, "Could not start this patient. The list is back as it was.");
       } else {
         await new Promise((r) => setTimeout(r, card && el ? 650 : 0));
-        setChairHold(null);
       }
       load();
     };
@@ -267,7 +262,6 @@ export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
           a.version,
         );
 
-  void now;
   return {
     confirm,
     setConfirm,
@@ -277,7 +271,6 @@ export function useDoctorActions({ model, now, patch, load, hide }: Deps) {
     spotlightId,
     openingId,
     busy,
-    chairHold,
     cancelRow,
     setCancelRow,
     rescheduleRow,

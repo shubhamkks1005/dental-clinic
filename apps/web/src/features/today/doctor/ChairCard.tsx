@@ -4,8 +4,6 @@ import type { DoctorModel } from "./doctor-model";
 
 type Props = {
   chair: DoctorModel["chair"];
-  swapping: boolean;
-  receiving: boolean;
   spotlight: boolean;
   busy: boolean;
   /** Who is Next, for the empty card's hint. */
@@ -15,17 +13,8 @@ type Props = {
 };
 
 /** "In chair now": exactly one patient (docs/design/final/doctor_today.html "in-chair-card"). */
-export function ChairCard({
-  chair,
-  swapping,
-  receiving,
-  spotlight,
-  busy,
-  nextName,
-  onOpenVisit,
-  onDone,
-}: Props) {
-  const cls = `td-chair${swapping ? " is-swapping" : ""}${receiving ? " is-receiving" : ""}${spotlight ? " is-spotlight" : ""}${chair ? "" : " is-empty"}`;
+export function ChairCard({ chair, spotlight, busy, nextName, onOpenVisit, onDone }: Props) {
+  const cls = `td-chair${spotlight ? " is-spotlight" : ""}${chair ? "" : " is-empty"}`;
   if (!chair) {
     return (
       <section id="td-chair" className={cls} aria-label="Current patient in chair">

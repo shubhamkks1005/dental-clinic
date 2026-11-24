@@ -32,7 +32,6 @@ export function DoctorTodayPage() {
   const model = data.model;
   const act = useDoctorActions({
     model: model ?? EMPTY,
-    now: data.now,
     patch: data.patch,
     load: data.load,
     hide: data.hide,
@@ -161,8 +160,6 @@ export function DoctorTodayPage() {
       />
       <ChairCard
         chair={model.chair}
-        swapping={false}
-        receiving={act.chairHold !== null && false}
         spotlight={model.chair?.id === act.spotlightId}
         busy={act.openingId !== null || act.busy}
         nextName={next?.name ?? null}

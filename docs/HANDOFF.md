@@ -11,7 +11,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 - Next free migration: **0058** (0057_doctor_today_queue is NEW, the owner applies it on staging) (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
-**PART T (doctor Today): backend T1.1 to T1.9 is done locally (2026-11-25). Next: gate T1.G (e2e/queue-api.spec.ts, STATE.md line), then UI T2.1 to T2.12 (S3.1 is committed, so T2.x may start).** Details: docs/PLAN.md Part T, the "Part T" section of docs/STATE.md.
+**PART T (doctor Today) is built locally (2026-11-25): backend T1.1 to T1.9 + gate T1.G, UI T2.1 to T2.12. Next: the owner applies migration 0057 on staging (never applied by the agent), looks at the page next to docs/design/final/doctor_today.html (screenshots in docs/ui-audit/screenshots/redesign/T2/), and decides the open points in DECISIONS.md (2026-11-25, Part T UI choices). Details: STATE.md "Part T".**
 **Part 5 cleanup is DONE (2026-11-24)**: gate passed, Library and Clinic and doctor finished, Payments/Refunds apart, late entry and Undo, keyboard/focus/width specs (79 browser tests pass). Nothing is half done.
 **Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
 - Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
