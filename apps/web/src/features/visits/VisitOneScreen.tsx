@@ -2,7 +2,7 @@ import type { FdiTooth, ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import type { PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxStatus } from "../prescriptions";
-import { getList } from "../lists";
+import { useRequestScope } from "../../ui/RequestScope";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import type { VisitRecent, VisitSummary } from "./api";
 import { useVisitNotes } from "./useVisitNotes";
@@ -12,6 +12,7 @@ import { VisitFinalView } from "./VisitFinalView";
 import { VisitNextSteps } from "./VisitNextSteps";
 import { VisitStickyBar } from "./VisitStickyBar";
 import { VisitWorkColumn } from "./VisitWorkColumn";
+import { listOnce } from "./visit-prefetch";
 import "./visit-one.css";
 
 type Props = {
@@ -30,13 +31,14 @@ type Props = {
 export function VisitOneScreen(props: Props) {
   const { visit, patient, recent, canEdit, canViewClinical, canWriteRx, canBill } = props;
   const readOnly = !canEdit || visit.status !== "draft";
+  const scope = useRequestScope();
   const [diagnosisList, setDiagnosisList] = useState<ListItem[]>([]);
   const [phrases, setPhrases] = useState<ListItem[]>([]);
   const [rxStatus, setRxStatus] = useState<RxStatus>("none");
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getList("diagnoses"), getList("quick_phrases")])
+    Promise.all([listOnce(scope, "diagnoses"), listOnce(scope, "quick_phrases")])
       .then(([dx, ph]) => {
         if (cancelled) return;
         setDiagnosisList(dx);
@@ -48,7 +50,7 @@ export function VisitOneScreen(props: Props) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [scope]);
 
   const notes = useVisitNotes({ visit, phrases, readOnly, onSaved: props.onVisitChange });
   const isDraft = visit.status === "draft";

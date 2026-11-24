@@ -1,7 +1,9 @@
 import type { FdiTooth } from "@clinic/shared";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router";
 import { useMe } from "../auth";
+import { createRequestScope } from "../../ui/request-scope";
+import { RequestScopeProvider } from "../../ui/RequestScope";
 import { PatientFilesTab } from "../files";
 import { PatientHistoryTab } from "../history";
 import { VisitPlanPanel } from "../plan";
@@ -15,10 +17,25 @@ import "./visit.css";
 /** Q2.4: the visit on one screen (Visit.dc.html / PhoneVisit.dc.html), with Plan, History, Files. */
 export function VisitScreen() {
   const { id } = useParams<{ id: string }>();
+  // A new scope per visit: what it shares ends when this visit is closed (S3.3.1).
+  const scope = useMemo(() => createRequestScope(), [id]);
+  return (
+    <RequestScopeProvider scope={scope}>
+      <VisitScreenBody id={id} />
+    </RequestScopeProvider>
+  );
+}
+
+function VisitScreenBody({ id }: { id: string | undefined }) {
   const { permissions } = useMe();
   const canViewClinical = permissions.includes("clinical.view");
   const canEdit = permissions.includes("clinical.edit");
-  const { visit, patient, recent, error, setVisit } = useVisitData(id);
+  const canWriteRx = permissions.includes("prescriptions.write");
+  const { visit, patient, recent, error, setVisit } = useVisitData(id, {
+    canViewClinical,
+    canEdit,
+    canWriteRx,
+  });
   const [tab, setTab] = useState<VisitTabId>("visit");
   const [planTooth, setPlanTooth] = useState<FdiTooth | null>(null);
 
@@ -39,7 +56,7 @@ export function VisitScreen() {
         recent={recent}
         canEdit={canEdit}
         canViewClinical={canViewClinical}
-        canWriteRx={permissions.includes("prescriptions.write")}
+        canWriteRx={canWriteRx}
         canBill={permissions.includes("bills.create")}
         onVisitChange={setVisit}
         onToothFocus={setPlanTooth}

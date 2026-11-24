@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { listPatientBills } from "../billing";
 import { listPatientAppointments, type PatientAppointmentRow } from "../patients/api";
 import { formatDate, formatMoney } from "../../ui/format";
+import { scopeKey } from "../../ui/request-scope";
+import { useRequestScope } from "../../ui/RequestScope";
 import type { VisitRecent, VisitSummary } from "./api";
 import { RecentVisitsSide } from "./RecentVisitsSide";
 
@@ -15,21 +17,24 @@ type Props = {
 
 /** Right-hand context: last visits, what the patient still owes, the next appointment. */
 export function VisitContextPanel({ patientId, current, recent }: Props) {
+  const scope = useRequestScope();
   const [due, setDue] = useState<number | null>(null);
   const [next, setNext] = useState<PatientAppointmentRow | null | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
-    listPatientBills(patientId)
+    scope
+      .takeOr(scopeKey.bills(patientId), () => listPatientBills(patientId))
       .then((r) => !cancelled && setDue(r.outstandingDuePaise))
       .catch(() => !cancelled && setDue(null));
-    listPatientAppointments(patientId)
+    scope
+      .takeOr(scopeKey.patientAppointments(patientId), () => listPatientAppointments(patientId))
       .then((rows) => !cancelled && setNext(pickNextAppointment(rows, new Date())))
       .catch(() => !cancelled && setNext(undefined));
     return () => {
       cancelled = true;
     };
-  }, [patientId]);
+  }, [patientId, scope]);
 
   return (
     <>

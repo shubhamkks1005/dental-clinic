@@ -2,9 +2,10 @@ import { TOOTH_SURFACE_LABEL, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { formatMoney } from "../../ui/format";
-import { getList } from "../lists";
+import { useRequestScope } from "../../ui/RequestScope";
 import { addVisitProcedure, type VisitProcedure } from "./api";
 import type { ChartSelection } from "./chart-selection";
+import { listOnce } from "./visit-prefetch";
 import { Select } from "../../ui/form";
 
 type Props = {
@@ -28,6 +29,7 @@ function chipText(p: VisitProcedure): string {
 
 /** Procedures done: chips with fees, quick picks and "+ Add". The bill is made from these. */
 export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdded }: Props) {
+  const scope = useRequestScope();
   const [list, setList] = useState<ListItem[]>([]);
   const [more, setMore] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -35,7 +37,7 @@ export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdd
 
   useEffect(() => {
     let cancelled = false;
-    getList("procedures")
+    listOnce(scope, "procedures")
       .then((items) => {
         if (!cancelled) setList(items.filter((i) => i.active));
       })
@@ -45,7 +47,7 @@ export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdd
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [scope]);
 
   async function add(listItemId: string) {
     if (!listItemId || busy) return;

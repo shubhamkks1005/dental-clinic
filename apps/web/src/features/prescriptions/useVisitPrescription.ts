@@ -7,6 +7,8 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { problemText } from "../../api/problem-text";
+import { scopeKey } from "../../ui/request-scope";
+import { useRequestScope } from "../../ui/RequestScope";
 import { getList } from "../lists/api";
 import { getMedicalHistory } from "../medical-history/api";
 import {
@@ -21,6 +23,7 @@ import { asItems, toLines, type DraftLine } from "./rx-lines";
 
 /** State and actions of the one prescription that belongs to a visit (4.2.2 to 4.2.7). */
 export function useVisitPrescription(visitId: string, patientId: string, canWrite: boolean) {
+  const scope = useRequestScope();
   const [rx, setRx] = useState<PrescriptionDto | null>(null);
   const [lines, setLines] = useState<DraftLine[]>([]);
   const [medicines, setMedicines] = useState<ListItem[]>([]);
@@ -35,11 +38,15 @@ export function useVisitPrescription(visitId: string, patientId: string, canWrit
 
   const load = useCallback(async () => {
     const [list, meds, setList, mh, allergenList] = await Promise.all([
-      listVisitPrescriptions(visitId),
-      getList("medicines"),
-      getList("medicine_sets"),
-      getMedicalHistory(patientId).catch(() => ({ alerts: [] as Array<{ label: string }> })),
-      getList("allergens").catch(() => [] as ListItem[]),
+      scope.takeOr(scopeKey.visitPrescriptions(visitId), () => listVisitPrescriptions(visitId)),
+      scope.shared(scopeKey.list("medicines"), () => getList("medicines")),
+      scope.shared(scopeKey.list("medicine_sets"), () => getList("medicine_sets")),
+      scope
+        .takeOr(scopeKey.medicalHistory(patientId), () => getMedicalHistory(patientId))
+        .catch(() => ({ alerts: [] as Array<{ label: string }> })),
+      scope
+        .shared(scopeKey.list("allergens"), () => getList("allergens"))
+        .catch(() => [] as ListItem[]),
     ]);
     setMedicines(meds.filter((m) => m.active));
     setSets(setList.filter((s) => s.active));
@@ -60,7 +67,7 @@ export function useVisitPrescription(visitId: string, patientId: string, canWrit
     setAdvice(current?.advice ?? "");
     setFollowUpOn(current?.followUpOn ?? "");
     setWeightKg(current?.weightKg != null ? String(current.weightKg) : "");
-  }, [visitId, patientId]);
+  }, [visitId, patientId, scope]);
 
   useEffect(() => {
     if (!canWrite) return;

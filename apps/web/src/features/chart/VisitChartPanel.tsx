@@ -15,6 +15,8 @@ import {
 } from "@clinic/shared";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../api/client";
+import { scopeKey } from "../../ui/request-scope";
+import { useRequestScope } from "../../ui/RequestScope";
 import { getList } from "../lists";
 import {
   addChartEvent,
@@ -47,6 +49,7 @@ export function VisitChartPanel({
   visitId = null,
   onFocusChange,
 }: Props) {
+  const scope = useRequestScope();
   const [chart, setChart] = useState<PatientChart | null>(null);
   const [conditions, setConditions] = useState<ChartCondition[]>([]);
   const [view, setView] = useState<ChartView>(DEFAULT_CHART_VIEW);
@@ -81,12 +84,16 @@ export function VisitChartPanel({
     let cancelled = false;
     setError(null);
     Promise.all([
-      getPatientChart(patientId, {
-        asOfVisitId: asOfVisitId || undefined,
-        highlightVisitId: draftVisitId ?? undefined,
-      }),
-      getList("conditions"),
-      loadChartView().catch(() => null),
+      scope.takeOr(
+        scopeKey.chart(patientId, asOfVisitId || undefined, draftVisitId ?? undefined),
+        () =>
+          getPatientChart(patientId, {
+            asOfVisitId: asOfVisitId || undefined,
+            highlightVisitId: draftVisitId ?? undefined,
+          }),
+      ),
+      scope.shared(scopeKey.list("conditions"), () => getList("conditions")),
+      scope.shared(scopeKey.chartView(), loadChartView).catch(() => null),
     ])
       .then(([next, list, setting]) => {
         if (cancelled) return;
@@ -109,7 +116,7 @@ export function VisitChartPanel({
     return () => {
       cancelled = true;
     };
-  }, [patientId, asOfVisitId, draftVisitId]);
+  }, [patientId, asOfVisitId, draftVisitId, scope]);
 
   async function ensureDraft(): Promise<string> {
     if (draftVisitId) return draftVisitId;

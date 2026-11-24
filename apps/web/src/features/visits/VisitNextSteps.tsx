@@ -2,6 +2,8 @@ import { istDate } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
+import { scopeKey } from "../../ui/request-scope";
+import { useRequestScope } from "../../ui/RequestScope";
 import { createBillFromVisit } from "../billing";
 import { listDayAppointments } from "../appointments/api";
 import type { VisitSummary } from "./api";
@@ -10,6 +12,7 @@ import { openOrReuseVisit } from "./open-visit";
 /** After the visit is finalised: make the bill, or go back to Today for the next patient. */
 export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBill: boolean }) {
   const navigate = useNavigate();
+  const scope = useRequestScope();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [waiting, setWaiting] = useState<{
@@ -22,7 +25,9 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
   useEffect(() => {
     if (!final) return;
     let cancelled = false;
-    listDayAppointments(istDate(new Date()))
+    const today = istDate(new Date());
+    scope
+      .takeOr(scopeKey.dayAppointments(today), () => listDayAppointments(today))
       .then((day) => {
         const next = day.appointments
           .filter((a) => a.status === "arrived" && a.patientId !== visit.patientId)
@@ -37,7 +42,7 @@ export function VisitNextSteps({ visit, canBill }: { visit: VisitSummary; canBil
     return () => {
       cancelled = true;
     };
-  }, [final, visit.patientId]);
+  }, [final, visit.patientId, scope]);
 
   function openWaiting() {
     if (!waiting) return;
