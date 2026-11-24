@@ -102,7 +102,9 @@ export function DoctorList({
       </div>
       {model.rows.length === 0 ? (
         <div className="td-empty-list">
-          {model.chair ? "No one else is waiting." : "No patients today."}
+          {model.chair
+            ? "No one waiting. Current patient is in the chair above."
+            : "No one waiting right now."}
         </div>
       ) : (
         <ul className="td-rows" ref={listRef}>
