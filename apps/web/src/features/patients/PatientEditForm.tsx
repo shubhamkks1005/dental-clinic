@@ -3,7 +3,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ApiError } from "../../api/client";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
-import { Field, MobileInput, zodResolver } from "../../ui/form";
+import {
+  Checkbox,
+  Field,
+  MobileInput,
+  Select,
+  TextInput,
+  Textarea,
+  zodResolver,
+} from "../../ui/form";
 import { BirthAgeFields } from "./BirthAgeFields";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { updatePatient, type PatientDetail } from "./api";
@@ -70,15 +78,17 @@ export function PatientEditForm({ patient, onSaved, onCancel }: Props) {
       >
         <UnsavedChangesGuard dirty={isDirty && !isSubmitting} />
         <Field label="Full name" error={errors.fullName?.message}>
-          {(p) => <input className="input" autoComplete="off" {...p} {...register("fullName")} />}
+          {(p) => (
+            <TextInput className="input" autoComplete="off" {...p} {...register("fullName")} />
+          )}
         </Field>
         <Field label="Gender" error={errors.gender?.message}>
           {(p) => (
-            <select className="input" {...p} {...register("gender")}>
+            <Select className="input" {...p} {...register("gender")}>
               <option value="female">Female</option>
               <option value="male">Male</option>
               <option value="other">Other</option>
-            </select>
+            </Select>
           )}
         </Field>
         <BirthAgeFields
@@ -92,13 +102,18 @@ export function PatientEditForm({ patient, onSaved, onCancel }: Props) {
           {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
         </Field>
         <label className="new-patient-check">
-          <input type="checkbox" {...register("noMobile")} />
+          <Checkbox {...register("noMobile")} />
           No mobile
         </label>
         {noMobile && (
           <Field label="Why no mobile" error={errors.noMobileReason?.message}>
             {(p) => (
-              <input className="input" autoComplete="off" {...p} {...register("noMobileReason")} />
+              <TextInput
+                className="input"
+                autoComplete="off"
+                {...p}
+                {...register("noMobileReason")}
+              />
             )}
           </Field>
         )}
@@ -106,23 +121,28 @@ export function PatientEditForm({ patient, onSaved, onCancel }: Props) {
           {(p) => <MobileInput {...p} {...register("mobileSecondary")} />}
         </Field>
         <Field label="Area or address" error={errors.area?.message}>
-          {(p) => <input className="input" autoComplete="off" {...p} {...register("area")} />}
+          {(p) => <TextInput className="input" autoComplete="off" {...p} {...register("area")} />}
         </Field>
         <Field label="Guardian name" error={errors.guardianName?.message}>
           {(p) => (
-            <input className="input" autoComplete="off" {...p} {...register("guardianName")} />
+            <TextInput className="input" autoComplete="off" {...p} {...register("guardianName")} />
           )}
         </Field>
         <Field label="Guardian relation" error={errors.guardianRelation?.message}>
           {(p) => (
-            <input className="input" autoComplete="off" {...p} {...register("guardianRelation")} />
+            <TextInput
+              className="input"
+              autoComplete="off"
+              {...p}
+              {...register("guardianRelation")}
+            />
           )}
         </Field>
         <Field label="Guardian mobile" error={errors.guardianMobile?.message}>
           {(p) => <MobileInput {...p} {...register("guardianMobile")} />}
         </Field>
         <Field label="Notes" error={errors.notes?.message}>
-          {(p) => <textarea className="input" rows={3} {...p} {...register("notes")} />}
+          {(p) => <Textarea className="input" rows={3} {...p} {...register("notes")} />}
         </Field>
         {formError && (
           <p className="notice notice-error" role="alert">

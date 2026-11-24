@@ -4,7 +4,16 @@ import { flushSync } from "react-dom";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
-import { Field, MobileInput, zodResolver } from "../../ui/form";
+import {
+  Checkbox,
+  Field,
+  MobileInput,
+  Radio,
+  Select,
+  TextInput,
+  Textarea,
+  zodResolver,
+} from "../../ui/form";
 import { BirthAgeFields } from "./BirthAgeFields";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import {
@@ -22,7 +31,9 @@ import {
   type NewPatientParsed,
 } from "./new-patient-schema";
 
-type Props = { onCreated: (patient: CreatedPatient) => void };
+export type AfterSave = "view" | "book" | "checkin";
+
+type Props = { onCreated: (patient: CreatedPatient, next: AfterSave) => void };
 
 // S03 / S16: four required fields on top; more details fold; Enter saves.
 export function NewPatientForm({ onCreated }: Props) {
@@ -37,6 +48,8 @@ export function NewPatientForm({ onCreated }: Props) {
   const [saveAsNew, setSaveAsNew] = useState(false);
   // Choosing "Open existing" is a deliberate leave: no "unsaved changes" question.
   const [leaving, setLeaving] = useState(false);
+  // Which button was pressed: Save patient, or save and go straight on to booking / check-in.
+  const nextStep = useRef<AfterSave>("view");
 
   const {
     register,
@@ -54,6 +67,9 @@ export function NewPatientForm({ onCreated }: Props) {
   const noMobile = watch("noMobile");
   const ageYears = watch("ageYears");
   const birthDate = watch("birthDate");
+  const guardianMobile = watch("guardianMobile");
+  // Reminders have nobody to go to without a mobile (own or guardian's): the box is off, with the reason.
+  const noReminderNumber = Boolean(noMobile) && !guardianMobile?.trim();
 
   const today = istDate(new Date());
   const typedAge = ageYearsOn(
@@ -66,6 +82,10 @@ export function NewPatientForm({ onCreated }: Props) {
   );
   // Q1.8: a child needs a guardian, so the guardian fields open by themselves (not hidden in More details).
   const isMinorNow = typedAge !== null && typedAge < MINOR_UNDER_YEARS;
+
+  useEffect(() => {
+    if (noReminderNumber) setValue("smsReminders", false);
+  }, [noReminderNumber, setValue]);
 
   useEffect(() => {
     setAskSamePerson(false);
@@ -103,7 +123,7 @@ export function NewPatientForm({ onCreated }: Props) {
         }
         try {
           const patient = await createPatient(toCreateBody(values));
-          onCreated(patient);
+          onCreated(patient, nextStep.current);
         } catch (err) {
           setFormError(
             err instanceof ApiError
@@ -115,29 +135,50 @@ export function NewPatientForm({ onCreated }: Props) {
     >
       <UnsavedChangesGuard dirty={isDirty && !isSubmitting && !leaving} />
 
-      <div className="new-patient-code" aria-live="polite">
-        <span className="new-patient-code-label">Patient no.</span>
-        <span className="new-patient-code-box">Assigned automatically when you save</span>
-      </div>
-
       <Field label="Full name" error={errors.fullName?.message}>
         {(p) => (
-          <input className="input" autoComplete="off" autoFocus {...p} {...register("fullName")} />
+          <TextInput
+            className="input"
+            autoComplete="off"
+            autoFocus
+            {...p}
+            {...register("fullName")}
+          />
         )}
       </Field>
 
-      <Field label="Gender" error={errors.gender?.message}>
-        {(p) => (
-          <select className="input" {...p} {...register("gender")}>
-            <option value="" disabled>
-              Choose…
-            </option>
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-          </select>
-        )}
+      <Field label="Mobile" error={errors.mobile?.message}>
+        {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
       </Field>
+      <label className="new-patient-check">
+        <Checkbox {...register("noMobile")} />
+        No mobile
+      </label>
+      {noMobile && (
+        <Field label="Why no mobile" error={errors.noMobileReason?.message}>
+          {(p) => (
+            <TextInput
+              className="input"
+              autoComplete="off"
+              {...p}
+              {...register("noMobileReason")}
+            />
+          )}
+        </Field>
+      )}
+
+      <fieldset className="new-patient-gender">
+        <legend>Gender</legend>
+        <div className="new-patient-seg">
+          {(["female", "male", "other"] as const).map((g) => (
+            <label key={g} className="new-patient-seg-item">
+              <Radio value={g} {...register("gender")} />
+              <span>{g === "female" ? "Female" : g === "male" ? "Male" : "Other"}</span>
+            </label>
+          ))}
+        </div>
+        {errors.gender?.message ? <p className="field-error">{errors.gender.message}</p> : null}
+      </fieldset>
 
       <BirthAgeFields
         register={register}
@@ -146,21 +187,6 @@ export function NewPatientForm({ onCreated }: Props) {
         setAge={(v) => setValue("ageYears", v)}
         ageLabel="Or age (years)"
       />
-
-      <Field label="Mobile" error={errors.mobile?.message}>
-        {(p) => <MobileInput disabled={noMobile} {...p} {...register("mobile")} />}
-      </Field>
-      <label className="new-patient-check">
-        <input type="checkbox" {...register("noMobile")} />
-        No mobile
-      </label>
-      {noMobile && (
-        <Field label="Why no mobile" error={errors.noMobileReason?.message}>
-          {(p) => (
-            <input className="input" autoComplete="off" {...p} {...register("noMobileReason")} />
-          )}
-        </Field>
-      )}
 
       <DuplicateWarnings
         warnings={warnings}
@@ -182,12 +208,17 @@ export function NewPatientForm({ onCreated }: Props) {
             error={errors.guardianName?.message}
           >
             {(p) => (
-              <input className="input" autoComplete="off" {...p} {...register("guardianName")} />
+              <TextInput
+                className="input"
+                autoComplete="off"
+                {...p}
+                {...register("guardianName")}
+              />
             )}
           </Field>
           <Field label="Guardian relation" error={errors.guardianRelation?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 autoComplete="off"
                 {...p}
@@ -216,7 +247,7 @@ export function NewPatientForm({ onCreated }: Props) {
             {(p) => <MobileInput {...p} {...register("mobileSecondary")} />}
           </Field>
           <Field label="Area or address" error={errors.area?.message}>
-            {(p) => <input className="input" autoComplete="off" {...p} {...register("area")} />}
+            {(p) => <TextInput className="input" autoComplete="off" {...p} {...register("area")} />}
           </Field>
           <Field
             label="Whose contact mobile"
@@ -224,49 +255,56 @@ export function NewPatientForm({ onCreated }: Props) {
             error={errors.contactRelation?.message}
           >
             {(p) => (
-              <select className="input" {...p} {...register("contactRelation")}>
+              <Select className="input" {...p} {...register("contactRelation")}>
                 <option value="self">Self</option>
                 <option value="mother">Mother</option>
                 <option value="father">Father</option>
                 <option value="spouse">Spouse</option>
                 <option value="guardian">Guardian</option>
                 <option value="other">Other</option>
-              </select>
+              </Select>
             )}
           </Field>
           <Field label="Emergency contact" error={errors.emergencyName?.message}>
             {(p) => (
-              <input className="input" autoComplete="off" {...p} {...register("emergencyName")} />
+              <TextInput
+                className="input"
+                autoComplete="off"
+                {...p}
+                {...register("emergencyName")}
+              />
             )}
           </Field>
           <Field label="Old register no." error={errors.legacyRef?.message}>
             {(p) => (
-              <input className="input" autoComplete="off" {...p} {...register("legacyRef")} />
+              <TextInput className="input" autoComplete="off" {...p} {...register("legacyRef")} />
             )}
           </Field>
+          <label className="new-patient-check">
+            <Checkbox {...register("marketing")} />
+            Promo messages (off by default)
+          </label>
           <Field label="Notes" error={errors.notes?.message}>
-            {(p) => <textarea className="input" rows={3} {...p} {...register("notes")} />}
+            {(p) => <Textarea className="input" rows={3} {...p} {...register("notes")} />}
           </Field>
         </div>
       )}
 
       <fieldset className="new-patient-consents">
         <legend>Notice and consent</legend>
-        <p className="muted">
-          Patient can be saved without these. SMS reminders stay off until consent is recorded.
-        </p>
         <label className="new-patient-check">
-          <input type="checkbox" {...register("noticeShown")} />
-          Privacy notice shown
+          <Checkbox {...register("noticeShown")} />
+          Privacy notice given
         </label>
         <label className="new-patient-check">
-          <input type="checkbox" {...register("smsReminders")} />
-          SMS reminders allowed
+          <Checkbox disabled={noReminderNumber} {...register("smsReminders")} />
+          Allow reminders
         </label>
-        <label className="new-patient-check">
-          <input type="checkbox" {...register("marketing")} />
-          Promo messages (off by default)
-        </label>
+        {noReminderNumber ? (
+          <p className="small muted">
+            Add a mobile number or a guardian's number to allow reminders.
+          </p>
+        ) : null}
       </fieldset>
 
       {formError && (
@@ -275,9 +313,30 @@ export function NewPatientForm({ onCreated }: Props) {
         </p>
       )}
 
-      <div className="form-actions">
-        <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+      <div className="form-actions new-patient-actions">
+        <button
+          type="submit"
+          className="btn"
+          disabled={isSubmitting}
+          onClick={() => (nextStep.current = "view")}
+        >
           {isSubmitting ? "Saving…" : "Save patient"}
+        </button>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={isSubmitting}
+          onClick={() => (nextStep.current = "book")}
+        >
+          Save and book appointment
+        </button>
+        <button
+          type="submit"
+          className="btn"
+          disabled={isSubmitting}
+          onClick={() => (nextStep.current = "checkin")}
+        >
+          Save and check in now
         </button>
       </div>
     </form>

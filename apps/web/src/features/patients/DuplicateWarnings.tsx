@@ -23,6 +23,9 @@ export function DuplicateWarnings({
 }) {
   if (warnings.length === 0) return null;
   // The strongest match first: same mobile and name, then another patient's other mobile.
+  const rank = (w: DuplicateWarning) =>
+    w.reason === "mobile_name" ? 0 : w.reason === "secondary_mobile" ? 1 : 2;
+  const sorted = [...warnings].sort((a, b) => rank(a) - rank(b));
   const best =
     warnings.find((w) => w.reason === "mobile_name") ??
     warnings.find((w) => w.reason === "secondary_mobile") ??
@@ -31,7 +34,7 @@ export function DuplicateWarnings({
     <div className="notice notice-warning new-patient-dupes" role="status">
       <p>Possible match — check before saving:</p>
       <ul>
-        {warnings.map((w) => (
+        {sorted.map((w) => (
           <li key={w.id}>
             <Link to={`/app/patients/${w.id}`}>
               {w.fullName} ({w.code})

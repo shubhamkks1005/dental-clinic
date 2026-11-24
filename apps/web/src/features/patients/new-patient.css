@@ -105,3 +105,72 @@
   font-weight: 700;
   padding: 0 4px;
 }
+
+/* Q2.9: gender as three big buttons (PhoneNewPatient.dc.html), actions fixed on a phone. */
+.new-patient-gender {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.new-patient-gender legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+.new-patient-seg {
+  display: flex;
+  gap: 8px;
+}
+.new-patient-seg-item {
+  flex: 1;
+  position: relative;
+}
+.new-patient-seg-item input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+.new-patient-seg-item span {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border-strong, #d5dee6);
+  background: #fff;
+  font-weight: 600;
+  color: var(--navy, #0f2a5c);
+}
+.new-patient-seg-item input:checked + span {
+  background: #e6eefa;
+  border-color: var(--brand, #1e4fa3);
+  color: #163c80;
+}
+.new-patient-seg-item input:focus-visible + span {
+  outline: 2px solid var(--brand, #1e4fa3);
+  outline-offset: 2px;
+}
+.new-patient-actions {
+  flex-wrap: wrap;
+}
+.new-patient-actions .btn {
+  min-height: 48px;
+}
+@media (max-width: 767px) {
+  .new-patient-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: var(--card, #fff);
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    flex-direction: column-reverse;
+  }
+  .new-patient-actions .btn {
+    width: 100%;
+  }
+}

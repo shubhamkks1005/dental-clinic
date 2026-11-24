@@ -12,6 +12,7 @@ import { NEW_PATIENT_PATH } from "../../ui/shell/nav-items";
 import { isSearchShortcut } from "../../ui/shell/search-shortcut";
 import { listPatients, type PatientListRow } from "./api";
 import "./patient-search.css";
+import { TextInput } from "../../ui/form";
 
 const GENDER = { female: "Female", male: "Male", other: "Other" } as const;
 
@@ -122,7 +123,7 @@ export function PatientSearch() {
       <label className="top-search">
         <span className="top-search-icon">{icons.search}</span>
         <span className="sr-only">Search patients (shortcut: /)</span>
-        <input
+        <TextInput
           ref={inputRef}
           className="input"
           type="search"

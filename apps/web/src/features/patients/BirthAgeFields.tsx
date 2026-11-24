@@ -1,7 +1,7 @@
 import { istDate } from "@clinic/shared";
 import { useEffect, useRef } from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { DateInput, Field } from "../../ui/form";
+import { DateInput, Field, TextInput } from "../../ui/form";
 import { ageFromBirthInput } from "./age-from-birth";
 import type { NewPatientFormValues } from "./new-patient-schema";
 
@@ -39,7 +39,7 @@ export function BirthAgeFields({ register, errors, birthDate, setAge, ageLabel }
         error={errors.ageYears?.message}
       >
         {(p) => (
-          <input
+          <TextInput
             className="input"
             inputMode="numeric"
             autoComplete="off"

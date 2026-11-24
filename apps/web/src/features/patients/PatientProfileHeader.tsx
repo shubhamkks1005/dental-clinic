@@ -1,3 +1,4 @@
+import { plural } from "../../ui/format";
 import { displayAge, displayMobile, istDate, type PatientGender } from "@clinic/shared";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
@@ -95,7 +96,7 @@ export function PatientProfileHeader({
       </div>
       {patient.sameMobileCount > 0 && (
         <p className="muted patient-profile-contact">
-          {patient.sameMobileCount} other{patient.sameMobileCount === 1 ? "" : "s"} on this number
+          {plural(patient.sameMobileCount, "other")} on this number
         </p>
       )}
       <div className="patient-profile-actions">
