@@ -173,3 +173,36 @@ const uniqueScans = (lines: string[]) => [...new Set(lines.map((l) => l.replace(
 const matches = (k: KnownScan, line: string) =>
   line.startsWith(`${k.scan} `) && line.includes(" <- ") && line.includes(k.sqlHas);
 const isKnownScan = (line: string) => KNOWN_SCANS.some((k) => matches(k, line));
+
+// T1.2: the new Part T indexes are what the day list, the break check and the approvals list use.
+describe("query-plan guard: Part T tables", () => {
+  it("the day list is read by date through an index, in queue order, with no full scan", () => {
+    const plan = queryPlan(
+      t.sqlite,
+      `SELECT id FROM appointments WHERE date_local = ? AND deleted_at IS NULL ORDER BY queue_order`,
+      ["2026-11-25"],
+    );
+    expect(fullScans(plan)).toEqual([]);
+    expect(plan.join(" ")).toMatch(/appointments_day_(queue|status)_idx|appointments_chair_day/);
+  });
+
+  it("the open break of a day uses its partial unique index", () => {
+    const plan = queryPlan(
+      t.sqlite,
+      `SELECT id FROM doctor_breaks WHERE date_local = ? AND ended_at IS NULL AND deleted_at IS NULL`,
+      ["2026-11-25"],
+    );
+    expect(fullScans(plan)).toEqual([]);
+    expect(plan.join(" ")).toMatch(/doctor_breaks_(one_open_uidx|day_idx)/);
+  });
+
+  it("the open approvals list uses the status index", () => {
+    const plan = queryPlan(
+      t.sqlite,
+      `SELECT id FROM approval_requests WHERE status = 'open' AND deleted_at IS NULL ORDER BY urgent DESC, created_at LIMIT 50`,
+      [],
+    );
+    expect(fullScans(plan)).toEqual([]);
+    expect(plan.join(" ")).toContain("approval_requests_status_idx");
+  });
+});

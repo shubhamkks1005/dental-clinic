@@ -95,6 +95,8 @@ describe("settings store rules (1.5.1)", () => {
       ["appointments.book_ahead_days", 90, 1],
       ["appointments.no_show_after_minutes", 15, 1],
       ["appointments.status_undo_hours", 24, 1],
+      ["appointments.late_after_minutes", 10, 1],
+      ["today.running_late_after_minutes", 10, 1],
       ["medical_history.stale_months", 6, 1],
       ["ui.auto_refresh_seconds", 60, 1],
       ["files.storage_warn_gb", 7, 1],

@@ -62,7 +62,7 @@ describe("stats date ranges (S2.2)", () => {
         "SELECT count(*) FROM appointments WHERE date_local >= ? AND date_local < ? AND deleted_at IS NULL",
         [p.dayFrom, p.dayTo],
       );
-      expect(lines.join(" ")).toContain("appointments_day_status_idx");
+      expect(lines.join(" ")).toMatch(/appointments_day_(status|queue)_idx/);
       expect(fullScans(lines)).toEqual([]);
     });
 

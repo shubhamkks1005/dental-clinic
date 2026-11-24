@@ -32,6 +32,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "access_log",
       "alerts",
       "appointments",
+      "approval_requests",
       "audit_log",
       "bill_cancel_requests",
       "bill_items",
@@ -42,6 +43,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "counters",
       "daily_stats",
       "day_closes",
+      "doctor_breaks",
       "dues_calls",
       "error_log",
       "files",
@@ -86,6 +88,7 @@ describe("migrations on an empty database (1.2.3)", () => {
     const rows = db.prepare("SELECT key, value_json FROM settings ORDER BY key").all();
     expect(rows.map((r) => r.key)).toEqual([
       "appointments.book_ahead_days",
+      "appointments.late_after_minutes",
       "appointments.no_show_after_minutes",
       "appointments.status_undo_hours",
       "billing.gst_mode",
@@ -121,6 +124,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "privacy_notice.body",
       "privacy_notice.version",
       "records.demand_hours",
+      "today.running_late_after_minutes",
       "ui.auto_refresh_seconds",
     ]);
   });

@@ -61,7 +61,9 @@ describe("appointments listForRange (S3.2.2)", () => {
     expect(scansIn(t.sqlite, ran)).toEqual([]);
     const plan = queryPlan(t.sqlite, ran[0]!.sql, ran[0]!.params);
     expect(
-      plan.some((l) => /appointments_(day_status|chair_day_start|patient_day)_idx/i.test(l)),
+      plan.some((l) =>
+        /appointments_(day_status|day_queue|chair_day_start|patient_day)_idx/i.test(l),
+      ),
     ).toBe(true);
     // Shown on purpose: this is the plan the owner asked to see.
     expect(plan.join("\n")).toMatch(/SEARCH appointments USING (COVERING )?INDEX/i);
