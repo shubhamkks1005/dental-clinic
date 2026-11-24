@@ -107,6 +107,81 @@ export function messagesPlanLoadRepo(db: Db, ctx: Ctx) {
       return out;
     },
 
+    /**
+     * Q2.8: names, codes and booking times for the Messages board, so it can group by patient.
+     * `to` is set only when the message goes to someone other than the patient.
+     */
+    async boardContext(patientIds: string[], appointmentIds: string[]) {
+      assertAllowed(ctx, "patients.view");
+      const people = new Map<
+        string,
+        {
+          code: string;
+          fullName: string;
+          hasNumber: boolean;
+          to: string | null;
+          toMobile: string | null;
+        }
+      >();
+      const bookings = new Map<string, { dateLocal: string; startMin: number }>();
+      if (patientIds.length > 0) {
+        const rows = await db
+          .select({
+            id: patients.id,
+            code: patients.code,
+            fullName: patients.fullName,
+            mobile: patients.mobile,
+            guardianName: patients.guardianName,
+            guardianRelation: patients.guardianRelation,
+            guardianMobile: patients.guardianMobile,
+            emergencyName: patients.emergencyName,
+            emergencyRelation: patients.emergencyRelation,
+            emergencyMobile: patients.emergencyMobile,
+          })
+          .from(patients)
+          .where(and(inArray(patients.id, patientIds), isNull(patients.deletedAt)))
+          .all();
+        for (const r of rows) {
+          const other = !r.mobile
+            ? r.guardianMobile
+              ? { name: r.guardianName, relation: r.guardianRelation, mobile: r.guardianMobile }
+              : r.emergencyMobile
+                ? {
+                    name: r.emergencyName,
+                    relation: r.emergencyRelation,
+                    mobile: r.emergencyMobile,
+                  }
+                : null
+            : null;
+          const label = other
+            ? [other.name ?? "Contact", other.relation ? `(${other.relation})` : ""]
+                .filter(Boolean)
+                .join(" ")
+            : null;
+          people.set(r.id, {
+            code: r.code,
+            fullName: r.fullName,
+            hasNumber: Boolean(r.mobile || other),
+            to: label,
+            toMobile: other?.mobile ?? null,
+          });
+        }
+      }
+      if (appointmentIds.length > 0) {
+        const rows = await db
+          .select({
+            id: appointments.id,
+            dateLocal: appointments.dateLocal,
+            startMin: appointments.startMin,
+          })
+          .from(appointments)
+          .where(inArray(appointments.id, appointmentIds))
+          .all();
+        for (const r of rows) bookings.set(r.id, { dateLocal: r.dateLocal, startMin: r.startMin });
+      }
+      return { people, bookings };
+    },
+
     /** The number messages for this patient go to (see recipients). */
     async patientMobile(patientId: string): Promise<string | null> {
       const map = await this.recipients([patientId]);

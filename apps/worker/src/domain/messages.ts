@@ -71,16 +71,16 @@ export function buildBody(args: {
 }): string {
   if (args.planned.status === "skipped") return "";
   const key = args.planned.templateKey as keyof MessageTemplates["templates"];
-  const din = args.dateLocal ? dayNameIst(args.dateLocal) : "";
-  const tareekh = args.dateLocal ? formatTareekh(args.dateLocal) : "";
-  const samay = args.startMin !== undefined ? formatSamay(args.startMin) : "";
+  const day = args.dateLocal ? dayNameIst(args.dateLocal) : "";
+  const date = args.dateLocal ? formatTareekh(args.dateLocal) : "";
+  const time = args.startMin !== undefined ? formatSamay(args.startMin) : "";
   const text = renderMessageTemplate(args.templates, key, {
-    naam: args.firstName,
+    name: args.firstName,
     clinic: args.clinicName,
-    din,
-    tareekh,
-    samay,
-    fone: args.clinicPhone || "the clinic",
+    day,
+    date,
+    time,
+    phone: args.clinicPhone || "the clinic",
   });
   return speakForPatient(text, args.onBehalfOf ?? null);
 }

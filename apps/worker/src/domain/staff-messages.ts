@@ -45,6 +45,27 @@ function publicRow(row: {
   };
 }
 
+type Row = ReturnType<typeof publicRow>;
+
+/** Q2.8: each row also carries who it is about and the booking time, so the page can group. */
+async function withContext(repos: Repos, rows: Row[]) {
+  const ctx = await repos.messagesPlan.boardContext(
+    [...new Set(rows.map((r) => r.patientId))],
+    [...new Set(rows.flatMap((r) => (r.appointmentId ? [r.appointmentId] : [])))],
+  );
+  return rows.map((r) => {
+    const p = ctx.people.get(r.patientId);
+    const b = r.appointmentId ? ctx.bookings.get(r.appointmentId) : undefined;
+    return {
+      ...r,
+      patientName: p?.fullName ?? "Patient",
+      patientCode: p?.code ?? "",
+      sentTo: p?.to ?? null,
+      booking: b ?? null,
+    };
+  });
+}
+
 export async function messagesBoard(repos: Repos) {
   const [outgoing, scheduled, outOfDate, sentToday, attention, whatsapp] = await Promise.all([
     repos.messages.listBoard("outgoing"),
@@ -54,13 +75,32 @@ export async function messagesBoard(repos: Repos) {
     repos.messages.listBoard("attention"),
     repos.messages.listBoard("whatsapp"),
   ]);
+  const ctx = (rows: Awaited<ReturnType<typeof repos.messages.listBoard>>) =>
+    withContext(repos, rows.map(publicRow));
+  const [o, sc, od, st, at, wa] = await Promise.all([
+    ctx(outgoing),
+    ctx(scheduled),
+    ctx(outOfDate),
+    ctx(sentToday),
+    ctx(attention),
+    ctx(whatsapp),
+  ]);
+  // Patients with no usable number: nothing is queued for them, so list them on their own.
+  const noNumber = [
+    ...new Map(
+      at
+        .filter((r) => r.skipReason === "no_number")
+        .map((r) => [r.patientId, { patientId: r.patientId, patientName: r.patientName }]),
+    ).values(),
+  ];
   return {
-    outgoing: outgoing.map(publicRow),
-    scheduled: scheduled.map(publicRow),
-    outOfDate: outOfDate.map(publicRow),
-    sentToday: sentToday.map(publicRow),
-    attention: attention.map(publicRow),
-    whatsapp: whatsapp.map(publicRow),
+    outgoing: o,
+    scheduled: sc,
+    outOfDate: od,
+    sentToday: st,
+    attention: at,
+    whatsapp: wa,
+    noNumber,
   };
 }
 

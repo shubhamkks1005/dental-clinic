@@ -17,15 +17,25 @@ export type MessageRow = {
   lastErrorCode: string | null;
 };
 
+/** Q2.8: a board row also says who it is about, who gets it, and the booking time. */
+export type BoardMessage = MessageRow & {
+  patientName: string;
+  patientCode: string;
+  /** "Sunita (mother)" when the message goes to someone other than the patient. */
+  sentTo: string | null;
+  booking: { dateLocal: string; startMin: number } | null;
+};
+
 export type MessagesBoard = {
-  outgoing: MessageRow[];
+  outgoing: BoardMessage[];
   /** Q1.5: not due yet (for example the 17:00 reminder the day before). */
-  scheduled: MessageRow[];
+  scheduled: BoardMessage[];
   /** Q1.5: replaced because the appointment was moved or cancelled. */
-  outOfDate: MessageRow[];
-  sentToday: MessageRow[];
-  attention: MessageRow[];
-  whatsapp: MessageRow[];
+  outOfDate: BoardMessage[];
+  sentToday: BoardMessage[];
+  attention: BoardMessage[];
+  whatsapp: BoardMessage[];
+  noNumber: { patientId: string; patientName: string }[];
 };
 
 export function fetchMessagesBoard() {

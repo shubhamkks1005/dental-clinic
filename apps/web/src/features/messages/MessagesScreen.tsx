@@ -8,12 +8,21 @@ import {
   fetchMessagingStatus,
   markDoneManual,
   openWhatsApp,
-  type MessageRow,
+  type BoardMessage,
   type MessagesBoard,
 } from "./api";
+import { PatientCard, type MessageActions } from "./MessageCard";
+import { groupByPatient, tabCount, type MessageTab } from "./message-groups";
 import "./messages.css";
 
-/** S11 Messages board — dry_run bar + WhatsApp queue (Phase 7). */
+const TABS: { key: MessageTab; label: string }[] = [
+  { key: "send", label: "To send" },
+  { key: "opened", label: "Opened" },
+  { key: "old", label: "Out of date" },
+  { key: "attention", label: "Needs attention" },
+];
+
+/** Messages.dc.html / PhoneMessages.dc.html: grouped by patient, one chip row for the buckets. */
 export function MessagesScreen() {
   const toast = useToast();
   const [board, setBoard] = useState<MessagesBoard | null>(null);
@@ -21,6 +30,7 @@ export function MessagesScreen() {
   const [draftBanner, setDraftBanner] = useState("DRAFT - doctor to confirm");
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [tab, setTab] = useState<MessageTab>("send");
 
   const load = useCallback(async () => {
     try {
@@ -38,12 +48,11 @@ export function MessagesScreen() {
     void load();
   }, [load]);
 
-  async function onOpenWhatsApp(row: MessageRow) {
+  async function run(row: BoardMessage, work: () => Promise<string | void>) {
     setBusyId(row.id);
     try {
-      const { waUrl } = await openWhatsApp(row.id);
-      window.open(waUrl, "_blank", "noopener,noreferrer");
-      toast({ text: "WhatsApp opened. Tap Send there, then mark Sent here.", tone: "ok" });
+      const text = await work();
+      if (text) toast({ text, tone: "ok" });
       await load();
     } catch (err) {
       toast({ text: problemText(err), tone: "error" });
@@ -52,31 +61,25 @@ export function MessagesScreen() {
     }
   }
 
-  async function onDone(row: MessageRow) {
-    setBusyId(row.id);
-    try {
-      await markDoneManual(row.id);
-      toast({ text: "Marked as sent on WhatsApp.", tone: "ok" });
-      await load();
-    } catch (err) {
-      toast({ text: problemText(err), tone: "error" });
-    } finally {
-      setBusyId(null);
-    }
-  }
-
-  async function onCancel(row: MessageRow) {
-    setBusyId(row.id);
-    try {
-      await cancelMessage(row.id);
-      toast({ text: "Message cancelled.", tone: "ok" });
-      await load();
-    } catch (err) {
-      toast({ text: problemText(err), tone: "error" });
-    } finally {
-      setBusyId(null);
-    }
-  }
+  const actions: MessageActions = {
+    busyId,
+    onOpen: (row) =>
+      void run(row, async () => {
+        const { waUrl } = await openWhatsApp(row.id);
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+        return "WhatsApp opened. Tap Send there, then mark Sent here.";
+      }),
+    onDone: (row) =>
+      void run(row, async () => {
+        await markDoneManual(row.id);
+        return "Marked as sent on WhatsApp.";
+      }),
+    onCancel: (row) =>
+      void run(row, async () => {
+        await cancelMessage(row.id);
+        return "Message cancelled.";
+      }),
+  };
 
   async function onDump() {
     try {
@@ -92,22 +95,39 @@ export function MessagesScreen() {
     }
   }
 
+  const groups = board ? groupByPatient(board, tab) : [];
   return (
     <div className="messages-page">
       <header className="messages-header">
         <h1>Messages</h1>
-        <p className="muted">{draftBanner}</p>
+        <p className="muted">
+          Reminders and recalls. Messages never contain treatment details.{" "}
+          <span className="chip">{draftBanner}</span>
+        </p>
       </header>
 
       {mode === "dry_run" && (
         <p className="notice warning messages-test-bar" role="status">
-          Test mode is ON. Nothing is sent by SMS. Use Open WhatsApp to send by hand.
+          <strong>Test mode is ON.</strong> Nothing is sent by SMS. Tap Open WhatsApp to send each
+          message by hand.
         </p>
       )}
-
       {error && <p className="notice error">{error}</p>}
 
       <div className="messages-toolbar">
+        <div className="msg-tabs" role="group" aria-label="Show">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              className={`pill${tab === t.key ? " pill-on" : ""}`}
+              aria-pressed={tab === t.key}
+              onClick={() => setTab(t.key)}
+            >
+              {t.label} {board ? tabCount(board, t.key) : ""}
+            </button>
+          ))}
+        </div>
         <button type="button" className="btn" onClick={() => void load()}>
           Refresh
         </button>
@@ -119,148 +139,67 @@ export function MessagesScreen() {
       {!board ? (
         <p className="muted">Loading…</p>
       ) : (
-        <div className="messages-columns">
-          <Bucket
-            title="Outgoing"
-            rows={board.outgoing}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-          />
-          <Bucket
-            title="Send on WhatsApp"
-            rows={board.whatsapp}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-          />
-          <Bucket
-            title="Scheduled"
-            rows={board.scheduled}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-            notDue
-          />
-          <Bucket
-            title="Sent / opened"
-            rows={board.sentToday}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-          />
-          <Bucket
-            title="Needs attention"
-            rows={board.attention}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-          />
-          <Bucket
-            title="Out of date"
-            rows={board.outOfDate}
-            busyId={busyId}
-            onOpen={onOpenWhatsApp}
-            onDone={onDone}
-            onCancel={onCancel}
-          />
+        <div className="messages-layout">
+          <section aria-label={TABS.find((t) => t.key === tab)?.label}>
+            {groups.length === 0 ? (
+              <p className="muted">Nothing here.</p>
+            ) : (
+              <ul className="msg-patients">
+                {groups.map((g) => (
+                  <PatientCard
+                    key={`${g.patientId}-${g.booking?.dateLocal}-${g.booking?.startMin}`}
+                    group={g}
+                    actions={actions}
+                  />
+                ))}
+              </ul>
+            )}
+          </section>
+          <aside className="messages-side">
+            <section className="card" aria-label="Today">
+              <p className="field-label">Today</p>
+              <dl className="msg-counts">
+                <div>
+                  <dt>To send</dt>
+                  <dd>{tabCount(board, "send")}</dd>
+                </div>
+                <div>
+                  <dt>Opened in WhatsApp</dt>
+                  <dd>{tabCount(board, "opened")}</dd>
+                </div>
+                <div>
+                  <dt>Out of date</dt>
+                  <dd>{tabCount(board, "old")}</dd>
+                </div>
+              </dl>
+            </section>
+            {board.noNumber.length > 0 ? (
+              <section className="card" aria-label="No number">
+                <p className="field-label">No number</p>
+                {board.noNumber.map((p) => (
+                  <p key={p.patientId}>
+                    <strong>{p.patientName}</strong>
+                    <br />
+                    <span className="muted small">
+                      Has no mobile. Tell the patient in person at the visit.
+                    </span>
+                  </p>
+                ))}
+              </section>
+            ) : null}
+            <section className="card" aria-label="When messages are created">
+              <p className="field-label">When messages are created</p>
+              <p className="muted small">
+                Confirmation: when you book.
+                <br />
+                Reminder: 5:00 pm the day before.
+                <br />
+                Never for past appointments or patients without consent.
+              </p>
+            </section>
+          </aside>
         </div>
       )}
     </div>
-  );
-}
-
-const SKIP_WORDS: Record<string, string> = {
-  out_of_date: "out of date, the appointment changed",
-  no_number: "no mobile number",
-  no_sms_reminders_consent: "no consent for reminders",
-};
-
-function dueText(iso: string): string {
-  return new Date(iso).toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
-function Bucket(props: {
-  title: string;
-  rows: MessageRow[];
-  busyId: string | null;
-  onOpen: (r: MessageRow) => void;
-  onDone: (r: MessageRow) => void;
-  onCancel: (r: MessageRow) => void;
-  /** Not due yet: show the due time, offer only Cancel. */
-  notDue?: boolean;
-}) {
-  return (
-    <section className="messages-bucket" aria-label={props.title}>
-      <h2>
-        {props.title} <span className="muted">({props.rows.length})</span>
-      </h2>
-      {props.rows.length === 0 ? (
-        <p className="muted">None.</p>
-      ) : (
-        <ul className="messages-list">
-          {props.rows.map((row) => (
-            <li key={row.id} className="messages-card">
-              <p className="messages-meta">
-                <strong>{row.kind}</strong> · {row.status}
-                {row.skipReason ? ` · ${SKIP_WORDS[row.skipReason] ?? row.skipReason}` : ""}
-                {props.notDue ? ` · due ${dueText(row.sendAfter)}` : ""}
-              </p>
-              <p className="messages-body">{row.body || "(no text)"}</p>
-              <div className="messages-actions">
-                {!props.notDue &&
-                  (row.status === "needs_human" ||
-                    row.status === "queued" ||
-                    row.status === "held" ||
-                    row.status === "failed" ||
-                    row.status === "expired") && (
-                    <button
-                      type="button"
-                      className="btn primary"
-                      disabled={props.busyId === row.id}
-                      onClick={() => props.onOpen(row)}
-                    >
-                      Open WhatsApp
-                    </button>
-                  )}
-                {!props.notDue &&
-                  (row.status === "opened_in_whatsapp" || row.status === "needs_human") && (
-                    <button
-                      type="button"
-                      className="btn"
-                      disabled={props.busyId === row.id}
-                      onClick={() => props.onDone(row)}
-                    >
-                      Mark sent
-                    </button>
-                  )}
-                {["queued", "held", "needs_human"].includes(row.status) && (
-                  <button
-                    type="button"
-                    className="btn"
-                    disabled={props.busyId === row.id}
-                    onClick={() => props.onCancel(row)}
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
   );
 }

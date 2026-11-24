@@ -1,4 +1,5 @@
 import {
+  LEGACY_TEMPLATE_VARS,
   MESSAGE_TEMPLATE_VARS,
   type MessageTemplateKey,
   type MessageTemplates,
@@ -17,9 +18,14 @@ export function templateVariablesUsed(body: string): string[] {
   return [...found];
 }
 
+/** "naam" is the old spelling of "name", and so on. */
+export function canonicalVar(name: string): string {
+  return LEGACY_TEMPLATE_VARS[name] ?? name;
+}
+
 export function assertAllowedTemplateVars(body: string): void {
   for (const v of templateVariablesUsed(body)) {
-    if (!(MESSAGE_TEMPLATE_VARS as readonly string[]).includes(v)) {
+    if (!(MESSAGE_TEMPLATE_VARS as readonly string[]).includes(canonicalVar(v))) {
       throw new Error(`Unknown template variable {${v}}.`);
     }
   }
@@ -34,7 +40,7 @@ export function renderMessageTemplate(
   const body = templates.templates[key];
   assertAllowedTemplateVars(body);
   return body.replace(VAR_RE, (_, name: string) => {
-    const v = params[name as MessageTemplateVar];
+    const v = params[canonicalVar(name) as MessageTemplateVar];
     if (v === undefined || v === "") {
       throw new Error(`Missing template value for {${name}}.`);
     }

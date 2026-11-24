@@ -20,11 +20,11 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Gender").selectOption("female");
+  await page.getByLabel("Female", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("33");
   await page.getByLabel("Mobile", { exact: true }).fill(`9002${stamp}`);
-  await page.getByLabel("Privacy notice shown").check();
-  await page.getByLabel("SMS reminders allowed").check();
+  await page.getByLabel("Privacy notice given").check();
+  await page.getByLabel("Allow reminders").check();
   await page.getByRole("button", { name: "Save patient" }).click();
   await expect(page.getByRole("heading", { name: "Patient saved" })).toBeVisible();
 
@@ -34,7 +34,7 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
     .or(page.getByRole("link", { name: "Book appointment" }))
     .click();
   const dialog = page.locator("dialog[open]");
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
   const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
   let date = "";
   for (let day = 1; day <= 8; day++) {
@@ -49,22 +49,19 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
 
   await page.request.get("/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*");
   await page.goto("/app/messages");
-  const card = (section: string) =>
-    page
-      .getByRole("region", { name: section })
-      .locator("li", { hasText: `Dear ${name.split(" ")[0]}` });
-  // The confirmation is due at once, or at 08:00 when booked in quiet hours: either way it exists once.
-  const live = (kind: string) =>
-    card("Send on WhatsApp")
-      .filter({ hasText: kind })
-      .or(card("Scheduled").filter({ hasText: kind }));
-  await expect(live("confirm")).toHaveCount(1);
-  const scheduled = card("Scheduled").filter({ hasText: "remind" });
-  await expect(scheduled).toHaveCount(1);
-  await expect(scheduled).toContainText("due ");
+  // One card per patient on the To send tab: the confirmation (now, or later in quiet hours) and
+  // the reminder with its due time sit together.
+  const items = (kind: string) =>
+    page.locator(".msg-patient", { hasText: name }).locator(".msg-item", {
+      has: page.locator(".chip", { hasText: new RegExp(`^${kind}$`) }),
+    });
+  await expect(items("Confirmation")).toHaveCount(1);
+  await expect(items("Reminder")).toHaveCount(1);
+  await expect(items("Reminder")).toContainText("due ");
+  await expect(items("Reminder").getByRole("button", { name: "Not due yet" })).toBeDisabled();
 
   // Move the booking to the last free time of that day.
-  await page.goto(`/app/appointments?date=${date}`);
+  await page.goto(`/app/appointments?date=${date}&view=day`);
   await page.locator(".day-card", { hasText: name }).click();
   await page.getByLabel("Appointment details").getByRole("button", { name: "Reschedule" }).click();
   await dialog
@@ -76,15 +73,15 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
 
   await page.request.get("/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*");
   await page.goto("/app/messages");
-  const out = page
-    .getByRole("region", { name: "Out of date" })
-    .locator("li", { hasText: "Dear Msg" });
+  await page.getByRole("button", { name: /^Out of date/ }).click();
+  const out = page.locator(".msg-patient", { hasText: name }).locator(".msg-item");
   await expect(out).toHaveCount(2); // the old confirm and the old reminder
-  await expect(out.first()).toContainText("out of date");
+  await expect(out.first()).toContainText("Withdrawn");
+  await page.getByRole("button", { name: /^To send/ }).click();
   // Only the new time is live: one moved message, and the old confirm is no longer waiting.
-  await expect(live("reschedule")).toHaveCount(1);
-  await expect(live("confirm")).toHaveCount(0);
-  await expect(live("remind")).toHaveCount(1); // the new time gets its own reminder
+  await expect(items("Moved")).toHaveCount(1);
+  await expect(items("Confirmation")).toHaveCount(0);
+  await expect(items("Reminder")).toHaveCount(1); // the new time gets its own reminder
 
   expect(bad, bad.join("\n")).toEqual([]);
 });

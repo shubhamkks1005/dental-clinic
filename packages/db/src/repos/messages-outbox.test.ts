@@ -11,7 +11,7 @@ function baseInput(dedupeKey: string) {
     kind: "confirm" as const,
     channel: "whatsapp_manual" as const,
     templateKey: "confirm",
-    params: { naam: "Meena" },
+    params: { name: "Meena" },
     body: "Dear Meena, test.",
     segments: 1,
     status: "needs_human" as const,

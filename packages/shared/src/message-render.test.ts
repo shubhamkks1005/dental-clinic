@@ -9,12 +9,12 @@ import {
 import { DRAFT_MESSAGE_TEMPLATES, patientFirstName } from "./messaging";
 
 const params = {
-  naam: "Meena",
+  name: "Meena",
   clinic: "Align Dentistry",
-  din: "Monday",
-  tareekh: "24/11/2026",
-  samay: "10:30 am",
-  fone: "98765 43210",
+  day: "Monday",
+  date: "24/11/2026",
+  time: "10:30 am",
+  phone: "98765 43210",
 };
 
 describe("message render (7.2.3)", () => {
@@ -25,12 +25,25 @@ describe("message render (7.2.3)", () => {
     expect(smsSegmentCount(text)).toBe(1);
   });
 
+  it("old Hinglish placeholders in saved templates still render", () => {
+    const old = {
+      ...DRAFT_MESSAGE_TEMPLATES,
+      templates: {
+        ...DRAFT_MESSAGE_TEMPLATES.templates,
+        confirm: "Dear {naam}, {clinic} on {din} {tareekh}, {samay}. Call {fone}.",
+      },
+    };
+    expect(renderMessageTemplate(old, "confirm", params)).toBe(
+      "Dear Meena, Align Dentistry on Monday 24/11/2026, 10:30 am. Call 98765 43210.",
+    );
+  });
+
   it("rejects unknown variables", () => {
     expect(() => assertAllowedTemplateVars("Hi {diagnosis}")).toThrow(/Unknown/);
   });
 
   it("throws on missing param", () => {
-    expect(() => renderMessageTemplate(DRAFT_MESSAGE_TEMPLATES, "confirm", { naam: "A" })).toThrow(
+    expect(() => renderMessageTemplate(DRAFT_MESSAGE_TEMPLATES, "confirm", { name: "A" })).toThrow(
       /Missing/,
     );
   });
@@ -60,10 +73,10 @@ describe("message render (7.2.3)", () => {
     expect(patientFirstName("Meena Fakepatient").length).toBeLessThanOrEqual(20);
   });
 
-  it("every DRAFT English template is 1 GSM segment with 20-char naam", () => {
+  it("every DRAFT English template is 1 GSM segment with 20-char name", () => {
     const long = {
       ...params,
-      naam: "A".repeat(20),
+      name: "A".repeat(20),
     };
     for (const key of [
       "confirm",

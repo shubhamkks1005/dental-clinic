@@ -1,79 +1,121 @@
 .messages-page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--s4);
 }
-
 .messages-header h1 {
   margin: 0;
   font-size: 1.5rem;
 }
-
 .messages-test-bar {
   margin: 0;
 }
-
 .messages-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: var(--s2);
+  align-items: center;
 }
-
-.messages-columns {
+.msg-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-right: auto;
+}
+.messages-layout {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--s4);
+  align-items: start;
 }
-
-@media (min-width: 768px) {
-  .messages-columns {
-    grid-template-columns: 1fr 1fr;
+.messages-side {
+  display: grid;
+  gap: var(--s3);
+}
+.messages-side .card,
+.msg-patient {
+  padding: var(--s4);
+}
+.msg-patients {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s3);
+}
+.msg-patient-head p {
+  margin: 2px 0 0;
+}
+.msg-items {
+  list-style: none;
+  margin: var(--s3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s3);
+}
+.msg-item {
+  display: grid;
+  gap: var(--s2);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+}
+.msg-item-dim {
+  opacity: 0.7;
+}
+.msg-item-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: center;
+}
+.msg-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.msg-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.msg-counts {
+  margin: 0;
+  display: grid;
+  gap: var(--s2);
+}
+.msg-counts div {
+  display: flex;
+  justify-content: space-between;
+}
+.msg-counts dd {
+  margin: 0;
+  font-weight: 700;
+}
+@media (min-width: 1024px) {
+  .messages-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
   }
 }
 
-@media (min-width: 1366px) {
-  .messages-columns {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
-}
-
-.messages-bucket h2 {
-  margin: 0 0 var(--space-2);
-  font-size: 1.1rem;
-}
-
+/* Patient profile Messages tab (list of one patient's rows). */
 .messages-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  display: grid;
+  gap: var(--s3);
 }
-
 .messages-card {
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--space-3);
-  background: var(--surface);
+  border-radius: var(--radius-card);
+  padding: var(--s3);
+  background: var(--card);
 }
-
 .messages-meta {
-  margin: 0 0 var(--space-2);
-  font-size: 0.875rem;
+  margin: 0 0 var(--s2);
+  font-size: 13px;
 }
-
 .messages-body {
-  margin: 0 0 var(--space-3);
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.messages-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.messages-actions .btn {
-  min-height: 44px;
+  margin: 0 0 var(--s2);
+  overflow-wrap: anywhere;
 }

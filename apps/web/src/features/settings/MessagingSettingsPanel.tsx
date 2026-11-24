@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { useToast } from "../../ui/Toast";
 import { getSetting, putSetting } from "./api";
+import { Checkbox, Select, TextInput, Textarea } from "../../ui/form";
 
 /** 7.4.2 / 7.4.3 Settings > Messages (S12). */
 export function MessagingSettingsPanel() {
@@ -53,12 +54,12 @@ export function MessagingSettingsPanel() {
   }
 
   const preview = templates.templates[previewKey]
-    .replace("{naam}", "Meena")
+    .replace(/\{(naam|name)\}/g, "Meena")
     .replace("{clinic}", "Align Dentistry")
-    .replace("{din}", "Monday")
-    .replace("{tareekh}", "24/11/2026")
-    .replace("{samay}", "10:30 am")
-    .replace("{fone}", "98765 43210")
+    .replace(/\{(din|day)\}/g, "Monday")
+    .replace(/\{(tareekh|date)\}/g, "24/11/2026")
+    .replace(/\{(samay|time)\}/g, "10:30 am")
+    .replace(/\{(fone|phone)\}/g, "98765 43210")
     .replace("{otp}", "123456");
 
   return (
@@ -70,16 +71,14 @@ export function MessagingSettingsPanel() {
       {error && <p className="notice error">{error}</p>}
 
       <label className="row gap-sm">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={settings.enabled}
           onChange={(e) => setSettings({ ...settings, enabled: e.target.checked })}
         />
         Messaging on
       </label>
       <label className="row gap-sm">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={settings.whatsappEnabled}
           onChange={(e) => setSettings({ ...settings, whatsappEnabled: e.target.checked })}
         />
@@ -87,7 +86,7 @@ export function MessagingSettingsPanel() {
       </label>
       <label className="stack gap-xs">
         <span>Day-before remind at (IST HH:MM)</span>
-        <input
+        <TextInput
           className="input"
           value={settings.remindAtLocal}
           onChange={(e) => setSettings({ ...settings, remindAtLocal: e.target.value })}
@@ -95,7 +94,7 @@ export function MessagingSettingsPanel() {
       </label>
       <label className="stack gap-xs">
         <span>Daily SMS segment cap</span>
-        <input
+        <TextInput
           className="input"
           type="number"
           value={settings.smsDailyCap}
@@ -109,7 +108,7 @@ export function MessagingSettingsPanel() {
       <h3>Templates (English)</h3>
       <label className="stack gap-xs">
         <span>Edit template</span>
-        <select
+        <Select
           className="input"
           value={previewKey}
           onChange={(e) => setPreviewKey(e.target.value as keyof MessageTemplates["templates"])}
@@ -119,9 +118,9 @@ export function MessagingSettingsPanel() {
               {k}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
-      <textarea
+      <Textarea
         className="input"
         rows={4}
         value={templates.templates[previewKey]}

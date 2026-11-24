@@ -50,15 +50,24 @@ export type MessageTemplateKey = (typeof MESSAGE_TEMPLATE_KEYS)[number];
 
 /** Only these placeholders may appear in templates (7.2.3). */
 export const MESSAGE_TEMPLATE_VARS = [
-  "naam",
+  "name",
   "clinic",
-  "din",
-  "tareekh",
-  "samay",
-  "fone",
+  "day",
+  "date",
+  "time",
+  "phone",
   "otp",
 ] as const;
 export type MessageTemplateVar = (typeof MESSAGE_TEMPLATE_VARS)[number];
+
+/** Q2.8: the first placeholder names were Hinglish. Templates already saved in Settings keep working. */
+export const LEGACY_TEMPLATE_VARS: Record<string, MessageTemplateVar> = {
+  naam: "name",
+  din: "day",
+  tareekh: "date",
+  samay: "time",
+  fone: "phone",
+};
 
 export const PHONE_FLAGS = ["opted_out", "wrong_number", "no_whatsapp", "landline"] as const;
 export type PhoneFlag = (typeof PHONE_FLAGS)[number];
@@ -172,17 +181,17 @@ export const DRAFT_MESSAGE_TEMPLATES: MessageTemplates = {
   draftBanner: "DRAFT - doctor to confirm",
   templates: {
     confirm:
-      "Dear {naam}, your appointment at {clinic} is booked for {din} {tareekh}, {samay}. To change it, call {fone}.",
+      "Dear {name}, your appointment at {clinic} is booked for {day} {date}, {time}. To change it, call {phone}.",
     remind:
-      "Dear {naam}, a reminder of your appointment at {clinic} tomorrow at {samay}. To change it, call {fone}.",
+      "Dear {name}, a reminder of your appointment at {clinic} tomorrow at {time}. To change it, call {phone}.",
     reschedule:
-      "Dear {naam}, your appointment at {clinic} is now on {din} {tareekh}, {samay}. Questions? Call {fone}.",
+      "Dear {name}, your appointment at {clinic} is now on {day} {date}, {time}. Questions? Call {phone}.",
     cancel:
-      "Dear {naam}, your appointment at {clinic} on {din} {tareekh}, {samay} is cancelled. To rebook, call {fone}.",
-    recall: "Dear {naam}, this is {clinic}. It is time for your next visit. To book, call {fone}.",
+      "Dear {name}, your appointment at {clinic} on {day} {date}, {time} is cancelled. To rebook, call {phone}.",
+    recall: "Dear {name}, this is {clinic}. It is time for your next visit. To book, call {phone}.",
     incomplete:
-      "Dear {naam}, this is {clinic}. It is time for your next visit. To book, call {fone}.",
-    dues: "Dear {naam}, this is {clinic}. A payment is pending. Please call {fone} to arrange.",
+      "Dear {name}, this is {clinic}. It is time for your next visit. To book, call {phone}.",
+    dues: "Dear {name}, this is {clinic}. A payment is pending. Please call {phone} to arrange.",
     otp: "{otp} is your {clinic} login code. It expires in 5 minutes. Do not share it.",
   },
 };
