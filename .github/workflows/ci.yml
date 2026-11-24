@@ -30,6 +30,10 @@ jobs:
 
       - run: pnpm check
 
+      # S0.1.2: build the web app and fail if the JS grew past scripts/bundle-budget/check.mjs.
+      - name: Bundle budget
+        run: pnpm --filter @clinic/web build && pnpm bundle:budget
+
       # 1.7.3: Chromium only, three smoke tests against local wrangler (dev-login stub).
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium

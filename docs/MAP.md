@@ -49,7 +49,7 @@
 - pnpm format - prettier --write (never touches *.md or .cursor)
 
 ## CI (.github)
-- .github/workflows/ci.yml - on every push: job "check" (pnpm check) then Playwright Chromium smoke (`pnpm test:e2e`); job "secret-scan" (gitleaks). No deploy yet. Actions pinned by commit SHA
+- .github/workflows/ci.yml - on every push: job "check" (pnpm check, then S0.1.2 web build + `pnpm bundle:budget`) then Playwright Chromium smoke (`pnpm test:e2e`); job "secret-scan" (gitleaks). No deploy yet. Actions pinned by commit SHA
 - .github/workflows/backup.yml - 1.6.3/9.1.3 nightly D1 backup (skips if secrets missing); optional ops webhook
 - .github/workflows/files-backup.yml - 9.1.4 weekly R2→B2 rclone copy (skips if secrets missing)
 - .github/workflows/schedule-spike.yml - 9.1.2 GH schedule proof (dispatch-only until owner enables cron)
@@ -58,6 +58,7 @@
 - apps/worker /hooks/ops-status + domain/ops-status - signed ops ping for dashboard AttentionList
 - .github/workflows/billing-integrity.yml - 5.4.1 weekly billing SQL re-add on D1 export + Healthchecks
 - scripts/billing-integrity/check.mjs - 5.4.1 paid≤total, alloc+refund≤payment, due≥0
+- scripts/bundle-budget/ - S0.1.2 check.mjs (limits: JS 1.10 MB raw, 310 KB gzip; sums every .js in apps/web/dist/assets), run.mjs (`pnpm bundle:budget`, exit 1 when over), check.test.mjs
 - .github/dependabot.yml - weekly npm + GitHub Actions update PRs, minor/patch grouped, 7-day cooldown
 - scripts/backup/run.sh - backup pipeline used by the Action (never prints secrets)
 - scripts/backup/integrity.mjs (+ test) - load SQL dump into throwaway SQLite, PRAGMA integrity_check, require base tables
@@ -158,7 +159,8 @@
 - src/adapters/jwks.ts - fetch + isolate-memory cache of signing keys (Cache-Control max-age, capped 24 h); unknown kid refetches at most once per 5 min; verifyWithJwks()
 - src/middleware/access-jwt.ts - optional Cloudflare Access check on /api/staff/* (off while ACCESS_AUD / ACCESS_TEAM_DOMAIN are empty; health bypassed)
 - src/log.ts (+ test) - 1.6.1 writeLog / sanitizeLog / requestPath: one JSON line per event; drops name/mobile/diagnosis/patient keys; pathname only (no query)
-- src/middleware/request-log.ts - 1.6.1 one "request" log line per /api and /hooks call (method, path, status, ms, requestId, role); still written on crash
+- src/middleware/request-log.ts - 1.6.1 one "request" log line per /api and /hooks call (method, path, status, ms, requestId, role); still written on crash. S0.1.1: wraps c.env.DB per request with timeD1 and sets the Server-Timing header on /api replies (total ms, db ms, query count; numbers only)
+- apps/worker/src/server-timing.test.ts - S0.1.1 header format, query count, not on web pages
 - src/request-id.test.ts - 1.4.7 header + 1.6.1: Error ID finds the request and unhandled error lines; query/body never in logs
 - src/testing/jwt-fixtures.ts - test-only RSA key + RS256 token signer
 - src/errors.ts - errorReply(err): RepoError -> 400/403/404/409/422 with its plain message; anything else -> generic 500 (used by app.onError)
@@ -379,6 +381,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/index.ts - package entry (createDb, Db, Ctx, createRepos, Repos, permissions, errors, takeNumber, patientCodeSql, NEVER_RESETS, auditInsert, accessInsert, pingDb)
 - src/ping.ts (+ test) - 1.6.2 pingDb(db): SELECT 1; throws if D1 is unreachable
 - src/client.ts - createDb(d1) returns the Drizzle D1 client; Db type
+- src/timing.ts (+ test) - S0.1.1 timeD1(d1) wraps a D1 binding and counts queries and DB-busy ms for one request; serverTimingValue() builds the header text. No SQL, no values
 - src/context.ts - Ctx { userId, role, requestId } passed to every repository function
 - src/audit.ts - auditInsert() (put in the same db.batch as the change), auditInsertIfChanged() (only if the UPDATE before it changed a row), accessInsert() (views, exports, logins), accessInsertIfChanged() (directly after auditInsertIfChanged)
 - src/audit.test.ts - 1.2.5: one change = one audit row with who/before/after/request id; failed batch leaves none; access row
@@ -397,7 +400,7 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - src/sql.ts - nowUtcSql: the one "now as UTC ISO text" SQL (defaults and updated_at)
 - src/numbering.ts (+ test) - takeNumber(db, counter, period, actor) -> { bump, value } for one db.batch; patientCodeSql; takePatientCode (2.1.5: patient_code / period all → P-000123)
 - src/numbering.test.ts - 1.2.4: 50 parallel -> 1..50, failed insert rolls counter back, per-year counters, patient code format
-- src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction; optional statement log)
+- src/testing/fake-d1.ts - D1 stand-in over node:sqlite for tests (batch = one transaction; optional statement log; S0.1.3 bind() throws above 100 bound values, like real D1; fake-d1.test.ts)
 - src/testing/test-db.ts - migratedSqlite() and testDb() (real drizzle D1 client over a migrated in-memory DB)
 - src/testing/paths.ts - REPO_ROOT and DB_MIGRATIONS absolute paths for tests
 - src/testing/repo-files.ts - sourceFiles(dir): app source files (no tests) for guard tests

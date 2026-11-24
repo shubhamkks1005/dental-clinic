@@ -6,6 +6,10 @@ type Params = unknown[];
 // Optional: called with every statement that runs (query-plan guard, 1.2.8).
 export type StatementLog = (sql: string, params: Params) => void;
 
+// Real D1 rejects a statement with more than 100 bound values (S0.1.3). FakeD1 does the same, so
+// a query that would fail in production fails in the test first.
+export const D1_MAX_BOUND_VALUES = 100;
+
 class FakeStatement {
   constructor(
     private readonly sqlite: DatabaseSync,
@@ -15,6 +19,11 @@ class FakeStatement {
   ) {}
 
   bind(...params: Params): FakeStatement {
+    if (params.length > D1_MAX_BOUND_VALUES) {
+      throw new Error(
+        `D1 allows at most ${D1_MAX_BOUND_VALUES} bound values per query, got ${params.length}. Split the list or join in SQL.`,
+      );
+    }
     return new FakeStatement(this.sqlite, this.sql, params, this.log);
   }
 

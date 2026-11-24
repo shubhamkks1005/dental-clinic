@@ -7,6 +7,7 @@ export {
   type AuditEntry,
 } from "./audit";
 export { createDb, type D1Binding, type Db } from "./client";
+export { serverTimingValue, timeD1, type DbTimer } from "./timing";
 export type { Ctx } from "./context";
 export {
   ConflictError,
