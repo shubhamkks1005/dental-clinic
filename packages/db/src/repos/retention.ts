@@ -21,6 +21,10 @@ export const RETENTION_RULES: readonly Rule[] = [
       "status NOT IN ('queued','held','sending') AND NOT EXISTS (SELECT 1 FROM message_attempts a WHERE a.outbox_id = message_outbox.id)",
   },
   { table: "error_log", days: 30, where: "1 = 1" },
+  // Part T: the doctor's breaks are only a convenience record. Requests the doctor answered are kept
+  // a year; refund requests stay (they belong with billing). DRAFT: owner / CA to confirm.
+  { table: "doctor_breaks", days: 90, where: "1 = 1" },
+  { table: "approval_requests", days: 365, where: "status != 'open' AND type != 'refund'" },
 ];
 
 export type PurgeResult = {

@@ -17,6 +17,8 @@ How long each type of data is kept, and when it is deleted.
 | Billing records (bills, payments, refunds) | `bills`, `bill_items`, `payments`, `payment_allocations`, `refunds` | 7–8 years (income tax / GST) — DRAFT CA to confirm | Same as clinical or 8 years, whichever is longer | Soft delete; keep for tax |
 | Audit log | `audit_log` | No minimum set | Keep permanently | Do not purge |
 | Access log | `access_log` | No minimum set | 1 year | Purge rows older than 1 year |
+| Doctor breaks (Part T) | `doctor_breaks` | — | 90 days | Purge rows older than 90 days (purge job, row limit as the others) |
+| Doctor requests (Part T) | `approval_requests` | — | Answered or dismissed requests: 1 year; refund requests are kept with billing; open ones are never purged. **DRAFT - owner / CA to confirm** | Purge job (rule in `retention.ts`) |
 | Message outbox | `message_outbox` | — | 1 year | Purge finished rows older than 1 year (queued/held/sending are kept) |
 | Message attempts | `message_attempts` | — | 90 days | Purge rows older than 90 days |
 | Error log | `error_log` | — | 30 days (PLAN 9.2.5) | Purge rows older than 30 days |
@@ -37,7 +39,7 @@ How long each type of data is kept, and when it is deleted.
 A cron branch (`*/5 * * * *` Worker cron, in a low-traffic time slot) will purge rows that have passed their retention period, with a row limit per run to stay within the 10 ms CPU budget.
 
 **Purge job status (9.3.10, implemented 2026-11-23):** daily at 02:00 IST, `packages/db/src/repos/retention.ts` + `apps/worker/src/cron/retention-purge.ts`.
-- Covers only: `message_attempts` (90 days), `message_outbox` (1 year, finished rows with no attempts left), `error_log` (30 days). Hard delete is allowed here because these are operational rows.
+- Covers only: `message_attempts` (90 days), `message_outbox` (1 year, finished rows with no attempts left), `error_log` (30 days), `doctor_breaks` (90 days), `approval_requests` (answered or dismissed, not refund, 1 year; DRAFT). Hard delete is allowed here because these are operational rows.
 - **Dry run by default.** It counts what would go and writes one audit row (`retention_run`), nothing is deleted. It deletes only when the Worker var `RETENTION_MODE` is exactly `live` (set deliberately in wrangler.jsonc, then deploy).
 - Max 200 rows per table per run. One audit row per run that had eligible rows (a quiet system adds none).
 - Not implemented, waiting on the doctor / CA: access log (1 year; it is the view-audit trail), staff sessions, OTP / webhook / rate-limit tables (do not exist yet), `legal_hold` flag, soft-delete then purge of patients, clinical, files and billing (policy numbers above are DRAFT), B2 file removal.

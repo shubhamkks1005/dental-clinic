@@ -8,9 +8,10 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
 - **FINAL DESIGNS (2026-11-25):** screens the owner has finished are in docs/design/final/ (README there). Those override docs/design/proposal/ and the PDF. First one: doctor_today.html (doctor's Today page), planned as PLAN Part T (backend T1.x then UI T2.x, nothing built yet). The owner will add more final designs screen by screen; when one arrives, add a row to docs/design/final/README.md and a plan task.
 - Phase Q Parts 1 to 5 are done (see "Done in Phase Q"). Part 5 gate: passed (STATE.md "Part 5"; all 18 runner flows ran on a seeded scratch DB).
-- Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
+- Next free migration: **0058** (0057_doctor_today_queue is NEW, the owner applies it on staging) (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
+**PART T (doctor Today): backend T1.1 to T1.9 is done locally (2026-11-25). Next: gate T1.G (e2e/queue-api.spec.ts, STATE.md line), then UI T2.1 to T2.12 (S3.1 is committed, so T2.x may start).** Details: docs/PLAN.md Part T, the "Part T" section of docs/STATE.md.
 **Part 5 cleanup is DONE (2026-11-24)**: gate passed, Library and Clinic and doctor finished, Payments/Refunds apart, late entry and Undo, keyboard/focus/width specs (79 browser tests pass). Nothing is half done.
 **Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
 - Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).

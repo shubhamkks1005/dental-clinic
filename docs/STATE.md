@@ -1,6 +1,6 @@
 # STATE
 Last updated: 2026-11-23. Older history (per-task Done lines, Phase 1-7 gate tables): docs/archive/STATE-until-2026-11-23.md.
-Rules: docs/RUN_PROMPT.md. Next free migration: **0056**. Commands to run by hand: docs/STAGING_READINESS.md.
+Rules: docs/RUN_PROMPT.md. Next free migration: **0058** (0057 is new, the owner applies it). Commands to run by hand: docs/STAGING_READINESS.md.
 
 ## Where we are
 - Phase 7 complete locally (gate: passed with exceptions). Phase 9 docs drafts and 9.1.x backup minimum done locally. Do not start Phase 8 until the owner says so.
@@ -146,5 +146,6 @@ Owner's real hours (owner fills): Phase 0: -
 - Known: staging logs showed no errors for Library. e2e messages.spec.ts line 60 fails when the reminder is already due (time of day), not a code fault. /assets/<missing> returns index.html with immutable (S2.1.3, low).
 - Open owner decisions: cache for Phase 4 (React Query or own); S0.3.1 put the 12 speed rules into AGENTS.md.
 
-## Part T: Doctor Today final design (2026-11-25, planned, nothing built)
-- Owner gave the final HTML design for the doctor's Today page. Plan is in docs/PLAN.md "Part T" (backend T1.1-T1.9 + gate T1.G, UI T2.0-T2.12 + gate T2.G). Decisions in DECISIONS.md (2026-11-25). **Next free migration: 0057** (the line at the top of this file is out of date; 0056 is bill_cancel_requests). Waiting on the owner: save the HTML at docs/design/final/doctor_today.html (T2.0), confirm the approval-request defaults, start T2.x only after S3.1 (lazy routes) is committed. UPDATE 2026-11-25: the HTML is now saved at docs/design/final/doctor_today.html (T2.0 done); final designs live in docs/design/final/ and override docs/design/proposal/ (rule also in AGENTS.md, RUN_PROMPT.md, PHASE_Q.md, MAP.md).
+## Part T: Doctor Today final design (2026-11-25, backend built locally)
+- Owner gave the final HTML design for the doctor's Today page. Plan is in docs/PLAN.md "Part T" (backend T1.1-T1.9 + gate T1.G, UI T2.0-T2.12 + gate T2.G). Decisions in DECISIONS.md (2026-11-25). **Next free migration: 0057** (the line at the top of this file is out of date; 0056 is bill_cancel_requests). Waiting on the owner: save the HTML at docs/design/final/doctor_today.html (T2.0), confirm the approval-request defaults, start T2.x only after S3.1 (lazy routes) is committed. UPDATE 2026-11-25: the HTML is saved at docs/design/final/doctor_today.html (T2.0 done); final designs live in docs/design/final/ and override docs/design/proposal/ (rule also in AGENTS.md, RUN_PROMPT.md, PHASE_Q.md, MAP.md).
+- **Backend T1.1 to T1.9 done locally (commits "T1.1" ... "T1.9"), nothing pushed or applied.** One migration: **0057_doctor_today_queue.sql** (owner applies on staging: queue columns on appointments, doctor_breaks, approval_requests, two tunable seeds). Day list Server-Timing (session reads included): before 10; now plain day 9 (clinic timings and holidays read in one query), busiest case (today with a break and an order change) 10. Retention: doctor_breaks 90 days, approval_requests closed non-refund 1 year (DRAFT). Open: the Gate T1 line below is written when T1.G has run.
