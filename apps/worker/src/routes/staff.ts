@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import type { AppEnv } from "../types";
 import { staffAppointments } from "./staff-appointments";
+import { staffAppointmentsQueue } from "./staff-appointments-queue";
+import { staffBreaks } from "./staff-breaks";
 import { staffAuth } from "./staff-auth";
 import { staffConsents } from "./staff-consents";
 import { staffLists } from "./staff-lists";
@@ -34,6 +36,8 @@ staff.route("/", staffPatients);
 staff.route("/", staffConsents);
 staff.route("/", staffMedicalHistory);
 staff.route("/", staffAppointments);
+staff.route("/", staffAppointmentsQueue);
+staff.route("/", staffBreaks);
 staff.route("/", staffVisits);
 staff.route("/", staffChart);
 staff.route("/", staffHistory);

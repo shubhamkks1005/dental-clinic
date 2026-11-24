@@ -123,6 +123,18 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/appointments/:id/status" && method === "PATCH") {
     return JSON.stringify({ status: "confirmed", version: 1 });
   }
+  if (/\/appointments\/:id\/(skip|pull-forward|step-out|step-back|late)$/.test(path)) {
+    return JSON.stringify({ version: 1 });
+  }
+  if (path === "/api/staff/breaks" && method === "POST") {
+    return JSON.stringify({ minutes: 5, label: "Quick stretch" });
+  }
+  if (path === "/api/staff/breaks/:id/adjust") {
+    return JSON.stringify({ deltaMinutes: 5, version: 1 });
+  }
+  if (path === "/api/staff/breaks/:id/end") {
+    return JSON.stringify({ version: 1 });
+  }
   if (path === "/api/staff/patients/:id/medical-history" && method === "POST") {
     return JSON.stringify({
       items: [{ code: "diabetes", label: "Diabetes", answer: "no" }],

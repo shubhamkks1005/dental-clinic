@@ -26,8 +26,10 @@ describe("permission table (1.2.6)", () => {
 
 // 1.3.4: the full table per role, exactly as in docs/AUTH_PLAN.md 4f (doctor to confirm).
 describe("permission table per role (1.3.4)", () => {
-  it("doctor can do everything", () => {
-    expect(permissionsFor("doctor")).toEqual(Object.keys(PERMISSIONS));
+  it("doctor can do everything except approvals.request (that is the desk's)", () => {
+    expect(permissionsFor("doctor")).toEqual(
+      Object.keys(PERMISSIONS).filter((a) => a !== "approvals.request"),
+    );
   });
 
   it("receptionist: patients, appointments, bills, documents, prints, today's summary; nothing clinical", () => {
@@ -38,6 +40,7 @@ describe("permission table per role (1.3.4)", () => {
       "prescriptions.print",
       "certificates.print",
       "appointments.manage",
+      "approvals.request",
       "bills.create",
       "files.documents",
       "reports.today",

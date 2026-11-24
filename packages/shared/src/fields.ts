@@ -31,3 +31,8 @@ export const displayDateField = z.string().transform((raw, ctx) => {
   });
   return z.NEVER;
 });
+
+// A request body that only carries the version the screen last saw (queue moves, break end, ...).
+export const versionBodySchema = z.object({
+  version: z.number({ error: "Reload and try again." }).int().min(1),
+});

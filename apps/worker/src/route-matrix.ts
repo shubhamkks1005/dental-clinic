@@ -231,6 +231,51 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "appointments.manage" },
   },
   {
+    method: "POST",
+    path: "/api/staff/appointments/:id/skip",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/pull-forward",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/step-out",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/step-back",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/appointments/:id/late",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/breaks/current",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/breaks",
+    access: { kind: "permission", action: "breaks.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/breaks/:id/adjust",
+    access: { kind: "permission", action: "breaks.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/breaks/:id/end",
+    access: { kind: "permission", action: "breaks.manage" },
+  },
+  {
     method: "GET",
     path: "/api/staff/patients/:id/medical-history",
     access: { kind: "permission", action: "clinical.view" },

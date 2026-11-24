@@ -1,0 +1,219 @@
+import {
+  BREAK_MAX_MINUTES,
+  BREAK_MIN_MINUTES,
+  istDate,
+  newUlid,
+  type CurrentBreak,
+  type StartBreakInput,
+} from "@clinic/shared";
+import { and, eq, isNull, sql } from "drizzle-orm";
+import { auditInsert, auditInsertIfChanged } from "../audit";
+import type { Db } from "../client";
+import type { Ctx } from "../context";
+import { ConflictError, InvalidError, NotFoundError } from "../errors";
+import { assertAllowed } from "../permissions";
+import { appointments, doctorBreaks } from "../schema";
+
+const columns = {
+  id: doctorBreaks.id,
+  startedAt: doctorBreaks.startedAt,
+  dateLocal: doctorBreaks.dateLocal,
+  minutes: doctorBreaks.minutes,
+  label: doctorBreaks.label,
+  endedAt: doctorBreaks.endedAt,
+  version: doctorBreaks.version,
+};
+
+const toCurrent = (r: {
+  id: string;
+  startedAt: string;
+  minutes: number;
+  label: string;
+  version: number;
+}): CurrentBreak => ({
+  id: r.id,
+  startedAt: r.startedAt,
+  minutes: r.minutes,
+  label: r.label,
+  version: r.version,
+});
+
+/**
+ * The doctor's own break. It never moves, reschedules or cancels an appointment (owner decision 1).
+ * Only the doctor starts, changes or ends it; both roles may read it (the desk shows "on break").
+ */
+export function doctorBreaksRepo(db: Db, ctx: Ctx) {
+  async function load(id: string) {
+    const row = await db
+      .select(columns)
+      .from(doctorBreaks)
+      .where(and(eq(doctorBreaks.id, id), isNull(doctorBreaks.deletedAt)))
+      .get();
+    if (!row) throw new NotFoundError("That break");
+    return row;
+  }
+
+  async function reload(id: string, version: number): Promise<CurrentBreak> {
+    const next = await load(id);
+    if (next.version !== version + 1) {
+      throw new ConflictError("The break changed. Reload and try again.");
+    }
+    return toCurrent(next);
+  }
+
+  return {
+    async startBreak(input: StartBreakInput, now: Date = new Date()): Promise<CurrentBreak> {
+      assertAllowed(ctx, "breaks.manage");
+      const day = istDate(now);
+      const [inChair, open] = await Promise.all([
+        db
+          .select({ id: appointments.id })
+          .from(appointments)
+          .where(
+            and(
+              eq(appointments.dateLocal, day),
+              eq(appointments.status, "in_chair"),
+              isNull(appointments.deletedAt),
+            ),
+          )
+          .get(),
+        db
+          .select({ id: doctorBreaks.id })
+          .from(doctorBreaks)
+          .where(
+            and(
+              eq(doctorBreaks.dateLocal, day),
+              isNull(doctorBreaks.endedAt),
+              isNull(doctorBreaks.deletedAt),
+            ),
+          )
+          .get(),
+      ]);
+      if (inChair) throw new ConflictError("Finish the visit in the chair first.");
+      if (open) throw new ConflictError("A break is already on.");
+
+      const id = newUlid();
+      const row = {
+        id,
+        startedAt: now.toISOString(),
+        dateLocal: day,
+        minutes: input.minutes,
+        label: input.label ?? "Break",
+        createdBy: ctx.userId,
+        updatedBy: ctx.userId,
+      };
+      try {
+        await db.batch([
+          db.insert(doctorBreaks).values(row),
+          auditInsert(db, ctx, {
+            action: "create",
+            table: "doctor_breaks",
+            rowId: id,
+            after: { minutes: row.minutes, label: row.label, dateLocal: day },
+          }),
+        ]);
+      } catch (err) {
+        // Two taps at once: the one-open-break index refuses the second.
+        if (String(err).includes("UNIQUE")) throw new ConflictError("A break is already on.");
+        throw err;
+      }
+      return { id, startedAt: row.startedAt, minutes: row.minutes, label: row.label, version: 1 };
+    },
+
+    /** +5 or -5 minutes while the break is on. */
+    async adjustBreak(
+      id: string,
+      deltaMinutes: number,
+      version: number,
+      now: Date = new Date(),
+    ): Promise<CurrentBreak> {
+      assertAllowed(ctx, "breaks.manage");
+      const row = await load(id);
+      if (row.endedAt) throw new ConflictError("That break is already over.");
+      if (row.version !== version)
+        throw new ConflictError("The break changed. Reload and try again.");
+      const minutes = row.minutes + deltaMinutes;
+      if (minutes < BREAK_MIN_MINUTES || minutes > BREAK_MAX_MINUTES) {
+        throw new InvalidError(
+          `A break must be between ${BREAK_MIN_MINUTES} and ${BREAK_MAX_MINUTES} minutes.`,
+        );
+      }
+      await db.batch([
+        db
+          .update(doctorBreaks)
+          .set({
+            minutes,
+            version: sql`${doctorBreaks.version} + 1`,
+            updatedBy: ctx.userId,
+            updatedAt: now.toISOString(),
+          })
+          .where(
+            and(
+              eq(doctorBreaks.id, id),
+              eq(doctorBreaks.version, version),
+              isNull(doctorBreaks.endedAt),
+            ),
+          ),
+        auditInsertIfChanged(db, ctx, {
+          action: "update",
+          table: "doctor_breaks",
+          rowId: id,
+          before: { minutes: row.minutes, version },
+          after: { minutes, version: version + 1 },
+        }),
+      ]);
+      return reload(id, version);
+    },
+
+    /** "I'm back". Also closes a break the doctor forgot on an earlier day. */
+    async endBreak(id: string, version: number, now: Date = new Date()): Promise<void> {
+      assertAllowed(ctx, "breaks.manage");
+      const row = await load(id);
+      if (row.endedAt) throw new ConflictError("That break is already over.");
+      if (row.version !== version)
+        throw new ConflictError("The break changed. Reload and try again.");
+      await db.batch([
+        db
+          .update(doctorBreaks)
+          .set({
+            endedAt: now.toISOString(),
+            version: sql`${doctorBreaks.version} + 1`,
+            updatedBy: ctx.userId,
+            updatedAt: now.toISOString(),
+          })
+          .where(
+            and(
+              eq(doctorBreaks.id, id),
+              eq(doctorBreaks.version, version),
+              isNull(doctorBreaks.endedAt),
+            ),
+          ),
+        auditInsertIfChanged(db, ctx, {
+          action: "update",
+          table: "doctor_breaks",
+          rowId: id,
+          before: { endedAt: null, version },
+          after: { endedAt: now.toISOString(), version: version + 1 },
+        }),
+      ]);
+      await reload(id, version);
+    },
+
+    /** The break that is on today, or null. An open break from an earlier day does not count. */
+    async currentBreak(dateLocal: string): Promise<CurrentBreak | null> {
+      assertAllowed(ctx, "appointments.manage");
+      const row = await db
+        .select(columns)
+        .from(doctorBreaks)
+        .where(
+          and(
+            eq(doctorBreaks.dateLocal, dateLocal),
+            isNull(doctorBreaks.endedAt),
+            isNull(doctorBreaks.deletedAt),
+          ),
+        )
+        .get();
+      return row ? toCurrent(row) : null;
+    },
+  };
+}

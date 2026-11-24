@@ -37,8 +37,6 @@ export const adjustBreakSchema = z.object({
 });
 export type AdjustBreakInput = z.infer<typeof adjustBreakSchema>;
 
-export const endBreakSchema = z.object({ version: z.number().int().min(1) });
-
 /** The break that is on now, as the day list and the break routes return it. */
 export type CurrentBreak = {
   id: string;

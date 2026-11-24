@@ -21,6 +21,10 @@ export const PERMISSIONS = {
   "certificates.write": ["doctor"],
   "certificates.print": ["doctor", "receptionist"],
   "appointments.manage": ["doctor", "receptionist"],
+  // Part T: the doctor takes her own break; the desk asks the doctor and the doctor answers.
+  "breaks.manage": ["doctor"],
+  "approvals.request": ["receptionist"],
+  "approvals.answer": ["doctor"],
   "bills.create": ["doctor", "receptionist"],
   // Discount, refund, bill cancel (5.3.7, 5.3.8).
   "bills.adjust": ["doctor"],

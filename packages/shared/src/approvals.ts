@@ -54,8 +54,6 @@ export const answerApprovalSchema = z.object({
 });
 export type AnswerApprovalInput = z.infer<typeof answerApprovalSchema>;
 
-export const approvalVersionSchema = z.object({ version: z.number().int().min(1) });
-
 /** One request as the Waiting-for-you list and the desk strip show it. */
 export type ApprovalItem = {
   id: string;

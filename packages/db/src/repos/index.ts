@@ -77,6 +77,7 @@ import { messagesPlanLoadRepo } from "./messages-plan-load";
 import { opsStatusRepo } from "./ops-status";
 import { errorLogRepo } from "./error-log";
 import { retentionRepo } from "./retention";
+import { doctorBreaksRepo } from "./doctor-breaks";
 import { patientRequestsRepo } from "./patient-requests";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
@@ -179,6 +180,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     errorLog: errorLogRepo(db, ctx),
     retention: retentionRepo(db, ctx),
     patientRequests: patientRequestsRepo(db, ctx),
+    breaks: doctorBreaksRepo(db, ctx),
   };
 }
 
