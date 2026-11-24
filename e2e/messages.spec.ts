@@ -37,7 +37,7 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
   const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
   let date = "";
-  for (let day = 2; day <= 8; day++) {
+  for (let day = 1; day <= 8; day++) {
     date = isoDate(day);
     await dialog.getByLabel("Date").fill(date);
     await page.waitForTimeout(1200);

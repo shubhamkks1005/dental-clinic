@@ -20,6 +20,13 @@ beforeEach(() => {
     .run();
 });
 
+// A Tuesday 7 to 13 days ahead: always open, always in the future, inside the 90-day limit.
+function nextTuesday(): string {
+  const d = new Date(Date.now() + 7 * 86_400_000);
+  while (d.getUTCDay() !== 2) d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
 async function book(email: string, body: unknown) {
   const cookie = await sessionCookie(env, email);
   const init = sameOriginPost(cookie);
@@ -40,7 +47,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     const body = {
       patientId: "p1",
       visitTypeId: VISIT_ID,
-      dateLocal: "2026-11-24",
+      dateLocal: nextTuesday(),
       startMin: 600,
       source: "phone",
     };
@@ -58,7 +65,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
         await book("dev@example.test", {
           patientId: "p1",
           visitTypeId: VISIT_ID,
-          dateLocal: "2026-11-24",
+          dateLocal: nextTuesday(),
           startMin: 600,
           source: "phone",
         })
@@ -92,7 +99,7 @@ describe("POST /api/staff/appointments (2.3.4 + 2.3.5)", () => {
     const created = await book("rec@example.test", {
       patientId: "p1",
       visitTypeId: VISIT_ID,
-      dateLocal: "2026-11-24",
+      dateLocal: nextTuesday(),
       startMin: 600,
       source: "phone",
     });
