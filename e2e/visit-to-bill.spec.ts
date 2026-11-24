@@ -1,3 +1,4 @@
+import { openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q1.1: no dead end between Finalise and the bill. Procedures sit on the first visit tab, the
@@ -26,19 +27,7 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
 async function doctorOpensVisitOf(page: Page, name: string) {
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  // Q2.5: the patient is in the Now card, in Next, or under "Rest of the day".
-  const now = page
-    .getByRole("region", { name: "Now" })
-    .filter({ hasText: name })
-    .getByRole("button", { name: "Open visit" });
-  const listed = page
-    .locator("li.doctor-row", { hasText: name })
-    .getByRole("button", { name: "Open visit" });
-  await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
-  if ((await now.or(listed).count()) === 0) {
-    await page.getByRole("button", { name: /Rest of the day/ }).click();
-  }
-  await now.or(listed).first().click();
+  await openVisitFromToday(page, name);
   await expect(page.getByLabel("Complaint")).toBeVisible();
 }
 
@@ -135,11 +124,14 @@ test("discount request leaves the total alone until the doctor approves", async 
   // Doctor: Waiting for you -> Approve; now the total is lower and Issue works.
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  const waiting = page.getByRole("region", { name: "Waiting for you" });
-  await expect(waiting).toContainText("DISCOUNT WAITING");
+  const waiting = page.getByRole("complementary", { name: "Waiting for you" });
+  await expect(waiting).toContainText("Discount approval");
   await expect(waiting).toContainText(name);
-  await waiting.locator("li", { hasText: name }).getByRole("button", { name: "Approve" }).click();
-  await expect(waiting.locator("li", { hasText: name })).toHaveCount(0);
+  await waiting
+    .locator("li.td-item", { hasText: name })
+    .getByRole("button", { name: "Approve" })
+    .click();
+  await expect(waiting.locator("li.td-item", { hasText: name })).toHaveCount(0);
   await page.goto(billPath);
   expect(await totalText()).not.toBe(before);
   await page.getByRole("button", { name: "Issue bill" }).click();
@@ -194,11 +186,11 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   // Doctor: Waiting for you, then the cancel panel says to refund first.
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  const waiting = page.getByRole("region", { name: "Waiting for you" });
-  await expect(waiting).toContainText("BILL CANCEL ASKED");
+  const waiting = page.getByRole("complementary", { name: "Waiting for you" });
+  await expect(waiting).toContainText("Bill cancel asked");
   await expect(waiting).toContainText(name);
   await waiting
-    .locator("li", { hasText: name })
+    .locator("li.td-item", { hasText: name })
     .getByRole("link", { name: "Open", exact: true })
     .click();
   await page.getByText("More actions").click();

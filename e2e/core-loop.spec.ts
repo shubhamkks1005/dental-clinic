@@ -1,3 +1,4 @@
+import { openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q0.2 onward: the main clinic loop in a real browser. Fake data only.
@@ -48,19 +49,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     // ---- Doctor: open visit, write, procedure, diagnosis, medicine, finalise ----
     await page.goto("/api/staff/auth/dev-login?role=doctor");
     await page.goto("/app");
-    // Q2.5: this patient is in the Now card (in the chair), in Next, or under "Rest of the day".
-    const now = page
-      .getByRole("region", { name: "Now" })
-      .filter({ hasText: name })
-      .getByRole("button", { name: "Open visit" });
-    const listed = page
-      .locator("li.doctor-row", { hasText: name })
-      .getByRole("button", { name: "Open visit" });
-    await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
-    if ((await now.or(listed).count()) === 0) {
-      await page.getByRole("button", { name: /Rest of the day/ }).click();
-    }
-    await now.or(listed).first().click();
+    await openVisitFromToday(page, name);
     await page.getByLabel("Complaint").fill("Wants alignment check");
     await page.getByLabel("Findings").fill("Crowding lower anterior");
     await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();

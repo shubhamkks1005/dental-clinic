@@ -64,6 +64,10 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   await page.goto(`/app/appointments?date=${date}&view=day`);
   await page.locator(".day-card", { hasText: name }).click();
   await page.getByLabel("Appointment details").getByRole("button", { name: "Reschedule" }).click();
+  // The Reschedule dialog opens on today, not on the booking's day. Pick that day, or late in the
+  // day the move lands today within the 2 h reminder lead and no new reminder is made.
+  await dialog.getByLabel("Date").fill(date);
+  await page.waitForTimeout(1200);
   await dialog
     .getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ })
     .last()

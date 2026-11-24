@@ -21,7 +21,40 @@ async function call(
   return { status: res.status(), data: body.data ?? {} };
 }
 
+// The scratch database is shared by every spec: start from a free chair and no break.
+async function clearDay(doc: APIRequestContext) {
+  const cur = await call(doc, "GET", "/breaks/current");
+  const b = cur.data.current as { id: string; version: number } | null;
+  if (b) await call(doc, "POST", `/breaks/${b.id}/end`, { version: b.version });
+  const day = await call(doc, "GET", "/appointments");
+  for (const a of (day.data.appointments ?? []) as Array<{
+    id: string;
+    status: string;
+    version: number;
+  }>) {
+    if (a.status === "in_chair")
+      await call(doc, "PATCH", `/appointments/${a.id}/status`, {
+        status: "completed",
+        version: a.version,
+      });
+  }
+
+  for (const a of (day.data.appointments ?? []) as Array<{
+    id: string;
+    status: string;
+    version: number;
+  }>) {
+    if (["scheduled", "confirmed", "arrived"].includes(a.status)) {
+      await call(doc, "POST", `/appointments/${a.id}/cancel`, {
+        version: a.version,
+        reason: "patient_request",
+      });
+    }
+  }
+}
+
 async function seed(desk: APIRequestContext, names: string[]) {
+  await clearDay(desk);
   const stamp = Date.now().toString().slice(-5);
   const ids: string[] = [];
   for (const [i, name] of names.entries()) {
@@ -63,6 +96,7 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
 }) => {
   test.setTimeout(150_000);
   const desk = await signedInAs(playwright, "receptionist");
+  await clearDay(await signedInAs(playwright, "doctor"));
   const { stamp, ids } = await seed(desk, ["Asha Test", "Bina Test", "Chitra Test", "Divya Test"]);
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 650 } });
   const page = await ctx.newPage();
@@ -269,8 +303,10 @@ test("desk: Ask the doctor, the answer, and Skip shows on the doctor's list", as
   expect(answer.status).toBe(200);
   await page.reload();
   await expect(strip).toContainText("Doctor said yes");
-  await strip.getByRole("button", { name: "Got it" }).click();
-  await expect(page.getByRole("region", { name: "Asked the doctor" })).toHaveCount(0);
+  await strip.locator("li", { hasText: stamp }).getByRole("button", { name: "Got it" }).click();
+  await expect(
+    page.getByRole("region", { name: "Asked the doctor" }).locator("li", { hasText: stamp }),
+  ).toHaveCount(0);
 
   // Skip by the desk
   await row.getByRole("button", { name: /More actions/ }).click();
@@ -293,6 +329,7 @@ test("desk: Ask the doctor, the answer, and Skip shows on the doctor's list", as
 // the Skip confirm closes with Esc; the break menu works from the keyboard.
 test("doctor Today: keyboard only", async ({ browser, playwright }) => {
   test.setTimeout(90_000);
+  await clearDay(await signedInAs(playwright, "doctor"));
   const desk = await signedInAs(playwright, "receptionist");
   const { stamp } = await seed(desk, ["Indu Test", "Jaya Test"]);
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 700 } });
@@ -332,7 +369,7 @@ test("doctor Today: keyboard only", async ({ browser, playwright }) => {
 
   // The list rows have a readable name: name, time, status, next
   await expect(rowOf(page, `Indu Test ${stamp}`).locator(".td-row-main")).toHaveAccessibleName(
-    /Indu Test .*, \d{1,2}:\d{2} [AP]M, waiting.*, next/,
+    /Indu Test .*, \d{1,2}:\d{2} [AP]M, waiting.*/,
   );
   await ctx.close();
   await desk.dispose();

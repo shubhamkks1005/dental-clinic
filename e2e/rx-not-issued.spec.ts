@@ -1,3 +1,4 @@
+import { openVisitFromToday } from "./doctor-helpers";
 import { expect, test } from "@playwright/test";
 
 // Q2.5/Q2.13 gap: a finalised visit whose prescription was written but not issued shows
@@ -28,17 +29,7 @@ test("doctor Today lists a written-but-not-issued prescription of a finalised vi
 
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
-  const open = page
-    .getByRole("region", { name: "Now" })
-    .filter({ hasText: name })
-    .getByRole("button", { name: "Open visit" })
-    .or(
-      page.locator("li.doctor-row", { hasText: name }).getByRole("button", { name: "Open visit" }),
-    );
-  if ((await open.count()) === 0)
-    await page.getByRole("button", { name: /Rest of the day/ }).click();
-  await open.first().click();
+  await openVisitFromToday(page, name);
   await expect(page.getByLabel("Complaint")).toBeVisible();
   await page.getByLabel("Complaint").fill("Fake: tooth pain");
 
@@ -59,11 +50,18 @@ test("doctor Today lists a written-but-not-issued prescription of a finalised vi
 
   // While the patient is still in the chair the Now card covers them; after Done they are not.
   await page.goto("/app");
-  await page.getByRole("region", { name: "Now" }).getByRole("button", { name: "Done" }).click();
-  await expect(page.getByRole("region", { name: "Now" })).not.toContainText(name);
-  const waiting = page.locator("li", { hasText: name }).filter({ hasText: /not issued/i });
-  await expect(waiting).toContainText(/PRESCRIPTION NOT ISSUED/i);
-  await expect(waiting).toContainText("Written, not issued");
+  await page
+    .getByRole("region", { name: "Current patient in chair" })
+    .getByRole("button", { name: "Done" })
+    .click();
+  await expect(page.getByRole("region", { name: "Current patient in chair" })).not.toContainText(
+    name,
+  );
+  const waiting = page
+    .locator("li.td-item", { hasText: name })
+    .filter({ hasText: /pending issue/i });
+  await expect(waiting).toContainText(/Prescription/);
+  await expect(waiting).toContainText("Prescription written, pending issue");
   await waiting
     .getByRole("button", { name: "Open" })
     .or(waiting.getByRole("link", { name: "Open" }))

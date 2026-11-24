@@ -1,3 +1,4 @@
+import { openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q2.8 Messages, Q2.11 chrome, Q2.12 Reports, Q2.13 Settings and Library. Fake data only.
@@ -152,17 +153,7 @@ test("Q2.13 inside a visit, a medicine that is not in the list can be added to i
 
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  await expect(page.getByRole("region", { name: "Now" })).toBeVisible();
-  const open = page
-    .getByRole("region", { name: "Now" })
-    .filter({ hasText: name })
-    .getByRole("button", { name: "Open visit" })
-    .or(
-      page.locator("li.doctor-row", { hasText: name }).getByRole("button", { name: "Open visit" }),
-    );
-  if ((await open.count()) === 0)
-    await page.getByRole("button", { name: /Rest of the day/ }).click();
-  await open.first().click();
+  await openVisitFromToday(page, name);
   await expect(page.getByLabel("Complaint")).toBeVisible();
 
   const drug = `Zedtestmed ${stamp}`;
