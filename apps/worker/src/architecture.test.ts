@@ -20,6 +20,7 @@ describe("worker architecture (1.2.6)", () => {
       "apps/worker/src/routes/portal.ts",
       "apps/worker/src/routes/staff-appointments-queue.ts",
       "apps/worker/src/routes/staff-appointments.ts",
+      "apps/worker/src/routes/staff-approvals.ts",
       "apps/worker/src/routes/staff-auth.ts",
       "apps/worker/src/routes/staff-bills.ts",
       "apps/worker/src/routes/staff-breaks.ts",

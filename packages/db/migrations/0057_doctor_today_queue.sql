@@ -63,6 +63,8 @@ CREATE TABLE `approval_requests` (
 --> statement-breakpoint
 CREATE INDEX `approval_requests_status_idx` ON `approval_requests` (`status`,`urgent`,`created_at`);
 --> statement-breakpoint
+CREATE INDEX `approval_requests_mine_idx` ON `approval_requests` (`created_by`,`created_at`);
+--> statement-breakpoint
 CREATE UNIQUE INDEX `approval_requests_one_open_uidx` ON `approval_requests` (`type`,`appointment_id`) WHERE "status" = 'open' AND "appointment_id" IS NOT NULL AND "deleted_at" IS NULL;
 --> statement-breakpoint
 INSERT INTO `settings` (`id`, `key`, `value_json`, `created_by`, `updated_by`) VALUES

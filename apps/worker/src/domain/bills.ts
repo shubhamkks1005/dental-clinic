@@ -1,6 +1,7 @@
 import type { Repos } from "@clinic/db";
 import {
   parseApproveBillDiscount,
+  parseRejectBillDiscount,
   parseCloseDay,
   parseCreateBill,
   parseDuesCall,
@@ -159,6 +160,13 @@ export async function approveBillDiscount(repos: Repos, id: string, body: unknow
   const parsed = parseApproveBillDiscount(body);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const bill = await repos.bills.approveDiscount(id, parsed.value);
+  return { ok: true as const, bill };
+}
+
+export async function rejectBillDiscount(repos: Repos, id: string, body: unknown) {
+  const parsed = parseRejectBillDiscount(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.rejectDiscount(id, parsed.value);
   return { ok: true as const, bill };
 }
 

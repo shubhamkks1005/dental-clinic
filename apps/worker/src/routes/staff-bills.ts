@@ -2,6 +2,7 @@ import { fail, istDate, ok } from "@clinic/shared";
 import { Hono } from "hono";
 import {
   approveBillDiscount,
+  rejectBillDiscount,
   cancelBill,
   closeDay,
   createBill,
@@ -124,6 +125,13 @@ staffBills.post("/bills/:id/discount", async (c) => {
 staffBills.post("/bills/:id/discount/approve", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
   const result = await approveBillDiscount(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ bill: result.bill }));
+});
+
+staffBills.post("/bills/:id/discount/reject", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await rejectBillDiscount(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }));
 });

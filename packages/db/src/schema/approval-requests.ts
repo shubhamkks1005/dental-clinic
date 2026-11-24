@@ -34,6 +34,7 @@ export const approvalRequests = sqliteTable(
     ),
     check("approval_requests_urgent_bool", sql.raw(`"urgent" IN (0, 1)`)),
     index("approval_requests_status_idx").on(t.status, t.urgent, t.createdAt),
+    index("approval_requests_mine_idx").on(t.createdBy, t.createdAt),
     uniqueIndex("approval_requests_one_open_uidx")
       .on(t.type, t.appointmentId)
       .where(

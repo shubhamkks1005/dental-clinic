@@ -35,3 +35,17 @@ export function parseApproveBillDiscount(body: unknown): Parsed<ApproveBillDisco
   }
   return { ok: true, value: r.data };
 }
+
+/** Stored in bills.discount_reason when the doctor says no: the desk then sees why the discount is gone. */
+export const DISCOUNT_REJECTED_REASON = "rejected";
+export const DISCOUNT_REJECTED_TEXT = "Doctor did not approve the discount";
+
+export type RejectBillDiscountInput = ApproveBillDiscountInput;
+
+export function parseRejectBillDiscount(body: unknown): Parsed<RejectBillDiscountInput> {
+  const r = approveSchema.safeParse(body);
+  if (!r.success) {
+    return { ok: false, message: "Send the bill version to reject the discount." };
+  }
+  return { ok: true, value: r.data };
+}

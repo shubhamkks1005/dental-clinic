@@ -1,14 +1,12 @@
 import { istDate } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
-import app from "./index";
-import { addStaff, makeEnv, ORIGIN, sameOriginPost, sessionCookie } from "./testing/app-env";
+import { addStaff, makeEnv } from "./testing/app-env";
+import { staffCall } from "./testing/staff-call";
 
 // Part T routes: skip, pull forward, late, step out/back and the doctor's break.
 let env: ReturnType<typeof makeEnv>["env"];
 let sqlite: ReturnType<typeof makeEnv>["sqlite"];
 const TODAY = istDate(new Date());
-// Loose JSON for the assertions below.
-type Json = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 beforeEach(() => {
   ({ env, sqlite } = makeEnv());
@@ -37,24 +35,8 @@ beforeEach(() => {
   }
 });
 
-async function call(email: string, method: "GET" | "POST", path: string, body?: unknown) {
-  const cookie = await sessionCookie(env, email);
-  const init = sameOriginPost(cookie);
-  const res = await app.request(
-    `${ORIGIN}/api/staff${path}`,
-    {
-      ...init,
-      method,
-      headers: { ...(init.headers as Record<string, string>), "content-type": "application/json" },
-      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-    },
-    env,
-  );
-  return {
-    status: res.status,
-    json: (await res.json()) as { ok: boolean; data: Json; error: Json },
-  };
-}
+const call = (email: string, method: "GET" | "POST", path: string, body?: unknown) =>
+  staffCall(env, email, method, path, body);
 const count = (table: string) =>
   Number(sqlite.prepare(`SELECT count(*) AS n FROM ${table}`).get()?.n);
 

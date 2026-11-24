@@ -1,5 +1,7 @@
 import {
   computeBillTotals,
+  DISCOUNT_REJECTED_REASON,
+  type RejectBillDiscountInput,
   type ApproveBillDiscountInput,
   type GstMode,
   type RequestBillDiscountInput,
@@ -219,6 +221,51 @@ export function billsDiscountRepo(db: Db, ctx: Ctx) {
           rowId: id,
           before: { discountApprovedBy: null },
           after: { discountApprovedBy: ctx.userId },
+        }),
+      ]);
+      const updated = results[0] as { id: string }[];
+      if (!updated.length) throw new ConflictError();
+      return getRepo.get(id);
+    },
+
+    /**
+     * Doctor only: say no to a requested discount. The request is removed (discount 0); the total
+     * is not touched because a request never changed it. The reason column keeps a marker so the
+     * desk can show "Doctor did not approve the discount". No new column needed.
+     */
+    async rejectDiscount(id: string, input: RejectBillDiscountInput): Promise<BillRow> {
+      assertAllowed(ctx, "bills.adjust");
+      const row = await db
+        .select()
+        .from(bills)
+        .where(and(eq(bills.id, id), isNull(bills.deletedAt)))
+        .get();
+      if (!row) throw new NotFoundError("That bill");
+      assertDraft(row.status);
+      if (row.version !== input.version) throw new ConflictError();
+      if (row.discountPaise <= 0 || row.discountApprovedBy) {
+        throw new InvalidError("This bill has no waiting discount to reject.");
+      }
+      const results = await db.batch([
+        db
+          .update(bills)
+          .set({
+            discountPaise: 0,
+            discountReason: DISCOUNT_REJECTED_REASON,
+            discountApprovedBy: null,
+            discountApprovedAt: null,
+            version: row.version + 1,
+            updatedAt: nowUtcSql,
+            updatedBy: ctx.userId,
+          })
+          .where(and(eq(bills.id, id), eq(bills.version, input.version)))
+          .returning({ id: bills.id }),
+        auditInsertIfChanged(db, ctx, {
+          action: "update",
+          table: "bills",
+          rowId: id,
+          before: { discountPaise: row.discountPaise, discountReason: row.discountReason },
+          after: { discountPaise: 0, discountReason: DISCOUNT_REJECTED_REASON },
         }),
       ]);
       const updated = results[0] as { id: string }[];

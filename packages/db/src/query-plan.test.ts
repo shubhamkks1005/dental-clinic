@@ -149,6 +149,10 @@ describe("query-plan guard (1.2.8)", () => {
       // Appointments: one day, and a week.
       await front.appointments.listForDay("2026-11-23");
       await front.appointments.listForRange("2026-11-23", "2026-11-29");
+      // Part T: approvals lists and the break check.
+      await doc.approvals.listOpenApprovals();
+      await front.approvals.listMyApprovals();
+      await front.breaks.currentBreak("2026-11-23");
       return t.ran;
     }
 

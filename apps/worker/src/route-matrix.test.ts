@@ -132,6 +132,18 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/breaks/:id/adjust") {
     return JSON.stringify({ deltaMinutes: 5, version: 1 });
   }
+  if (path === "/api/staff/approvals" && method === "POST") {
+    return JSON.stringify({ type: "refund", billId: "b-matrix", note: "Matrix ask" });
+  }
+  if (path === "/api/staff/approvals/:id/answer") {
+    return JSON.stringify({ decision: "approve", version: 1 });
+  }
+  if (path === "/api/staff/approvals/:id/dismiss") {
+    return JSON.stringify({ version: 1 });
+  }
+  if (path === "/api/staff/bills/:id/discount/reject") {
+    return JSON.stringify({ version: 1 });
+  }
   if (path === "/api/staff/breaks/:id/end") {
     return JSON.stringify({ version: 1 });
   }

@@ -277,6 +277,36 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/approvals",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/approvals",
+    access: { kind: "permission", action: "approvals.request" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/approvals/:id/answer",
+    access: { kind: "permission", action: "approvals.answer" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/approvals/:id/dismiss",
+    access: { kind: "permission", action: "approvals.answer" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/approvals/:id/withdraw",
+    access: { kind: "permission", action: "approvals.request" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/bills/:id/discount/reject",
+    access: { kind: "permission", action: "bills.adjust" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/patients/:id/medical-history",
     access: { kind: "permission", action: "clinical.view" },
   },
