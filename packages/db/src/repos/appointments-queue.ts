@@ -23,6 +23,7 @@ import {
   type QueueChange as Change,
   type QueueMoveResult,
 } from "./appointments-queue-write";
+import { lateAfterMinutes, lateAtFor } from "./queue-newcomer";
 import { markFirstArrivedBatch } from "./patient-first-arrived";
 
 // The queue rules for the doctor list (Part T). Every move is ONE db.batch: the version-checked
@@ -139,7 +140,10 @@ export function appointmentsQueueRepo(db: Db, ctx: Ctx) {
 
     /** Back: the patient is here again. Stepped out is cleared; Not arrived becomes Arrived. */
     async stepBack(id: string, version: number, now: Date = new Date()): Promise<QueueMoveResult> {
-      const { rows, target, stale } = await load(id, version);
+      const [{ rows, target, stale }, lateAfter] = await Promise.all([
+        load(id, version),
+        lateAfterMinutes(db),
+      ]);
       if (!canReorder(target.status)) throw new ConflictError("This patient cannot be moved.");
       if (stale) throw new ConflictError(STALE);
       const plan = planQueue(rows);
@@ -147,7 +151,12 @@ export function appointmentsQueueRepo(db: Db, ctx: Ctx) {
       const nowIso = now.toISOString();
       const arrives = isAllowedStatusTransition(me.status, "arrived") && me.status !== "arrived";
       const change: Change = arrives
-        ? { steppedOutAt: null, status: "arrived", arrivedAt: nowIso }
+        ? {
+            steppedOutAt: null,
+            status: "arrived",
+            arrivedAt: nowIso,
+            ...(lateAtFor(me.startAt, now, lateAfter) ? { lateAt: nowIso } : {}),
+          }
         : { steppedOutAt: null };
       const first = arrives
         ? markFirstArrivedBatch(db, ctx, me.patientId, istDate(now), nowIso)

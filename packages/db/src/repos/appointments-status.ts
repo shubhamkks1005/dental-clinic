@@ -12,19 +12,10 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, settings } from "../schema";
+import { appointments } from "../schema";
+import { intSetting } from "./int-setting";
+import { keepOrElseNewcomer, lateAfterMinutes, lateAtFor } from "./queue-newcomer";
 import { markFirstArrivedBatch } from "./patient-first-arrived";
-
-async function intSetting(db: Db, key: string, fallback: number): Promise<number> {
-  const row = await db
-    .select({ valueJson: settings.valueJson })
-    .from(settings)
-    .where(and(eq(settings.key, key), isNull(settings.deletedAt)))
-    .get();
-  if (!row) return fallback;
-  const n = JSON.parse(row.valueJson) as unknown;
-  return typeof n === "number" && Number.isFinite(n) ? n : fallback;
-}
 
 export type AppointmentStatusRow = {
   id: string;
@@ -66,16 +57,22 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       if (!isAllowedStatusTransition(from, to)) {
         throw new ConflictError("That status change is not allowed.");
       }
-      const noShowAfterMinutes = await intSetting(
-        db,
-        "appointments.no_show_after_minutes",
-        tunableDefault("appointments.no_show_after_minutes"),
-      );
-      const statusUndoHours = await intSetting(
-        db,
-        "appointments.status_undo_hours",
-        tunableDefault("appointments.status_undo_hours"),
-      );
+      // Doctor opened the visit before the desk pressed Arrived: count them as arrived now.
+      const skippedArrival = to === "in_chair" && from !== "arrived";
+      const arrives = to === "arrived" || skippedArrival;
+      const [noShowAfterMinutes, statusUndoHours, lateAfter] = await Promise.all([
+        intSetting(
+          db,
+          "appointments.no_show_after_minutes",
+          tunableDefault("appointments.no_show_after_minutes"),
+        ),
+        intSetting(
+          db,
+          "appointments.status_undo_hours",
+          tunableDefault("appointments.status_undo_hours"),
+        ),
+        arrives ? lateAfterMinutes(db) : Promise.resolve(0),
+      ]);
       const block = statusTransitionBlockReason(from, to, {
         startAt: new Date(row.startAt),
         statusChangedAt: new Date(row.updatedAt),
@@ -86,18 +83,17 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
       if (block) throw new InvalidError(block);
 
       const nowIso = now.toISOString();
-      // Doctor opened the visit before the desk pressed Arrived: count them as arrived now.
-      const skippedArrival = to === "in_chair" && from !== "arrived";
       const stamp = { ...stampsFor(to, nowIso), ...(skippedArrival ? { arrivedAt: nowIso } : {}) };
       const cancelReason =
         to === "cancelled" || to === "no_show"
           ? (input.cancelReason ?? row.cancelReason)
           : row.cancelReason;
-      const firstArrived =
-        to === "arrived" || skippedArrival
-          ? markFirstArrivedBatch(db, ctx, row.patientId, row.dateLocal || istDate(now), nowIso)
-          : null;
+      const firstArrived = arrives
+        ? markFirstArrivedBatch(db, ctx, row.patientId, row.dateLocal || istDate(now), nowIso)
+        : null;
 
+      // Late mark (position does not change) and, if the day was reordered, a place at the back.
+      const lateAt = arrives ? lateAtFor(row.startAt, now, lateAfter) : null;
       await db.batch([
         db
           .update(appointments)
@@ -108,6 +104,8 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
             updatedAt: nowIso,
             cancelReason,
             ...stamp,
+            ...(lateAt ? { lateAt } : {}),
+            ...(arrives ? { queueOrder: keepOrElseNewcomer(row.dateLocal) } : {}),
           })
           .where(
             and(
@@ -127,6 +125,7 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
             ...(stamp.arrivedAt ? { arrivedAt: stamp.arrivedAt } : {}),
             ...(stamp.startedAt ? { startedAt: stamp.startedAt } : {}),
             ...(stamp.endedAt ? { endedAt: stamp.endedAt } : {}),
+            ...(lateAt ? { lateAt } : {}),
             ...((to === "cancelled" || to === "no_show") && input.cancelReason
               ? { cancelReason: input.cancelReason }
               : {}),

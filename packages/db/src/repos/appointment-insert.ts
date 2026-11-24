@@ -21,6 +21,8 @@ export type AppointmentInsertValues = {
   complaint: string | null;
   arrivedAt?: string | null;
   rescheduledFrom?: string | null;
+  /** A walk-in goes to the back of a day the doctor has reordered (queue-newcomer.ts). */
+  queueOrder?: SQL | null;
   createdBy: string;
   updatedBy: string;
 };
@@ -62,6 +64,7 @@ function appointmentInsertCells(values: AppointmentInsertValues) {
     arrivedAt: values.arrivedAt ?? null,
     startedAt: null,
     endedAt: null,
+    queueOrder: values.queueOrder ?? null,
   };
 }
 

@@ -25,6 +25,7 @@ import {
   insertAppointmentIfFree,
   type AppointmentInsertValues,
 } from "./appointment-insert";
+import { newcomerQueueOrder } from "./queue-newcomer";
 import { markFirstArrivedBatch } from "./patient-first-arrived";
 
 export type WalkInAppointment = {
@@ -170,6 +171,7 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
         overbook,
         complaint: input.complaint ?? null,
         arrivedAt: nowIso,
+        queueOrder: newcomerQueueOrder(dateLocal),
         createdBy: ctx.userId,
         updatedBy: ctx.userId,
       };
