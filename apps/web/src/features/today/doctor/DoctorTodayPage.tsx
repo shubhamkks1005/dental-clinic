@@ -163,6 +163,7 @@ export function DoctorTodayPage() {
         spotlight={model.chair?.id === act.spotlightId}
         busy={act.openingId !== null || act.busy}
         nextName={next?.name ?? null}
+        done={model.done}
         onOpenVisit={() => model.chair && void act.openVisit(model.chair)}
         onDone={() => void act.finishChair()}
       />

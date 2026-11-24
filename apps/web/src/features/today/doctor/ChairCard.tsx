@@ -8,23 +8,36 @@ type Props = {
   busy: boolean;
   /** Who is Next, for the empty card's hint. */
   nextName: string | null;
+  /** Patients finished today (for the all-done message). */
+  done: number;
   onOpenVisit: () => void;
   onDone: () => void;
 };
 
 /** "In chair now": exactly one patient (docs/design/final/doctor_today.html "in-chair-card"). */
-export function ChairCard({ chair, spotlight, busy, nextName, onOpenVisit, onDone }: Props) {
+export function ChairCard({ chair, spotlight, busy, nextName, done, onOpenVisit, onDone }: Props) {
   const cls = `td-chair${spotlight ? " is-spotlight" : ""}${chair ? "" : " is-empty"}`;
   if (!chair) {
+    const finished = nextName === null && done > 0;
     return (
-      <section id="td-chair" className={cls} aria-label="Current patient in chair">
+      <section
+        id="td-chair"
+        className={cls + (finished ? " is-finished" : "")}
+        aria-label="Current patient in chair"
+      >
+        <span className="td-free-orb td-orb" aria-hidden="true" />
+        <span className="td-free-badge" aria-hidden="true">
+          {icons.taskDone}
+        </span>
         <div className="td-chair-body">
           <span className="td-eyebrow">In chair now</span>
-          <h2 className="td-chair-name">No one in the chair</h2>
+          <h2 className="td-chair-name">{finished ? "All done for now" : "Chair is free"}</h2>
           <p className="td-chair-meta">
-            {nextName
-              ? `Press Start on ${nextName} when you are ready.`
-              : "Nobody is waiting right now."}
+            {finished
+              ? `Great work: ${done} ${done === 1 ? "patient" : "patients"} seen today.`
+              : nextName
+                ? `Press Start on ${nextName} when you are ready.`
+                : "Nobody is waiting right now. Enjoy the quiet."}
           </p>
         </div>
       </section>
