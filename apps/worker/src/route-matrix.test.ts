@@ -110,6 +110,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/appointments/:id/cancel" && method === "POST") {
     return JSON.stringify({ version: 1, reason: "patient_request" });
   }
+  if (path === "/api/staff/appointments/:id/undo-cancel" && method === "POST") {
+    return JSON.stringify({ version: 1 });
+  }
   if (path === "/api/staff/appointments/:id/reschedule" && method === "POST") {
     return JSON.stringify({
       version: 1,

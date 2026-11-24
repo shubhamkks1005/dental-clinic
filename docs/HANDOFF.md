@@ -10,7 +10,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 
 ## Next task
 **Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
-- Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; calendar has no late-entry or undo-after-cancel (PA-M06); Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
+- Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
 - Needs the doctor: wording "As directed" for dose, frequency, days and timing of a medicine added with "Add to my list" in the visit (DECISIONS.md, DRAFT).
 - Tools ready: ui/form (TextInput, Select, Textarea, Checkbox, Radio; lint forbids raw tags in features/), useWide, DateStrip, VisitTypeChips, pills in base.css.
 - Runner notes: the Book dialog has chips now (`getByRole("button", { name: "Consultation", exact: true })`), label "Note (optional)", "Book appointment" button; new patient has Female/Male/Other radios, "Privacy notice given", "Allow reminders"; calendar specs use `&view=day` (laptop default is the week grid). Run `pnpm exec playwright test` (48 pass). Stop any dev server on port 8787 first.
@@ -40,6 +40,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 (nothing)
 
 ## Waiting on me (the owner). The AI must not guess these
+- Undo after cancel (PA-M06, built with a safe default): if the "Cancelled" message to the patient was ALREADY sent (live mode, not dry run) before the desk pressed Undo, nothing tells the patient the visit is back on; the desk must phone. Do you want an automatic "Your visit is back on" message (needs template wording, doctor to confirm)? Dry-run and still-queued messages are handled (queued one is dropped).
 - Q2.1: should the receptionist see Library? Built doctor-only as decided (D4); nothing to do unless the owner changes it.
 - Nothing blocks the AI now. D1 (CA) still needs the CA to confirm the refund rule.
 - D1 refund rule (doctor and CA), D2 addendum can add a procedure?, D3 gender default, D4 receptionist cancel bill / see Settings, D5 bill created issued?, D6 reminder timing, D7 devices used, D8 advance payment wanted. Table with who and what each blocks: docs/PHASE_Q.md.

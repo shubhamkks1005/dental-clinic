@@ -7,6 +7,7 @@ import { getPatient, type PatientListRow } from "../patients";
 import { bookAppointment, rescheduleAppointment, type SuggestedSlot } from "./api";
 import { noFreeTimesText, TimeChips, VisitTypeChips } from "./BookPickers";
 import { DateStrip } from "./DateStrip";
+import { LateEntry, type LateEntryValue } from "./LateEntry";
 import { QuickBookPatient } from "./QuickBookPatient";
 import { useBookSlots } from "./useBookSlots";
 import "./quick-book.css";
@@ -37,6 +38,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
   const [dateLocal, setDateLocal] = useState(prefill.dateLocal);
   const [slot, setSlot] = useState<SuggestedSlot | null>(null);
   const [note, setNote] = useState("");
+  const [late, setLate] = useState<LateEntryValue | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +48,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
     setVisitTypeId(prefill.visitTypeId ?? "");
     setSlot(null);
     setNote("");
+    setLate(null);
     setError(null);
     setPatient(null);
     getList("visit_types")
@@ -93,27 +96,31 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
   }
 
   async function confirm() {
-    if (!patient || !visitTypeId || !slot) return;
+    const chosen: SuggestedSlot | null = late
+      ? { dateLocal, startMin: late.startMin, endMin: late.endMin, startAt: "" }
+      : slot;
+    if (!patient || !visitTypeId || !chosen) return;
     setBusy(true);
     setError(null);
     try {
       if (reschedule) {
         await rescheduleAppointment(reschedule.id, {
           version: reschedule.version,
-          dateLocal: slot.dateLocal,
-          startMin: slot.startMin,
+          dateLocal: chosen.dateLocal,
+          startMin: chosen.startMin,
         });
       } else {
         await bookAppointment({
           patientId: patient.id,
           visitTypeId,
-          dateLocal: slot.dateLocal,
-          startMin: slot.startMin,
+          dateLocal: chosen.dateLocal,
+          startMin: chosen.startMin,
           source: "phone",
           complaint: note.trim() || undefined,
+          overrideReason: late?.reason,
         });
       }
-      onBooked(slot);
+      onBooked(chosen);
       onClose();
     } catch (e) {
       setError(
@@ -124,13 +131,13 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
     }
   }
 
-  const canConfirm = Boolean(patient && visitTypeId && slot && !busy);
+  const canConfirm = Boolean(patient && visitTypeId && (slot || late) && !busy);
   // Q1.6: a disabled button says why.
   const whyNot = !patient
     ? "Choose a patient first."
     : !visitTypeId
       ? "Choose a visit type."
-      : !slot
+      : !slot && !late
         ? "Pick a time."
         : null;
 
@@ -186,7 +193,14 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
           {!loading && visitTypeId && daySlots.length === 0 ? (
             <p className="muted small">{noFreeTimesText(dateLocal, nextSlots)}</p>
           ) : null}
-          <TimeChips slots={daySlots} chosen={slot} onPick={setSlot} />
+          <TimeChips
+            slots={daySlots}
+            chosen={late ? null : slot}
+            onPick={(s) => {
+              setLate(null);
+              setSlot(s);
+            }}
+          />
           {nextSlots.length > 0 ? (
             <>
               <p className="small muted quick-book-next">Next free times</p>
@@ -194,6 +208,15 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
             </>
           ) : null}
         </fieldset>
+
+        {reschedule || !visitTypeId ? null : (
+          <LateEntry
+            dateLocal={dateLocal}
+            minutes={Number(visitTypes.find((v) => v.id === visitTypeId)?.data.minutes ?? 15)}
+            value={late}
+            onChange={setLate}
+          />
+        )}
 
         {reschedule ? null : (
           <label>
@@ -214,9 +237,9 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
         {whyNot ? <p className="muted small">{whyNot}</p> : null}
 
         <div className="dialog-actions quick-book-footer">
-          {slot ? (
+          {late || slot ? (
             <span className="small muted quick-book-summary">
-              {formatDate(slot.dateLocal)}, {formatClockTime(slot.startMin)}
+              {formatDate(dateLocal)}, {formatClockTime((late ?? slot)!.startMin)}
             </span>
           ) : null}
           <button type="button" className="btn" onClick={onClose}>

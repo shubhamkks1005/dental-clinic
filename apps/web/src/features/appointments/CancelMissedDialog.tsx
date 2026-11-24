@@ -2,7 +2,7 @@ import { CANCEL_REASONS, CANCEL_REASON_LABEL, type CancelReasonCode } from "@cli
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
-import { cancelAppointment, markMissed } from "./api";
+import { cancelAppointment, markMissed, undoCancelAppointment } from "./api";
 import { Select, TextInput } from "../../ui/form";
 
 type Props = {
@@ -11,7 +11,8 @@ type Props = {
   patientName: string;
   appointment: { id: string; version: number };
   onClose: () => void;
-  onDone: (message: string) => void;
+  /** `undo` is set after a cancel: put the appointment back (the toast offers it for 10 s). */
+  onDone: (message: string, undo?: () => Promise<void>) => void;
 };
 
 // Q1.4: Cancel and Missed both need a reason. Cancel uses the fixed list (2.3.8); Missed is one line.
@@ -43,12 +44,14 @@ export function CancelMissedDialog({
     setError(null);
     try {
       if (mode === "cancel") {
-        await cancelAppointment(appointment.id, {
+        const version = await cancelAppointment(appointment.id, {
           version: appointment.version,
           reason,
           detail: detail.trim() || undefined,
         });
-        onDone(`Cancelled ${patientName}'s appointment.`);
+        onDone(`Cancelled ${patientName}'s appointment.`, () =>
+          undoCancelAppointment(appointment.id, version),
+        );
       } else {
         await markMissed(appointment.id, appointment.version, detail.trim());
         onDone(`${patientName} marked as missed. They are on the Call list.`);

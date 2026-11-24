@@ -1,3 +1,4 @@
+import { PhoneDayList } from "./PhoneDayList";
 import {
   emptySlotStarts,
   istDate,
@@ -105,7 +106,7 @@ export function DayView({
   }
 
   if (window.closed) {
-    return <p className="muted">Clinic is closed on this day.</p>;
+    return <PhoneDayList window={window} appointments={appointments} onChanged={onChanged} />;
   }
 
   return (

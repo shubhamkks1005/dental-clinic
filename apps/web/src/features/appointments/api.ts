@@ -87,13 +87,21 @@ export function bookAppointment(body: {
   return api("/api/staff/appointments", { method: "POST", body });
 }
 
+/** Replies with the new version, so a just-made cancel can be undone. */
 export function cancelAppointment(
   id: string,
   body: { version: number; reason: CancelReasonCode; detail?: string },
-): Promise<void> {
-  return api(`/api/staff/appointments/${encodeURIComponent(id)}/cancel`, {
+): Promise<number> {
+  return api<{ appointment: { version: number } }>(
+    `/api/staff/appointments/${encodeURIComponent(id)}/cancel`,
+    { method: "POST", body },
+  ).then((r) => r.appointment.version);
+}
+
+export function undoCancelAppointment(id: string, version: number): Promise<void> {
+  return api(`/api/staff/appointments/${encodeURIComponent(id)}/undo-cancel`, {
     method: "POST",
-    body,
+    body: { version },
   }).then(() => undefined);
 }
 

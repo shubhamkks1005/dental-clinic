@@ -140,7 +140,7 @@ Evidence paths: `flows/<id>` means `docs/ui-audit/flows/<id>/` (screenshots are 
 | PA-M03 | Money | A payments list and a way to print a receipt right after taking money. | High | Verified | flows/G01 | See PA-U05. |
 | PA-M04 | Billing | A way to start a bill that is not tied to a doctor's visit (e.g. over-the-counter, balance, correction). "No bills yet. Create one from a visit." | Medium | Observed | flows/D03 step 11 | Decide with the doctor; at minimum a "Add charge" on the account. Source: H3 |
 | PA-M05 | Doctor inbox | No place where the doctor sees "things waiting for me": discount requests, unfinished visits, unissued prescriptions, patient requests. | High | Verified (absence on Today) | flows/D06 step 21 | "Waiting for you" card on doctor Today. Source: D6-1 |
-| PA-M06 | Appointments | Week view (mockup S08), late-entry on a closed day, undo after cancel. | Medium | Partly Q2.7 (week view done; late entry and undo not) | AUDIT A; flows/D05 | Add after P1. |
+| PA-M06 | Appointments | Week view (mockup S08), late-entry on a closed day, undo after cancel. | Medium | Fixed (week view Q2.7; late entry and Undo cleanup 4) | AUDIT A; flows/D05 | Add after P1. |
 | PA-M07 | Messages | Reschedule/cancel messages that are actually used; message to the guardian; clear "not sent yet" lists. | High | Verified | flows/H02, G08 | See PA-B03, PA-B05. |
 | PA-M08 | Records | Not assessed: treatment plan / braces journey, files, certificates, consent history, patient portal (placeholder only). | Unknown | Not evidenced | flows/README "Not run" | See verification gaps. |
 

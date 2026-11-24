@@ -17,9 +17,14 @@ const GONE = ["cancelled", "no_show", "rescheduled"];
 export function PhoneDayList({ window, appointments, onChanged }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = appointments.find((a) => a.id === selectedId) ?? null;
-  if (window.closed) return <p className="muted">Clinic is closed on this day.</p>;
+  // A closed day can still hold late entries (PA-M06): the list shows them under the notice.
+  if (window.closed && appointments.length === 0)
+    return <p className="muted">Clinic is closed on this day.</p>;
   return (
     <div className="phone-day">
+      {window.closed ? (
+        <p className="muted">Clinic is closed on this day. These are late entries.</p>
+      ) : null}
       {appointments.length === 0 ? (
         <p className="muted">No appointments on this day.</p>
       ) : (

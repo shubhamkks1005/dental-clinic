@@ -207,6 +207,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "POST",
+    path: "/api/staff/appointments/:id/undo-cancel",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
     path: "/api/staff/appointments/:id/reschedule",
     access: { kind: "permission", action: "appointments.manage" },
   },

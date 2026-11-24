@@ -7,6 +7,8 @@ export type ToastInput = {
   tone?: "ok" | "error";
   /** Optional link shown after the text (opens in a new tab), e.g. Print. */
   link?: { label: string; href: string };
+  /** A button after the text (for example Undo). The toast stays 10 seconds when it has one. */
+  action?: { label: string; onClick: () => void };
 };
 type ShownToast = ToastInput & { tone: "ok" | "error"; id: number };
 
@@ -31,7 +33,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             className={`toast toast-${t.tone}`}
             type={t.tone === "error" ? "foreground" : "background"}
-            duration={t.tone === "error" ? 10000 : 5000}
+            duration={t.tone === "error" || t.action ? 10000 : 5000}
             onOpenChange={(open) => !open && remove(t.id)}
           >
             <RadixToast.Description className="toast-text">
@@ -43,6 +45,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                     {t.link.label}
                   </a>
                 </>
+              ) : null}
+              {t.action ? (
+                <RadixToast.Action altText={t.action.label} asChild>
+                  <button
+                    type="button"
+                    className="toast-link toast-action"
+                    onClick={t.action.onClick}
+                  >
+                    {t.action.label}
+                  </button>
+                </RadixToast.Action>
               ) : null}
             </RadixToast.Description>
             <RadixToast.Close className="toast-close" aria-label="Dismiss">

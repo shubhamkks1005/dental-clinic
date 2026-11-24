@@ -101,8 +101,27 @@ export function AppointmentActions({ row, onChanged, layout = "menu", children }
         patientName={row.patientName}
         appointment={row}
         onClose={() => setDialog(null)}
-        onDone={(text) => {
-          toast({ text });
+        onDone={(text, undo) => {
+          toast({
+            text,
+            action: undo
+              ? {
+                  label: "Undo",
+                  onClick: () =>
+                    void undo()
+                      .then(() => {
+                        toast({ text: `Put ${row.patientName}'s appointment back.` });
+                        onChanged();
+                      })
+                      .catch((e: unknown) =>
+                        toast({
+                          text: e instanceof Error ? e.message : "Could not undo.",
+                          tone: "error",
+                        }),
+                      ),
+                }
+              : undefined,
+          });
           onChanged();
         }}
       />

@@ -202,6 +202,9 @@
 - packages/db/src/repos/prescriptions-usage.ts (+test) - repos.prescriptions.medicineUsage30d(): issued prescriptions per medicine in 30 days, counts only, doctor only; worker route GET /api/staff/library/medicine-usage
 - src/features/lists/medicine-input.ts - newMedicineInput() ("As directed" defaults, reviewed flag) used by the Library drawer and the visit's Add to my list
 - src/features/settings/ClinicDetailsSettings.tsx - Clinic and doctor page (Clinic and Doctor parts, amber warnings, Last saved, History) + ClinicPreview.tsx (live prescription preview via print/clinic-header.ts and ui/print), clinic-fields.ts (+test), clinic-last-saved.ts
+- packages/db/src/repos/appointments-undo-cancel.ts (+test) - repos.appointments.undoCancel: a cancelled appointment goes back to scheduled within 120 s if its time is still free (same UPDATE), audit row; route POST /api/staff/appointments/:id/undo-cancel (domain undoCancelAppointment also drops the queued "cancelled" message)
+- apps/web/src/features/appointments/LateEntry.tsx - Book dialog "Late entry" (time + reason, sent as overrideReason); closed days list their late entries (DayView uses PhoneDayList when closed); Toast has an optional action button (Undo, 10 s)
+- e2e/calendar-late-undo.spec.ts, e2e/calendar-helpers.ts - Undo and late entry browser specs, shared booking helpers
 - e2e/library.spec.ts, e2e/settings-clinic.spec.ts - Q2.13 browser specs (drawer, chips, Reorder, columns, preview, amber, keyboard and focus, 360/768/1366)
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible

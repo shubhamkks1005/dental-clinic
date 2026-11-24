@@ -7,6 +7,7 @@ import {
   parseCancelAppointment,
   parseChangeAppointmentStatus,
   parseRescheduleAppointment,
+  parseVersionOnly,
   parseWalkInAppointment,
   type Holiday,
   type Role,
@@ -74,6 +75,19 @@ export async function cancelAppointment(
       { kind: "cancel", appt: row },
       messagingMode ?? "dry_run",
     );
+  }
+  return { ok: true as const, appointment };
+}
+
+/** PA-M06: put a just-cancelled appointment back; its queued "cancelled" message is dropped. */
+export async function undoCancelAppointment(repos: Repos, id: string, body: unknown) {
+  const parsed = parseVersionOnly(body);
+  if (!parsed.ok) return parsed;
+  const appointment = await repos.appointments.undoCancel(id, parsed.value.version);
+  try {
+    await repos.messages.cancelQueuedForAppointment(id, OUT_OF_DATE);
+  } catch {
+    /* the outbox board shows what was queued; the booking is already back */
   }
   return { ok: true as const, appointment };
 }
