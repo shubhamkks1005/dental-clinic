@@ -1,7 +1,6 @@
 import { formatClockTime, istMinutes } from "@clinic/shared";
 import { useRef, type ReactNode } from "react";
 import { icons } from "../../../ui/icons";
-import { EmptyState } from "../../../ui/page/EmptyState";
 import type { DoctorModel, DoctorRow as Row } from "./doctor-model";
 import { DoctorRow } from "./DoctorRow";
 import { useFlip } from "./useFlip";
@@ -102,7 +101,9 @@ export function DoctorList({
         </span>
       </div>
       {model.rows.length === 0 ? (
-        <EmptyState>No patients today.</EmptyState>
+        <div className="td-empty-list">
+          {model.chair ? "No one else is waiting." : "No patients today."}
+        </div>
       ) : (
         <ul className="td-rows" ref={listRef}>
           {model.rows.map((row, i) => (

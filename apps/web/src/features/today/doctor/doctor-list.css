@@ -292,3 +292,12 @@
     margin-left: 0;
   }
 }
+
+.td-empty-list {
+  padding: 20px 24px;
+  color: var(--td-muted);
+  font-size: 14px;
+}
+.td-search-input::-webkit-search-cancel-button {
+  display: none;
+}

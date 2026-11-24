@@ -133,6 +133,7 @@ export function useDoctorToday(canSeeRequests: boolean) {
 
   // "New" chip: lines that were not there on the previous refresh (not on the first one).
   useEffect(() => {
+    if (!reply) return;
     const keys = new Set(items.map((i) => i.key));
     if (seenKeys.current) {
       const prev = seenKeys.current;
@@ -140,7 +141,7 @@ export function useDoctorToday(canSeeRequests: boolean) {
       if (added.length > 0) setFreshKeys(new Set(added));
     }
     seenKeys.current = keys;
-  }, [items]);
+  }, [items, reply]);
 
   /** Change the day reply in place (the optimistic move, the break the server just confirmed). */
   const patch = useCallback((fn: (r: DayAppointmentsReply) => DayAppointmentsReply) => {
