@@ -41,7 +41,8 @@ export function PopMenu({ label, open, anchor, items, onClose }: Props) {
       ref.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
     } else if (wasOpen.current) {
       wasOpen.current = false;
-      lastAnchor.current?.focus();
+      const back = lastAnchor.current;
+      window.setTimeout(() => back?.focus(), 0);
     }
     // The anchor is read only to return focus.
   }, [open]);

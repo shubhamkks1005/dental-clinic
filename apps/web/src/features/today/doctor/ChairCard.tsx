@@ -10,38 +10,62 @@ type Props = {
   nextName: string | null;
   /** Patients finished today (for the all-done message). */
   done: number;
+  /** Start the Next patient (the card's own button when the chair is free). */
+  onStartNext?: () => void;
   onOpenVisit: () => void;
   onDone: () => void;
 };
 
 /** "In chair now": exactly one patient (docs/design/final/doctor_today.html "in-chair-card"). */
-export function ChairCard({ chair, spotlight, busy, nextName, done, onOpenVisit, onDone }: Props) {
+export function ChairCard({
+  chair,
+  spotlight,
+  busy,
+  nextName,
+  done,
+  onStartNext,
+  onOpenVisit,
+  onDone,
+}: Props) {
   const cls = `td-chair${spotlight ? " is-spotlight" : ""}${chair ? "" : " is-empty"}`;
   if (!chair) {
-    const finished = nextName === null && done > 0;
+    // Three calm states: patients are waiting (call the next one), everyone is seen, nobody yet.
+    const state = nextName ? "waiting" : done > 0 ? "finished" : "quiet";
     return (
-      <section
-        id="td-chair"
-        className={cls + (finished ? " is-finished" : "")}
-        aria-label="Current patient in chair"
-      >
-        <span className="td-free-orb td-orb" aria-hidden="true" />
+      <section id="td-chair" className={`${cls} is-${state}`} aria-label="Current patient in chair">
         <span className="td-free-badge" aria-hidden="true">
-          <span className="td-ripple" />
-          <span className="td-ripple td-ripple-2" />
-          <span className="td-free-icon">{finished ? icons.taskDone : icons.chair}</span>
+          {state === "waiting" ? <span className="td-ripple" /> : null}
+          <span className={`td-free-icon${state === "finished" ? " td-draw" : ""}`}>
+            {state === "finished" ? icons.taskDone : icons.chair}
+          </span>
         </span>
         <div className="td-chair-body">
           <span className="td-eyebrow">In chair now</span>
-          <h2 className="td-chair-name">{finished ? "All done for now" : "Chair is free"}</h2>
+          <h2 className="td-chair-name">
+            {state === "waiting"
+              ? "The chair is free"
+              : state === "finished"
+                ? "All patients seen"
+                : "No one in the chair"}
+          </h2>
           <p className="td-chair-meta">
-            {finished
-              ? `Great work: ${done} ${done === 1 ? "patient" : "patients"} seen today.`
-              : nextName
-                ? `Press Start on ${nextName} when you are ready.`
-                : "Nobody is waiting right now. Enjoy the quiet."}
+            {state === "waiting"
+              ? `Next up: ${nextName}. Call them in when you are ready.`
+              : state === "finished"
+                ? `${done} ${done === 1 ? "patient" : "patients"} seen today. Nothing left in the list.`
+                : "Nobody has arrived yet. New patients will appear in the list below."}
           </p>
         </div>
+        {state === "waiting" && onStartNext ? (
+          <button
+            type="button"
+            className="td-btn is-primary td-call"
+            disabled={busy}
+            onClick={onStartNext}
+          >
+            Call {nextName}
+          </button>
+        ) : null}
       </section>
     );
   }

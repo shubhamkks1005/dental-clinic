@@ -416,43 +416,72 @@
   }
 }
 
-/* Empty chair: the badge floats gently and soft rings spread out from it */
+/* Empty chair. Waiting: a soft ring invites the doctor to call the next patient. Finished: the
+   check draws itself once. Quiet: the chair floats very slightly. */
 @keyframes td-float {
   0%,
   100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
   }
 }
 @keyframes td-ripple {
   0% {
     transform: scale(1);
-    opacity: 0.55;
+    opacity: 0.5;
   }
   100% {
-    transform: scale(1.9);
+    transform: scale(1.7);
     opacity: 0;
   }
 }
-.td-free-icon {
+@keyframes td-draw {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes td-call-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(5, 77, 97, 0.35);
+  }
+  60% {
+    box-shadow: 0 0 0 8px rgba(5, 77, 97, 0);
+  }
+}
+.td-chair.is-quiet .td-free-icon {
   display: inline-flex;
-  animation: td-float 3s ease-in-out infinite;
+  animation: td-float 3.4s ease-in-out infinite;
 }
 .td-ripple {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  border: 2px solid rgba(20, 108, 67, 0.4);
-  animation: td-ripple 2.6s ease-out infinite;
+  border: 2px solid rgba(15, 82, 102, 0.45);
+  animation: td-ripple 2.4s ease-out infinite;
 }
-.td-ripple-2 {
-  animation-delay: 1.3s;
+.td-draw svg circle,
+.td-draw svg path {
+  stroke-dasharray: 60;
+  animation: td-draw 800ms var(--td-ease) both;
+}
+.td-draw svg path {
+  animation-delay: 250ms;
+}
+.td-call {
+  animation: td-call-pulse 2.4s ease-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .td-free-icon,
-  .td-ripple {
+  .td-chair.is-quiet .td-free-icon,
+  .td-ripple,
+  .td-draw svg circle,
+  .td-draw svg path,
+  .td-call {
     animation: none !important;
   }
   .td-ripple {

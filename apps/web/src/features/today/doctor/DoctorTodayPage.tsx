@@ -164,6 +164,7 @@ export function DoctorTodayPage() {
         busy={act.openingId !== null || act.busy}
         nextName={next?.name ?? null}
         done={model.done}
+        onStartNext={next && !model.chair ? () => act.start(next) : undefined}
         onOpenVisit={() => model.chair && void act.openVisit(model.chair)}
         onDone={() => void act.finishChair()}
       />
