@@ -222,6 +222,14 @@ export function approveBillDiscount(id: string, version: number) {
   }).then((r) => r.bill);
 }
 
+/** Part T: the doctor says no to a requested discount (the total does not change). */
+export function rejectBillDiscount(id: string, version: number) {
+  return api<{ bill: BillDto }>(`/api/staff/bills/${encodeURIComponent(id)}/discount/reject`, {
+    method: "POST",
+    body: { version },
+  }).then((r) => r.bill);
+}
+
 export type PatientPaymentRow = {
   id: string;
   amountPaise: number;

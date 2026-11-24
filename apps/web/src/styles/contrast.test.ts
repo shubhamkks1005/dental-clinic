@@ -1,10 +1,11 @@
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 // 1.4.1: every text colour on the background it is used on reaches WCAG AA (4.5:1).
 // Values are read from base.css, so the test follows any token change. (Vitest stubs CSS
 // imports, so the file is read from disk.)
-const baseCss = readFileSync(new URL("./base.css", import.meta.url).pathname, "utf8");
+const baseCss = readFileSync(fileURLToPath(new URL("./base.css", import.meta.url)), "utf8");
 const tokens = Object.fromEntries(
   [...baseCss.matchAll(/--([a-z-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]),
 );

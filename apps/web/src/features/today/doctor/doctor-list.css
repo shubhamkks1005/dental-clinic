@@ -1,0 +1,294 @@
+/* Doctor Today: the list (design 6.3). One scrollable list; the page does not scroll for it. */
+.td-cols {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: rgba(242, 244, 245, 0.6);
+  border-bottom: 1px solid rgba(192, 200, 204, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--td-muted);
+}
+@media (min-width: 640px) {
+  .td-cols {
+    display: flex;
+  }
+}
+.td-col-main,
+.td-col-side {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.td-col-time {
+  width: 80px;
+}
+.td-col-status {
+  width: 128px;
+  text-align: center;
+}
+.td-col-action {
+  width: 112px;
+  text-align: right;
+}
+
+.td-rows {
+  max-height: min(460px, calc(100vh - 360px));
+  min-height: 120px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(5, 77, 97, 0.26) transparent;
+}
+@media (max-width: 1023px) {
+  .td-rows {
+    max-height: none;
+    overflow: visible;
+  }
+}
+.td-row,
+.td-lunch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-top: 1px solid rgba(192, 200, 204, 0.7);
+}
+.td-row:first-child {
+  border-top: 0;
+}
+.td-row:hover {
+  background: var(--td-low);
+}
+.td-row.is-next {
+  background: rgba(208, 230, 240, 0.2);
+}
+.td-row.is-next:hover {
+  background: rgba(208, 230, 240, 0.35);
+}
+.td-row-done {
+  background: rgba(210, 242, 222, 0.32);
+}
+.td-row-done:hover {
+  background: rgba(210, 242, 222, 0.48);
+}
+.td-row-late {
+  background: rgba(255, 218, 214, 0.25);
+}
+.td-row-late:hover {
+  background: rgba(255, 218, 214, 0.4);
+}
+.td-row-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.td-time {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.td-time-main {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.td-row-done .td-time-main,
+.td-row-done .td-name {
+  color: var(--td-muted);
+}
+.td-exp {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--td-warning);
+}
+.td-who {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.td-name-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.td-tag {
+  padding: 2px 8px;
+}
+.td-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--td-muted);
+}
+.td-sub .patient-no {
+  flex: none;
+}
+.td-visit {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-row-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.td-status {
+  width: 128px;
+  box-sizing: border-box;
+}
+.td-action {
+  width: 72px;
+  padding-left: 0;
+  padding-right: 0;
+}
+.td-action.is-primary {
+  background: var(--td-primary);
+  border-color: var(--td-primary);
+  color: var(--td-on-primary);
+}
+.td-action-gap {
+  width: 72px;
+}
+.td-more {
+  width: 32px;
+  padding: 0;
+  font-size: 18px;
+  color: var(--td-muted);
+}
+.td-more-gap {
+  width: 32px;
+}
+
+/* The lunch divider */
+.td-lunch {
+  background: linear-gradient(
+    90deg,
+    rgba(254, 240, 199, 0.45),
+    rgba(254, 240, 199, 0.2),
+    rgba(254, 240, 199, 0.45)
+  );
+  border-top: 1px dashed rgba(154, 91, 0, 0.45);
+  border-bottom: 1px dashed rgba(154, 91, 0, 0.45);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  justify-content: flex-start;
+}
+.td-lunch .td-time-main {
+  color: var(--td-warning-text);
+}
+.td-lunch .td-exp {
+  color: var(--td-warning-text);
+}
+.td-lunch-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(154, 91, 0, 0.35);
+  font-size: 14px;
+}
+.td-lunch-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--td-warning-bg);
+  color: var(--td-warning-text);
+  font-size: 13px;
+}
+.td-lunch-counts {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.td-lunch-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(154, 91, 0, 0.3);
+}
+.td-lunch-count.is-after {
+  border-color: var(--td-line);
+  color: var(--td-muted);
+}
+
+/* Restore pill in the list header (when Waiting for you is minimized) */
+.td-restore {
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--td-low);
+  gap: 6px;
+}
+
+/* Tablet and phone: the row becomes a card (the phone layout is in T2.9) */
+@media (max-width: 767px) {
+  .td-row {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+  .td-row-main {
+    flex-basis: 100%;
+  }
+  .td-row-side {
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
+  .td-status {
+    flex: 1;
+    width: auto;
+  }
+  .td-action {
+    min-height: 44px;
+    min-width: 88px;
+  }
+  .td-more {
+    min-height: 44px;
+    width: 44px;
+  }
+  .td-action-gap,
+  .td-more-gap {
+    display: none;
+  }
+  .td-lunch {
+    padding: 10px 16px;
+  }
+  .td-lunch-counts {
+    margin-left: 0;
+  }
+}

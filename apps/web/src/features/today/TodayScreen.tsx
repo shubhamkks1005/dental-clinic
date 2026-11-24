@@ -7,6 +7,7 @@ import { plural } from "../../ui/format";
 import { useMe } from "../auth";
 import { FollowUpList } from "./FollowUpList";
 import { DoctorToday } from "./DoctorToday";
+import { DoctorTodayPage } from "./doctor/DoctorTodayPage";
 import { NextPatientCard } from "./NextPatientCard";
 import { TodayActions } from "./TodayActions";
 import { TodayList } from "./TodayList";
@@ -24,6 +25,12 @@ function greeting(now: Date): string {
 
 // Main.dc.html / DoctorToday.dc.html (laptop) and PhoneToday.dc.html (phone). Q2.5.
 export function TodayScreen() {
+  const me = useMe();
+  // The doctor has a page of their own (final design, Part T); everyone else keeps this one.
+  return me.role === "doctor" ? <DoctorTodayPage /> : <DeskToday />;
+}
+
+function DeskToday() {
   const me = useMe();
   const isDoctor = me.role === "doctor";
   const { model, error, busyId, serverNow, load, onStatus } = useTodayModel();

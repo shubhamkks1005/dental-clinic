@@ -1,5 +1,7 @@
 import type {
   AppointmentPriority,
+  CurrentBreak,
+  LastOrderChange,
   AppointmentStatus,
   CancelReasonCode,
   DayWindow,
@@ -34,6 +36,12 @@ export type DayAppointment = {
   duePaise?: number | null;
   /** Q1.2 (receptionist only): visit is finalised and not fully paid; billId null = no bill yet. */
   readyToBill?: { billId: string | null } | null;
+  /** Part T: the doctor's saved order and its flags (empty on an older server reply). */
+  queueOrder?: number | null;
+  steppedOutAt?: string | null;
+  skipCount?: number;
+  lateAt?: string | null;
+  queueChangedAt?: string | null;
 };
 
 export type DayAppointmentsReply = {
@@ -41,6 +49,8 @@ export type DayAppointmentsReply = {
   serverNow: string;
   window: DayWindow;
   appointments: DayAppointment[];
+  lastOrderChange?: LastOrderChange | null;
+  currentBreak?: CurrentBreak | null;
 };
 
 export function listDayAppointments(dateLocal: string): Promise<DayAppointmentsReply> {
