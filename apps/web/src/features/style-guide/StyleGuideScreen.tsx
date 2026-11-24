@@ -5,6 +5,7 @@ import { StatusBadge } from "../../ui/StatusBadge";
 import { ChartPlayground } from "../chart";
 import { ChartDemos } from "./ChartDemos";
 import { ComponentDemos } from "./ComponentDemos";
+import { DoctorTodayDemo } from "./DoctorTodayDemo";
 import { FeedbackDemos } from "./FeedbackDemos";
 import { SampleForm } from "./SampleForm";
 import { SampleTable } from "./SampleTable";
@@ -34,6 +35,8 @@ export function StyleGuideScreen() {
         <h3>Status (always with a word)</h3>
         <StatusPairs />
       </section>
+
+      <DoctorTodayDemo />
 
       <section className="card guide-card" aria-labelledby="g-type">
         <h2 id="g-type">Type</h2>

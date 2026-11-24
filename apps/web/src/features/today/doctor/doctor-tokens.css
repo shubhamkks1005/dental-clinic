@@ -1,0 +1,86 @@
+/* Doctor Today (final design docs/design/final/doctor_today.html): colours and sizes, scoped to
+   this page only. The app keeps its own fonts and colours everywhere else. */
+.today-doc {
+  --td-nav: #263f4d;
+  --td-success: #146c43;
+  --td-success-bg: #d1f4e0;
+  --td-success-text: #0b462b;
+  --td-warning: #9a5b00;
+  --td-warning-bg: #fef0c7;
+  --td-warning-text: #693d00;
+  --td-info: #0f5266;
+  --td-info-bg: #d0e6f0;
+  --td-info-text: #003544;
+  --td-primary: #054d61;
+  --td-primary-hover: #0f5266;
+  --td-on-primary: #ffffff;
+  --td-on-primary-soft: #b9eaff;
+  --td-secondary-bg: #d0e6f0;
+  --td-error: #ba1a1a;
+  --td-error-bg: #ffdad6;
+  --td-error-text: #93000a;
+  --td-surface: #f8f9fb;
+  --td-card: #ffffff;
+  --td-low: #f2f4f5;
+  --td-container: #edeeef;
+  --td-text: #191c1d;
+  --td-muted: #40484c;
+  --td-outline: #70787c;
+  --td-line: #c0c8cc;
+  --td-radius-sm: 6px;
+  --td-radius: 8px;
+  --td-radius-md: 12px;
+  --td-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --td-ease-menu: cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--td-text);
+}
+
+/* Pills shared by the header, the list and the panel. Text on its own background is checked in
+   doctor-tokens.test.ts (4.5:1). */
+.td-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.td-pill-info {
+  background: var(--td-info-bg);
+  color: var(--td-info-text);
+}
+.td-pill-warning {
+  background: var(--td-warning-bg);
+  color: var(--td-warning-text);
+}
+.td-pill-success {
+  background: var(--td-success-bg);
+  color: var(--td-success-text);
+}
+.td-pill-error {
+  background: var(--td-error-bg);
+  color: var(--td-error-text);
+}
+.td-pill-neutral {
+  background: var(--td-container);
+  color: var(--td-muted);
+}
+.td-pill-primary {
+  background: var(--td-primary);
+  color: var(--td-on-primary);
+}
+.td-pill-cancelled {
+  background: var(--td-error);
+  color: #ffffff;
+}
+.td-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: currentColor;
+  flex: none;
+}

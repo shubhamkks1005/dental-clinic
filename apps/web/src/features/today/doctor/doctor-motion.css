@@ -1,0 +1,417 @@
+/* Doctor Today motion: the same timings and easing as docs/design/final/doctor_today.html.
+   With prefers-reduced-motion nothing moves; things only fade or change at once. */
+
+/* "Waiting for you" panel: minimize / restore */
+.td-split.is-animating .td-list-card {
+  transition:
+    flex 380ms var(--td-ease),
+    width 380ms var(--td-ease);
+}
+.td-panel {
+  overflow: hidden;
+  transform-origin: top left;
+}
+.td-panel.is-animating {
+  will-change: width, transform, opacity;
+  transition:
+    width 380ms var(--td-ease),
+    max-height 380ms var(--td-ease),
+    margin 380ms var(--td-ease),
+    opacity 280ms var(--td-ease) 40ms,
+    transform 380ms var(--td-ease),
+    border-width 200ms ease;
+}
+@media (min-width: 1024px) {
+  .td-panel {
+    width: 340px;
+  }
+  .td-panel.is-minimized {
+    width: 0;
+    margin-left: -16px;
+    opacity: 0;
+    transform: scale(0.84) translate(-28px, -12px);
+    pointer-events: none;
+    border-width: 0;
+  }
+  .td-panel.is-animating.is-minimized {
+    transition:
+      width 360ms var(--td-ease),
+      margin 360ms var(--td-ease),
+      opacity 220ms var(--td-ease),
+      transform 360ms var(--td-ease),
+      border-width 200ms ease;
+  }
+}
+@media (max-width: 1023px) {
+  .td-panel {
+    width: 100%;
+    max-height: 700px;
+  }
+  .td-panel.is-minimized {
+    max-height: 0;
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+    pointer-events: none;
+    border-width: 0;
+  }
+}
+.td-restore {
+  transition:
+    opacity 260ms var(--td-ease),
+    transform 260ms var(--td-ease),
+    max-width 280ms var(--td-ease),
+    padding 260ms ease,
+    margin 260ms ease;
+  max-width: 220px;
+  overflow: hidden;
+}
+.td-restore.is-hidden {
+  max-width: 0;
+  opacity: 0;
+  transform: scale(0.85);
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: -8px;
+  border-width: 0;
+  pointer-events: none;
+}
+
+/* Menus (row actions and the break menu) */
+.td-menu {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition:
+    opacity 220ms var(--td-ease-menu),
+    transform 240ms var(--td-ease-menu),
+    visibility 0s linear 240ms;
+}
+.td-menu.menu-up {
+  transform-origin: bottom right;
+  transform: scale(0.88) translateY(8px);
+}
+.td-menu.menu-down {
+  transform-origin: top right;
+  transform: scale(0.88) translateY(-8px);
+}
+.td-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 240ms var(--td-ease-menu),
+    transform 260ms var(--td-ease-menu),
+    visibility 0s linear 0s;
+}
+
+/* "Waiting for you" items: slide out to the right, the ones below slide up */
+.td-item {
+  max-height: 260px;
+  overflow: hidden;
+  transition:
+    transform 260ms var(--td-ease),
+    opacity 220ms var(--td-ease),
+    max-height 260ms var(--td-ease) 140ms,
+    padding 260ms var(--td-ease) 140ms,
+    border-width 200ms ease 140ms;
+}
+.td-item.is-removing {
+  transform: translateX(100%);
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  pointer-events: none;
+}
+@keyframes td-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateX(28px);
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 260px;
+  }
+}
+.td-item.is-new {
+  animation: td-slide-in 340ms var(--td-ease) forwards;
+}
+
+/* Note drawer, and the Submit button that appears when the doctor types */
+.td-note-drawer {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-top: 0;
+  transition:
+    max-height 240ms var(--td-ease),
+    opacity 180ms ease,
+    margin-top 180ms ease;
+}
+.td-note-drawer.is-open {
+  max-height: 52px;
+  opacity: 1;
+  margin-top: 2px;
+}
+.td-submit {
+  max-width: 0;
+  opacity: 0;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: scale(0.9);
+  transition:
+    max-width 220ms var(--td-ease),
+    opacity 180ms ease,
+    padding 220ms ease,
+    transform 220ms var(--td-ease);
+}
+.td-submit.is-visible {
+  max-width: 96px;
+  opacity: 1;
+  padding-left: 12px;
+  padding-right: 12px;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* List rows: cancel, pull forward (Lift 170 ms, Glide 440 ms, Settle 470 ms), skip, start */
+.td-row {
+  position: relative;
+  max-height: 180px;
+  transition:
+    transform 460ms var(--td-ease),
+    opacity 280ms var(--td-ease),
+    max-height 280ms var(--td-ease) 120ms,
+    padding 280ms var(--td-ease) 120ms,
+    box-shadow 220ms ease,
+    background-color 260ms ease;
+}
+.td-row.is-lifted {
+  z-index: 25;
+  background-color: #f4fbfc;
+  box-shadow:
+    0 18px 36px -8px rgba(5, 77, 97, 0.24),
+    0 0 0 1px rgba(5, 77, 97, 0.22);
+  border-radius: 8px;
+  transform: scale(1.022) translateY(-4px);
+}
+.td-row.is-removing {
+  transform: translateX(48px);
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.td-row.is-search-hidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+@keyframes td-spotlight {
+  0% {
+    box-shadow:
+      inset 3px 0 0 #054d61,
+      0 0 0 0 rgba(5, 77, 97, 0.28);
+    background-color: rgba(203, 238, 246, 0.55);
+  }
+  70% {
+    box-shadow:
+      inset 3px 0 0 #054d61,
+      0 0 0 4px rgba(5, 77, 97, 0);
+    background-color: rgba(203, 238, 246, 0.32);
+  }
+  100% {
+    box-shadow: inset 0 0 0 transparent;
+  }
+}
+.td-row.is-spotlight,
+.td-chair.is-spotlight {
+  animation: td-spotlight 1400ms var(--td-ease);
+}
+
+/* The In chair card */
+.td-chair {
+  transition:
+    transform 340ms var(--td-ease),
+    opacity 240ms var(--td-ease),
+    box-shadow 340ms ease;
+}
+.td-chair.is-swapping {
+  opacity: 0.45;
+  transform: translateY(10px) scale(0.985);
+}
+.td-chair.is-receiving {
+  transform: translateY(-3px) scale(1.012);
+  box-shadow:
+    0 20px 40px -8px rgba(5, 77, 97, 0.55),
+    0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+
+/* Search popover */
+.td-search-pop {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.985);
+  transform-origin: top center;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 180ms var(--td-ease),
+    transform 220ms var(--td-ease),
+    visibility 180ms ease;
+}
+.td-search-pop.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  visibility: visible;
+}
+@keyframes td-search-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.td-search-item {
+  animation: td-search-in 220ms var(--td-ease) both;
+}
+
+/* Break mode */
+@keyframes td-breathe {
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.16) translate(8px, -6px);
+    opacity: 0.8;
+  }
+}
+@keyframes td-cup {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-3deg);
+  }
+}
+@keyframes td-steam {
+  0% {
+    transform: translateY(3px) scaleX(0.9);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(-9px) scaleX(1.15);
+    opacity: 0;
+  }
+}
+.td-orb {
+  animation: td-breathe 5s ease-in-out infinite;
+}
+.td-cup {
+  animation: td-cup 3.2s ease-in-out infinite;
+}
+.td-steam-1 {
+  animation: td-steam 2.4s ease-in-out infinite;
+}
+.td-steam-2 {
+  animation: td-steam 2.4s ease-in-out infinite 0.9s;
+}
+.td-break {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: -16px;
+  border-width: 0;
+  transform: translateY(-8px) scale(0.985);
+  pointer-events: none;
+  transition:
+    max-height 380ms var(--td-ease),
+    opacity 300ms ease,
+    padding 380ms var(--td-ease),
+    margin 380ms var(--td-ease),
+    transform 380ms var(--td-ease),
+    border-width 200ms ease;
+}
+.td-break.is-active {
+  max-height: 180px;
+  opacity: 1;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 0;
+  border-width: 1px;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.td-break-bar {
+  transition: width 1000ms linear;
+}
+
+/* Reduced motion: no moving, scaling or sliding. Things fade or change at once. */
+@media (prefers-reduced-motion: reduce) {
+  .td-split.is-animating .td-list-card,
+  .td-panel.is-animating,
+  .td-panel.is-animating.is-minimized,
+  .td-restore,
+  .td-menu,
+  .td-menu.is-open,
+  .td-item,
+  .td-row,
+  .td-chair,
+  .td-search-pop,
+  .td-break,
+  .td-break-bar,
+  .td-note-drawer,
+  .td-submit {
+    transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+  }
+  .td-panel.is-minimized,
+  .td-menu.menu-up,
+  .td-menu.menu-down,
+  .td-item.is-removing,
+  .td-row.is-removing,
+  .td-row.is-lifted,
+  .td-chair.is-swapping,
+  .td-chair.is-receiving,
+  .td-search-pop,
+  .td-break {
+    transform: none !important;
+  }
+  .td-orb,
+  .td-cup,
+  .td-steam-1,
+  .td-steam-2,
+  .td-item.is-new,
+  .td-search-item,
+  .td-row.is-spotlight,
+  .td-chair.is-spotlight {
+    animation: none !important;
+  }
+}
