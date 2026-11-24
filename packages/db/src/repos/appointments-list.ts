@@ -1,5 +1,5 @@
 import type { AppointmentPriority, AppointmentStatus } from "@clinic/shared";
-import { and, asc, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNull, lte } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -94,45 +94,79 @@ export type DayAppointmentRow = {
   version: number;
 };
 
+const DAY_COLUMNS = {
+  id: appointments.id,
+  patientId: appointments.patientId,
+  patientCode: patients.code,
+  patientName: patients.fullName,
+  patientMobile: patients.mobile,
+  chairId: appointments.chairId,
+  visitTypeId: appointments.visitTypeId,
+  visitTypeLabel: appointments.visitTypeLabel,
+  startAt: appointments.startAt,
+  dateLocal: appointments.dateLocal,
+  startMin: appointments.startMin,
+  endMin: appointments.endMin,
+  status: appointments.status,
+  source: appointments.source,
+  priority: appointments.priority,
+  overbook: appointments.overbook,
+  complaint: appointments.complaint,
+  arrivedAt: appointments.arrivedAt,
+  startedAt: appointments.startedAt,
+  endedAt: appointments.endedAt,
+  updatedAt: appointments.updatedAt,
+  version: appointments.version,
+};
+
+type RawDayRow = Omit<DayAppointmentRow, "status" | "priority"> & {
+  status: string;
+  priority: string;
+};
+
+function typed(rows: RawDayRow[]): DayAppointmentRow[] {
+  return rows.map((r) => ({
+    ...r,
+    status: r.status as AppointmentStatus,
+    priority: r.priority as AppointmentPriority,
+  }));
+}
+
 export function appointmentsListRepo(db: Db, ctx: Ctx) {
   return {
     async listForDay(dateLocal: string): Promise<DayAppointmentRow[]> {
       assertAllowed(ctx, "appointments.manage");
       const rows = await db
-        .select({
-          id: appointments.id,
-          patientId: appointments.patientId,
-          patientCode: patients.code,
-          patientName: patients.fullName,
-          patientMobile: patients.mobile,
-          chairId: appointments.chairId,
-          visitTypeId: appointments.visitTypeId,
-          visitTypeLabel: appointments.visitTypeLabel,
-          startAt: appointments.startAt,
-          dateLocal: appointments.dateLocal,
-          startMin: appointments.startMin,
-          endMin: appointments.endMin,
-          status: appointments.status,
-          source: appointments.source,
-          priority: appointments.priority,
-          overbook: appointments.overbook,
-          complaint: appointments.complaint,
-          arrivedAt: appointments.arrivedAt,
-          startedAt: appointments.startedAt,
-          endedAt: appointments.endedAt,
-          updatedAt: appointments.updatedAt,
-          version: appointments.version,
-        })
+        .select(DAY_COLUMNS)
         .from(appointments)
         .innerJoin(patients, eq(appointments.patientId, patients.id))
         .where(and(eq(appointments.dateLocal, dateLocal), isNull(appointments.deletedAt)))
         .orderBy(asc(appointments.startMin), asc(appointments.createdAt))
         .all();
-      return rows.map((r) => ({
-        ...r,
-        status: r.status as AppointmentStatus,
-        priority: r.priority as AppointmentPriority,
-      }));
+      return typed(rows);
+    },
+
+    /** S3.2.2: every day from..to (both included) in one query; date_local range uses the day index. */
+    async listForRange(from: string, to: string): Promise<DayAppointmentRow[]> {
+      assertAllowed(ctx, "appointments.manage");
+      const rows = await db
+        .select(DAY_COLUMNS)
+        .from(appointments)
+        .innerJoin(patients, eq(appointments.patientId, patients.id))
+        .where(
+          and(
+            gte(appointments.dateLocal, from),
+            lte(appointments.dateLocal, to),
+            isNull(appointments.deletedAt),
+          ),
+        )
+        .orderBy(
+          asc(appointments.dateLocal),
+          asc(appointments.startMin),
+          asc(appointments.createdAt),
+        )
+        .all();
+      return typed(rows);
     },
 
     async listForPatient(patientId: string): Promise<PatientAppointmentRow[]> {

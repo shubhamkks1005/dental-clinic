@@ -10,6 +10,20 @@ export type DayWindow = {
   closed: boolean;
 };
 
+/** One day of the staff appointment list; the same shape for the day view and each day of a range. */
+export type AppointmentDayReply<A> = {
+  dateLocal: string;
+  serverNow: string;
+  window: DayWindow;
+  appointments: A[];
+};
+
+/** S3.2.2: GET /appointments/range replies with the days in order, from first to last. */
+export type AppointmentRangeReply<A> = { days: AppointmentDayReply<A>[] };
+
+/** The longest range one request may ask for (the laptop week view). */
+export const APPOINTMENT_RANGE_MAX_DAYS = 7;
+
 /** Visible day bounds from timings (empty intervals → closed). */
 export function dayWindow(dateLocal: string, timings: Timings, holidays: Holiday[]): DayWindow {
   const intervals = clinicWorkingIntervals(dateLocal, timings, holidays);

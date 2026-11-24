@@ -192,6 +192,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/appointments/range",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/appointments/slots",
     access: { kind: "permission", action: "appointments.manage" },
   },

@@ -5,12 +5,12 @@ import {
   bookAppointment,
   cancelAppointment,
   changeAppointmentStatus,
-  listDayAppointments,
   rescheduleAppointment,
   suggestAppointmentSlots,
   undoCancelAppointment,
   walkInAppointment,
 } from "../domain/appointments";
+import { listDayAppointments, listRangeAppointments } from "../domain/appointments-list";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -28,6 +28,19 @@ staffAppointments.get("/appointments", async (c) => {
       appointments: result.appointments,
     }),
   );
+});
+
+// S3.2.2: up to 7 days in one reply (the laptop week view). Each day has the day-view shape.
+staffAppointments.get("/appointments/range", async (c) => {
+  const { repos, ctx } = signedIn(c);
+  const result = await listRangeAppointments(
+    repos,
+    c.req.query("from") ?? "",
+    c.req.query("to") ?? "",
+    ctx.role,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ days: result.days }));
 });
 
 staffAppointments.post("/appointments", async (c) => {

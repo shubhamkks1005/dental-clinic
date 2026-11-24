@@ -1,8 +1,6 @@
 import type { Repos } from "@clinic/db";
 import { messagesAfterAppointmentChange, OUT_OF_DATE } from "./messages-events";
 import {
-  dayWindow,
-  istDate,
   parseBookAppointment,
   parseCancelAppointment,
   parseChangeAppointmentStatus,
@@ -10,14 +8,15 @@ import {
   parseVersionOnly,
   parseWalkInAppointment,
   type Holiday,
-  type Role,
   type Timings,
 } from "@clinic/shared";
 
-async function clinicClock(repos: Repos) {
-  const timings = (await repos.settings.get("clinic.timings")).value as Timings;
-  const holidays = (await repos.settings.get("clinic.holidays")).value as Holiday[];
-  return { timings, holidays };
+export async function clinicClock(repos: Repos) {
+  const [timings, holidays] = await Promise.all([
+    repos.settings.get("clinic.timings"),
+    repos.settings.get("clinic.holidays"),
+  ]);
+  return { timings: timings.value as Timings, holidays: holidays.value as Holiday[] };
 }
 
 export async function bookAppointment(repos: Repos, body: unknown, now: Date = new Date()) {
@@ -126,60 +125,7 @@ export async function listPatientAppointments(repos: Repos, patientId: string) {
 
 const DATE_LOCAL = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Day view payload (2.4.1): appointments + clinic window + server clock. */
-export async function listDayAppointments(
-  repos: Repos,
-  dateRaw: string | undefined,
-  role: Role,
-  now: Date = new Date(),
-) {
-  const dateLocal = dateRaw && dateRaw.length > 0 ? dateRaw : istDate(now);
-  if (!DATE_LOCAL.test(dateLocal)) {
-    return { ok: false as const, message: "Pick a date as YYYY-MM-DD." };
-  }
-  // listForDay asserts appointments.manage first so denied roles get 403.
-  const appointments = await repos.appointments.listForDay(dateLocal);
-  // 3.3.2: icon-only flags on cards (never labels). Callers have clinical.alert_flag.
-  const flags = await repos.medicalHistory.alertFlagsForPatients(
-    appointments.map((a) => a.patientId),
-  );
-  // 5.3.4: due mark on cards; amount only for receptionist.
-  let dues = new Map<string, number>();
-  try {
-    dues = await repos.bills.duesForPatients(appointments.map((a) => a.patientId));
-  } catch {
-    dues = new Map();
-  }
-  const showDueAmount = role === "receptionist";
-  // Q1.2: finalised visit not yet fully paid. Desk only (it is about money).
-  let ready = new Map<string, { visitId: string; billId: string | null }>();
-  if (showDueAmount) {
-    try {
-      ready = await repos.bills.readyToBill(appointments.map((a) => a.id));
-    } catch {
-      ready = new Map();
-    }
-  }
-  const withFlags = appointments.map((a) => {
-    const duePaise = dues.get(a.patientId) ?? 0;
-    return {
-      ...a,
-      alertFlags: flags.get(a.patientId) ?? { hasAlert: false, hasRestricted: false },
-      hasDue: duePaise > 0,
-      readyToBill: ready.has(a.id) ? { billId: ready.get(a.id)!.billId } : null,
-      duePaise: showDueAmount && duePaise > 0 ? duePaise : null,
-    };
-  });
-  const { timings, holidays } = await clinicClock(repos);
-  const window = dayWindow(dateLocal, timings, holidays);
-  return {
-    ok: true as const,
-    dateLocal,
-    serverNow: now.toISOString(),
-    window,
-    appointments: withFlags,
-  };
-}
+// The day list and the week range live in appointments-list.ts.
 
 export async function appointmentRescheduleChain(repos: Repos, id: string) {
   const chain = await repos.appointments.rescheduleChain(id);

@@ -47,6 +47,14 @@ export function listDayAppointments(dateLocal: string): Promise<DayAppointmentsR
   return api<DayAppointmentsReply>(`/api/staff/appointments?date=${encodeURIComponent(dateLocal)}`);
 }
 
+/** S3.2.2: up to 7 days in one request; each day has the day-view shape. */
+export function listAppointmentRange(from: string, to: string): Promise<DayAppointmentsReply[]> {
+  const q = new URLSearchParams({ from, to });
+  return api<{ days: DayAppointmentsReply[] }>(`/api/staff/appointments/range?${q}`).then(
+    (r) => r.days,
+  );
+}
+
 export function rescheduleAppointment(
   id: string,
   body: { version: number; dateLocal: string; startMin: number; overrideReason?: string },

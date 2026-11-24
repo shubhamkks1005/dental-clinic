@@ -7,6 +7,7 @@ import { NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { alerts, medicalHistory, patients } from "../schema";
 import { nowUtcSql } from "../sql";
+import { inChunks } from "./bills-paid";
 
 export type MedicalHistoryVersion = {
   id: string;
@@ -190,12 +191,14 @@ export function medicalHistoryRepo(db: Db, ctx: Ctx) {
       for (const id of unique) out.set(id, { hasAlert: false, hasRestricted: false });
       if (unique.length === 0) return out;
 
-      const rows = await db
-        .select({ patientId: alerts.patientId, restricted: alerts.restricted })
-        .from(alerts)
-        .where(
-          and(inArray(alerts.patientId, unique), eq(alerts.active, true), isNull(alerts.deletedAt)),
-        );
+      const rows = await inChunks(unique, (part) =>
+        db
+          .select({ patientId: alerts.patientId, restricted: alerts.restricted })
+          .from(alerts)
+          .where(
+            and(inArray(alerts.patientId, part), eq(alerts.active, true), isNull(alerts.deletedAt)),
+          ),
+      );
 
       for (const row of rows) {
         const cur = out.get(row.patientId);

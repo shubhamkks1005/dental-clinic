@@ -1,7 +1,7 @@
 import { addIstDays } from "@clinic/shared";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { refreshFailure } from "../../ui/refresh-fail";
-import { listDayAppointments, type DayAppointmentsReply } from "./api";
+import { listAppointmentRange, type DayAppointmentsReply } from "./api";
 
 /** Monday of the week that holds `day` (YYYY-MM-DD). */
 export function weekStart(day: string): string {
@@ -15,7 +15,7 @@ export function weekDays(day: string): string[] {
   return Array.from({ length: 7 }, (_, i) => addIstDays(first, i));
 }
 
-/** The seven days of the week, one request each (same endpoint as the day view). */
+/** The seven days of the week, in one request (S3.2.2). Each day has the day-view shape. */
 export function useWeek(active: boolean, day: string, refreshKey: number) {
   const [days, setDays] = useState<DayAppointmentsReply[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +26,7 @@ export function useWeek(active: boolean, day: string, refreshKey: number) {
 
   const load = useCallback(() => {
     if (!active) return;
-    Promise.all(weekDays(first).map((d) => listDayAppointments(d)))
+    listAppointmentRange(first, addIstDays(first, 6))
       .then((next) => {
         setDays(next);
         setError(null);
