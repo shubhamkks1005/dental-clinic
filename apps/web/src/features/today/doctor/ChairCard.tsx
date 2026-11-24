@@ -27,7 +27,9 @@ export function ChairCard({ chair, spotlight, busy, nextName, done, onOpenVisit,
       >
         <span className="td-free-orb td-orb" aria-hidden="true" />
         <span className="td-free-badge" aria-hidden="true">
-          {icons.taskDone}
+          <span className="td-ripple" />
+          <span className="td-ripple td-ripple-2" />
+          <span className="td-free-icon">{finished ? icons.taskDone : icons.chair}</span>
         </span>
         <div className="td-chair-body">
           <span className="td-eyebrow">In chair now</span>
