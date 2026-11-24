@@ -5,6 +5,7 @@ import { EmptyState } from "../../ui/page/EmptyState";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { StatusLabel } from "../../ui/StatusLabel";
 import { searchBills, type BillSearchRow } from "./api";
+import { TextInput } from "../../ui/form";
 
 const STATUS_FILTERS = [
   { id: "", label: "All" },
@@ -49,7 +50,7 @@ export function BillsTab() {
 
   return (
     <div className="hub-stack">
-      <input
+      <TextInput
         className="input"
         aria-label="Search bills"
         placeholder="Search a patient or bill number"

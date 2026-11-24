@@ -10,6 +10,7 @@ import { SampleForm } from "./SampleForm";
 import { SampleTable } from "./SampleTable";
 import { BRAND, NEUTRALS, StatusPairs, SwatchList } from "./Swatches";
 import "./style-guide.css";
+import { TextInput } from "../../ui/form";
 
 // 1.4.1 style guide: every token and building block in one place (no mockup; DESIGN.md).
 // Not in the menu; open /app/style-guide. Contrast is checked by styles/contrast.test.ts.
@@ -69,7 +70,7 @@ export function StyleGuideScreen() {
         </div>
         <label className="guide-field">
           <span>Mobile number</span>
-          <input className="input" type="tel" inputMode="numeric" placeholder="98xxx xxxxx" />
+          <TextInput className="input" type="tel" inputMode="numeric" placeholder="98xxx xxxxx" />
         </label>
         <p className="notice notice-ok">Saved.</p>
         <p className="notice notice-warning">Check this before you continue.</p>

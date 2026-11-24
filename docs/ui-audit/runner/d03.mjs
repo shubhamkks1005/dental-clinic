@@ -5,7 +5,7 @@ await flow({ id: process.argv[2] || "D03-payments-advance-split-part-and-mistake
   const open = async (name, why) => { await c.go("/app/patients", "Patients list"); await c.click(p.getByRole("link", { name }).first(), why); await c.click(p.getByRole("tab", { name: "Billing", exact: true }), "Open the Billing tab"); };
   // 1 patient with nothing due: can an advance be taken?
   await c.go("/app/patients/new", "CASE 1: a patient who wants to pay in advance (no bill yet)");
-  await c.type(p.getByLabel("Full name"), "Adv Paytest", "Name"); await c.pick(p.getByLabel("Gender"), "Male", "Gender"); await c.type(p.getByLabel("Or age (years)"), "40", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099030", "Mobile");
+  await c.type(p.getByLabel("Full name"), "Adv Paytest", "Name"); await c.click(p.getByLabel("Male", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "40", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099030", "Mobile");
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
   await open("Adv Paytest", "Open the new patient");
   await c.look("Billing tab of a patient with no bill: where is Take payment?");

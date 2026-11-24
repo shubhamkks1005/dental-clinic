@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { getSetting, putSetting } from "./api";
+import { Select, TextInput, Textarea } from "../../ui/form";
 
 /** 3.8.1: edit consent templates. The doctor's forms are Hindi; lawyer confirms later. */
 export function ConsentTemplatesSettings() {
@@ -70,7 +71,7 @@ export function ConsentTemplatesSettings() {
       </p>
       <label>
         Template
-        <select
+        <Select
           value={key}
           onChange={(e) => setKey(e.target.value as ConsentTemplateKey)}
           disabled={busy}
@@ -80,11 +81,11 @@ export function ConsentTemplatesSettings() {
               {templates[k].title}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <label>
         Title
-        <input
+        <TextInput
           value={current.title}
           disabled={busy}
           onChange={(e) =>
@@ -94,7 +95,7 @@ export function ConsentTemplatesSettings() {
       </label>
       <label>
         Heading on the printed form
-        <input
+        <TextInput
           value={current.printTitle ?? ""}
           disabled={busy}
           onChange={(e) =>
@@ -104,7 +105,7 @@ export function ConsentTemplatesSettings() {
       </label>
       <label>
         Body
-        <textarea
+        <Textarea
           rows={16}
           value={current.body}
           disabled={busy}

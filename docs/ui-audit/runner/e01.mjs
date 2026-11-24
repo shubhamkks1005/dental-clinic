@@ -20,11 +20,11 @@ await flow({ id: process.argv[2] || "E01-settings-timings-visit-type-medicine", 
   c.note("After reloading the page the Monday closing time is " + (await p.locator('input[name="week.mon.end"]').inputValue()) + " (the 07:00 was not saved)");
   // ---- Effect for the receptionist ----
   await c.as("receptionist", "Switch to the receptionist");
-  await c.go("/app/appointments", "Appointments");
-  await c.click(p.getByRole("button", { name: "Book", exact: true }), "Open Book dialog (today)");
+  await c.go("/app/appointments?view=day", "Appointments");
+  await c.click(p.getByRole("button", { name: "Book appointment" }), "Open Book dialog (today)");
   await c.type(d().getByLabel("Patient"), "Neha", "Type a patient name"); await p.waitForTimeout(900);
   await c.click(d().locator("button.quick-book-result"), "Pick the patient");
-  await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose Consultation");
+  await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Choose Consultation");
   await c.look("Free times today now that the clinic is open until 23:30");
   c.note("Times offered today: " + ((await d().innerText()).match(/\d+:\d\d [AP]M/g) || []).slice(0, 8).join(", ") + " ...");
   await p.keyboard.press("Escape");
@@ -49,12 +49,12 @@ await flow({ id: process.argv[2] || "E01-settings-timings-visit-type-medicine", 
   await c.look("After adding the medicine");
   // ---- Do the new settings reach the screens that use them? ----
   await c.as("receptionist", "PART 4: do the new settings appear where they are used? Receptionist opens Book");
-  await c.go("/app/appointments", "Appointments");
-  await c.click(p.getByRole("button", { name: "Book", exact: true }), "Open Book");
+  await c.go("/app/appointments?view=day", "Appointments");
+  await c.click(p.getByRole("button", { name: "Book appointment" }), "Open Book");
   await c.type(d().getByLabel("Patient"), "Neha", "Patient"); await p.waitForTimeout(900);
   await c.click(d().locator("button.quick-book-result"), "Pick the patient");
-  c.note("Visit types offered: " + (await d().getByLabel("Visit type").locator("option").allInnerTexts()).join(", "));
-  await c.pick(d().getByLabel("Visit type"), { label: "Retainer check" }, "Choose the new visit type 'Retainer check' (20 minutes)");
+  c.note("Visit types offered: " + (await d().getByRole("group", { name: "Visit type" }).getByRole("button").allInnerTexts()).join(", "));
+  await c.click(d().getByRole("button", { name: "Retainer check", exact: true }), "Choose the new visit type 'Retainer check' (20 minutes)");
   await c.look("Free times for a 20-minute visit type");
   c.note("Times offered for the 20-minute type: " + ((await d().innerText()).match(/\d+:\d\d [AP]M/g) || []).slice(0, 8).join(", "));
   await p.keyboard.press("Escape");

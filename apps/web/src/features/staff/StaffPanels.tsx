@@ -2,6 +2,7 @@ import type { StaffMember, StaffRole } from "@clinic/shared";
 import { useState, type ReactNode } from "react";
 import { shortName } from "../../ui/names";
 import { RolePicker } from "./RolePicker";
+import { TextInput } from "../../ui/form";
 
 type PanelProps = { member: StaffMember; busy: boolean; onCancel: () => void };
 
@@ -63,7 +64,7 @@ export function GooglePanel(props: PanelProps & { onReset: (email: string) => vo
       </p>
       <label className="field">
         <span>Gmail address</span>
-        <input
+        <TextInput
           className="input"
           type="email"
           inputMode="email"

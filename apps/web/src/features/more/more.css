@@ -34,3 +34,15 @@
     max-width: 36rem;
   }
 }
+
+.more-badge {
+  margin-left: auto;
+  min-width: 24px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}

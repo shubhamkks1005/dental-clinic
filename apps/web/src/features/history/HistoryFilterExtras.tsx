@@ -1,3 +1,4 @@
+import { TextInput } from "../../ui/form";
 type Props = {
   from: string;
   to: string;
@@ -32,7 +33,7 @@ export function HistoryFilterExtras({
     >
       <label>
         From
-        <input
+        <TextInput
           type="date"
           value={from}
           onChange={(e) => onFrom(e.target.value)}
@@ -41,7 +42,7 @@ export function HistoryFilterExtras({
       </label>
       <label>
         To
-        <input
+        <TextInput
           type="date"
           value={to}
           onChange={(e) => onTo(e.target.value)}
@@ -50,7 +51,7 @@ export function HistoryFilterExtras({
       </label>
       <label>
         Tooth
-        <input
+        <TextInput
           type="number"
           inputMode="numeric"
           min={11}
@@ -63,7 +64,7 @@ export function HistoryFilterExtras({
       </label>
       <label className="history-filter-search">
         Search
-        <input
+        <TextInput
           type="search"
           value={q}
           onChange={(e) => onQ(e.target.value)}

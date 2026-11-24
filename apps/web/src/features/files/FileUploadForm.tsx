@@ -4,6 +4,7 @@ import { ApiError } from "../../api/client";
 import { getPatientConsents } from "../patients/api";
 import { uploadPatientFile } from "./api";
 import { prepareImageForUpload } from "./prepare-image";
+import { NativeInput, Select, TextInput } from "../../ui/form";
 
 type Props = {
   patientId: string;
@@ -74,7 +75,7 @@ export function FileUploadForm({ patientId, allowedKinds, onUploaded }: Props) {
     <form className="file-upload" onSubmit={(e) => e.preventDefault()}>
       <label>
         Type
-        <select
+        <Select
           value={kind}
           onChange={(e) => setKind(e.target.value as PatientFileKind)}
           disabled={busy}
@@ -84,15 +85,15 @@ export function FileUploadForm({ patientId, allowedKinds, onUploaded }: Props) {
               {k}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <label>
         Caption
-        <input value={caption} onChange={(e) => setCaption(e.target.value)} disabled={busy} />
+        <TextInput value={caption} onChange={(e) => setCaption(e.target.value)} disabled={busy} />
       </label>
       <label>
         Tooth (FDI)
-        <input
+        <TextInput
           inputMode="numeric"
           value={tooth}
           onChange={(e) => setTooth(e.target.value)}
@@ -102,7 +103,7 @@ export function FileUploadForm({ patientId, allowedKinds, onUploaded }: Props) {
       </label>
       <label className="file-upload-pick">
         Choose file
-        <input
+        <NativeInput
           type="file"
           accept="image/jpeg,image/png,image/webp,application/pdf"
           disabled={busy}

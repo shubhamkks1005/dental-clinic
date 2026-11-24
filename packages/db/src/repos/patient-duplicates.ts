@@ -80,9 +80,14 @@ export function patientDuplicatesRepo(db: Db, ctx: Ctx) {
           mobile: row.mobile,
           reason,
         });
-        if (hits.length >= TOP) break;
       }
-      return hits;
+      // Strongest match first, then cap: an exact mobile must never be cut off by weaker name matches.
+      const rank: Record<DuplicateReason, number> = {
+        mobile_name: 0,
+        secondary_mobile: 1,
+        name_age: 2,
+      };
+      return hits.sort((a, b) => rank[a.reason] - rank[b.reason]).slice(0, TOP);
     },
   };
 }

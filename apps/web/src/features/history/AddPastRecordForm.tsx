@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { listPatientFiles, type FileRow } from "../files";
 import { createPastRecord } from "./api";
+import { Select, TextInput, Textarea } from "../../ui/form";
 
 type Props = {
   patientId: string;
@@ -76,7 +77,7 @@ export function AddPastRecordForm({ patientId, onCreated }: Props) {
       <p className="muted small">For old paper history. Shown as “Added later”.</p>
       <label>
         Date
-        <input
+        <TextInput
           type="date"
           required
           value={recordedOn}
@@ -85,7 +86,7 @@ export function AddPastRecordForm({ patientId, onCreated }: Props) {
       </label>
       <label>
         Note
-        <textarea
+        <Textarea
           required
           rows={3}
           maxLength={4000}
@@ -96,7 +97,7 @@ export function AddPastRecordForm({ patientId, onCreated }: Props) {
       </label>
       <label>
         Optional scan
-        <select
+        <Select
           value={fileId}
           onChange={(e) => setFileId(e.target.value)}
           aria-label="Optional scan"
@@ -107,7 +108,7 @@ export function AddPastRecordForm({ patientId, onCreated }: Props) {
               {f.kind} · {f.originalFilename || f.id.slice(0, 8)}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       {error ? (
         <p className="notice notice-error" role="alert">

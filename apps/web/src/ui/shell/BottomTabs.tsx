@@ -1,12 +1,15 @@
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import { icons } from "../icons";
 import { NEW_PATIENT_PATH, type NavItem } from "./nav-items";
 
 // Phone only: bottom tab bar and the round "+" button for a new patient.
 export function BottomTabs({ items, canAddPatient }: { items: NavItem[]; canAddPatient: boolean }) {
+  // Q2.11: the "+" is for Today and the Patients list only; elsewhere it covers content.
+  const path = useLocation().pathname.replace(/\/$/, "");
+  const showFab = canAddPatient && (path === "/app" || path === "/app/patients");
   return (
     <>
-      {canAddPatient && (
+      {showFab && (
         <Link to={NEW_PATIENT_PATH} className="shell-fab" aria-label="New patient">
           {icons.plus}
         </Link>

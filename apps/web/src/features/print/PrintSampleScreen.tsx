@@ -6,6 +6,7 @@ import { SAMPLE_CLINIC, SAMPLE_RX } from "./sample-print-data";
 import { parseMedicineLineCount, sampleRxWithMedicineCount } from "./sample-rx-count";
 import "./prescription.css";
 import "./print-screen.css";
+import { Select } from "../../ui/form";
 
 // 1.4.8: the printer check page (S13 layout, sample data). Opens without the app frame; only
 // the sheet prints. 4.5.1: ?lines=1..8 for print regression screenshots.
@@ -35,25 +36,25 @@ export function PrintSampleScreen() {
         </div>
         <label className="print-option">
           <span>Paper</span>
-          <select
+          <Select
             className="input"
             value={size}
             onChange={(e) => setSize(e.target.value as PaperSize)}
           >
             <option value="A5">A5</option>
             <option value="A4">A4</option>
-          </select>
+          </Select>
         </label>
         <label className="print-option">
           <span>Header</span>
-          <select
+          <Select
             className="input"
             value={header}
             onChange={(e) => setHeader(e.target.value as HeaderMode)}
           >
             <option value="print">Print the clinic header</option>
             <option value="blank">Leave space (letterhead paper)</option>
-          </select>
+          </Select>
         </label>
         <div className="print-actions">
           <button type="button" className="btn btn-primary" onClick={() => window.print()}>

@@ -17,7 +17,7 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(`Book Test ${stamp}`);
-  await page.getByLabel("Gender").selectOption("female");
+  await page.getByLabel("Female", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();
@@ -28,7 +28,7 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
     .or(page.getByRole("link", { name: "Book appointment" }))
     .click();
   const dialog = page.locator("dialog[open]");
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
 
   // First of the next 7 days that has a free time (closed days have none).
   const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });

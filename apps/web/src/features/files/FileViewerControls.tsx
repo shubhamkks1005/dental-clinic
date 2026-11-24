@@ -1,4 +1,5 @@
 import type { ViewerFilters } from "./file-viewer-state";
+import { NativeInput } from "../../ui/form";
 
 type Props = {
   value: ViewerFilters;
@@ -12,7 +13,7 @@ export function FileViewerControls({ value, onChange }: Props) {
     <div className="file-viewer-controls" role="group" aria-label="Image controls">
       <label>
         Zoom
-        <input
+        <NativeInput
           type="range"
           min={0.5}
           max={4}
@@ -23,7 +24,7 @@ export function FileViewerControls({ value, onChange }: Props) {
       </label>
       <label>
         Brightness
-        <input
+        <NativeInput
           type="range"
           min={50}
           max={150}
@@ -33,7 +34,7 @@ export function FileViewerControls({ value, onChange }: Props) {
       </label>
       <label>
         Contrast
-        <input
+        <NativeInput
           type="range"
           min={50}
           max={150}

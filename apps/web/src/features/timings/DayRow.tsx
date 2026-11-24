@@ -1,6 +1,6 @@
 import { DAY_NAMES, type DayKey, type Timings } from "@clinic/shared";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Field } from "../../ui/form";
+import { Checkbox, Field, TextInput } from "../../ui/form";
 
 type DayErrors = FieldErrors<Timings["week"][DayKey]> | undefined;
 
@@ -20,14 +20,14 @@ export function DayRow({
   return (
     <div className="day-row">
       <label className="day-open">
-        <input type="checkbox" {...register(`week.${day}.open`)} />
+        <Checkbox {...register(`week.${day}.open`)} />
         <span>{DAY_NAMES[day]}</span>
       </label>
       {open ? (
         <div className="day-times">
           <Field label="Opens" error={errors?.start?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 type="time"
                 step={300}
@@ -38,7 +38,7 @@ export function DayRow({
           </Field>
           <Field label="Closes" error={errors?.end?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 type="time"
                 step={300}
@@ -49,7 +49,7 @@ export function DayRow({
           </Field>
           <Field label="Lunch from" error={errors?.lunchStart?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 type="time"
                 step={300}
@@ -60,7 +60,7 @@ export function DayRow({
           </Field>
           <Field label="Lunch to" error={errors?.lunchEnd?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 type="time"
                 step={300}

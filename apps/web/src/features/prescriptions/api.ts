@@ -36,6 +36,20 @@ export async function listVisitPrescriptions(visitId: string): Promise<Prescript
   return res.prescriptions;
 }
 
+export type DraftPrescription = {
+  id: string;
+  visitId: string | null;
+  patientId: string;
+  patientName: string;
+  visitDateLocal: string | null;
+};
+
+/** Prescriptions started but not issued (the doctor's "Waiting for you" on Today). */
+export async function listDraftPrescriptions(): Promise<DraftPrescription[]> {
+  const res = await api<{ drafts: DraftPrescription[] }>("/api/staff/prescriptions/drafts");
+  return res.drafts;
+}
+
 export async function createPrescription(body: {
   patientId: string;
   visitId?: string | null;

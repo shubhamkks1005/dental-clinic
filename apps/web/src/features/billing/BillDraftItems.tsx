@@ -1,6 +1,7 @@
 import { formatRupees } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { updateDraftBill, type BillDto, type BillItemDto } from "./api";
+import { TextInput } from "../../ui/form";
 
 type DraftLine = {
   key: string;
@@ -110,7 +111,7 @@ export function BillDraftItems({
             <li key={line.key} className="stack gap-xs surface card-pad">
               <label className="stack gap-xs">
                 <span className="muted small">Item</span>
-                <input
+                <TextInput
                   value={line.procedureLabel}
                   onChange={(e) => setLine(line.key, { procedureLabel: e.target.value })}
                   style={{ minHeight: 44 }}
@@ -119,7 +120,7 @@ export function BillDraftItems({
               <div className="row wrap gap-sm">
                 <label className="stack gap-xs">
                   <span className="muted small">Qty</span>
-                  <input
+                  <TextInput
                     type="number"
                     inputMode="numeric"
                     min={1}
@@ -131,7 +132,7 @@ export function BillDraftItems({
                 </label>
                 <label className="stack gap-xs">
                   <span className="muted small">Fee (₹)</span>
-                  <input
+                  <TextInput
                     type="number"
                     inputMode="decimal"
                     min={0}
@@ -150,7 +151,7 @@ export function BillDraftItems({
               {needsReason ? (
                 <label className="stack gap-xs">
                   <span className="muted small">Reason for fee change</span>
-                  <input
+                  <TextInput
                     value={line.feeChangeReason}
                     onChange={(e) => setLine(line.key, { feeChangeReason: e.target.value })}
                     placeholder="Required when fee differs from list"

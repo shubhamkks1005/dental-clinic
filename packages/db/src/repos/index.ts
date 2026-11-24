@@ -37,6 +37,7 @@ import { visitsPatchRepo } from "./visits-patch";
 import { visitsTimelineRepo } from "./visits-timeline";
 import { prescriptionsCreateRepo } from "./prescriptions-create";
 import { prescriptionsDraftRepo } from "./prescriptions-draft";
+import { prescriptionsDraftsListRepo } from "./prescriptions-drafts-list";
 import { prescriptionsGetRepo } from "./prescriptions-get";
 import { prescriptionsIssueRepo } from "./prescriptions-issue";
 import { printLogRepo } from "./print-log";
@@ -126,6 +127,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...prescriptionsCreateRepo(db, ctx),
       ...prescriptionsGetRepo(db, ctx),
       ...prescriptionsDraftRepo(db, ctx),
+      ...prescriptionsDraftsListRepo(db, ctx),
       ...prescriptionsIssueRepo(db, ctx),
     },
     printLog: printLogRepo(db, ctx),

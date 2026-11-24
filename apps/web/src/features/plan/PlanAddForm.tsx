@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { getList } from "../lists";
 import { createPlanItem, type PlanItemRow } from "./api";
+import { Select, TextInput } from "../../ui/form";
 
 type Props = {
   patientId: string;
@@ -90,17 +91,17 @@ export function PlanAddForm({ patientId, visitId, toothFdi, readOnly, onAdded }:
       <div className="plan-add-row">
         <label>
           Procedure
-          <select value={listItemId} onChange={(e) => onPick(e.target.value)}>
+          <Select value={listItemId} onChange={(e) => onPick(e.target.value)}>
             {list.map((i) => (
               <option key={i.id} value={i.id}>
                 {i.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label>
           Estimate (₹)
-          <input
+          <TextInput
             type="number"
             inputMode="numeric"
             min={0}
@@ -113,17 +114,17 @@ export function PlanAddForm({ patientId, visitId, toothFdi, readOnly, onAdded }:
         </label>
         <label>
           Phase
-          <select value={phase} onChange={(e) => setPhase(Number(e.target.value))}>
+          <Select value={phase} onChange={(e) => setPhase(Number(e.target.value))}>
             {[1, 2, 3, 4].map((p) => (
               <option key={p} value={p}>
                 {p}. {planPhaseLabel(p)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <label>
           Sittings
-          <input
+          <TextInput
             type="number"
             inputMode="numeric"
             min={1}

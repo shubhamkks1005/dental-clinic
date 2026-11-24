@@ -83,7 +83,6 @@ export function ReportsScreen() {
     <div className="reports-page reports-page-wide">
       <header className="reports-header">
         <h1>Reports</h1>
-        <p className="reports-sample">Clinic totals</p>
       </header>
 
       <RangeControls
@@ -96,6 +95,21 @@ export function ReportsScreen() {
         onTo={setTo}
         onCompare={setCompare}
       />
+
+      {error ? <p className="notice error">{error}</p> : null}
+
+      {data ? (
+        <>
+          <DashboardKpis kpis={data.kpis} />
+          <AttentionList backup={data.attention?.backup} requests={data.attention?.requests} />
+          <details className="dash-fold card">
+            <summary>Charts</summary>
+            <DashboardCharts data={data} />
+          </details>
+          <CallListsPanel />
+          <CaExportPanel />
+        </>
+      ) : null}
 
       <div className="dash-toolbar">
         <button type="button" className="btn" disabled={busy} onClick={() => void onRecompute()}>
@@ -130,18 +144,6 @@ export function ReportsScreen() {
         </button>
         {loading ? <span className="muted">Loading…</span> : null}
       </div>
-
-      {error ? <p className="notice error">{error}</p> : null}
-
-      {data ? (
-        <>
-          <DashboardKpis kpis={data.kpis} />
-          <DashboardCharts data={data} />
-          <CallListsPanel />
-          <AttentionList backup={data.attention?.backup} requests={data.attention?.requests} />
-          <CaExportPanel />
-        </>
-      ) : null}
     </div>
   );
 }

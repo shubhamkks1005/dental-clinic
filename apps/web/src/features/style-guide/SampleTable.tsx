@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { PatientNoChip } from "../../ui/PatientNoChip";
 import { DataTable, type Column, type TableStatus } from "../../ui/table";
 import { samplePage, type SampleRow } from "./sample-table";
+import { Checkbox } from "../../ui/form";
 
 const COLUMNS: Column<SampleRow>[] = [
   { key: "name", label: "Name", sortable: true, render: (r) => r.name },
@@ -50,11 +51,7 @@ export function SampleTable() {
   return (
     <>
       <label className="guide-check">
-        <input
-          type="checkbox"
-          checked={serverDown}
-          onChange={(e) => setServerDown(e.target.checked)}
-        />
+        <Checkbox checked={serverDown} onChange={(e) => setServerDown(e.target.checked)} />
         Pretend the server is down
       </label>
       <DataTable

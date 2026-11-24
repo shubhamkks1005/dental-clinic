@@ -2,6 +2,7 @@ import { formatRupees, PAYMENT_MODES, type PaymentMode } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { useMe } from "../auth";
 import { listPatientPayments, recordRefund, type PatientPaymentRow } from "./api";
+import { Select, TextInput } from "../../ui/form";
 
 /** 5.3.7: doctor-only refund against a payment (reason + mode required). */
 export function RefundPanel({ patientId, onDone }: { patientId: string; onDone: () => void }) {
@@ -70,7 +71,7 @@ export function RefundPanel({ patientId, onDone }: { patientId: string; onDone: 
       {error ? <p className="error-text">{error}</p> : null}
       <label className="stack gap-xs">
         <span className="muted small">Payment</span>
-        <select
+        <Select
           value={paymentId}
           onChange={(e) => setPaymentId(e.target.value)}
           style={{ minHeight: 44 }}
@@ -82,12 +83,12 @@ export function RefundPanel({ patientId, onDone }: { patientId: string; onDone: 
               {formatRupees(p.refundablePaise)} ({p.mode})
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <div className="row wrap gap-sm">
         <label className="stack gap-xs">
           <span className="muted small">Amount (₹)</span>
-          <input
+          <TextInput
             type="number"
             inputMode="decimal"
             min={0}
@@ -98,7 +99,7 @@ export function RefundPanel({ patientId, onDone }: { patientId: string; onDone: 
         </label>
         <label className="stack gap-xs">
           <span className="muted small">Mode</span>
-          <select
+          <Select
             value={mode}
             onChange={(e) => setMode(e.target.value as PaymentMode)}
             style={{ minHeight: 44 }}
@@ -108,12 +109,12 @@ export function RefundPanel({ patientId, onDone }: { patientId: string; onDone: 
                 {m}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
       <label className="stack gap-xs">
         <span className="muted small">Reason</span>
-        <input
+        <TextInput
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           maxLength={200}

@@ -1,4 +1,4 @@
-/* Main navigation: hidden on phone, tabs row on tablet, navy sidebar on laptop. */
+/* Main navigation: hidden on phone, navy sidebar from 768 px (Q2.11). */
 .shell-nav {
   display: none;
 }
@@ -53,26 +53,6 @@
   .shell-nav {
     grid-area: nav;
     display: flex;
-    align-items: center;
-    gap: var(--s5);
-    padding: 0 var(--s6);
-    overflow-x: auto;
-    background: var(--card);
-    border-block: 1px solid var(--border);
-  }
-
-  .nav-list a {
-    border-bottom: 3px solid transparent;
-  }
-
-  .nav-list a[aria-current="page"] {
-    color: var(--blue);
-    border-bottom-color: var(--blue);
-  }
-}
-
-@media (min-width: 1366px) {
-  .shell-nav {
     position: sticky;
     top: 0;
     flex-direction: column;

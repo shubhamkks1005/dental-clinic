@@ -7,7 +7,7 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Gender").selectOption("female");
+  await page.getByLabel("Female", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("31");
   await page.getByLabel("Mobile", { exact: true }).fill(`9001${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();
@@ -17,7 +17,7 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
   const dialog = page.locator("dialog[open]");
   await dialog.getByLabel("Patient").fill(name);
   await dialog.locator("button.quick-book-result").first().click();
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
   await dialog.getByRole("checkbox").check();
   await dialog.getByRole("button", { name: /Add walk-in/ }).click();
   await expect(dialog).toBeHidden();

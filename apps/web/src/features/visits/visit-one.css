@@ -365,8 +365,3 @@
     grid-template-columns: minmax(0, 1fr) 360px;
   }
 }
-
-/* The round "+" would cover Finalise; the design shows it only on Today and Patients. */
-body:has(.v1-bar) .shell-fab {
-  display: none;
-}

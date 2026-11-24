@@ -4,6 +4,7 @@ import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
+import { TextInput } from "../../ui/form";
 
 type Row = { value: number; version: number };
 
@@ -106,7 +107,7 @@ export function TunablesPanel() {
                   ({t.min}–{t.max})
                 </span>
               </span>
-              <input
+              <TextInput
                 className="input"
                 type="number"
                 inputMode="numeric"

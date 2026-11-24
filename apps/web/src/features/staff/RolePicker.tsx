@@ -1,5 +1,6 @@
 import { STAFF_ROLES, type StaffRole } from "@clinic/shared";
 import { ROLE_LABEL } from "../../ui/role-label";
+import { Radio } from "../../ui/form";
 
 // Two large radio buttons; the doctor can give only these two roles.
 export function RolePicker({
@@ -16,8 +17,7 @@ export function RolePicker({
       <legend>Role</legend>
       {STAFF_ROLES.map((role) => (
         <label key={role} className="role-option">
-          <input
-            type="radio"
+          <Radio
             name={name}
             value={role}
             checked={value === role}

@@ -1,4 +1,5 @@
 import type { useVisitPrescription } from "./useVisitPrescription";
+import { TextInput, Textarea } from "../../ui/form";
 
 type Props = {
   rx: ReturnType<typeof useVisitPrescription>;
@@ -12,7 +13,7 @@ export function RxMetaFields({ rx, locked, busy }: Props) {
     <div className="rx-meta">
       <label>
         Advice
-        <textarea
+        <Textarea
           value={rx.advice}
           disabled={locked || busy}
           rows={2}
@@ -22,7 +23,7 @@ export function RxMetaFields({ rx, locked, busy }: Props) {
       </label>
       <label>
         Follow-up date
-        <input
+        <TextInput
           type="date"
           value={rx.followUpOn}
           disabled={locked || busy}
@@ -32,7 +33,7 @@ export function RxMetaFields({ rx, locked, busy }: Props) {
       </label>
       <label>
         Weight (kg)
-        <input
+        <TextInput
           inputMode="numeric"
           value={rx.weightKg}
           disabled={locked || busy}

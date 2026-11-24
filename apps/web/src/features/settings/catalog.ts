@@ -1,8 +1,7 @@
 import { LIST_DEFS, LIST_KEYS, SETTING_HELP } from "@clinic/shared";
 
-/** 6.5.1: Settings hub groups — path matches SettingsScreen routes. */
-export type SettingsGroupId =
-  "clinic" | "lists" | "templates" | "staff" | "preferences" | "numbers" | "system";
+/** Settings hub groups (Settings.dc.html: 4 groups, 8 items). */
+export type SettingsGroupId = "clinic" | "people" | "forms" | "system";
 
 export type SettingsSectionDef = {
   path: string;
@@ -15,27 +14,15 @@ export type SettingsSectionDef = {
 
 export const SETTINGS_GROUPS: { id: SettingsGroupId; label: string }[] = [
   { id: "clinic", label: "Clinic" },
-  { id: "lists", label: "Lists" },
-  { id: "templates", label: "Templates" },
-  { id: "staff", label: "Users" },
-  { id: "preferences", label: "Preferences" },
-  { id: "numbers", label: "Number series" },
+  { id: "people", label: "People" },
+  { id: "forms", label: "Forms and messages" },
   { id: "system", label: "System" },
 ];
-
-const LIST_SECTIONS: SettingsSectionDef[] = LIST_KEYS.map((key) => ({
-  path: key,
-  label: LIST_DEFS[key].title,
-  group: "lists" as const,
-  // Q1.11 (D4): the medicine list is for the doctor only.
-  permission: key === "medicines" ? "settings.medicines" : "settings.read",
-  keywords: [LIST_DEFS[key].itemName, LIST_DEFS[key].help, key.replaceAll("_", " ")],
-}));
 
 export const SETTINGS_SECTIONS: SettingsSectionDef[] = [
   {
     path: "clinic",
-    label: "Clinic details",
+    label: "Clinic and doctor",
     group: "clinic",
     permission: "settings.read",
     keywords: [
@@ -67,63 +54,41 @@ export const SETTINGS_SECTIONS: SettingsSectionDef[] = [
   },
   {
     path: "billing",
-    label: "Billing",
+    label: "Billing and tax",
     group: "clinic",
     permission: "settings.billing",
     keywords: ["gst", "tax", "shadow", "bill", "receipt", SETTING_HELP["billing.gst_mode"]],
   },
-  ...LIST_SECTIONS,
-  {
-    path: "consent-templates",
-    label: "Consent templates",
-    group: "templates",
-    permission: "settings.write",
-    keywords: ["consent", "extraction", "treatment", "form", SETTING_HELP["consent.templates"]],
-  },
-  {
-    path: "privacy-notice",
-    label: "Privacy notice",
-    group: "templates",
-    permission: "settings.read",
-    keywords: ["privacy", "notice", "DPDP", SETTING_HELP["privacy_notice.body"]],
-  },
   {
     path: "staff",
-    label: "Staff",
-    group: "staff",
+    label: "Staff and access",
+    group: "people",
     permission: "staff.manage",
     keywords: ["users", "doctor", "receptionist", "gmail", "role"],
   },
   {
-    path: "preferences",
-    label: "Preferences",
-    group: "preferences",
+    path: "consent",
+    label: "Consent and privacy",
+    group: "forms",
     permission: "settings.read",
     keywords: [
-      "chart",
-      "notation",
-      "FDI",
-      "Palmer",
-      "Universal",
-      "facing",
-      "print",
-      SETTING_HELP["chart.view"],
+      "consent",
+      "extraction",
+      "treatment",
+      "form",
+      "privacy",
+      "notice",
+      "DPDP",
+      SETTING_HELP["consent.templates"],
+      SETTING_HELP["privacy_notice.body"],
     ],
   },
   {
-    path: "numbers",
-    label: "Number series",
-    group: "numbers",
+    path: "messages",
+    label: "Message templates",
+    group: "forms",
     permission: "settings.read",
-    keywords: [
-      "counter",
-      "patient code",
-      "bill",
-      "receipt",
-      "prescription",
-      "certificate",
-      SETTING_HELP["patient_code.prefix"],
-    ],
+    keywords: ["SMS", "WhatsApp", "email", "reminder", "template"],
   },
   {
     path: "system",
@@ -140,13 +105,50 @@ export const SETTINGS_SECTIONS: SettingsSectionDef[] = [
     ],
   },
   {
-    path: "messages",
-    label: "Messages",
+    path: "advanced",
+    label: "Advanced",
     group: "system",
     permission: "settings.read",
-    keywords: ["SMS", "WhatsApp", "email", "reminder", "template"],
+    keywords: [
+      "number series",
+      "counter",
+      "patient code",
+      "bill",
+      "receipt",
+      "preferences",
+      "chart",
+      "notation",
+      "FDI",
+      "Palmer",
+      "print",
+      "error log",
+      SETTING_HELP["patient_code.prefix"],
+      SETTING_HELP["chart.view"],
+    ],
   },
 ];
+
+/** Old Settings paths that moved: they redirect so bookmarks keep working (path, new path). */
+export const SETTINGS_REDIRECTS: Record<string, string> = {
+  "consent-templates": "/app/settings/consent",
+  "privacy-notice": "/app/settings/consent",
+  numbers: "/app/settings/advanced",
+  preferences: "/app/settings/advanced",
+  ...Object.fromEntries(LIST_KEYS.map((key) => [key, `/app/library/${key}`])),
+};
+
+/** The doctor's lists live in the Library; the Settings search points there too. */
+export const LIBRARY_HITS = LIST_KEYS.map((key) => ({
+  to: `/app/library/${key}`,
+  label: LIST_DEFS[key].title,
+  keywords: [LIST_DEFS[key].itemName, LIST_DEFS[key].help, key.replaceAll("_", " ")],
+}));
+
+export function filterLibraryHits(query: string) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return LIBRARY_HITS.filter((h) => [h.label, ...h.keywords].join(" ").toLowerCase().includes(q));
+}
 
 export function filterSettingsSections(
   sections: SettingsSectionDef[],

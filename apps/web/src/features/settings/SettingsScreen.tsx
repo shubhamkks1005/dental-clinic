@@ -1,54 +1,51 @@
-import { LIST_KEYS } from "@clinic/shared";
 import { useMemo, useState, type ReactNode } from "react";
-import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router";
+import { Link, Navigate, NavLink, Route, Routes, useNavigate } from "react-router";
 import { useMe } from "../auth";
-import { ListEditor } from "../lists";
 import { StaffSettings } from "../staff";
 import { TimingsSettings } from "../timings";
 import { NotBuiltYet, NotFound, PageMessage } from "../../ui/PageMessage";
 import { BillingSettings } from "./BillingSettings";
 import {
+  filterLibraryHits,
   filterSettingsSections,
   SETTINGS_GROUPS,
+  SETTINGS_REDIRECTS,
   SETTINGS_SECTIONS,
   type SettingsSectionDef,
 } from "./catalog";
+import { SetupProgress } from "./SetupProgress";
 import { ClinicDetailsSettings } from "./ClinicDetailsSettings";
 import { ConsentTemplatesSettings } from "./ConsentTemplatesSettings";
-import { MedicinesListReview } from "./MedicinesListReview";
 import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { NumberSeriesSettings } from "./NumberSeriesSettings";
 import { PreferencesSettings } from "./PreferencesSettings";
 import { PrivacyNoticeSettings } from "./PrivacyNoticeSettings";
 import { SystemStatusSettings } from "./SystemStatusSettings";
 import "./settings.css";
+import { TextInput } from "../../ui/form";
 
 const BASE = "/app/settings";
-
-function listScreen(key: (typeof LIST_KEYS)[number]): ReactNode {
-  if (key === "medicines") {
-    return (
-      <>
-        <ListEditor listKey="medicines" />
-        <MedicinesListReview />
-      </>
-    );
-  }
-  return <ListEditor listKey={key} />;
-}
 
 const SCREENS: Record<string, ReactNode> = {
   clinic: <ClinicDetailsSettings />,
   timings: <TimingsSettings />,
   billing: <BillingSettings />,
-  "consent-templates": <ConsentTemplatesSettings />,
-  "privacy-notice": <PrivacyNoticeSettings />,
   staff: <StaffSettings />,
-  preferences: <PreferencesSettings />,
-  numbers: <NumberSeriesSettings />,
-  system: <SystemStatusSettings />,
+  consent: (
+    <div className="settings-stack">
+      <ConsentTemplatesSettings />
+      <PrivacyNoticeSettings />
+    </div>
+  ),
   messages: <MessagingSettingsPanel />,
-  ...Object.fromEntries(LIST_KEYS.map((key) => [key, listScreen(key)])),
+  system: <SystemStatusSettings />,
+  advanced: (
+    <div className="settings-stack">
+      <PreferencesSettings />
+      <NumberSeriesSettings />
+      <Link to="/app/errors">Open the error log</Link>
+    </div>
+  ),
 };
 
 /** S12 Settings hub (6.5.1): groups + search; any section within three clicks. */
@@ -62,7 +59,11 @@ export function SettingsScreen() {
     [me.permissions],
   );
   const filtered = useMemo(() => filterSettingsSections(visible, query), [visible, query]);
-  const first = filtered[0] ?? visible[0];
+  const libraryHits = useMemo(
+    () => (me.permissions.includes("settings.medicines") ? filterLibraryHits(query) : []),
+    [me.permissions, query],
+  );
+  const first = visible[0];
 
   return (
     <div className="settings">
@@ -71,7 +72,7 @@ export function SettingsScreen() {
         <p className="muted">Everything on prescriptions, bills and screens comes from here.</p>
         <label className="settings-search">
           <span className="sr-only">Search settings</span>
-          <input
+          <TextInput
             className="input"
             type="search"
             placeholder="Search settings…"
@@ -80,7 +81,7 @@ export function SettingsScreen() {
             autoComplete="off"
           />
         </label>
-        {query.trim() && filtered.length > 0 ? (
+        {query.trim() && filtered.length + libraryHits.length > 0 ? (
           <ul className="settings-search-hits" role="listbox" aria-label="Matching settings">
             {filtered.map((s) => (
               <li key={s.path}>
@@ -96,12 +97,27 @@ export function SettingsScreen() {
                 </button>
               </li>
             ))}
+            {libraryHits.map((h) => (
+              <li key={h.to}>
+                <button
+                  type="button"
+                  className="settings-hit"
+                  onClick={() => {
+                    setQuery("");
+                    void navigate(h.to);
+                  }}
+                >
+                  {h.label} <span className="muted small">in Library</span>
+                </button>
+              </li>
+            ))}
           </ul>
         ) : null}
-        {query.trim() && filtered.length === 0 ? (
+        {query.trim() && filtered.length + libraryHits.length === 0 ? (
           <p className="muted">No settings match “{query.trim()}”.</p>
         ) : null}
       </header>
+      <SetupProgress />
       {first === undefined ? (
         <NotBuiltYet />
       ) : (
@@ -138,6 +154,9 @@ export function SettingsScreen() {
                   />
                 }
               />
+            ))}
+            {Object.entries(SETTINGS_REDIRECTS).map(([from, to]) => (
+              <Route key={from} path={from} element={<Navigate to={to} replace />} />
             ))}
             <Route path="*" element={<NotFound />} />
           </Routes>

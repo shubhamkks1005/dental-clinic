@@ -9,7 +9,7 @@ import {
 import { useForm } from "react-hook-form";
 import { ApiError } from "../../api/client";
 import { problemText } from "../../api/problem-text";
-import { Field, zodResolver } from "../../ui/form";
+import { Field, Select, TextInput, zodResolver } from "../../ui/form";
 import { useToast } from "../../ui/Toast";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { saveSetting, type Versioned } from "./api";
@@ -80,7 +80,7 @@ export function WeekForm({
         <div className="timings-extra">
           <Field label="Slot length" error={errors.slotMinutes?.message}>
             {(p) => (
-              <select
+              <Select
                 className="input"
                 {...p}
                 {...register("slotMinutes", { valueAsNumber: true })}
@@ -90,12 +90,12 @@ export function WeekForm({
                     {m} minutes
                   </option>
                 ))}
-              </select>
+              </Select>
             )}
           </Field>
           <Field label="Chairs" error={errors.chairs?.message}>
             {(p) => (
-              <input
+              <TextInput
                 className="input"
                 type="number"
                 inputMode="numeric"

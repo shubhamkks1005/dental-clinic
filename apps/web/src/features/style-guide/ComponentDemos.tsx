@@ -4,6 +4,7 @@ import { icons } from "../../ui/icons";
 import { Menu } from "../../ui/Menu";
 import { Tabs } from "../../ui/Tabs";
 import { Tooltip } from "../../ui/Tooltip";
+import { Select } from "../../ui/form";
 
 // 1.4.2 components, each usable with the keyboard alone (Tab, Enter, Space, arrows, Esc).
 export function ComponentDemos() {
@@ -38,11 +39,11 @@ export function ComponentDemos() {
 
       <label className="guide-field">
         <span>Visit type</span>
-        <select className="input" defaultValue="consultation">
+        <Select className="input" defaultValue="consultation">
           <option value="consultation">Consultation</option>
           <option value="follow-up">Follow-up</option>
           <option value="braces">Braces adjustment</option>
-        </select>
+        </Select>
       </label>
 
       <Tabs

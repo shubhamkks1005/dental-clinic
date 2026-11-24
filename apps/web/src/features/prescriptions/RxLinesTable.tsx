@@ -1,5 +1,6 @@
 import { estimateTabletCount, FREQUENCY_PRESETS } from "@clinic/shared";
 import type { DraftLine } from "./rx-lines";
+import { Select, TextInput } from "../../ui/form";
 
 type Props = {
   lines: DraftLine[];
@@ -38,7 +39,7 @@ export function RxLinesTable({ lines, locked, busy, onChange, onSave }: Props) {
                 </div>
               </td>
               <td data-label="Dose">
-                <input
+                <TextInput
                   aria-label={`Dose for ${line.genericName}`}
                   value={line.dose}
                   disabled={locked || busy}
@@ -47,7 +48,7 @@ export function RxLinesTable({ lines, locked, busy, onChange, onSave }: Props) {
                 />
               </td>
               <td data-label="Freq">
-                <select
+                <Select
                   aria-label={`Frequency for ${line.genericName}`}
                   value={line.frequency}
                   disabled={locked || busy}
@@ -65,10 +66,10 @@ export function RxLinesTable({ lines, locked, busy, onChange, onSave }: Props) {
                   {!FREQUENCY_PRESETS.includes(
                     line.frequency as (typeof FREQUENCY_PRESETS)[number],
                   ) && <option value={line.frequency}>{line.frequency}</option>}
-                </select>
+                </Select>
               </td>
               <td data-label="Days">
-                <input
+                <TextInput
                   aria-label={`Days for ${line.genericName}`}
                   value={line.days}
                   disabled={locked || busy}

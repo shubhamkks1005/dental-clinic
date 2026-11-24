@@ -13,7 +13,7 @@ await flow({ id: process.argv[2] || "F04-double-click-offline-back-and-reload", 
   await c.look("After the double click");
   // 2 double click Save patient
   await c.go("/app/patients/new", "CASE 2: double click on Save patient");
-  await c.type(p.getByLabel("Full name"), "Double Click", "Name"); await c.pick(p.getByLabel("Gender"), "Male", "Gender"); await c.type(p.getByLabel("Or age (years)"), "29", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099050", "Mobile");
+  await c.type(p.getByLabel("Full name"), "Double Click", "Name"); await c.click(p.getByLabel("Male", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "29", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099050", "Mobile");
   await p.getByRole("button", { name: "Save patient" }).dblclick(); await p.waitForTimeout(1800);
   await c.go("/app/patients", "Patients list: how many 'Double Click' patients exist now?");
   await c.type(p.getByPlaceholder(/Search by name|mobile|patient code/).last(), "Double Click", "Search"); await p.waitForTimeout(1000);
@@ -30,7 +30,7 @@ await flow({ id: process.argv[2] || "F04-double-click-offline-back-and-reload", 
   await ctx.setOffline(false); await p.waitForTimeout(1500); await c.look("Back online");
   // 4 back button after save
   await c.go("/app/patients/new", "CASE 4: Back button right after saving a patient");
-  await c.type(p.getByLabel("Full name"), "Back Button", "Name"); await c.pick(p.getByLabel("Gender"), "Male", "Gender"); await c.type(p.getByLabel("Or age (years)"), "31", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099051", "Mobile");
+  await c.type(p.getByLabel("Full name"), "Back Button", "Name"); await c.click(p.getByLabel("Male", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "31", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099051", "Mobile");
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
   await p.goBack(); await p.waitForTimeout(800); await c.look("After pressing the browser Back button on the 'Patient saved' screen");
   c.note("Back button leads to: " + p.url() + " | form is " + ((await p.getByLabel("Full name").inputValue().catch(() => "n/a")) || "empty") );

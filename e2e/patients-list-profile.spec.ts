@@ -7,7 +7,7 @@ async function newPatient(page: Page, name: string, mobile: string) {
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Gender").selectOption("female");
+  await page.getByLabel("Female", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(mobile);
   await page.getByRole("button", { name: "Save patient" }).click();

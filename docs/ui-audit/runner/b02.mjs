@@ -1,7 +1,7 @@
 import { flow } from "./lib2.mjs";
 await flow({ id: process.argv[2] || "B02-reschedule-or-cancel-a-future-booking", role: "receptionist", vp: "laptop" }, async (c) => {
   const p = c.page; const d = () => p.locator("dialog[open]");
-  await c.go("/app/appointments?date=2026-11-24", "Receptionist opens tomorrow's calendar (a patient phones to move or cancel their booking)");
+  await c.go("/app/appointments?date=2026-11-24&view=day", "Receptionist opens tomorrow's calendar (a patient phones to move or cancel their booking)");
   await c.click(p.getByRole("button", { name: /Bina Testcas/ }), "Click the patient's appointment block");
   await c.look("Detail panel: what can the receptionist do here?");
   console.log("panel buttons:", (await p.locator("aside button, aside a").allInnerTexts()).join(" ¦ "));

@@ -1,3 +1,4 @@
+import { MEDICINE_TIMING_LABEL } from "@clinic/shared";
 import {
   LIST_DEFS,
   type ListDef,
@@ -22,6 +23,11 @@ type Props = {
 };
 
 // One item: name, its own fields, status, and (for the doctor) edit, move and hide/show.
+/** "after_food" is a stored token, never a screen word. */
+const plainWord = (v: string): string =>
+  (MEDICINE_TIMING_LABEL as Record<string, string>)[v] ??
+  (/^[a-z]+(_[a-z]+)+$/.test(v) ? v.replaceAll("_", " ") : v);
+
 export function ItemRow({
   listKey,
   item,
@@ -39,7 +45,7 @@ export function ItemRow({
     .map((f) => {
       const v = item.data[f.name];
       if (f.kind === "number") return `${v ?? "-"} ${f.suffix}`;
-      if (f.kind === "text" && v) return String(v);
+      if (f.kind === "text" && v) return plainWord(String(v));
       return null;
     })
     .filter(Boolean)

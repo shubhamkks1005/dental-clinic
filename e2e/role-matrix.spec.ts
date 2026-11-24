@@ -14,7 +14,6 @@ const DOCTOR_ONLY_PAGES: [string, string][] = [
   ["error log", "/app/errors"],
   ["settings: medicines", "/app/settings/medicines"],
   ["settings: billing", "/app/settings/billing"],
-  ["style guide", "/app/style-guide"],
 ];
 const SHARED_PAGES: [string, string][] = [
   ["today", "/app"],

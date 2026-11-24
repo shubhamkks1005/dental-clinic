@@ -4,14 +4,14 @@ await flow({ id: process.argv[2] || "H01-booking-confirm-and-reminder-messages",
   const p = c.page; const d = () => p.locator("dialog[open]");
   await c.go("/app/patients/new", "Receptionist registers a patient WITH sms consent");
   await c.type(p.getByLabel("Full name"), "Mina Msgtest", "Type the name");
-  await c.pick(p.getByLabel("Gender"), "Female", "Gender");
+  await c.click(p.getByLabel("Female", { exact: true }), "Gender");
   await c.type(p.getByLabel("Or age (years)"), "31", "Age");
   await c.type(p.locator("input[type=tel]").first(), "9000099010", "Mobile");
-  await c.click(p.getByLabel("Privacy notice shown"), "Tick Privacy notice shown");
-  await c.click(p.getByLabel("SMS reminders allowed"), "Tick SMS reminders allowed");
+  await c.click(p.getByLabel("Privacy notice given"), "Tick Privacy notice given");
+  await c.click(p.getByLabel("Allow reminders"), "Tick Allow reminders");
   await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Book appointment");
-  await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Consultation");
+  await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Consultation");
   await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
   await c.click(d().getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ }).first(), "Pick the first free time tomorrow (the seed fills some slots)");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Click Book WITHOUT typing the optional note");

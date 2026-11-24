@@ -4,9 +4,9 @@ await flow({ id: process.argv[2] || "H02-messages-no-consent-no-mobile-and-resch
   const p = c.page; const d = () => p.locator("dialog[open]"); const B = "http://localhost:8787";
   const mk = async (name, mob, consent, noMobile) => {
     await c.go("/app/patients/new", `Register ${name}: ${consent ? "SMS consent ticked" : "NO SMS consent"}${noMobile ? ", NO mobile" : ""}`);
-    await c.type(p.getByLabel("Full name"), name, "Name"); await c.pick(p.getByLabel("Gender"), "Female", "Gender"); await c.type(p.getByLabel("Or age (years)"), "35", "Age");
+    await c.type(p.getByLabel("Full name"), name, "Name"); await c.click(p.getByLabel("Female", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "35", "Age");
     if (noMobile) { await c.click(p.getByLabel("No mobile"), "Tick No mobile"); await p.getByLabel(/Why|reason/i).first().fill("Elderly, uses family phone").catch(() => {}); } else await c.type(p.locator("input[type=tel]").first(), mob, "Mobile");
-    if (consent) { await c.click(p.getByLabel("Privacy notice shown"), "Tick privacy"); await c.click(p.getByLabel("SMS reminders allowed"), "Tick SMS"); }
+    if (consent) { await c.click(p.getByLabel("Privacy notice given"), "Tick privacy"); await c.click(p.getByLabel("Allow reminders"), "Tick SMS"); }
     await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
     // Q1.8: a possible duplicate asks "Same person?" first; these test people are new people.
     if (await p.getByRole("button", { name: "Save as new patient" }).count()) await c.click(p.getByRole("button", { name: "Save as new patient" }), "Same person? No: save as new patient");
@@ -14,10 +14,10 @@ await flow({ id: process.argv[2] || "H02-messages-no-consent-no-mobile-and-resch
   };
   const book = async (nth) => { // nth free time of the day (the seed fills some slots); a different one per patient
     await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Book appointment");
-    await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Consultation");
+    await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Consultation");
     await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
     await c.click(d().getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ }).nth(nth), "Pick free time number " + (nth + 1));
-    await c.type(d().getByLabel(/What they said/), "msg test", "Note");
+    await c.type(d().getByLabel(/Note/), "msg test", "Note");
     await c.click(d().getByRole("button", { name: "Book", exact: true }), "Book");
   };
   await mk("Nocon Msgtest", "9000099060", false, false); await book(0);
@@ -32,7 +32,7 @@ await flow({ id: process.argv[2] || "H02-messages-no-consent-no-mobile-and-resch
   c.note("Messages for the consenting patient: " + mine("Resch").join(" // "));
   await c.look("Messages list after the cron");
   // reschedule by drag then cron again
-  await c.go(`/app/appointments?date=${TOMORROW}`, "Move Resch's appointment from 11:45 to a later time by dragging");
+  await c.go(`/app/appointments?date=${TOMORROW}&view=day`, "Move Resch's appointment from 11:45 to a later time by dragging");
   const blk = p.getByRole("button", { name: /Resch Msgtest/ }).first(); const box = await blk.boundingBox();
   await p.mouse.move(box.x + 100, box.y + 8); await p.mouse.down(); await p.mouse.move(box.x + 100, box.y + 120, { steps: 10 }); await p.mouse.up();
   c.note("Drag dialog: " + (await d().innerText().catch(() => "none")).replace(/\n+/g, " | "));

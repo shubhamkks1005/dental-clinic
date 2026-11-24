@@ -6,6 +6,7 @@ import { PatientNoChip } from "../../ui/PatientNoChip";
 import { useToast } from "../../ui/Toast";
 import { sendPatientTemplate } from "../messages/api";
 import { recordDuesCall, type DuesRow } from "./api";
+import { TextInput } from "../../ui/form";
 
 const AGE_TONE: Record<DueAgeBucket, string> = {
   "0-30": "badge-done",
@@ -85,7 +86,7 @@ export function DuesRowItem({ row, onSaved }: { row: DuesRow; onSaved: () => voi
       </div>
       {writing ? (
         <div className="dues-write">
-          <input
+          <TextInput
             className="input"
             aria-label={`Call note for ${row.patientName}`}
             placeholder="What did they say?"

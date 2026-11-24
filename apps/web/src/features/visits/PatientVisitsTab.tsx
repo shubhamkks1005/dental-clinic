@@ -5,6 +5,7 @@ import { formatDate } from "../../ui/format";
 import { StatusLabel } from "../../ui/StatusLabel";
 import { listVisitTimeline, type VisitTimelineRow } from "./api";
 import "./visit-timeline.css";
+import { TextInput } from "../../ui/form";
 
 type Props = { patientId: string };
 
@@ -58,7 +59,7 @@ export function PatientVisitsTab({ patientId }: Props) {
       <form className="visit-timeline-filters" onSubmit={applyFilters}>
         <label>
           Diagnosis
-          <input
+          <TextInput
             type="search"
             value={diagnosis}
             onChange={(e) => setDiagnosis(e.target.value)}
@@ -68,7 +69,7 @@ export function PatientVisitsTab({ patientId }: Props) {
         </label>
         <label>
           Procedure
-          <input
+          <TextInput
             type="search"
             value={procedure}
             onChange={(e) => setProcedure(e.target.value)}

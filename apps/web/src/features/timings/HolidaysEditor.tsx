@@ -8,7 +8,7 @@ import { useState, type FormEvent } from "react";
 import { ApiError } from "../../api/client";
 import { problemText } from "../../api/problem-text";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
-import { DateInput, Field } from "../../ui/form";
+import { Checkbox, DateInput, Field, TextInput } from "../../ui/form";
 import { useSubmitOnce } from "../../ui/submit-guard";
 import { useToast } from "../../ui/Toast";
 import { saveSetting, type Versioned } from "./api";
@@ -112,7 +112,7 @@ export function HolidaysEditor({
             </Field>
             <Field label="Note (optional)">
               {(p) => (
-                <input
+                <TextInput
                   className="input"
                   maxLength={60}
                   autoComplete="off"
@@ -123,11 +123,7 @@ export function HolidaysEditor({
               )}
             </Field>
             <label className="settings-field-check">
-              <input
-                type="checkbox"
-                checked={yearly}
-                onChange={(e) => setYearly(e.target.checked)}
-              />
+              <Checkbox checked={yearly} onChange={(e) => setYearly(e.target.checked)} />
               <span>Repeat every year</span>
             </label>
             <button type="submit" className="btn btn-primary" disabled={pending}>

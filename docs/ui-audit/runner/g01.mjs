@@ -7,19 +7,19 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.go("/app", "Receptionist starts on Today");
   await c.click(p.getByRole("link", { name: "+ New patient" }), "Click + New patient in the top bar");
   await c.type(p.getByLabel("Full name"), NAME, "Type the name");
-  await c.pick(p.getByLabel("Gender"), "Female", "Choose gender");
+  await c.click(p.getByLabel("Female", { exact: true }), "Choose gender");
   await c.type(p.getByLabel("Or age (years)"), "27", "Type age (date of birth not known)");
   await c.type(p.locator("input[type=tel]").first(), MOB, "Type mobile number");
-  await c.click(p.getByLabel("Privacy notice shown"), "Tick Privacy notice shown");
-  await c.click(p.getByLabel("SMS reminders allowed"), "Tick SMS reminders allowed");
+  await c.click(p.getByLabel("Privacy notice given"), "Tick Privacy notice given");
+  await c.click(p.getByLabel("Allow reminders"), "Tick Allow reminders");
   await c.click(p.getByRole("button", { name: "Save patient" }), "Click Save patient (result: Patient saved screen)");
   // ---- Receptionist: phone booking for tomorrow ----
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Click Book appointment on the saved screen");
-  await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose visit type Consultation");
+  await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Choose visit type Consultation");
   await d().getByLabel("Date").fill(TOMORROW); await p.waitForTimeout(1200);
   await c.look("Date set to tomorrow: free times appear");
   await c.click(d().getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ }).first(), "Pick the first free time");
-  await c.type(d().getByLabel(/What they said/), "Wants to check teeth alignment", "Type the phone note");
+  await c.type(d().getByLabel(/Note/), "Wants to check teeth alignment", "Type the phone note");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Click Book (result: toast, calendar opens on that date)");
   await c.go("/app/messages", "Open Messages to look for the confirm message");
   // ---- Clinic day (simulated with an emergency walk-in because it is after hours) ----
@@ -27,7 +27,7 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.click(p.getByRole("button", { name: "Walk-in" }).last(), "Click Walk-in on Today");
   await c.type(d().getByLabel("Patient"), "Riya", "Type patient name"); await p.waitForTimeout(900);
   await c.click(d().locator("button.quick-book-result"), "Pick the patient from the list");
-  await c.pick(d().getByLabel("Visit type"), { label: "Consultation" }, "Choose Consultation");
+  await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Choose Consultation");
   // Tick Emergency first: it works at any time of day (a free slot may or may not exist today).
   await c.click(d().getByRole("checkbox"), "Tick Emergency (may overbook)");
   await c.click(d().getByRole("button", { name: /Add walk-in/ }), "Click Add walk-in again with Emergency ticked");

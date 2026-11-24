@@ -6,6 +6,7 @@ import { problemText } from "../../api/problem-text";
 import { getPatient } from "../patients";
 import { createCertificate, finaliseCertificate } from "./api";
 import "./certificates.css";
+import { Select, TextInput, Textarea } from "../../ui/form";
 
 /** 4.4.3 doctor creates then finalises a medical certificate for a patient. */
 export function NewCertificateScreen() {
@@ -107,7 +108,7 @@ export function NewCertificateScreen() {
       <form className="card cert-form" onSubmit={(e) => void onSubmit(e)}>
         <label className="field">
           Patient name
-          <input
+          <TextInput
             className="input"
             value={patientName}
             onChange={(e) => setPatientName(e.target.value)}
@@ -116,7 +117,7 @@ export function NewCertificateScreen() {
         </label>
         <label className="field">
           Age
-          <input
+          <TextInput
             className="input"
             value={patientAge}
             onChange={(e) => setPatientAge(e.target.value)}
@@ -125,7 +126,7 @@ export function NewCertificateScreen() {
         </label>
         <label className="field">
           Address
-          <input
+          <TextInput
             className="input"
             value={patientAddress}
             onChange={(e) => setPatientAddress(e.target.value)}
@@ -133,7 +134,7 @@ export function NewCertificateScreen() {
         </label>
         <label className="field">
           Identification mark
-          <input
+          <TextInput
             className="input"
             value={identificationMark}
             onChange={(e) => setIdentificationMark(e.target.value)}
@@ -142,18 +143,18 @@ export function NewCertificateScreen() {
         </label>
         <label className="field">
           Sign method
-          <select
+          <Select
             className="input"
             value={signMethod}
             onChange={(e) => setSignMethod(e.target.value as "signature" | "thumb")}
           >
             <option value="signature">Signature</option>
             <option value="thumb">Thumb impression</option>
-          </select>
+          </Select>
         </label>
         <label className="field">
           Reason
-          <textarea
+          <Textarea
             className="input"
             rows={3}
             value={reason}
@@ -164,7 +165,7 @@ export function NewCertificateScreen() {
         <div className="cert-dates">
           <label className="field">
             From
-            <input
+            <TextInput
               className="input"
               type="date"
               value={fromOn}
@@ -174,7 +175,7 @@ export function NewCertificateScreen() {
           </label>
           <label className="field">
             To
-            <input
+            <TextInput
               className="input"
               type="date"
               value={toOn}
@@ -185,7 +186,7 @@ export function NewCertificateScreen() {
         </div>
         <label className="field">
           Diagnosis (optional, doctor only)
-          <input
+          <TextInput
             className="input"
             value={diagnosis}
             onChange={(e) => setDiagnosis(e.target.value)}

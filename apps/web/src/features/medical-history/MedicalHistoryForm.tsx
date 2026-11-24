@@ -18,6 +18,7 @@ import {
 } from "./checklist";
 import { MhQuestionRow } from "./MhQuestionRow";
 import "./medical-history.css";
+import { Textarea } from "../../ui/form";
 
 type Props = {
   patientId: string;
@@ -123,7 +124,7 @@ export function MedicalHistoryForm({ patientId, gender, existing, onSaved, onCan
             {section === "medicines" && (
               <label className="mh-medicines">
                 Other medicines
-                <textarea
+                <Textarea
                   value={medicinesText}
                   rows={2}
                   placeholder="List any other medicines"

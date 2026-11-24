@@ -28,7 +28,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.goto("/api/staff/auth/dev-login?role=receptionist");
     await page.goto("/app/patients/new");
     await page.getByLabel("Full name").fill(name);
-    await page.getByLabel("Gender").selectOption("female");
+    await page.getByLabel("Female", { exact: true }).check();
     await page.getByLabel("Or age (years)").fill("27");
     await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
     await page.getByRole("button", { name: "Save patient" }).click();
@@ -39,7 +39,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     const dialog = page.locator("dialog[open]");
     await dialog.getByLabel("Patient").fill(`Loop Test ${stamp}`);
     await dialog.locator("button.quick-book-result").first().click();
-    await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+    await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
     await dialog.getByRole("checkbox").check();
     await dialog.getByRole("button", { name: /Add walk-in/ }).click();
     await expect(dialog).toBeHidden();

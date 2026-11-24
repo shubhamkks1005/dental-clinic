@@ -146,3 +146,21 @@ describe("prescriptions schema (4.2.1)", () => {
     );
   });
 });
+
+describe("draft prescriptions list (Q2.12 follow-up, Today Waiting for you)", () => {
+  it("lists draft prescriptions for the doctor and refuses the receptionist", async () => {
+    await repos().prescriptions.create({
+      patientId: PATIENT_ID,
+      advice: "",
+      dentistDispensed: false,
+      dentistDispensedNote: "",
+      items: [],
+    });
+    const drafts = await repos().prescriptions.listDrafts();
+    expect(drafts).toHaveLength(1);
+    expect(drafts[0]).toMatchObject({ patientId: PATIENT_ID, patientName: "Fake Rx Patient" });
+    await expect(repos(receptionist).prescriptions.listDrafts()).rejects.toBeInstanceOf(
+      ForbiddenError,
+    );
+  });
+});

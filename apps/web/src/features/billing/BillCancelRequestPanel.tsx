@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
 import { useMe } from "../auth";
 import { getBillCancelRequest, requestBillCancel, type BillDto } from "./api";
+import { TextInput } from "../../ui/form";
 
 /**
  * Q1.9 (D4): the desk cannot cancel an issued bill. She asks the doctor, with a reason; the doctor
@@ -71,7 +72,7 @@ export function BillCancelRequestPanel({ bill }: { bill: BillDto }) {
       </p>
       <label className="stack gap-xs">
         <span className="muted small">Why is it wrong?</span>
-        <input
+        <TextInput
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           maxLength={200}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ApiError } from "../../api/client";
 import { addVisitAddendum, getVisit, type VisitAddendum, type VisitSummary } from "./api";
+import { Checkbox, TextInput, Textarea } from "../../ui/form";
 
 type Props = {
   visit: VisitSummary;
@@ -82,7 +83,7 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
         <div className="visit-addenda-form">
           <label className="visit-field">
             <span>Addendum</span>
-            <textarea
+            <Textarea
               className="input"
               rows={2}
               value={body}
@@ -92,7 +93,7 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
           </label>
           <label className="visit-field">
             <span>Reason</span>
-            <input
+            <TextInput
               className="input"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -100,8 +101,7 @@ export function VisitAddenda({ visit, canEdit, onChanged }: Props) {
             />
           </label>
           <label className="visit-check">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={asError}
               onChange={(e) => setAsError(e.target.checked)}
               disabled={busy}

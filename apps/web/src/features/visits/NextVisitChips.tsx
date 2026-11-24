@@ -1,4 +1,5 @@
 import { istDate, formatDate } from "@clinic/shared";
+import { TextInput } from "../../ui/form";
 
 type Props = {
   value: string;
@@ -30,7 +31,7 @@ export function NextVisitChips({ value, readOnly, onChange }: Props) {
         ))}
         <label className={`v1-pill v1-date${isDate ? " is-on" : ""}`}>
           <span>{isDate ? `On ${formatDate(value.slice(3))}` : "Pick date"}</span>
-          <input
+          <TextInput
             type="date"
             aria-label="Pick a date for the next visit"
             min={istDate(new Date())}

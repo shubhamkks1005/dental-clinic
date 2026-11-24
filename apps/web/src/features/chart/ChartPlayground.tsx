@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { getList } from "../lists";
 import { ToothChart } from "./ToothChart";
+import { Select } from "../../ui/form";
 
 /** Local-only harness so chart Done-when checks work without a visit (3.4.2–3.4.4). */
 export function ChartPlayground() {
@@ -45,13 +46,13 @@ export function ChartPlayground() {
       {conditions.length > 0 && (
         <label className="chart-playground-pick">
           Apply condition
-          <select value={active?.code ?? applyCode} onChange={(e) => setApplyCode(e.target.value)}>
+          <Select value={active?.code ?? applyCode} onChange={(e) => setApplyCode(e.target.value)}>
             {conditions.map((c) => (
               <option key={c.code} value={c.code}>
                 {c.icon} · {c.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       )}
       <ToothChart

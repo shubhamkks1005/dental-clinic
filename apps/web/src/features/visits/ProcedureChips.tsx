@@ -5,6 +5,7 @@ import { formatMoney } from "../../ui/format";
 import { getList } from "../lists";
 import { addVisitProcedure, type VisitProcedure } from "./api";
 import type { ChartSelection } from "./chart-selection";
+import { Select } from "../../ui/form";
 
 type Props = {
   visitId: string;
@@ -111,7 +112,7 @@ export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdd
         </p>
       )}
       {more && (
-        <select
+        <Select
           className="input v1-select"
           autoFocus
           aria-label="More procedures"
@@ -128,7 +129,7 @@ export function ProcedureChips({ visitId, procedures, selection, readOnly, onAdd
                 : ""}
             </option>
           ))}
-        </select>
+        </Select>
       )}
       {error && (
         <p className="notice notice-error" role="alert">

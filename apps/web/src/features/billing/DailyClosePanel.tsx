@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
 import { closeDay, getDayClose, reopenDay, type DayCloseSummary } from "./api";
+import { TextInput } from "../../ui/form";
 
 /** 5.3.9: daily cash close by mode + counted cash. */
 export function DailyClosePanel() {
@@ -72,7 +73,7 @@ export function DailyClosePanel() {
         <h2 className="title-sm">Daily cash close</h2>
         <label className="stack gap-xs">
           <span className="muted small">Day</span>
-          <input
+          <TextInput
             type="date"
             value={dayLocal}
             onChange={(e) => setDayLocal(e.target.value)}
@@ -113,7 +114,7 @@ export function DailyClosePanel() {
               </Link>
               {me.role === "doctor" ? (
                 <div className="stack gap-sm">
-                  <input
+                  <TextInput
                     value={reopenReason}
                     onChange={(e) => setReopenReason(e.target.value)}
                     placeholder="Reason to reopen"
@@ -135,9 +136,8 @@ export function DailyClosePanel() {
               {summary.incompleteAppointments.length > 0 ? (
                 <div className="notice warning stack gap-xs">
                   <p>
-                    {summary.incompleteAppointments.length} open appointment
-                    {summary.incompleteAppointments.length === 1 ? "" : "s"} must be finished,
-                    marked no-show, or cancelled before close.
+                    {plural(summary.incompleteAppointments.length, "open appointment")} must be
+                    finished, marked no-show, or cancelled before close.
                   </p>
                   <ul className="muted small">
                     {summary.incompleteAppointments.map((a) => (
@@ -157,7 +157,7 @@ export function DailyClosePanel() {
               </div>
               <label className="stack gap-xs">
                 <span className="muted small">Counted cash (₹)</span>
-                <input
+                <TextInput
                   type="number"
                   inputMode="decimal"
                   min={0}
@@ -179,7 +179,7 @@ export function DailyClosePanel() {
               {differencePaise !== 0 && Number.isFinite(differencePaise) ? (
                 <label className="stack gap-xs">
                   <span className="muted small">Why is there a difference?</span>
-                  <input
+                  <TextInput
                     className="input"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}

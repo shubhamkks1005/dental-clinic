@@ -4,13 +4,14 @@ import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
+import { TextInput, Textarea } from "../../ui/form";
 
 type Field = { key: SettingKey; label: string; multiline?: boolean };
 
 const FIELDS: Field[] = [
   { key: "clinic.name", label: "Clinic name" },
   { key: "clinic.tagline", label: "Tagline" },
-  { key: "clinic.kind", label: "Kind of clinic (under the tagline)" },
+  { key: "clinic.kind", label: "Kind of clinic" },
   { key: "clinic.address", label: "Address", multiline: true },
   { key: "clinic.phone", label: "Phone" },
   { key: "clinic.email", label: "Email" },
@@ -115,7 +116,7 @@ export function ClinicDetailsSettings() {
           <label key={f.key} className="settings-field">
             <span>{f.label}</span>
             {f.multiline ? (
-              <textarea
+              <Textarea
                 className="input"
                 rows={3}
                 value={draft[f.key] ?? ""}
@@ -123,7 +124,7 @@ export function ClinicDetailsSettings() {
                 onChange={(e) => setDraft((d) => ({ ...d, [f.key]: e.target.value }))}
               />
             ) : (
-              <input
+              <TextInput
                 className="input"
                 value={draft[f.key] ?? ""}
                 disabled={!canEdit || busy}

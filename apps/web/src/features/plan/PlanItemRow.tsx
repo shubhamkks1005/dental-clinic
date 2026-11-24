@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ApiError } from "../../api/client";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { changePlanEstimate, setPlanDecision, type PlanItem } from "./api";
+import { Select, TextInput } from "../../ui/form";
 
 type Props = {
   item: PlanItem;
@@ -93,24 +94,24 @@ export function PlanItemRow({ item, canEdit, onChanged }: Props) {
         <div className="plan-item-edit">
           <label>
             Told on
-            <input type="date" value={toldOn} onChange={(e) => setToldOn(e.target.value)} />
+            <TextInput type="date" value={toldOn} onChange={(e) => setToldOn(e.target.value)} />
           </label>
           <label>
             Decision
-            <select value={status} onChange={(e) => setStatus(e.target.value as PlanItemStatus)}>
+            <Select value={status} onChange={(e) => setStatus(e.target.value as PlanItemStatus)}>
               {DECISIONS.map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <button type="button" className="btn" disabled={busy} onClick={saveDecision}>
             Save decision
           </button>
           <label>
             Estimate ₹
-            <input
+            <TextInput
               type="number"
               inputMode="numeric"
               min={0}
@@ -120,7 +121,7 @@ export function PlanItemRow({ item, canEdit, onChanged }: Props) {
           </label>
           <label>
             Reason
-            <input
+            <TextInput
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Needed if estimate changes"

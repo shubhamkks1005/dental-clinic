@@ -18,7 +18,9 @@ test("new patient form rules and the next appointment", async ({ page }) => {
   await page.goto("/app/patients/new");
 
   // Gender has no default.
-  await expect(page.getByLabel("Gender")).toHaveValue("");
+  for (const g of ["Female", "Male", "Other"]) {
+    await expect(page.getByLabel(g, { exact: true })).not.toBeChecked();
+  }
   await page.getByLabel("Full name").fill(name);
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(mobile);
@@ -26,7 +28,7 @@ test("new patient form rules and the next appointment", async ({ page }) => {
   await expect(page.getByText("Choose female, male or other.")).toBeVisible();
 
   // Future date of birth.
-  await page.getByLabel("Gender").selectOption("male");
+  await page.getByLabel("Male", { exact: true }).check();
   await page.getByLabel("Date of birth").fill("01/01/2035");
   await page.getByRole("button", { name: "Save patient" }).click();
   await expect(page.getByText("The date of birth is in the future.")).toBeVisible();
@@ -46,7 +48,7 @@ test("new patient form rules and the next appointment", async ({ page }) => {
     .or(page.getByRole("link", { name: "Book appointment" }))
     .click();
   const dialog = page.locator("dialog[open]");
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
   const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
   for (let day = 2; day <= 8; day++) {
     await dialog
@@ -62,7 +64,7 @@ test("new patient form rules and the next appointment", async ({ page }) => {
   // Same name and mobile again: the warning shows and Save asks "Same person?".
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Gender").selectOption("male");
+  await page.getByLabel("Male", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(mobile);
   await expect(page.getByText("Possible match")).toBeVisible();

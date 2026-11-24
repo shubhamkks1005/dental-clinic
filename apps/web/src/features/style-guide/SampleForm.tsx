@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { DateInput, Field, MobileInput, zodResolver } from "../../ui/form";
+import { DateInput, Field, MobileInput, Select, TextInput, zodResolver } from "../../ui/form";
 
 const schema = z.object({
   name: personNameField,
@@ -44,7 +44,7 @@ export function SampleForm() {
       })}
     >
       <Field label="Name" error={errors.name?.message}>
-        {(p) => <input className="input" autoComplete="off" {...p} {...register("name")} />}
+        {(p) => <TextInput className="input" autoComplete="off" {...p} {...register("name")} />}
       </Field>
       <Field label="Mobile number" error={errors.mobile?.message}>
         {(p) => <MobileInput {...p} {...register("mobile")} />}
@@ -54,11 +54,11 @@ export function SampleForm() {
       </Field>
       <Field label="Visit type" error={errors.visit?.message}>
         {(p) => (
-          <select className="input" {...p} {...register("visit")}>
+          <Select className="input" {...p} {...register("visit")}>
             <option value="consultation">Consultation</option>
             <option value="follow-up">Follow-up</option>
             <option value="braces">Braces adjustment</option>
-          </select>
+          </Select>
         )}
       </Field>
       <div className="form-actions">

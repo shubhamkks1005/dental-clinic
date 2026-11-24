@@ -10,7 +10,7 @@ test.describe("write smoke (Q0.1)", () => {
     await page.goto("/app/patients/new");
     const stamp = Date.now().toString().slice(-6);
     await page.getByLabel("Full name").fill(`Smoke Test ${stamp}`);
-    await page.getByLabel("Gender").selectOption("female");
+    await page.getByLabel("Female", { exact: true }).check();
     await page.getByLabel("Or age (years)").fill("30");
     // Obviously fake number, unique per run so the duplicate warning does not block.
     await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);

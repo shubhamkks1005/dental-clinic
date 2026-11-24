@@ -39,3 +39,12 @@
   min-width: 0;
   max-width: 100%;
 }
+
+/* Q2.11: a soft fade at the edge that has more tabs behind it (no JavaScript). */
+.tabs-list {
+  background:
+    linear-gradient(to right, var(--bg) 30%, transparent) left / 28px 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 28px 100% no-repeat local,
+    linear-gradient(to right, rgb(15 42 92 / 14%), transparent) left / 10px 100% no-repeat scroll,
+    linear-gradient(to left, rgb(15 42 92 / 14%), transparent) right / 10px 100% no-repeat scroll;
+}

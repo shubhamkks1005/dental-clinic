@@ -31,7 +31,7 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
   await a.goto("/api/staff/auth/dev-login?role=receptionist");
   await a.goto("/app/patients/new");
   await a.getByLabel("Full name").fill(name);
-  await a.getByLabel("Gender").selectOption("female");
+  await a.getByLabel("Female", { exact: true }).check();
   await a.getByLabel("Or age (years)").fill("40");
   await a.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await a.getByRole("button", { name: "Save patient" }).click();
@@ -41,7 +41,7 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
   const dialog = a.locator("dialog[open]");
   await dialog.getByLabel("Patient").fill(name);
   await dialog.locator("button.quick-book-result").first().click();
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
   await dialog.getByRole("checkbox").check();
   await dialog.getByRole("button", { name: /Add walk-in/ }).click();
   await expect(dialog).toBeHidden();

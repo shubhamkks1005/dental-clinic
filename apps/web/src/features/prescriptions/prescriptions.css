@@ -115,3 +115,21 @@
 .rx-panel.is-compact .rx-table td:last-child {
   grid-column: 1 / -1;
 }
+
+.rx-add-inline {
+  display: grid;
+  gap: var(--s3);
+  padding: var(--s4);
+  margin: var(--s3) 0;
+}
+.rx-add-inline label {
+  display: grid;
+  gap: var(--s2);
+  font-weight: 600;
+}
+.rx-add-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  justify-content: flex-end;
+}

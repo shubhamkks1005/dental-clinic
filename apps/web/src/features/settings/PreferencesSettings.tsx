@@ -5,6 +5,7 @@ import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
 import { TunablesPanel } from "./TunablesPanel";
+import { Select } from "../../ui/form";
 
 /** 6.5.1 / 6.5.3 / 6.5.5: chart prefs + clinic tunables. */
 export function PreferencesSettings() {
@@ -65,7 +66,7 @@ export function PreferencesSettings() {
           <>
             <label className="settings-field">
               <span>Chart facing</span>
-              <select
+              <Select
                 className="input"
                 value={draft.facing}
                 disabled={!canEdit || busy}
@@ -78,11 +79,11 @@ export function PreferencesSettings() {
               >
                 <option value="dentist">Dentist view (R = patient's right)</option>
                 <option value="patient">Patient view</option>
-              </select>
+              </Select>
             </label>
             <label className="settings-field">
               <span>Tooth notation</span>
-              <select
+              <Select
                 className="input"
                 value={draft.notation}
                 disabled={!canEdit || busy}
@@ -97,7 +98,7 @@ export function PreferencesSettings() {
                 <option value="fdi">FDI</option>
                 <option value="universal">Universal</option>
                 <option value="palmer">Palmer</option>
-              </select>
+              </Select>
             </label>
             {canEdit ? (
               <p className="settings-actions">

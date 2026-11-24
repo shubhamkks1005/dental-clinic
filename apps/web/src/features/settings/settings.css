@@ -212,3 +212,38 @@
     min-width: 0;
   }
 }
+
+.setup-progress {
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s2);
+  border-color: #f0c36d;
+  background: #fffbeb;
+}
+.setup-progress p {
+  margin: 0;
+}
+.setup-progress ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+.setup-progress a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border);
+  font-weight: 600;
+  text-decoration: none;
+}
+.settings-stack {
+  display: grid;
+  gap: var(--s5);
+  min-width: 0;
+}

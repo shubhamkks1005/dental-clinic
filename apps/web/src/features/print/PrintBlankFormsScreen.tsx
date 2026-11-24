@@ -15,6 +15,7 @@ import { BlankFormPages } from "./BlankFormPages";
 import { clinicHeaderFromSettings } from "./clinic-header";
 import "./blank-forms-print.css";
 import "./print-screen.css";
+import { Select } from "../../ui/form";
 
 /** 4.4.6 blank forms: print 20 copies in one click for downtime. */
 export function PrintBlankFormsScreen() {
@@ -65,7 +66,7 @@ export function PrintBlankFormsScreen() {
         </div>
         <label className="print-option">
           Form
-          <select
+          <Select
             className="input"
             value={kind}
             onChange={(e) => setKind(e.target.value as BlankFormKind)}
@@ -75,7 +76,7 @@ export function PrintBlankFormsScreen() {
                 {BLANK_FORM_LABELS[k]}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <div className="print-actions">
           <button type="button" className="btn btn-primary" onClick={() => void onPrint()}>

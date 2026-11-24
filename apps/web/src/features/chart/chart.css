@@ -98,17 +98,19 @@
 .visit-chart-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px 12px;
+  margin-bottom: 8px;
 }
 
+/* Q4.1: label beside the control, so the three controls take one row on a laptop and little height on a phone. */
 .visit-chart-toolbar label {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
+  flex: 1 1 220px;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
   font-weight: 600;
-  min-width: min(100%, 200px);
+  white-space: nowrap;
 }
 
 .visit-chart-toolbar select {

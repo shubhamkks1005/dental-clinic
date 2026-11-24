@@ -2,6 +2,7 @@ import type { ListItem } from "@clinic/shared";
 import { useState } from "react";
 import { ApiError } from "../../api/client";
 import { addVisitDiagnosis, type VisitDiagnosis } from "./api";
+import { TextInput } from "../../ui/form";
 
 type Props = {
   visitId: string;
@@ -74,7 +75,7 @@ export function DiagnosisChips({ visitId, diagnoses, diagnosisList, readOnly, on
       {diagnoses.length === 0 && !open && <p className="muted small">None yet.</p>}
       {open && (
         <div className="v1-add-row">
-          <input
+          <TextInput
             className="input"
             autoFocus
             list="v1-dx-options"
@@ -89,7 +90,7 @@ export function DiagnosisChips({ visitId, diagnoses, diagnosisList, readOnly, on
               <option key={m.id} value={m.label} />
             ))}
           </datalist>
-          <input
+          <TextInput
             className="input v1-tooth-input"
             aria-label="Tooth (FDI)"
             inputMode="numeric"

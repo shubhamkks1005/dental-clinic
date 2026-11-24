@@ -1,3 +1,4 @@
+import { plural } from "../../ui/format";
 import { istDateTime } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { problemText } from "../../api/problem-text";
@@ -86,8 +87,7 @@ export function MedicinesListReview() {
       {review ? (
         <p>
           Last review: <strong>{review.byName}</strong> on {istDateTime(new Date(review.at))} · list
-          had {review.itemCount} active medicine
-          {review.itemCount === 1 ? "" : "s"}.
+          had {plural(review.itemCount, "active medicine")}.
         </p>
       ) : (
         <p className="muted">No review recorded yet.</p>

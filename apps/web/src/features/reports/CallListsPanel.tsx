@@ -5,6 +5,7 @@ import { problemText } from "../../api/problem-text";
 import { useToast } from "../../ui/Toast";
 import { sendPatientTemplate } from "../messages/api";
 import { contactCallList, fetchCallList } from "./api";
+import { TextInput } from "../../ui/form";
 
 /** 6.3.7: incomplete treatment + recall lists with contact notes. */
 export function CallListsPanel() {
@@ -91,7 +92,7 @@ export function CallListsPanel() {
               <div className="dash-call-note">
                 <label>
                   Contact note
-                  <input
+                  <TextInput
                     className="input"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}

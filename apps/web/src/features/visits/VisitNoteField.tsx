@@ -1,3 +1,4 @@
+import { Textarea } from "../../ui/form";
 type Props = {
   label: string;
   value: string;
@@ -12,7 +13,7 @@ export function VisitNoteField({ label, value, rows = 3, readOnly, placeholder, 
   return (
     <label className="visit-field">
       <span>{label}</span>
-      <textarea
+      <Textarea
         className="input"
         rows={rows}
         value={value}

@@ -24,6 +24,7 @@ import {
   type PatientChart,
 } from "./api";
 import { ToothChart } from "./ToothChart";
+import { Select } from "../../ui/form";
 
 type Props = {
   patientId: string;
@@ -151,7 +152,7 @@ export function VisitChartPanel({
       <div className="visit-chart-toolbar">
         <label>
           Chart as of
-          <select
+          <Select
             value={asOfVisitId}
             onChange={(e) => setAsOfVisitId(e.target.value)}
             disabled={busy}
@@ -162,12 +163,12 @@ export function VisitChartPanel({
                 {h.visitDateLocal}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         {canEdit && !asOfVisitId && conditions.length > 0 && (
           <label>
             Apply condition
-            <select
+            <Select
               value={applyCode}
               onChange={(e) => setApplyCode(e.target.value)}
               disabled={busy}
@@ -177,12 +178,12 @@ export function VisitChartPanel({
                   {c.icon} · {c.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         )}
         <label>
           Dentition
-          <select
+          <Select
             value={dentition}
             onChange={(e) => setDentitionOverride(e.target.value as DentitionView)}
             disabled={busy}
@@ -193,7 +194,7 @@ export function VisitChartPanel({
                 {key === defaultDentition ? " (from age)" : ""}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
       {error && (

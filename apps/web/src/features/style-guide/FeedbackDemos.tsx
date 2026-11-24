@@ -4,6 +4,7 @@ import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { useSubmitOnce } from "../../ui/submit-guard";
 import { useToast } from "../../ui/Toast";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
+import { Textarea } from "../../ui/form";
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -61,7 +62,7 @@ export function FeedbackDemos() {
       </div>
       <label className="guide-field">
         <span>Notes (sample): leaving with unsaved text asks first</span>
-        <textarea
+        <Textarea
           className="input guide-textarea"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}

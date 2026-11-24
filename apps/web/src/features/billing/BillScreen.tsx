@@ -22,6 +22,7 @@ import "./billing.css";
 import "./bill-screen.css";
 import { PaymentsList } from "./PaymentsList";
 import { PaymentTakeForm } from "./PaymentTakeForm";
+import { Checkbox } from "../../ui/form";
 
 // Bill and payment (Bill.dc.html, PhoneBill.dc.html): items, payment and payments on the left,
 // totals and discount on the right; one column on a phone.
@@ -121,8 +122,7 @@ export function BillScreen() {
             <div className="bill-issue card">
               {advancePaise > 0 ? (
                 <label className="bill-check">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={applyAdvance}
                     onChange={(e) => setApplyAdvance(e.target.checked)}
                   />

@@ -1,6 +1,7 @@
 import { parseNewStaff, type NewStaff, type StaffRole } from "@clinic/shared";
 import { useState, type FormEvent } from "react";
 import { RolePicker } from "./RolePicker";
+import { TextInput } from "../../ui/form";
 
 export function AddStaffForm({
   onAdd,
@@ -33,7 +34,7 @@ export function AddStaffForm({
       <h3>Add staff</h3>
       <label className="field">
         <span>Name</span>
-        <input
+        <TextInput
           className="input"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -42,7 +43,7 @@ export function AddStaffForm({
       </label>
       <label className="field">
         <span>Gmail address</span>
-        <input
+        <TextInput
           className="input"
           type="email"
           inputMode="email"

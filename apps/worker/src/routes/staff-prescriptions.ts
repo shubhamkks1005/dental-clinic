@@ -5,6 +5,7 @@ import {
   createPrescription,
   getPrescription,
   issuePrescription,
+  listDraftPrescriptions,
   listVisitPrescriptions,
   patchPrescription,
   replacePrescriptionItems,
@@ -21,6 +22,11 @@ staffPrescriptions.post("/prescriptions", async (c) => {
   const result = await createPrescription(signedIn(c).repos, body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ prescription: result.prescription }), 201);
+});
+
+// Before "/prescriptions/:id" so "drafts" is not read as an id.
+staffPrescriptions.get("/prescriptions/drafts", async (c) => {
+  return c.json(ok(await listDraftPrescriptions(signedIn(c).repos)));
 });
 
 staffPrescriptions.get("/prescriptions/:id", async (c) => {

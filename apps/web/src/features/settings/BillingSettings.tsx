@@ -4,6 +4,7 @@ import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
+import { Checkbox, Select } from "../../ui/form";
 
 /** 6.5.1: billing.gst_mode + billing.shadow_series. */
 export function BillingSettings() {
@@ -95,7 +96,7 @@ export function BillingSettings() {
       ) : null}
       <label className="settings-field">
         <span>GST / tax mode</span>
-        <select
+        <Select
           className="input"
           value={draftGst}
           disabled={!canEdit || busy}
@@ -103,12 +104,11 @@ export function BillingSettings() {
         >
           <option value="off">Off (no tax on bills)</option>
           <option value="on">On</option>
-        </select>
+        </Select>
         <span className="muted settings-help">{SETTING_HELP["billing.gst_mode"]}</span>
       </label>
       <label className="settings-field settings-field-check">
-        <input
-          type="checkbox"
+        <Checkbox
           checked={draftShadow}
           disabled={!canEdit || busy}
           onChange={(e) => setDraftShadow(e.target.checked)}

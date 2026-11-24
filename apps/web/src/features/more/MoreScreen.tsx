@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { lastRequestId } from "../../api/last-request";
 import { CopyButton } from "../../ui/CopyButton";
 import { icons } from "../../ui/icons";
 import { moreItems } from "../../ui/shell/nav-items";
 import { useMe, UserCard } from "../auth";
+import { fetchMessagesBoard, tabCount } from "../messages";
 import "./more.css";
 
 // Phone "More" tab (no mockup; built from the S14 cards): who is signed in, Sign out, and the
@@ -11,6 +13,14 @@ import "./more.css";
 export function MoreScreen() {
   const { permissions } = useMe();
   const items = moreItems(permissions);
+  // Messages waiting to be sent, as the number on its row (PhoneMore.dc.html).
+  const [toSend, setToSend] = useState(0);
+  useEffect(() => {
+    if (!permissions.includes("patients.view")) return;
+    fetchMessagesBoard()
+      .then((b) => setToSend(tabCount(b, "send")))
+      .catch(() => setToSend(0));
+  }, [permissions]);
   return (
     <div className="more">
       <h1>More</h1>
@@ -23,6 +33,11 @@ export function MoreScreen() {
             <Link key={item.to} to={item.to}>
               {icons[item.icon]}
               {item.label}
+              {item.to === "/app/messages" && toSend > 0 ? (
+                <span className="more-badge" aria-label={`${toSend} to send`}>
+                  {toSend}
+                </span>
+              ) : null}
             </Link>
           ))}
         </nav>

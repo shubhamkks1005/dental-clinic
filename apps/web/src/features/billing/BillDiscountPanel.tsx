@@ -2,6 +2,7 @@ import { DISCOUNT_REASONS, formatRupees, type DiscountReason } from "@clinic/sha
 import { useState } from "react";
 import { useMe } from "../auth";
 import { approveBillDiscount, requestBillDiscount, type BillDto } from "./api";
+import { Select, TextInput } from "../../ui/form";
 
 const REASON_LABEL: Record<DiscountReason, string> = {
   hardship: "Hardship",
@@ -85,7 +86,7 @@ export function BillDiscountPanel({ bill, onUpdated, onError }: Props) {
       <div className="row wrap gap-sm">
         <label className="stack gap-xs">
           <span className="muted small">Amount (₹)</span>
-          <input
+          <TextInput
             type="number"
             inputMode="decimal"
             min={0}
@@ -96,7 +97,7 @@ export function BillDiscountPanel({ bill, onUpdated, onError }: Props) {
         </label>
         <label className="stack gap-xs">
           <span className="muted small">Reason</span>
-          <select
+          <Select
             value={reason}
             onChange={(e) => setReason(e.target.value as DiscountReason)}
             style={{ minHeight: 44 }}
@@ -106,7 +107,7 @@ export function BillDiscountPanel({ bill, onUpdated, onError }: Props) {
                 {REASON_LABEL[r]}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <button
           type="button"

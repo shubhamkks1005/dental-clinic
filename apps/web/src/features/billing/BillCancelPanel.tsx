@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { useMe } from "../auth";
 import { cancelBill, type BillDto } from "./api";
+import { TextInput } from "../../ui/form";
 
 /** 5.3.8: doctor-only cancel with mandatory reason. */
 export function BillCancelPanel({
@@ -65,7 +66,7 @@ export function BillCancelPanel({
       ) : null}
       <label className="stack gap-xs">
         <span className="muted small">Reason</span>
-        <input
+        <TextInput
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           maxLength={200}

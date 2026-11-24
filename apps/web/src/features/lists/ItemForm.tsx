@@ -7,7 +7,7 @@ import {
   type ListKey,
 } from "@clinic/shared";
 import { useForm } from "react-hook-form";
-import { Field, zodResolver } from "../../ui/form";
+import { Field, NativeInput, TextInput, zodResolver } from "../../ui/form";
 
 function blankData(fields: readonly ListField[]): ListItemInput["data"] {
   return Object.fromEntries(
@@ -32,7 +32,7 @@ function ExtraField({
     return (
       <Field label={field.label} error={error}>
         {(p) => (
-          <input
+          <NativeInput
             className="input input-colour"
             type="color"
             {...p}
@@ -46,7 +46,7 @@ function ExtraField({
     return (
       <Field label={field.label} error={error}>
         {(p) => (
-          <input
+          <TextInput
             className="input"
             type="text"
             autoComplete="off"
@@ -61,7 +61,7 @@ function ExtraField({
   return (
     <Field label={`${field.label} (${field.suffix})`} error={error}>
       {(p) => (
-        <input
+        <TextInput
           className="input"
           type="number"
           inputMode="numeric"
@@ -111,7 +111,7 @@ export function ItemForm({
   return (
     <form className="item-form" onSubmit={submit} noValidate>
       <Field label="Name" error={errors.label?.message}>
-        {(p) => <input className="input" autoComplete="off" {...p} {...register("label")} />}
+        {(p) => <TextInput className="input" autoComplete="off" {...p} {...register("label")} />}
       </Field>
       {def.fields.map((f) => (
         <ExtraField

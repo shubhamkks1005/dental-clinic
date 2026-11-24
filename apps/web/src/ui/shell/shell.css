@@ -81,7 +81,8 @@
 /* The "/" hint inside the search box (S01). */
 .top-search-key {
   position: absolute;
-  top: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   right: var(--s3);
   min-width: 24px;
   padding: 1px 6px;
@@ -98,16 +99,18 @@
 
 .top-search-icon {
   position: absolute;
-  top: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   left: var(--s4);
   color: var(--muted);
 }
 
-/* Tablet: search bar on top, then the tabs row (nav.css), then content. */
+/* Tablet and laptop (768 px and up): 232px navy sidebar on the left (S01, Q2.11). */
 @media (min-width: 768px) {
   .shell {
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas: "top" "nav" "main";
+    grid-template-columns: 232px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "nav top" "nav main";
     padding-bottom: 0;
   }
 
@@ -121,34 +124,17 @@
     display: flex;
     align-items: center;
     gap: var(--s3);
-    padding: var(--s4) var(--s6);
-  }
-
-  /* Tablet only; on laptop the user card is at the bottom of the sidebar. */
-  .top-user {
-    display: block;
-    flex: none;
-    max-width: 16rem;
-  }
-
-  .top-user .user-card {
-    flex-wrap: nowrap;
-  }
-}
-
-/* Laptop: 232px navy sidebar on the left (S01). */
-@media (min-width: 1366px) {
-  .shell {
-    grid-template-columns: 232px minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    grid-template-areas: "nav top" "nav main";
-  }
-
-  .shell-top {
     padding: var(--s5) var(--s6);
   }
 
   .top-user {
+    display: none;
+  }
+}
+
+/* A touch screen has no "/" key. */
+@media (hover: none) {
+  .top-search-key {
     display: none;
   }
 }

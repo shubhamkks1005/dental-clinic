@@ -37,7 +37,7 @@ export function StaffRoutes() {
 }
 
 function ShellRoutes() {
-  const { permissions } = useMe();
+  const { permissions, role } = useMe();
   // Developer (support) has no patient screens: start in Settings instead of Today.
   const home = permissions.includes("appointments.manage") ? (
     <TodayScreen />
@@ -50,6 +50,7 @@ function ShellRoutes() {
       mainNav={visibleNav(MAIN_NAV, permissions)}
       phoneTabs={visibleNav(PHONE_TABS, permissions)}
       canAddPatient={permissions.includes(NEW_PATIENT_PERMISSION)}
+      topBarAddPatient={role !== "doctor"}
       user={<UserCard />}
       search={permissions.includes("patients.view") ? <PatientSearch /> : <span />}
     >
@@ -82,7 +83,7 @@ function ShellRoutes() {
         <Route path="reports" element={<ReportsScreen />} />
         <Route path="messages" element={<MessagesScreen />} />
         <Route
-          path="library"
+          path="library/*"
           element={
             <RequirePermission permission="settings.medicines">
               <LibraryScreen />
@@ -107,14 +108,16 @@ function ShellRoutes() {
             </RequirePermission>
           }
         />
-        <Route
-          path="style-guide"
-          element={
-            <RequirePermission permission="settings.write">
-              <StyleGuideScreen />
-            </RequirePermission>
-          }
-        />
+        {import.meta.env.DEV ? (
+          <Route
+            path="style-guide"
+            element={
+              <RequirePermission permission="settings.write">
+                <StyleGuideScreen />
+              </RequirePermission>
+            }
+          />
+        ) : null}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </StaffShell>

@@ -3,6 +3,7 @@ import { formatRupees } from "@clinic/shared";
 import { useState } from "react";
 import { useToast } from "../../ui/Toast";
 import { recordPayment } from "./api";
+import { Checkbox, Select, TextInput } from "../../ui/form";
 
 const MODES = ["cash", "upi", "card", "bank", "cheque", "other"] as const;
 
@@ -93,7 +94,7 @@ export function PaymentTakeForm({
       <div className="row wrap gap-sm pay-amount-row">
         <label className="stack gap-xs">
           <span className="muted small">Amount (₹)</span>
-          <input
+          <TextInput
             type="number"
             inputMode="decimal"
             min={0}
@@ -133,7 +134,7 @@ export function PaymentTakeForm({
         </div>
         <label className="stack gap-xs">
           <span className="muted small">Reference</span>
-          <input
+          <TextInput
             value={reference}
             onChange={(e) => setReference(e.target.value)}
             maxLength={80}
@@ -168,7 +169,7 @@ export function PaymentTakeForm({
       ) : null}
 
       <label className="row gap-sm align-center" style={{ minHeight: 44 }}>
-        <input type="checkbox" checked={splitOn} onChange={(e) => setSplitOn(e.target.checked)} />
+        <Checkbox checked={splitOn} onChange={(e) => setSplitOn(e.target.checked)} />
         <span>Split with a second mode (e.g. cash + UPI)</span>
       </label>
 
@@ -176,7 +177,7 @@ export function PaymentTakeForm({
         <div className="row wrap gap-sm">
           <label className="stack gap-xs">
             <span className="muted small">Second mode</span>
-            <select
+            <Select
               value={splitMode}
               onChange={(e) => setSplitMode(e.target.value as (typeof MODES)[number])}
               style={{ minHeight: 44 }}
@@ -186,11 +187,11 @@ export function PaymentTakeForm({
                   {MODE_LABEL[m]}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="stack gap-xs">
             <span className="muted small">Second amount (₹)</span>
-            <input
+            <TextInput
               type="number"
               inputMode="decimal"
               min={0}

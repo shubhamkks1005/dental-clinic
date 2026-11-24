@@ -18,6 +18,10 @@ export async function getPrescription(repos: Repos, id: string) {
   return { ok: true as const, prescription };
 }
 
+export async function listDraftPrescriptions(repos: Repos) {
+  return { drafts: await repos.prescriptions.listDrafts() };
+}
+
 export async function listVisitPrescriptions(repos: Repos, visitId: string) {
   const prescriptions = await repos.prescriptions.listForVisit(visitId);
   return { ok: true as const, prescriptions };

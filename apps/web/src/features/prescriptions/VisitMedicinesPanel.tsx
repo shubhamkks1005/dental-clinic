@@ -2,10 +2,12 @@ import { statusWord } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { copyPreviousPrescription, revisePrescription } from "./api";
+import { AddMedicineInline } from "./AddMedicineInline";
 import { RxLinesTable } from "./RxLinesTable";
 import { RxMetaFields } from "./RxMetaFields";
 import { useVisitPrescription } from "./useVisitPrescription";
 import "./prescriptions.css";
+import { TextInput } from "../../ui/form";
 
 type Props = {
   visitId: string;
@@ -30,6 +32,7 @@ export function VisitMedicinesPanel({
   const rxState = useVisitPrescription(visitId, patientId, canWrite);
   const { rx, lines, medicines, sets, locked, busy, problem, warnings } = rxState;
   const [query, setQuery] = useState("");
+  const [adding, setAdding] = useState(false);
   const status: RxStatus = rx == null ? "none" : rx.status === "draft" ? "draft" : "issued";
   useEffect(() => {
     onStatusChange?.(status);
@@ -73,7 +76,7 @@ export function VisitMedicinesPanel({
       <div className="rx-toolbar">
         <label className="rx-search">
           <span className="visually-hidden">Search medicines</span>
-          <input
+          <TextInput
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -136,6 +139,22 @@ export function VisitMedicinesPanel({
             </li>
           ))}
         </ul>
+      )}
+
+      {!locked && q && filtered.length === 0 && !adding && (
+        <button type="button" className="btn" onClick={() => setAdding(true)}>
+          + Add “{query.trim()}” to my list
+        </button>
+      )}
+      {!locked && adding && (
+        <AddMedicineInline
+          name={query}
+          onCancel={() => setAdding(false)}
+          onAdded={(item) => {
+            setAdding(false);
+            void rxState.load().then(() => add(item));
+          }}
+        />
       )}
 
       {!locked && sets.length > 0 && (

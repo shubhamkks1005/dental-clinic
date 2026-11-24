@@ -21,6 +21,7 @@ import { clinicHeaderFromSettings } from "./clinic-header";
 import { ConsentSheet } from "./ConsentSheet";
 import "./consent-print.css";
 import "./print-screen.css";
+import { Select } from "../../ui/form";
 
 /** 4.4.2 treatment consent form print (A4, one page for extraction). */
 export function PrintConsentScreen() {
@@ -134,7 +135,7 @@ export function PrintConsentScreen() {
         </div>
         <label className="print-option">
           Template
-          <select
+          <Select
             className="input"
             value={templateKey}
             onChange={(e) => setTemplate(e.target.value as ConsentTemplateKey)}
@@ -144,7 +145,7 @@ export function PrintConsentScreen() {
                 {templates[k].title}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
         <div className="print-actions">
           <button type="button" className="btn btn-primary" onClick={() => void onPrint()}>

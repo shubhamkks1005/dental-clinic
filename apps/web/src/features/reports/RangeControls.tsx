@@ -1,4 +1,5 @@
 import type { DashboardRangePreset } from "@clinic/shared";
+import { Checkbox, TextInput } from "../../ui/form";
 
 const PRESETS: { id: DashboardRangePreset; label: string }[] = [
   { id: "today", label: "Today" },
@@ -52,7 +53,7 @@ export function RangeControls({
         <div className="dash-range-custom">
           <label>
             From
-            <input
+            <TextInput
               className="input"
               type="date"
               value={from}
@@ -61,7 +62,7 @@ export function RangeControls({
           </label>
           <label>
             To
-            <input
+            <TextInput
               className="input"
               type="date"
               value={to}
@@ -71,7 +72,7 @@ export function RangeControls({
         </div>
       ) : null}
       <label className="dash-compare">
-        <input type="checkbox" checked={compare} onChange={(e) => onCompare(e.target.checked)} />
+        <Checkbox checked={compare} onChange={(e) => onCompare(e.target.checked)} />
         Compare with previous period
       </label>
     </div>

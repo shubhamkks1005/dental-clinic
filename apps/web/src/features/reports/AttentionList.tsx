@@ -15,20 +15,30 @@ export function AttentionList({
   const backupClass =
     backup?.tone === "bad" ? "notice error" : backup?.tone === "warn" ? "notice warning" : "muted";
   return (
-    <section className="dash-attention card">
+    <section className="dash-attention card" aria-label="Things to watch">
       <h2>Things to watch</h2>
-      <ul>
+      <ul className="watch-list">
         <li>
-          <Link to="/app/billing">Outstanding dues over 60 days</Link> — open Billing → Dues
+          <Link to="/app/billing">
+            <span>Dues over 60 days</span>
+            <span className="muted small">Open Billing, Dues</span>
+          </Link>
         </li>
-        <li>Incomplete treatment and recall — see Call lists above</li>
         <li>
-          <Link to="/app">Incomplete visits</Link> — drafts on Today
+          <Link to="/app">
+            <span>Unfinished visits</span>
+            <span className="muted small">Drafts waiting on Today</span>
+          </Link>
         </li>
         {requests && requests.open > 0 && (
           <li className={requests.overdue > 0 ? "notice warning" : undefined}>
-            <Link to="/app/requests">Patient requests</Link> — {requests.open} open
-            {requests.overdue > 0 ? `, ${requests.overdue} past due date` : ""}
+            <Link to="/app/requests">
+              <span>Patient requests</span>
+              <span className="muted small">
+                {requests.open} open
+                {requests.overdue > 0 ? `, ${requests.overdue} past due date` : ""}
+              </span>
+            </Link>
           </li>
         )}
         <li className={backupClass}>{backup?.text ?? "Last backup: not reported yet"}</li>

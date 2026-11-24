@@ -170,6 +170,7 @@ select.input {
 }
 
 .input {
+  font: inherit;
   width: 100%;
   min-height: var(--control-h);
   padding: 0 var(--s4);
@@ -177,4 +178,52 @@ select.input {
   border-radius: var(--radius-control);
   background: var(--card);
   color: var(--text);
+}
+
+/* Q2.11: a checkbox or radio with its words is one 44 px target. */
+label:has(> input[type="checkbox"]),
+label:has(> input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+/* Chips: round choice buttons (visit type, time, tabs). */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pill {
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border-radius: 999px;
+  border: 1px solid var(--border-strong, #d5dee6);
+  background: #fff;
+  color: var(--navy, #0f2a5c);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill-on {
+  background: var(--navy, #0f2a5c);
+  border-color: var(--navy, #0f2a5c);
+  color: #fff;
+}
+
+.pill:disabled {
+  opacity: 0.5;
+  cursor: default;
 }

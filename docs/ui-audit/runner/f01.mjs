@@ -17,7 +17,7 @@ await flow({ id: process.argv[2] || "F01-receptionist-opens-doctor-only-pages", 
     ["Finalised visit", `/app/visits/${vid}`], ["Prescription print", `/app/print/prescription/${rid}`], ["History summary print", `/app/print/history-summary/${pid}`],
     ["New certificate", `/app/patients/${pid}/certificates/new`], ["Certificate register", "/app/certificates"], ["Error log", "/app/errors"], ["Patient requests", "/app/requests"],
     ["Settings > Staff", "/app/settings/staff"], ["Settings > Medicines", "/app/settings/medicines"], ["Settings > Billing", "/app/settings/billing"], ["Reports", "/app/reports"],
-    ["Style guide (developer page)", "/app/style-guide"], ["Consent print (allowed)", `/app/print/consent/${pid}`]
+    ["Consent print (allowed)", `/app/print/consent/${pid}`]
   ];
   for (const [name, url] of pages) {
     await p.goto(B + url); await p.waitForLoadState("networkidle").catch(() => {}); await p.waitForTimeout(500);

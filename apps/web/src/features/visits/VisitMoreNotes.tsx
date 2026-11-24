@@ -1,4 +1,5 @@
 import type { NotesSnapshot } from "./visit-autosave";
+import { TextInput, Textarea } from "../../ui/form";
 
 type Props = {
   form: NotesSnapshot;
@@ -15,7 +16,7 @@ export function VisitMoreNotes({ form, readOnly, setField, setPhrase }: Props) {
       <div className="v1-more-body">
         <label className="visit-field">
           <span>History</span>
-          <textarea
+          <Textarea
             className="input"
             rows={2}
             value={form.historyNote}
@@ -26,7 +27,7 @@ export function VisitMoreNotes({ form, readOnly, setField, setPhrase }: Props) {
         </label>
         <label className="visit-field">
           <span>Gums</span>
-          <input
+          <TextInput
             className="input"
             value={form.gumCondition}
             disabled={readOnly}
@@ -35,7 +36,7 @@ export function VisitMoreNotes({ form, readOnly, setField, setPhrase }: Props) {
         </label>
         <label className="visit-field">
           <span>Next visit note</span>
-          <input
+          <TextInput
             className="input"
             value={form.nextVisitNote}
             disabled={readOnly}
@@ -53,7 +54,7 @@ export function VisitMoreNotes({ form, readOnly, setField, setPhrase }: Props) {
           ).map(([key, label]) => (
             <label key={key} className="visit-field">
               <span>{label}</span>
-              <input
+              <TextInput
                 className="input"
                 inputMode="numeric"
                 value={form[key]}

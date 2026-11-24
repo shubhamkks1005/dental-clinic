@@ -1,5 +1,6 @@
 import { MEDICAL_ANSWER_LABEL, MEDICAL_ANSWERS, type MedicalAnswer } from "@clinic/shared";
 import type { ChecklistRow } from "./checklist";
+import { Radio, TextInput } from "../../ui/form";
 
 type Props = {
   row: ChecklistRow;
@@ -16,8 +17,7 @@ export function MhQuestionRow({ row, answer, note, onAnswer, onNote }: Props) {
       <div className="mh-answers" role="group" aria-label={row.label}>
         {MEDICAL_ANSWERS.map((a) => (
           <label key={a} className="mh-answer">
-            <input
-              type="radio"
+            <Radio
               name={`mh-${row.code}`}
               value={a}
               checked={answer === a}
@@ -29,7 +29,7 @@ export function MhQuestionRow({ row, answer, note, onAnswer, onNote }: Props) {
       </div>
       <label className="mh-note">
         <span className="visually-hidden">Note for {row.label}</span>
-        <input
+        <TextInput
           type="text"
           value={note}
           placeholder="Note (optional)"

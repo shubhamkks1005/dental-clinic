@@ -96,6 +96,34 @@ describe("patientDuplicatesRepo (2.1.7)", () => {
     expect(hits.length).toBeLessThanOrEqual(3);
   });
 
+  it("an exact mobile match is not cut off by three weaker name matches", async () => {
+    for (let i = 1; i <= 4; i++) {
+      await addPatient({
+        id: `n${i}`,
+        code: `P-00010${i}`,
+        fullName: `Meena Tester${i}`,
+        mobile: `+91900000000${i}`,
+      });
+    }
+    await addPatient({
+      id: "exact",
+      code: "P-000200",
+      fullName: "Meena Tester",
+      mobile: "+919123456789",
+    });
+    const hits = await patientDuplicatesRepo(db, doctor).findWarnings({
+      fullName: "Meena Tester",
+      mobile: "9123456789",
+      mobileSecondary: null,
+      dateOfBirth: null,
+      ageYearsAtReg: 30,
+      onDate: day,
+    });
+    expect(hits[0]?.id).toBe("exact");
+    expect(hits[0]?.reason).toBe("mobile_name");
+    expect(hits.length).toBeLessThanOrEqual(3);
+  });
+
   it("returns nothing for unrelated people", async () => {
     await addPatient({
       id: "x1",

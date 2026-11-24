@@ -1,3 +1,4 @@
+import { plural } from "../../ui/format";
 import { displayAge, estimatePlanVersion, estimateValidUntil, istDate } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
@@ -103,7 +104,7 @@ export function PrintEstimateScreen() {
         <div>
           <h1>Treatment estimate</h1>
           <p className="muted">
-            {patientCode} · {items.length} item{items.length === 1 ? "" : "s"}
+            {patientCode} · {plural(items.length, "item")}
           </p>
         </div>
         <div className="print-actions">

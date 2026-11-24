@@ -1,3 +1,4 @@
+import { plural } from "../../ui/format";
 import { formatRupees, planPhaseLabel } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -53,7 +54,7 @@ export function VisitPlanPanel({ patientId, visitId, canEdit, toothFdi }: Props)
       />
       <p className="plan-total">
         Plan total: <strong>{formatRupees(totalPaise)}</strong>
-        {loading ? " · Loading…" : ` · ${items.length} item${items.length === 1 ? "" : "s"}`}
+        {loading ? " · Loading…" : ` · ${plural(items.length, "item")}`}
         {canEdit ? (
           <>
             {" · "}

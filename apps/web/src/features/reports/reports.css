@@ -199,3 +199,50 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* Q2.12: Things to watch as rows, charts folded, thin-data card. */
+.watch-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.watch-list li {
+  border-top: 1px solid var(--border);
+  padding: var(--s2) 0;
+}
+.watch-list li:first-child {
+  border-top: 0;
+}
+.watch-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s3);
+  min-height: 44px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.watch-list a::after {
+  content: "\203A";
+  color: var(--muted);
+}
+.watch-list a span:nth-child(2) {
+  margin-left: auto;
+}
+.dash-fold {
+  padding: var(--s4);
+}
+.dash-fold summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dash-thin {
+  padding: var(--s4);
+}
+.dash-thin h3 {
+  margin: 0 0 var(--s2);
+  font-size: 15px;
+}

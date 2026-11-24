@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { problemText } from "../../api/problem-text";
 import { closeRequest, getRequest, type RequestDetail } from "./api";
+import { Textarea } from "../../ui/form";
 
 // Doctor only. Opening a request is written to the access log by the server.
 export function RequestDetailPanel({
@@ -45,7 +46,7 @@ export function RequestDetailPanel({
       {detail.status === "open" ? (
         <>
           <label htmlFor={`note-${id}`}>Closing note</label>
-          <textarea
+          <Textarea
             id={`note-${id}`}
             value={note}
             maxLength={500}

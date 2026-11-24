@@ -4,6 +4,7 @@ import { problemText } from "../../api/problem-text";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { getSetting, putSetting } from "./api";
+import { TextInput, Textarea } from "../../ui/form";
 
 /** 6.5.1: privacy notice body + version (templates group). */
 export function PrivacyNoticeSettings() {
@@ -92,7 +93,7 @@ export function PrivacyNoticeSettings() {
       ) : null}
       <label className="settings-field">
         <span>Version</span>
-        <input
+        <TextInput
           className="input"
           type="number"
           inputMode="numeric"
@@ -105,7 +106,7 @@ export function PrivacyNoticeSettings() {
       </label>
       <label className="settings-field">
         <span>Notice text</span>
-        <textarea
+        <Textarea
           className="input"
           rows={10}
           value={draftBody}

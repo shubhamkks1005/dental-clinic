@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMe } from "../auth/RequireStaff";
 import { downloadBillsExport } from "./api";
+import { TextInput } from "../../ui/form";
 
 /** 5.3.12 doctor-only monthly CSV for the accountant. */
 export function CaExportPanel() {
@@ -43,7 +44,7 @@ export function CaExportPanel() {
       <div className="row wrap gap-sm align-center">
         <label className="stack gap-xs">
           <span className="muted small">Month</span>
-          <input
+          <TextInput
             type="month"
             value={month}
             onChange={(e) => setMonth(e.target.value)}

@@ -6,7 +6,7 @@ import {
   type FdiTooth,
   type ToothSurface,
 } from "@clinic/shared";
-import { SURFACE_ORDER, surfaceAriaLabel } from "./chart-layout";
+import { surfaceAriaLabel } from "./chart-layout";
 
 type Props = {
   fdi: FdiTooth;
@@ -79,9 +79,10 @@ export function ToothGlyph({
         className={`tooth-whole${focused && focusSurface === "whole" ? " tooth-whole-focus" : ""}`}
         style={wholeColor ? { background: wholeColor, color: "#fff" } : undefined}
         aria-label={surfaceAriaLabel(fdi, "whole")}
+        title="Whole tooth"
         onClick={() => onSelect("whole")}
       >
-        {whole ? TOOTH_SURFACE_LABEL.whole : SURFACE_ORDER.includes("whole") ? "W" : "W"}
+        {whole ? TOOTH_SURFACE_LABEL.whole : "W"}
       </button>
     </div>
   );
