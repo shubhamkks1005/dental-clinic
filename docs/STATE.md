@@ -134,3 +134,14 @@ Owner's real hours (owner fills): Phase 0: -
 - W2 bf7a5ec: S1.1.1-S1.1.3, S1.2.1, S2.2.1, S2.2.2. Dashboard 63 -> 6 round trips, recompute 48 -> 8. Numbers unchanged (old tests pass). This month's KPI still live. visits and refunds have no index starting with the month column (S5.1). today-summary.ts still has date(approved_at,...) (S2.2.4).
 - Server-Timing counts every statement of a batch, so the header shows ~32-54 queries for the dashboard while real round trips are 6 (S0.1.4 fixes the header).
 - Owner next: S0.2.x on staging (region, Reports and Dues open, curl -I on an asset, Lighthouse). S0.3.1 decision (rules into AGENTS.md) open.
+
+## Part S: Speed, Wave 3 (2026-11-24, local commits on main, not pushed)
+- 7f9ca14 S0.1.4 Server-Timing shows queries (round trips, batch = 1) and statements apart; S2.2.4 today-summary refunds by UTC range; S2.2.5 one addMonthsYm.
+- 669682a S2.3.2 week view skips the extra day request; S2.3.4 failed refresh keeps the last data with a note.
+- 279c16d S3.1.1-S3.1.3 lazy routes, vendor chunks, first-load budget. 2570a76 S3.1.4 Hindi consent forms out of the first load. First load: 1,052 KB to 853 KB raw, 294 KB to 257 KB gzip. Limits: total 1,095,000 raw / 323,000 gzip, first load 905,000 / 273,000.
+- a8cccb9 S3.2.1-S3.2.2 day list reads together; week = 1 request (about 70 round trips to 10).
+- 0f2545b + 33a48c1 S3.3.1 visit screen in 2 rounds (request scope). Rule: any list changed on the visit screen must call scope.forget. Doctor's getMedicalHistory still goes twice on purpose (patient data stays fresh).
+- 40c1fb7 S3.4.1 patients list waits 4 times instead of 9. f3e24b5 S2.2.3 query-plan guard for the hot screens; known scans listed (S5.1).
+- Staging (checked 2026-11-24): D1 region APAC; /assets/* immutable header works; Reports and Dues open. Staging logs showed every request about 350 ms or more, even /me (Worker at a far edge, D1 in APAC, 2 DB calls per request). S2.1.2 Smart Placement added for staging only: deploy and compare the `ms` in `wr tail --env staging`.
+- Known: staging logs showed no errors for Library. e2e messages.spec.ts line 60 fails when the reminder is already due (time of day), not a code fault. /assets/<missing> returns index.html with immutable (S2.1.3, low).
+- Open owner decisions: cache for Phase 4 (React Query or own); S0.3.1 put the 12 speed rules into AGENTS.md.

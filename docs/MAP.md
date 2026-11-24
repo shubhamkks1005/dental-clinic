@@ -580,3 +580,13 @@ All tables also have the standard columns (id, created_at, updated_at, created_b
 - packages/db/src/repos/daily-stats-parts.ts / daily-stats-queries.ts - S1.1.1 parts now build the queries; computeDayStatRows and computeMonthStatRows send them in ONE db.batch
 - packages/db/src/repos/dashboard.ts + dashboard-kpis.ts - S1.1.2/S1.1.3 yesterday and last month come from stored daily_stats / monthly_stats (live compute only if missing); today is computed once; this month's KPI is still live
 - packages/db/src/repos/stats-query-count.test.ts - S1.1.x/S1.2.1 round trips: dashboard 63 -> 6, recompute 48 -> 8
+- apps/worker/wrangler.jsonc - S2.1.2 env.staging has `"placement": { "mode": "smart" }` (staging only, to measure)
+- apps/worker/src/domain/appointments-list.ts - S3.2 listDayAppointments (moved from appointments.ts) and listRangeAppointments; flags, dues, ready-to-bill read together. GET /api/staff/appointments/range?from=&to= (max 7 days); repos.appointments.listForRange; week view (useWeek.ts) makes ONE request
+- apps/worker/src/testing/appointments-seed.ts, staff-appointments-day.test.ts, staff-appointments-range.test.ts, packages/db/src/repos/appointments-range.test.ts - S3.2 tests
+- apps/web/src/ui/request-scope.ts (+test), ui/RequestScope.tsx, features/visits/visit-prefetch.ts - S3.3 requests shared while one visit screen is open: shared (lists, settings), prefetch + takeOr (patient and money data, one-shot), forget(key) after a list is changed (AddMedicineInline). Any new panel on the visit screen that fetches must be added to visit-prefetch.ts
+- apps/web/src/ui/refresh-fail.ts (+test) - S2.3.4 failed refresh keeps the last data and shows "Couldn't refresh. Showing the last list."; used by Today, Appointments and the week view
+- apps/web/src/ui/RouteFallback.tsx, e2e/lazy-chunks.spec.ts - S3.1 lazy routes: "Loading…" inside the shell; test that a blocked chunk shows the Reload page
+- apps/web/vite.config.ts - S3.1.2 vendor chunks (vendor-react, vendor-ui, vendor-forms) and side-effect-free marks for packages/shared/src and the billing, messages, errors index files. scripts/bundle-budget/ also limits the first load (index.html scripts and styles)
+- packages/shared/src/consent-warning.ts - S3.1.4 extraction-consent warning rule, kept free of the Hindi templates on purpose (keeps them out of the first load)
+- packages/db/src/repos/patients.ts - S3.4.1 list = listPage + visitAndNext (read together); apps/worker/src/domain/patients-list.test.ts
+- packages/db/src/testing/known-scans.ts - S2.2.3 KNOWN_SCANS: queries that still read a whole table (index planned in S5.1; remove an entry when its index lands). query-plan.test.ts has a "hot screens" block

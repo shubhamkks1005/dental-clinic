@@ -65,6 +65,9 @@
       // Staging uses B2 via S3 API (STORAGE_DRIVER=s3). No R2 binding (card).
       "r2_buckets": [],
       "triggers": { "crons": ["*/5 * * * *"] },
+      // S2.1.2: run the Worker near the D1 database (APAC) instead of at the visitor's edge.
+      // Staging only, to measure; remove it if the logs show no gain.
+      "placement": { "mode": "smart" },
       // GOOGLE_CLIENT_ID: the Google Cloud web client for staging + local (not a secret).
       // S3_* below are not secrets. Put S3_KEY_ID / S3_APP_KEY with `wrangler secret put` only.
       "vars": {
