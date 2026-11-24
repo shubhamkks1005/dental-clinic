@@ -1,0 +1,558 @@
+{
+ "spec": {
+  "id": "GATE-B-d02",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 18,
+  "typedFields": 6,
+  "pagesVisited": [
+   "/app/patients",
+   "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "/app",
+   "/app/print/statement/01M8674P17ZB1512ERE9CNDRAS"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 38
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients",
+   "why": "Receptionist opens Patients",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-receptionist-opens-patients.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open Neha Testcase (one issued bill of ₹2,500, unpaid)",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-open-neha-testcase-one-issued-bill-of-2-.jpg"
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Open Billing tab",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Type amount 500",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Record a ₹500 cash payment",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹500 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "05-record-a-500-cash-payment.jpg"
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Open the bill (patient says: the bill is wrong, cancel it)",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹500 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "06-open-the-bill-patient-says-the-bill-is-w.jpg"
+  },
+  {
+   "n": 7,
+   "action": "look",
+   "why": "Receptionist's view of an issued bill: there is no Cancel bill, only a way to ask the doctor",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "07-receptionist-s-view-of-an-issued-bill-th.jpg"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Open More actions (Q2.3 moved the cancel actions there)",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Click Ask the doctor to cancel",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 10,
+   "action": "type",
+   "why": "Type the reason",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 11,
+   "action": "click",
+   "why": "Send the request to the doctor",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "You asked the doctor to cancel this bill: Wrong procedure billed",
+     "₹500 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "11-send-the-request-to-the-doctor.jpg"
+  },
+  {
+   "n": 12,
+   "action": "switch user to doctor",
+   "why": "Switch to the doctor",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "12-switch-to-the-doctor.jpg"
+  },
+  {
+   "n": 13,
+   "action": "open /app",
+   "why": "Doctor Today: Waiting for you lists the cancel request",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "look",
+   "why": "Doctor Today with the cancel request under Waiting for you",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "14-doctor-today-with-the-cancel-request-und.jpg"
+  },
+  {
+   "n": 15,
+   "action": "note",
+   "why": "Waiting for you mentions the bill: true",
+   "url": "/app"
+  },
+  {
+   "n": 16,
+   "action": "click",
+   "why": "Open the bill from Waiting for you",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "16-open-the-bill-from-waiting-for-you.jpg"
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Open More actions",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed"
+    ],
+    "dialog": []
+   },
+   "shot": "17-open-more-actions.jpg"
+  },
+  {
+   "n": 18,
+   "action": "click",
+   "why": "Click Cancel bill",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed",
+     "₹500 is still held on this bill. Refund first, then cancel."
+    ],
+    "dialog": []
+   },
+   "shot": "18-click-cancel-bill.jpg"
+  },
+  {
+   "n": 19,
+   "action": "look",
+   "why": "Cancel panel: money is held, so it says Refund first and Confirm cancel is off",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed",
+     "₹500 is still held on this bill. Refund first, then cancel."
+    ],
+    "dialog": []
+   },
+   "shot": "19-cancel-panel-money-is-held-so-it-says-re.jpg"
+  },
+  {
+   "n": 20,
+   "action": "note",
+   "why": "Refund first link shown: true | Confirm cancel enabled: false",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B"
+  },
+  {
+   "n": 21,
+   "action": "open /app/patients",
+   "why": "Back to Patients to refund first",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "21-back-to-patients-to-refund-first.jpg"
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Open Neha Testcase",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-open-neha-testcase.jpg"
+  },
+  {
+   "n": 23,
+   "action": "click",
+   "why": "Billing tab",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 24,
+   "action": "select",
+   "why": "Choose the ₹500 payment to refund",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 25,
+   "action": "type",
+   "why": "Type refund amount 500",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 26,
+   "action": "type",
+   "why": "Type refund reason",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Click Record refund",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 28,
+   "action": "look",
+   "why": "After the refund",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-after-the-refund.jpg"
+  },
+  {
+   "n": 29,
+   "action": "click",
+   "why": "Open the bill again",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "29-open-the-bill-again.jpg"
+  },
+  {
+   "n": 30,
+   "action": "click",
+   "why": "Open More actions (Cancel bill sits there since Q2.3)",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed"
+    ],
+    "dialog": []
+   },
+   "shot": "30-open-more-actions-cancel-bill-sits-there.jpg"
+  },
+  {
+   "n": 31,
+   "action": "click",
+   "why": "Click Cancel bill",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 32,
+   "action": "type",
+   "why": "Type the reason",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [
+     "Reception asks to cancel this bill: Wrong procedure billed"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 33,
+   "action": "click",
+   "why": "Confirm cancel (nothing paid now)",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "33-confirm-cancel-nothing-paid-now.jpg"
+  },
+  {
+   "n": 34,
+   "action": "look",
+   "why": "Bill cancelled",
+   "url": "/app/bills/01M8674TECAVFD6H2YE9QTEM1B",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000014",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "34-bill-cancelled.jpg"
+  },
+  {
+   "n": 35,
+   "action": "open /app/patients",
+   "why": "Open Neha again to compare the numbers after the refund",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "35-open-neha-again-to-compare-the-numbers-a.jpg"
+  },
+  {
+   "n": 36,
+   "action": "click",
+   "why": "Open Neha Testcase",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "36-open-neha-testcase.jpg"
+  },
+  {
+   "n": 37,
+   "action": "look",
+   "why": "Profile History tab: the refund is listed, what does Outstanding say?",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "37-profile-history-tab-the-refund-is-listed.jpg"
+  },
+  {
+   "n": 38,
+   "action": "open /app/print/statement/01M8674P17ZB1512ERE9CNDRAS",
+   "why": "Print the account statement: does it show the refund?",
+   "url": "/app/print/statement/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Account statement",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "38-print-the-account-statement-does-it-show.jpg"
+  }
+ ]
+}

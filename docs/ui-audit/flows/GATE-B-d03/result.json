@@ -1,0 +1,618 @@
+{
+ "spec": {
+  "id": "GATE-B-d03",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 18,
+  "typedFields": 6,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/patients",
+   "/app/patients/01M8677RNMKPXRTEZ0GHR0F32X",
+   "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "/app/patients/01M8674NXG6JPR35ES7R17RZ4N",
+   "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "/app/print/statement/01M8674PB2GQ8TK10EJFTQ20RT"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 46
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "CASE 1: a patient who wants to pay in advance (no bill yet)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-case-1-a-patient-who-wants-to-pay-in-adv.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-save-patient.jpg"
+  },
+  {
+   "n": 7,
+   "action": "open /app/patients",
+   "why": "Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-patients-list.jpg"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Open the new patient",
+   "url": "/app/patients/01M8677RNMKPXRTEZ0GHR0F32X",
+   "errors": [],
+   "visible": {
+    "h1": "Adv Paytest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-open-the-new-patient.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Open the Billing tab",
+   "url": "/app/patients/01M8677RNMKPXRTEZ0GHR0F32X",
+   "errors": [],
+   "visible": {
+    "h1": "Adv Paytest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 10,
+   "action": "look",
+   "why": "Billing tab of a patient with no bill: where is Take payment?",
+   "url": "/app/patients/01M8677RNMKPXRTEZ0GHR0F32X",
+   "errors": [],
+   "visible": {
+    "h1": "Adv Paytest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-billing-tab-of-a-patient-with-no-bill-wh.jpg"
+  },
+  {
+   "n": 11,
+   "action": "note",
+   "why": "Result: Outstanding: ₹0  | form present: 0",
+   "url": "/app/patients/01M8677RNMKPXRTEZ0GHR0F32X"
+  },
+  {
+   "n": 12,
+   "action": "open /app/patients",
+   "why": "Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "12-patients-list.jpg"
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "CASE 2: Neha owes ₹2,500, pays ₹1,000 cash + ₹500 UPI (split)",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "13-case-2-neha-owes-2-500-pays-1-000-cash-5.jpg"
+  },
+  {
+   "n": 14,
+   "action": "click",
+   "why": "Open the Billing tab",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "click",
+   "why": "Tick 'Split with a second mode'",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 16,
+   "action": "look",
+   "why": "Split form: second mode and second amount appear",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "16-split-form-second-mode-and-second-amount.jpg"
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Record the split payment",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹1,000 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹1,000 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "17-record-the-split-payment.jpg"
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "After the split payment",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹1,000 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹1,000 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "18-after-the-split-payment.jpg"
+  },
+  {
+   "n": 19,
+   "action": "note",
+   "why": "Outstanding after split: Outstanding: ₹1,500  | ",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  },
+  {
+   "n": 20,
+   "action": "open /app/patients",
+   "why": "Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-patients-list.jpg"
+  },
+  {
+   "n": 21,
+   "action": "click",
+   "why": "CASE 3: Om owes ₹750; the receptionist types 100.50",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "21-case-3-om-owes-750-the-receptionist-type.jpg"
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Open the Billing tab",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 23,
+   "action": "type",
+   "why": "Type 100.50",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Record",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹100.50 recorded. Receipt SR-2627-000021 Print\n×",
+     "Notifications ₹100.50 recorded. Receipt SR-2627-000021 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "24-record.jpg"
+  },
+  {
+   "n": 25,
+   "action": "look",
+   "why": "After 100.50",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T",
+   "errors": [],
+   "visible": {
+    "h1": "Om Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹100.50 recorded. Receipt SR-2627-000021 Print\n×",
+     "Notifications ₹100.50 recorded. Receipt SR-2627-000021 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "25-after-100-50.jpg"
+  },
+  {
+   "n": 26,
+   "action": "note",
+   "why": "Outstanding: Outstanding: ₹649.50  | msg: ",
+   "url": "/app/patients/01M8674P2FM24ZD5357ANQKS7T"
+  },
+  {
+   "n": 27,
+   "action": "open /app/patients",
+   "why": "Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "27-patients-list.jpg"
+  },
+  {
+   "n": 28,
+   "action": "click",
+   "why": "CASE 4: Kiran owes ₹250; types -50, then 0",
+   "url": "/app/patients/01M8674NXG6JPR35ES7R17RZ4N",
+   "errors": [],
+   "visible": {
+    "h1": "Kiran Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-case-4-kiran-owes-250-types-50-then-0.jpg"
+  },
+  {
+   "n": 29,
+   "action": "click",
+   "why": "Open the Billing tab",
+   "url": "/app/patients/01M8674NXG6JPR35ES7R17RZ4N",
+   "errors": [],
+   "visible": {
+    "h1": "Kiran Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "note",
+   "why": "Record payment enabled for -50? false",
+   "url": "/app/patients/01M8674NXG6JPR35ES7R17RZ4N"
+  },
+  {
+   "n": 31,
+   "action": "note",
+   "why": "Record payment enabled for 0? false | sentence: Enter an amount above 0. | Enter an amount above 0. ",
+   "url": "/app/patients/01M8674NXG6JPR35ES7R17RZ4N"
+  },
+  {
+   "n": 32,
+   "action": "look",
+   "why": "Form with 0 typed",
+   "url": "/app/patients/01M8674NXG6JPR35ES7R17RZ4N",
+   "errors": [],
+   "visible": {
+    "h1": "Kiran Testcase",
+    "alerts": [
+     "Enter an amount above 0."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "32-form-with-0-typed.jpg"
+  },
+  {
+   "n": 33,
+   "action": "open /app/patients",
+   "why": "Patients list",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "33-patients-list.jpg"
+  },
+  {
+   "n": 34,
+   "action": "click",
+   "why": "CASE 5: Vikram owes ₹2,000; a slip of the finger types 20000",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "34-case-5-vikram-owes-2-000-a-slip-of-the-f.jpg"
+  },
+  {
+   "n": 35,
+   "action": "click",
+   "why": "Open the Billing tab",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 36,
+   "action": "type",
+   "why": "Type 20000",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 37,
+   "action": "click",
+   "why": "Record payment of ₹20,000 against ₹2,000 due",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [
+     "₹20,000 is ₹18,000 more than the balance (₹2,000). Record the extra as an advance?\n\nChange amount\nRecord as advance"
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "37-record-payment-of-20-000-against-2-000-d.jpg"
+  },
+  {
+   "n": 38,
+   "action": "look",
+   "why": "Q0.6: the screen asks before recording more than the balance",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [
+     "₹20,000 is ₹18,000 more than the balance (₹2,000). Record the extra as an advance?\n\nChange amount\nRecord as advance"
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "38-q0-6-the-screen-asks-before-recording-mo.jpg"
+  },
+  {
+   "n": 39,
+   "action": "note",
+   "why": "Asked first (nothing recorded yet): Outstanding: ₹2,000  | ₹20,000 is ₹18,000 more than the balance (₹2,000). Record the extra as an advance?\n\nChange amount\nRecord as advance | confirm shown: true",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT"
+  },
+  {
+   "n": 40,
+   "action": "click",
+   "why": "Choose Change amount: nothing is recorded",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "40-choose-change-amount-nothing-is-recorded.jpg"
+  },
+  {
+   "n": 41,
+   "action": "note",
+   "why": "After Change amount: Outstanding: ₹2,000 ",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT"
+  },
+  {
+   "n": 42,
+   "action": "type",
+   "why": "Type the right amount, 2000",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 43,
+   "action": "click",
+   "why": "Record ₹2,000",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹2,000 recorded. Receipt SR-2627-000022 Print\n×",
+     "Notifications ₹2,000 recorded. Receipt SR-2627-000022 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "43-record-2-000.jpg"
+  },
+  {
+   "n": 44,
+   "action": "look",
+   "why": "After the right payment",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Vikram Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹2,000 recorded. Receipt SR-2627-000022 Print\n×",
+     "Notifications ₹2,000 recorded. Receipt SR-2627-000022 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "44-after-the-right-payment.jpg"
+  },
+  {
+   "n": 45,
+   "action": "note",
+   "why": "Header now says: Outstanding: ₹0  | msg: ",
+   "url": "/app/patients/01M8674PB2GQ8TK10EJFTQ20RT"
+  },
+  {
+   "n": 46,
+   "action": "open /app/print/statement/01M8674PB2GQ8TK10EJFTQ20RT",
+   "why": "Open the printed statement for Vikram",
+   "url": "/app/print/statement/01M8674PB2GQ8TK10EJFTQ20RT",
+   "errors": [],
+   "visible": {
+    "h1": "Account statement",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "46-open-the-printed-statement-for-vikram.jpg"
+  }
+ ]
+}

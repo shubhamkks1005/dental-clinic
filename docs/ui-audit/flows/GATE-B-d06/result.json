@@ -1,0 +1,371 @@
+{
+ "spec": {
+  "id": "GATE-B-d06",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 8,
+  "typedFields": 1,
+  "pagesVisited": [
+   "/app",
+   "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 28
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app",
+   "why": "SETUP: the doctor finishes a visit so that a draft bill exists",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-setup-the-doctor-finishes-a-visit-so-tha.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open the visit in chair (Tara)",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "02-open-the-visit-in-chair-tara.jpg"
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Pick the first procedure chip (Scaling) on the Visit screen",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "click",
+   "why": "Finalise visit",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": [
+     "Finalise this visit? | After finalise, notes become read-only. An addendum can add a note but not a procedure. Warnings: No diagnosis is recorded yet. Procedures were added. Check the treatment plan is up to date. | Keep editing | Finalise"
+    ]
+   },
+   "shot": "04-finalise-visit.jpg"
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Confirm Finalise",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "05-confirm-finalise.jpg"
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Review first (a draft bill opens, so a discount can be asked)",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-review-first-a-draft-bill-opens-so-a-dis.jpg"
+  },
+  {
+   "n": 7,
+   "action": "switch user to receptionist",
+   "why": "PART 1: the receptionist opens the same draft bill; the patient asks for a discount",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-part-1-the-receptionist-opens-the-same-d.jpg"
+  },
+  {
+   "n": 8,
+   "action": "open /app/bills/01M867J51PER04RNTSW7KC96T8",
+   "why": "Open the draft bill as receptionist",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-open-the-draft-bill-as-receptionist.jpg"
+  },
+  {
+   "n": 9,
+   "action": "look",
+   "why": "Draft bill as the receptionist sees it",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-draft-bill-as-the-receptionist-sees-it.jpg"
+  },
+  {
+   "n": 10,
+   "action": "note",
+   "why": "Receptionist's draft bill: Billing | / | Bills | Draft bill | Draft | Bina Testcase | P-000027 | Tue 24 Nov | Item | Qty | Fee (₹) | List ₹1,500 | Add item | Save lines | Issue bill | BILL TOTAL | Subtotal | ₹1,500 | Total | ₹1,500 | Rupees one thousand five hundred only | Discount | Amount (₹) | Reason | Hardship | Staff or family | Courtesy | Other | Request discount | More actions",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Type discount amount 300",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Click Request discount",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [
+     "Waiting for the doctor to approve the discount."
+    ],
+    "dialog": []
+   },
+   "shot": "12-click-request-discount.jpg"
+  },
+  {
+   "n": 13,
+   "action": "look",
+   "why": "After the receptionist requests a discount",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [
+     "Waiting for the doctor to approve the discount."
+    ],
+    "dialog": []
+   },
+   "shot": "13-after-the-receptionist-requests-a-discou.jpg"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "After request: Waiting for the doctor to approve the discount. | Billing | / | Bills | Draft bill | Draft | Bina Testcase | P-000027 | Tue 24 Nov | Item | Qty | Fee (₹) | List ₹1,500 | Add item | Save lines | Issue bill | Waiting for the doctor to approve the discount. | BILL TOTAL | Subtotal | ₹1,500 | Discount requested, not approved | ₹300 | Total | ₹1,500 | Rupees one thousand five hundred only | Discount | Requested ₹300 · Hardship, not approved yet. The b",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  },
+  {
+   "n": 15,
+   "action": "note",
+   "why": "EDGE: with the discount waiting, the receptionist sees an 'Issue bill' button: true (before the request she had one)",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  },
+  {
+   "n": 16,
+   "action": "switch user to doctor",
+   "why": "PART 2: the doctor looks for the request",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "16-part-2-the-doctor-looks-for-the-request.jpg"
+  },
+  {
+   "n": 17,
+   "action": "open /app",
+   "why": "Doctor Today: is there anything about a discount request?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "Doctor Today",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-doctor-today.jpg"
+  },
+  {
+   "n": 19,
+   "action": "note",
+   "why": "Today mentions discount: true",
+   "url": "/app"
+  },
+  {
+   "n": 20,
+   "action": "open /app/bills/01M867J51PER04RNTSW7KC96T8",
+   "why": "Doctor opens the bill",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [
+     "Waiting for the doctor to approve the discount."
+    ],
+    "dialog": []
+   },
+   "shot": "20-doctor-opens-the-bill.jpg"
+  },
+  {
+   "n": 21,
+   "action": "look",
+   "why": "Doctor's view of the bill with a pending discount",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [
+     "Waiting for the doctor to approve the discount."
+    ],
+    "dialog": []
+   },
+   "shot": "21-doctor-s-view-of-the-bill-with-a-pending.jpg"
+  },
+  {
+   "n": 22,
+   "action": "note",
+   "why": "Doctor's bill: Billing | / | Bills | Draft bill | Draft | Bina Testcase | P-000027 | Tue 24 Nov | Item | Qty | Fee (₹) | List ₹1,500 | Add item | Save lines | Issue bill | Waiting for the doctor to approve the discount. | BILL TOTAL | Subtotal | ₹1,500 | Discount requested, not approved | ₹300 | Total | ₹1,500 | Rupees one thousand five hundred only | Discount | Requested ₹300 · Hardship, not approved yet. The bill total is unchanged until the doctor approves. | Approve discount | Amount (₹) | Reason | Hardship | Staff or family | Courtesy | Other | Request discount | More actions",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  },
+  {
+   "n": 23,
+   "action": "click",
+   "why": "Doctor clicks Approve discount",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-doctor-clicks-approve-discount.jpg"
+  },
+  {
+   "n": 24,
+   "action": "look",
+   "why": "After approval",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Draft bill",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "24-after-approval.jpg"
+  },
+  {
+   "n": 25,
+   "action": "note",
+   "why": "After approve:  | Billing | / | Bills | Draft bill | Draft | Bina Testcase | P-000027 | Tue 24 Nov | Item | Qty | Fee (₹) | List ₹1,500 | Add item | Save lines | Issue bill | BILL TOTAL | Subtotal | ₹1,500 | Discount | -₹300 | Total | ₹1,200 | Rupees one thousand two hundred only | Discount | Discount ₹300 · Hardship · approved | Amount (₹) | Reason | Hardship | Staff or fami",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  },
+  {
+   "n": 26,
+   "action": "click",
+   "why": "Doctor clicks Issue bill",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000026",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-doctor-clicks-issue-bill.jpg"
+  },
+  {
+   "n": 27,
+   "action": "look",
+   "why": "Issued bill with discount",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8",
+   "errors": [],
+   "visible": {
+    "h1": "Bill SB-2627-000026",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "27-issued-bill-with-discount.jpg"
+  },
+  {
+   "n": 28,
+   "action": "note",
+   "why": "Issued: Billing | / | Bills | Bill SB-2627-000026 | Open | Bina Testcase | P-000027 | Tue 24 Nov | Print bill | Items | Taken from the finalised visit | ITEM | QTY | RATE | AMOUNT | Scaling | 1 | ₹1,500 | ₹1,500 | TAKE PAYMENT | Amount (₹) | Full balance | Half | Reference | Mode | Cash | UPI | Card | Bank | Cheque | Other | Enter the amount to record a payment. | S",
+   "url": "/app/bills/01M867J51PER04RNTSW7KC96T8"
+  }
+ ]
+}

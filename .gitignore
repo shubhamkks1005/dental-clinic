@@ -19,5 +19,3 @@ scripts/backup/.dry-out/
 # Generated tree dump
 TREE.txt
 
-# Gate B runner output (bulky screenshots)
-docs/ui-audit/flows/GATE-B-*/

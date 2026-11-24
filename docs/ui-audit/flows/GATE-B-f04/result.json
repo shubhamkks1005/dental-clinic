@@ -1,0 +1,466 @@
+{
+ "spec": {
+  "id": "GATE-B-f04",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 7,
+  "typedFields": 9,
+  "pagesVisited": [
+   "/app/patients",
+   "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "/app/patients/new",
+   "/app",
+   "/"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 37
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients",
+   "why": "CASE 1: a nervous double click on Record payment",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-case-1-a-nervous-double-click-on-record-.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open Neha (owes ₹2,500)",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-open-neha-owes-2-500.jpg"
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Billing tab",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Amount 100",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "note",
+   "why": "Before: Outstanding: ₹2,500 ",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  },
+  {
+   "n": 6,
+   "action": "note",
+   "why": "After a double click on Record payment of ₹100: Outstanding: ₹2,400  (one payment = ₹2,400, two = ₹2,300)",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  },
+  {
+   "n": 7,
+   "action": "look",
+   "why": "After the double click",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹100 recorded. Receipt SR-2627-000020 Print\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "07-after-the-double-click.jpg"
+  },
+  {
+   "n": 8,
+   "action": "open /app/patients/new",
+   "why": "CASE 2: double click on Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-case-2-double-click-on-save-patient.jpg"
+  },
+  {
+   "n": 9,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "open /app/patients",
+   "why": "Patients list: how many 'Double Click' patients exist now?",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "13-patients-list-how-many-double-click-pati.jpg"
+  },
+  {
+   "n": 14,
+   "action": "type",
+   "why": "Search",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "note",
+   "why": "Patients named Double Click after one double click on Save: 1",
+   "url": "/app/patients"
+  },
+  {
+   "n": 16,
+   "action": "look",
+   "why": "Search result",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "16-search-result.jpg"
+  },
+  {
+   "n": 17,
+   "action": "open /app",
+   "why": "CASE 3: the clinic's internet drops",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "17-case-3-the-clinic-s-internet-drops.jpg"
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "Offline: is there a banner?",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [
+     "No internet connection. What you typed on this page is kept. Don't close this page. Saving and opening other pages wait until the internet is back."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-offline-is-there-a-banner.jpg"
+  },
+  {
+   "n": 19,
+   "action": "note",
+   "why": "Banner text: No internet connection. What you typed on this page is kept. Don't close this page. Saving and opening other pages wait until the internet is back.",
+   "url": "/app"
+  },
+  {
+   "n": 20,
+   "action": "note",
+   "why": "Navigation failed while offline (expected: single-page app may still work)",
+   "url": "/app"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "Click failed",
+   "url": "/"
+  },
+  {
+   "n": 22,
+   "action": "look",
+   "why": "Patients list while offline",
+   "url": "/",
+   "errors": [],
+   "visible": {
+    "h1": "",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-patients-list-while-offline.jpg"
+  },
+  {
+   "n": 23,
+   "action": "note",
+   "why": "Patients page offline shows: ",
+   "url": "/"
+  },
+  {
+   "n": 24,
+   "action": "look",
+   "why": "Back online",
+   "url": "/",
+   "errors": [],
+   "visible": {
+    "h1": "",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "24-back-online.jpg"
+  },
+  {
+   "n": 25,
+   "action": "open /app/patients/new",
+   "why": "CASE 4: Back button right after saving a patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "25-case-4-back-button-right-after-saving-a-.jpg"
+  },
+  {
+   "n": 26,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 28,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 29,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 30,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "30-save-patient.jpg"
+  },
+  {
+   "n": 31,
+   "action": "look",
+   "why": "After pressing the browser Back button on the 'Patient saved' screen",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "31-after-pressing-the-browser-back-button-o.jpg"
+  },
+  {
+   "n": 32,
+   "action": "note",
+   "why": "Back button leads to: http://localhost:8787/app | form is n/a",
+   "url": "/app"
+  },
+  {
+   "n": 33,
+   "action": "open /app/patients/new",
+   "why": "CASE 5: half-filled new patient form, then click another menu item",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "33-case-5-half-filled-new-patient-form-then.jpg"
+  },
+  {
+   "n": 34,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 35,
+   "action": "click",
+   "why": "Click Billing in the sidebar with a half-filled form",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Leave without saving? | Your changes on this page are not saved yet. If you leave now, they are lost. | Stay on this page | Leave"
+    ]
+   },
+   "shot": "35-click-billing-in-the-sidebar-with-a-half.jpg"
+  },
+  {
+   "n": 36,
+   "action": "note",
+   "why": "After leaving a half-filled form: url http://localhost:8787/app/patients/new; dialog: Leave without saving? | Your changes on this page are not saved yet. If you leave now, they are lost. | Stay on this page | Leave",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 37,
+   "action": "look",
+   "why": "What happened to the half-filled form?",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Leave without saving? | Your changes on this page are not saved yet. If you leave now, they are lost. | Stay on this page | Leave"
+    ]
+   },
+   "shot": "37-what-happened-to-the-half-filled-form.jpg"
+  }
+ ]
+}

@@ -1,0 +1,429 @@
+{
+ "spec": {
+  "id": "GATE-B-e02",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 11,
+  "typedFields": 3,
+  "pagesVisited": [
+   "/app/settings/staff"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [
+   "422 /api/staff/users"
+  ],
+  "stepCount": 32
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/settings/staff",
+   "why": "The doctor opens Settings > Staff to give a new receptionist access",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-the-doctor-opens-settings-staff-to-give-.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Click Add staff",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "look",
+   "why": "Add staff form",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "03-add-staff-form.jpg"
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Type the name",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "EDGE: type an invalid email",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Choose the role Receptionist",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Submit with an invalid email",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "That does not look like an email address. Check it and try again."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-submit-with-an-invalid-email.jpg"
+  },
+  {
+   "n": 8,
+   "action": "note",
+   "why": "Invalid email result: That does not look like an email address. Check it and try again.",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 9,
+   "action": "look",
+   "why": "After submitting an invalid email",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "That does not look like an email address. Check it and try again."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-after-submitting-an-invalid-email.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Fix the email and submit",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test."
+    ],
+    "dialog": []
+   },
+   "shot": "10-fix-the-email-and-submit.jpg"
+  },
+  {
+   "n": 11,
+   "action": "note",
+   "why": "Valid add result: Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test.",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 12,
+   "action": "look",
+   "why": "After adding the staff member",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test."
+    ],
+    "dialog": []
+   },
+   "shot": "12-after-adding-the-staff-member.jpg"
+  },
+  {
+   "n": 13,
+   "action": "note",
+   "why": "Rows: People who can sign in to the clinic app with Google. | Add staff | Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test. | Dev Doctor | You | dev-doctor@example.test | Last sign-in 24 Nov 2026, 1:16 pm. Google link reset: the next sign-in links it. | Doctor | Active | Test Reception | test.reception@example.test | Not signed in yet | Receptionist | Active | Change role | Reset Google link | Deactivate",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 14,
+   "action": "click",
+   "why": "Add staff again with the same email",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 15,
+   "action": "type",
+   "why": "Name",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 16,
+   "action": "click",
+   "why": "Role",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test Reception is added. Ask Test to open the clinic app, press \"Sign in with Google\" and choose test.reception@example.test."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Submit duplicate email",
+   "url": "/app/settings/staff",
+   "errors": [
+    "422 /api/staff/users"
+   ],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "This Gmail address is already on the staff list. If the person was deactivated, reactivate them."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "17-submit-duplicate-email.jpg"
+  },
+  {
+   "n": 18,
+   "action": "note",
+   "why": "Duplicate email result: This Gmail address is already on the staff list. If the person was deactivated, reactivate them.",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 19,
+   "action": "look",
+   "why": "After duplicate email",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [
+     "This Gmail address is already on the staff list. If the person was deactivated, reactivate them."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "19-after-duplicate-email.jpg"
+  },
+  {
+   "n": 20,
+   "action": "open /app/settings/staff",
+   "why": "Now deactivate the new receptionist (she left the job)",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-now-deactivate-the-new-receptionist-she-.jpg"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "Deactivate buttons on screen: 1 (the doctor's own row 'You' has none, so the doctor cannot lock themself out)",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 22,
+   "action": "click",
+   "why": "Click Deactivate on Test Reception",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 23,
+   "action": "look",
+   "why": "Confirmation panel",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "23-confirmation-panel.jpg"
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Confirm Deactivate",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test is deactivated and signed out."
+    ],
+    "dialog": []
+   },
+   "shot": "24-confirm-deactivate.jpg"
+  },
+  {
+   "n": 25,
+   "action": "look",
+   "why": "After deactivating",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test is deactivated and signed out."
+    ],
+    "dialog": []
+   },
+   "shot": "25-after-deactivating.jpg"
+  },
+  {
+   "n": 26,
+   "action": "note",
+   "why": "Row now: Test Reception | test.reception@example.test | Not signed in yet | Receptionist | Deactivated | Reactivate",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Click Reactivate",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test can sign in again."
+    ],
+    "dialog": []
+   },
+   "shot": "27-click-reactivate.jpg"
+  },
+  {
+   "n": 28,
+   "action": "look",
+   "why": "After reactivating",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test can sign in again."
+    ],
+    "dialog": []
+   },
+   "shot": "28-after-reactivating.jpg"
+  },
+  {
+   "n": 29,
+   "action": "note",
+   "why": "Reactivate result: Test can sign in again.",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 30,
+   "action": "click",
+   "why": "Click Change role",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test can sign in again."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 31,
+   "action": "look",
+   "why": "Change role panel",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings",
+    "alerts": [],
+    "toasts": [
+     "Test can sign in again."
+    ],
+    "dialog": []
+   },
+   "shot": "31-change-role-panel.jpg"
+  },
+  {
+   "n": 32,
+   "action": "note",
+   "why": "Change role panel: ",
+   "url": "/app/settings/staff"
+  }
+ ]
+}

@@ -1,0 +1,183 @@
+{
+ "spec": {
+  "id": "GATE-B-g10",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 4,
+  "typedFields": 2,
+  "pagesVisited": [
+   "/app",
+   "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "/app/patients",
+   "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 14
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app",
+   "why": "PART 1: the doctor has the same visit open in two browser tabs (A and B)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dr. Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-part-1-the-doctor-has-the-same-visit-ope.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Tab A: open the visit",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [
+     "Saved"
+    ],
+    "dialog": []
+   },
+   "shot": "02-tab-a-open-the-visit.jpg"
+  },
+  {
+   "n": 3,
+   "action": "type",
+   "why": "Tab A: type the chief complaint",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [
+     "Not saved"
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "note",
+   "why": "Tab A after 2 s: Saved",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4"
+  },
+  {
+   "n": 5,
+   "action": "note",
+   "why": "Tab B (opened before A typed) after typing and 2 s: This visit was changed in another tab or by someone else. Your text is kept below. Copy it, reload the visit, then add what is missing. Copy my textReload visit / Not saved — changed elsewhere",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4"
+  },
+  {
+   "n": 6,
+   "action": "note",
+   "why": "After reloading tab B the saved values are: complaint='Complaint typed in tab A', gums=''",
+   "url": "/app/visits/01M8674YDCSSBCKWVCCD1ZQ0V4"
+  },
+  {
+   "n": 7,
+   "action": "switch user to receptionist",
+   "why": "PART 2: the receptionist has Neha's Billing tab open in two tabs (both show ₹2,500 due)",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-part-2-the-receptionist-has-neha-s-billi.jpg"
+  },
+  {
+   "n": 8,
+   "action": "open /app/patients",
+   "why": "Patients",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-patients.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Tab A: open Neha",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-tab-a-open-neha.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Tab A: Billing tab",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 11,
+   "action": "type",
+   "why": "Tab A: type 2000",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Tab A: Record payment ₹2,000",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS",
+   "errors": [],
+   "visible": {
+    "h1": "Neha Testcase",
+    "alerts": [],
+    "toasts": [
+     "₹2,000 recorded. Receipt SR-2627-000020 Print\n×",
+     "Notifications ₹2,000 recorded. Receipt SR-2627-000020 Print"
+    ],
+    "dialog": []
+   },
+   "shot": "12-tab-a-record-payment-2-000.jpg"
+  },
+  {
+   "n": 13,
+   "action": "note",
+   "why": "Tab A now: Outstanding: ₹500",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "Tab B (stale, still thought ₹2,500 was due) recorded ₹1,000: Outstanding: ₹2,500 | msg: ₹1,000 is ₹500 more than the balance (₹500). Change the amount, or record the extra as an advance.",
+   "url": "/app/patients/01M8674P17ZB1512ERE9CNDRAS"
+  }
+ ]
+}

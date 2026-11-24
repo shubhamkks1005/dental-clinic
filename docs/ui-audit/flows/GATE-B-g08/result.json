@@ -1,0 +1,389 @@
+{
+ "spec": {
+  "id": "GATE-B-g08",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 12,
+  "typedFields": 5,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages",
+   "/app/patients",
+   "/app/patients/01M86873CWQ64K2265N477XR3F"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 29
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "A mother brings her 8-year-old son. The boy has no phone; the mother's phone is the contact",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-a-mother-brings-her-8-year-old-son-the-b.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Child's name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age 8",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "click",
+   "why": "Tick No mobile (the child has none)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "type",
+   "why": "Type why there is no mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "After ticking No mobile: fields visible = Full name | Mobile | No mobile | Why no mobile | Female | Male | Other | Date of birth | Or age (years) | Guardian name | Guardian relation | Guardian mobile | Privacy notice given | Allow reminders",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Open More details (guardian fields)",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 9,
+   "action": "look",
+   "why": "More details opened",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-more-details-opened.jpg"
+  },
+  {
+   "n": 10,
+   "action": "note",
+   "why": "More details fields: Full name | Mobile | No mobile | Why no mobile | Female | Male | Other | Date of birth | Or age (years) | Guardian name | Guardian relation | Guardian mobile | Other mobile | Area or address | Whose contact mobile | Emergency contact | Old register no. | Promo messages (off by default | Notes | Privacy notice given | Allow reminders",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 11,
+   "action": "select",
+   "why": "Contact mobile belongs to: Mother",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Tick Privacy notice given",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 13,
+   "action": "click",
+   "why": "Tick Allow reminders",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 14,
+   "action": "look",
+   "why": "Child form filled with guardian",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "14-child-form-filled-with-guardian.jpg"
+  },
+  {
+   "n": 15,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "15-save-patient.jpg"
+  },
+  {
+   "n": 16,
+   "action": "note",
+   "why": "Save result: Patient saved | Kiddo Guardtest · P-000031 | Book appointment | Walk-in now | Open patient | Back to patients · Add anot | ",
+   "url": "/app/patients/new"
+  },
+  {
+   "n": 17,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Tue 24 Nov | Note (opti"
+    ]
+   },
+   "shot": "17-book-appointment.jpg"
+  },
+  {
+   "n": 18,
+   "action": "click",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Tue 24 Nov | 2:30 PM | "
+    ]
+   },
+   "shot": "18-consultation.jpg"
+  },
+  {
+   "n": 19,
+   "action": "click",
+   "why": "Pick the first free time",
+   "url": "/app/appointments?patient=01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Wed 25 Nov | 11:15 AM |"
+    ]
+   },
+   "shot": "19-pick-the-first-free-time.jpg"
+  },
+  {
+   "n": 20,
+   "action": "type",
+   "why": "Note",
+   "url": "/app/appointments?patient=01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Kiddo Guardtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Wed 25 Nov | 11:15 AM |"
+    ]
+   }
+  },
+  {
+   "n": 21,
+   "action": "click",
+   "why": "Book",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for Wed 25 Nov, 11:15 AM\n×",
+     "Notifications Booked for Wed 25 Nov, 11:15 AM"
+    ],
+    "dialog": []
+   },
+   "shot": "21-book.jpg"
+  },
+  {
+   "n": 22,
+   "action": "open /app/messages",
+   "why": "Run the cron and open Messages",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "22-run-the-cron-and-open-messages.jpg"
+  },
+  {
+   "n": 23,
+   "action": "note",
+   "why": "Message for the child: Confirmation | Dear Sunita, Kiddo's appointment at Align Dentistry is booked for Wednesday 25/11/2026, 11:15 am. To change it, call 0000000000. | Open WhatsApp | Mark sent | Cancel",
+   "url": "/app/messages"
+  },
+  {
+   "n": 24,
+   "action": "click",
+   "why": "Click Open WhatsApp on the child's message",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand.",
+     "WhatsApp opened. Tap Send there, then mark Sent here.\n×",
+     "Notifications WhatsApp opened. Tap Send there, then mark Sent here."
+    ],
+    "dialog": []
+   },
+   "shot": "24-click-open-whatsapp-on-the-child-s-messa.jpg"
+  },
+  {
+   "n": 25,
+   "action": "note",
+   "why": "WhatsApp opens for number/text: https://api.whatsapp.com/send/?phone=919000099070&text=Dear Sunita, Kiddo's appointment at Align Dentistry is booked for Wednesday 25/11/2026, 11:15 am. To change it, call 0000000000.&type=phone_number&app_absent=0",
+   "url": "/app/messages"
+  },
+  {
+   "n": 26,
+   "action": "open /app/patients",
+   "why": "Open the child's profile to see how the contact is shown",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-open-the-child-s-profile-to-see-how-the-.jpg"
+  },
+  {
+   "n": 27,
+   "action": "click",
+   "why": "Open Kiddo",
+   "url": "/app/patients/01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Kiddo Guardtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "27-open-kiddo.jpg"
+  },
+  {
+   "n": 28,
+   "action": "look",
+   "why": "Profile of a child with guardian",
+   "url": "/app/patients/01M86873CWQ64K2265N477XR3F",
+   "errors": [],
+   "visible": {
+    "h1": "Kiddo Guardtest",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-profile-of-a-child-with-guardian.jpg"
+  },
+  {
+   "n": 29,
+   "action": "note",
+   "why": "Profile header: ← Patients | Kiddo Guardtest | 8 yrs · Male | P-000031 | Contact: Sunita Guardtest (mother) | Take payment | Book | Overview | History | Appointments | Billing | Files | Messages | NEXT APPOINTMENT | Wed 25 Nov, 11:15 AM",
+   "url": "/app/patients/01M86873CWQ64K2265N477XR3F"
+  }
+ ]
+}

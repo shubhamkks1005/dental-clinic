@@ -1,0 +1,148 @@
+{
+ "spec": {
+  "id": "GATE-B-b02",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 3,
+  "typedFields": 0,
+  "pagesVisited": [
+   "/app/appointments",
+   "/app/patients",
+   "/app/patients/01M8674PH3T1B1CCRR4HP4B05M"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 9
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/appointments?date=2026-11-24&view=day",
+   "why": "Receptionist opens tomorrow's calendar (a patient phones to move or cancel their booking)",
+   "url": "/app/appointments?date=2026-11-24&view=day",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-receptionist-opens-tomorrow-s-calendar-a.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Click the patient's appointment block",
+   "url": "/app/appointments?date=2026-11-24&view=day",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "look",
+   "why": "Detail panel: what can the receptionist do here?",
+   "url": "/app/appointments?date=2026-11-24&view=day",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "03-detail-panel-what-can-the-receptionist-d.jpg"
+  },
+  {
+   "n": 4,
+   "action": "look",
+   "why": "Before the drag",
+   "url": "/app/appointments?date=2026-11-24&view=day",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "04-before-the-drag.jpg"
+  },
+  {
+   "n": 5,
+   "action": "look",
+   "why": "After trying to drag the block lower (reschedule by dragging)",
+   "url": "/app/appointments?date=2026-11-24&view=day",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Move appointment? | Move Bina Testcase to 12:45 PM on this day? | Cancel | Move"
+    ]
+   },
+   "shot": "05-after-trying-to-drag-the-block-lower-res.jpg"
+  },
+  {
+   "n": 6,
+   "action": "open /app/patients",
+   "why": "Try the patient's profile instead",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-try-the-patient-s-profile-instead.jpg"
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Open Bina's profile",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "07-open-bina-s-profile.jpg"
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Open the Appointments tab",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 9,
+   "action": "look",
+   "why": "Profile Appointments tab: is there a Cancel or Reschedule?",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "09-profile-appointments-tab-is-there-a-canc.jpg"
+  }
+ ]
+}

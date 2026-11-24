@@ -1,0 +1,271 @@
+{
+ "spec": {
+  "id": "GATE-B-h01",
+  "role": "receptionist",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 9,
+  "typedFields": 3,
+  "pagesVisited": [
+   "/app/patients/new",
+   "/app/appointments",
+   "/app/messages"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 18
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients/new",
+   "why": "Receptionist registers a patient WITH sms consent",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-receptionist-registers-a-patient-with-sm.jpg"
+  },
+  {
+   "n": 2,
+   "action": "type",
+   "why": "Type the name",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Gender",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "type",
+   "why": "Age",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 5,
+   "action": "type",
+   "why": "Mobile",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 6,
+   "action": "click",
+   "why": "Tick Privacy notice given",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 7,
+   "action": "click",
+   "why": "Tick Allow reminders",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "New patient",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 8,
+   "action": "click",
+   "why": "Save patient",
+   "url": "/app/patients/new",
+   "errors": [],
+   "visible": {
+    "h1": "Patient saved",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-save-patient.jpg"
+  },
+  {
+   "n": 9,
+   "action": "click",
+   "why": "Book appointment",
+   "url": "/app/appointments?patient=01M8687P2Y5MQBKQWS5MP979QV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Tue 24 Nov | Note (optiona"
+    ]
+   },
+   "shot": "09-book-appointment.jpg"
+  },
+  {
+   "n": 10,
+   "action": "click",
+   "why": "Consultation",
+   "url": "/app/appointments?patient=01M8687P2Y5MQBKQWS5MP979QV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Tue 24 Nov | 2:30 PM | 2:4"
+    ]
+   },
+   "shot": "10-consultation.jpg"
+  },
+  {
+   "n": 11,
+   "action": "click",
+   "why": "Pick the first free time tomorrow (the seed fills some slots)",
+   "url": "/app/appointments?patient=01M8687P2Y5MQBKQWS5MP979QV",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [],
+    "dialog": [
+     "Book appointment | Mina Msgtest · P-000031 | Change | VISIT TYPE | Consultation | Follow-up | Cleaning | RCT sitting | Extraction | Ortho adjustment | Emergency | DATE | Tue | 24 | Wed | 25 | Thu | 26 | Fri | 27 | Sat | 28 | Sun | 29 | Mon | 30 | More dates | Free times on Wed 25 Nov | 11:15 AM | 11"
+    ]
+   },
+   "shot": "11-pick-the-first-free-time-tomorrow-the-se.jpg"
+  },
+  {
+   "n": 12,
+   "action": "click",
+   "why": "Click Book WITHOUT typing the optional note",
+   "url": "/app/appointments",
+   "errors": [],
+   "visible": {
+    "h1": "Appointments",
+    "alerts": [],
+    "toasts": [
+     "Booked for Wed 25 Nov, 11:15 AM\n×",
+     "Notifications Booked for Wed 25 Nov, 11:15 AM"
+    ],
+    "dialog": []
+   },
+   "shot": "12-click-book-without-typing-the-optional-n.jpg"
+  },
+  {
+   "n": 13,
+   "action": "open /app/messages",
+   "why": "Messages right after booking",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand."
+    ],
+    "dialog": []
+   },
+   "shot": "13-messages-right-after-booking.jpg"
+  },
+  {
+   "n": 14,
+   "action": "note",
+   "why": "Ran the 5-minute cron by hand (like Cloudflare does): HTTP 200",
+   "url": "/app/messages"
+  },
+  {
+   "n": 15,
+   "action": "open /app/messages",
+   "why": "Messages after the cron ran",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand."
+    ],
+    "dialog": []
+   }
+  },
+  {
+   "n": 16,
+   "action": "click",
+   "why": "Click Open WhatsApp on Mina's confirm message",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand.",
+     "WhatsApp opened. Tap Send there, then mark Sent here.\n×",
+     "Notifications WhatsApp opened. Tap Send there, then mark Sent here."
+    ],
+    "dialog": []
+   },
+   "shot": "16-click-open-whatsapp-on-mina-s-confirm-me.jpg"
+  },
+  {
+   "n": 17,
+   "action": "note",
+   "why": "Open WhatsApp opened: https://api.whatsapp.com/send/?phone=919000099010&text=Dear+Mina%2C+your+appointment+at+Align+Dentistry+is+booked+for+Wednesday+25%2F11%2F2026%2C+11%3A15+am.+To+change+it%2C+call+0000000000.&type=phone_number&app_absent=0",
+   "url": "/app/messages"
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "Messages after Open WhatsApp: where did the message go?",
+   "url": "/app/messages",
+   "errors": [],
+   "visible": {
+    "h1": "Messages",
+    "alerts": [],
+    "toasts": [
+     "Test mode is ON. Nothing is sent by SMS. Tap Open WhatsApp to send each message by hand.",
+     "WhatsApp opened. Tap Send there, then mark Sent here.\n×"
+    ],
+    "dialog": []
+   },
+   "shot": "18-messages-after-open-whatsapp-where-did-t.jpg"
+  }
+ ]
+}

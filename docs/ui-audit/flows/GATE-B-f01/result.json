@@ -1,0 +1,393 @@
+{
+ "spec": {
+  "id": "GATE-B-f01",
+  "role": "doctor",
+  "vp": "laptop"
+ },
+ "metrics": {
+  "clicks": 3,
+  "typedFields": 0,
+  "pagesVisited": [
+   "/app/patients",
+   "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "/app/visits/01M8674R8P89XWV8HT876KXRRR",
+   "/app",
+   "/app/print/prescription/01M8674RBP8F7AJACCN7H0F1C4",
+   "/app/print/history-summary/01M8674PH3T1B1CCRR4HP4B05M",
+   "/app/patients/01M8674PH3T1B1CCRR4HP4B05M/certificates/new",
+   "/app/certificates",
+   "/app/errors",
+   "/app/requests",
+   "/app/settings/staff",
+   "/app/library/medicines",
+   "/app/settings/billing",
+   "/app/reports",
+   "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  ],
+  "c1UnwrappedCalls": 0,
+  "failedRequests": [],
+  "stepCount": 37
+ },
+ "crashed": null,
+ "steps": [
+  {
+   "n": 1,
+   "action": "open /app/patients",
+   "why": "The doctor looks up real record ids first (a finalised visit, its prescription, the patient)",
+   "url": "/app/patients",
+   "errors": [],
+   "visible": {
+    "h1": "Patients",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "01-the-doctor-looks-up-real-record-ids-firs.jpg"
+  },
+  {
+   "n": 2,
+   "action": "click",
+   "why": "Open Neha Testcase",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "02-open-neha-testcase.jpg"
+  },
+  {
+   "n": 3,
+   "action": "click",
+   "why": "Open the Visits tab",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   }
+  },
+  {
+   "n": 4,
+   "action": "click",
+   "why": "Open the finalised visit",
+   "url": "/app/visits/01M8674R8P89XWV8HT876KXRRR",
+   "errors": [],
+   "visible": {
+    "h1": "Bina Testcase",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "04-open-the-finalised-visit.jpg"
+  },
+  {
+   "n": 5,
+   "action": "note",
+   "why": "Doctor's ids: patient 01M8674PH3T1B1CCRR4HP4B05M, visit 01M8674R8P89XWV8HT876KXRRR, prescription 01M8674RBP8F7AJACCN7H0F1C4. Doctor API reads: visit prescriptions HTTP 200",
+   "url": "/app/visits/01M8674R8P89XWV8HT876KXRRR"
+  },
+  {
+   "n": 6,
+   "action": "switch user to receptionist",
+   "why": "NOW the receptionist (who must never see clinical data) types the doctor's URLs",
+   "url": "/app",
+   "errors": [],
+   "visible": {
+    "h1": "Good afternoon, Dev",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "06-now-the-receptionist-who-must-never-see-.jpg"
+  },
+  {
+   "n": 7,
+   "action": "note",
+   "why": "PAGE Finalised visit /app/visits/:id => Not available for your role | You do not have permission to open this page. Ask the doctor if you need it.",
+   "url": "/app/visits/01M8674R8P89XWV8HT876KXRRR"
+  },
+  {
+   "n": 8,
+   "action": "look",
+   "why": "Receptionist opens: Finalised visit",
+   "url": "/app/visits/01M8674R8P89XWV8HT876KXRRR",
+   "errors": [],
+   "visible": {
+    "h1": "Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "08-receptionist-opens-finalised-visit.jpg"
+  },
+  {
+   "n": 9,
+   "action": "note",
+   "why": "PAGE Prescription print /app/print/prescription/:id => Prescription | RX-2026-27-0004 · Issued | Set the doctor registration number in Settings before printing. | Print | Back | ALIGN DENTISTRY | Family dental care | Phone: 0000000000 | Dr Sample | BDS | ",
+   "url": "/app/print/prescription/01M8674RBP8F7AJACCN7H0F1C4"
+  },
+  {
+   "n": 10,
+   "action": "look",
+   "why": "Receptionist opens: Prescription print",
+   "url": "/app/print/prescription/01M8674RBP8F7AJACCN7H0F1C4",
+   "errors": [],
+   "visible": {
+    "h1": "Prescription",
+    "alerts": [
+     "Set the doctor registration number in Settings before printing."
+    ],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "10-receptionist-opens-prescription-print.jpg"
+  },
+  {
+   "n": 11,
+   "action": "note",
+   "why": "PAGE History summary print /app/print/history-summary/:id => Not available for your role | You do not have permission to open this page. Ask the doctor if you need it.",
+   "url": "/app/print/history-summary/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 12,
+   "action": "look",
+   "why": "Receptionist opens: History summary print",
+   "url": "/app/print/history-summary/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "12-receptionist-opens-history-summary-print.jpg"
+  },
+  {
+   "n": 13,
+   "action": "note",
+   "why": "PAGE New certificate /app/patients/:id/certificates/new => Not available for your role | You do not have permission to open this page. Ask the doctor if you need it.",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M/certificates/new"
+  },
+  {
+   "n": 14,
+   "action": "look",
+   "why": "Receptionist opens: New certificate",
+   "url": "/app/patients/01M8674PH3T1B1CCRR4HP4B05M/certificates/new",
+   "errors": [],
+   "visible": {
+    "h1": "Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "14-receptionist-opens-new-certificate.jpg"
+  },
+  {
+   "n": 15,
+   "action": "note",
+   "why": "PAGE Certificate register /app/certificates => Align Dentistry | Orthodontics | Today | Patients | Appointments | Billing | Messages | Reports | Settings | DR | Dev Receptionist | Receptionist | Sign out | Search patients (shortcut: /) | / | Walk-",
+   "url": "/app/certificates"
+  },
+  {
+   "n": 16,
+   "action": "look",
+   "why": "Receptionist opens: Certificate register",
+   "url": "/app/certificates",
+   "errors": [],
+   "visible": {
+    "h1": "Certificate register",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "16-receptionist-opens-certificate-register.jpg"
+  },
+  {
+   "n": 17,
+   "action": "note",
+   "why": "PAGE Error log /app/errors => Not available for your role | You do not have permission to open this page. Ask the doctor if you need it.",
+   "url": "/app/errors"
+  },
+  {
+   "n": 18,
+   "action": "look",
+   "why": "Receptionist opens: Error log",
+   "url": "/app/errors",
+   "errors": [],
+   "visible": {
+    "h1": "Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "18-receptionist-opens-error-log.jpg"
+  },
+  {
+   "n": 19,
+   "action": "note",
+   "why": "PAGE Patient requests /app/requests => Patient requests | DRAFT: due date is 30 days from the request. The doctor confirms the final rule. | Open | Done | Rejected | All | Kiran Testcase P-000011 | open | Copy of my information · due 24/12",
+   "url": "/app/requests"
+  },
+  {
+   "n": 20,
+   "action": "look",
+   "why": "Receptionist opens: Patient requests",
+   "url": "/app/requests",
+   "errors": [],
+   "visible": {
+    "h1": "Patient requests",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "20-receptionist-opens-patient-requests.jpg"
+  },
+  {
+   "n": 21,
+   "action": "note",
+   "why": "PAGE Settings > Staff /app/settings/staff => Settings | Everything on prescriptions, bills and screens comes from here. | Search settings | SETUP PROGRESS | 0 of 4 done. Printed bills and prescriptions show these until they are filled in. | Doct",
+   "url": "/app/settings/staff"
+  },
+  {
+   "n": 22,
+   "action": "look",
+   "why": "Receptionist opens: Settings > Staff",
+   "url": "/app/settings/staff",
+   "errors": [],
+   "visible": {
+    "h1": "Settings | Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "22-receptionist-opens-settings-staff.jpg"
+  },
+  {
+   "n": 23,
+   "action": "note",
+   "why": "PAGE Settings > Medicines /app/settings/medicines => Not available for your role | You do not have permission to open this page. Ask the doctor if you need it.",
+   "url": "/app/library/medicines"
+  },
+  {
+   "n": 24,
+   "action": "look",
+   "why": "Receptionist opens: Settings > Medicines",
+   "url": "/app/library/medicines",
+   "errors": [],
+   "visible": {
+    "h1": "Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "24-receptionist-opens-settings-medicines.jpg"
+  },
+  {
+   "n": 25,
+   "action": "note",
+   "why": "PAGE Settings > Billing /app/settings/billing => Settings | Everything on prescriptions, bills and screens comes from here. | Search settings | SETUP PROGRESS | 0 of 4 done. Printed bills and prescriptions show these until they are filled in. | Doct",
+   "url": "/app/settings/billing"
+  },
+  {
+   "n": 26,
+   "action": "look",
+   "why": "Receptionist opens: Settings > Billing",
+   "url": "/app/settings/billing",
+   "errors": [],
+   "visible": {
+    "h1": "Settings | Not available for your role",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "26-receptionist-opens-settings-billing.jpg"
+  },
+  {
+   "n": 27,
+   "action": "note",
+   "why": "PAGE Reports /app/reports => Reports | Today's summary | 2026-11-24 | Arrived | 2 | Still on list | 2 | Collected | -₹50 | The full dashboard is for the doctor. You can use Today for the live queue.",
+   "url": "/app/reports"
+  },
+  {
+   "n": 28,
+   "action": "look",
+   "why": "Receptionist opens: Reports",
+   "url": "/app/reports",
+   "errors": [],
+   "visible": {
+    "h1": "Reports",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "28-receptionist-opens-reports.jpg"
+  },
+  {
+   "n": 29,
+   "action": "note",
+   "why": "PAGE Consent print (allowed) /app/print/consent/:id => Consent form | Tooth extraction, version 1. Text is the doctor's own; lawyer still to confirm. | Template | Tooth extraction | Dental filling | Root canal treatment | Scaling and polishing | Crown and",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 30,
+   "action": "look",
+   "why": "Receptionist opens: Consent print (allowed)",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M",
+   "errors": [],
+   "visible": {
+    "h1": "Consent form",
+    "alerts": [],
+    "toasts": [],
+    "dialog": []
+   },
+   "shot": "30-receptionist-opens-consent-print-allowed.jpg"
+  },
+  {
+   "n": 31,
+   "action": "note",
+   "why": "API visit /api/staff/visits/:id => HTTP 403 {\"ok\":false,\"error\":{\"code\":\"forbidden\",\"message\":\"You do not have permission to do this. Ask the doctor if yo",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 32,
+   "action": "note",
+   "why": "API visit prescriptions /api/staff/visits/:id/prescriptions => HTTP 403 {\"ok\":false,\"error\":{\"code\":\"forbidden\",\"message\":\"You do not have permission to do this. Ask the doctor if yo",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 33,
+   "action": "note",
+   "why": "API error log /api/staff/errors => HTTP 403 {\"ok\":false,\"error\":{\"code\":\"forbidden\",\"message\":\"You do not have permission to do this. Ask the doctor if yo",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 34,
+   "action": "note",
+   "why": "API requests /api/staff/requests => HTTP 404 {\"ok\":false,\"error\":{\"code\":\"not_found\",\"message\":\"This address does not exist.\"}}",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 35,
+   "action": "note",
+   "why": "API staff list /api/staff/staff => HTTP 404 {\"ok\":false,\"error\":{\"code\":\"not_found\",\"message\":\"This address does not exist.\"}}",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 36,
+   "action": "note",
+   "why": "API chart events /api/staff/patients/:id/chart => HTTP 403 {\"ok\":false,\"error\":{\"code\":\"forbidden\",\"message\":\"You do not have permission to do this. Ask the doctor if yo",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  },
+  {
+   "n": 37,
+   "action": "note",
+   "why": "API history feed /api/staff/patients/:id/history => HTTP 200 {\"ok\":true,\"data\":{\"entries\":[{\"id\":\"01M8674Z4QPN63QXEF0DBG23V8\",\"type\":\"appointment\",\"at\":\"2026-12-05T06:00:0 entry types: appointment,prescription,consent",
+   "url": "/app/print/consent/01M8674PH3T1B1CCRR4HP4B05M"
+  }
+ ]
+}
