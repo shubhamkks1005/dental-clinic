@@ -34,16 +34,16 @@ export function useVisitPrescription(visitId: string, patientId: string, canWrit
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const [list, meds, setList, mh] = await Promise.all([
+    const [list, meds, setList, mh, allergenList] = await Promise.all([
       listVisitPrescriptions(visitId),
       getList("medicines"),
       getList("medicine_sets"),
       getMedicalHistory(patientId).catch(() => ({ alerts: [] as Array<{ label: string }> })),
+      getList("allergens").catch(() => [] as ListItem[]),
     ]);
     setMedicines(meds.filter((m) => m.active));
     setSets(setList.filter((s) => s.active));
     const alerts = mh.alerts ?? [];
-    const allergenList = await getList("allergens").catch(() => [] as ListItem[]);
     const tags: Array<{ tag: string; label: string }> = [];
     for (const a of allergenList) {
       const tag = typeof a.data.tag === "string" ? a.data.tag : "";

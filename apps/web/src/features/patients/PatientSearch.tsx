@@ -11,6 +11,7 @@ import { icons } from "../../ui/icons";
 import { NEW_PATIENT_PATH } from "../../ui/shell/nav-items";
 import { isSearchShortcut } from "../../ui/shell/search-shortcut";
 import { listPatients, type PatientListRow } from "./api";
+import { createLatestOnly } from "./latest-only";
 import "./patient-search.css";
 import { TextInput } from "../../ui/form";
 
@@ -44,6 +45,8 @@ export function PatientSearch() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState<Page<PatientListRow> | null>(null);
   const [active, setActive] = useState(0);
+  const [searching, setSearching] = useState(false);
+  const latest = useRef(createLatestOnly());
   const today = istDate(new Date());
 
   useEffect(() => {
@@ -72,23 +75,38 @@ export function PatientSearch() {
 
   useEffect(() => {
     const trimmed = q.trim();
+    const guard = latest.current;
     if (!trimmed) {
+      guard.cancel();
       setPage(null);
+      setSearching(false);
       return;
     }
+    setSearching(true);
     const t = window.setTimeout(() => {
+      // Only the newest query may write the result; slower old replies are dropped.
+      const isCurrent = guard.begin();
       listPatients({ ...firstPage("full_name"), q: trimmed, pageSize: 8 })
         .then((next) => {
+          if (!isCurrent()) return;
           setPage(next);
           setActive(0);
           setOpen(true);
         })
-        .catch(() => setPage({ rows: [], total: 0, page: 1, pageSize: 8 }));
+        .catch(() => {
+          if (isCurrent()) setPage({ rows: [], total: 0, page: 1, pageSize: 8 });
+        })
+        .finally(() => {
+          if (isCurrent()) setSearching(false);
+        });
     }, 250);
-    return () => window.clearTimeout(t);
+    return () => {
+      window.clearTimeout(t);
+      guard.cancel();
+    };
   }, [q]);
 
-  const rows = page?.rows ?? [];
+  const rows = searching ? [] : (page?.rows ?? []);
   const showPanel = open && q.trim().length > 0;
 
   function go(id: string) {
@@ -99,6 +117,10 @@ export function PatientSearch() {
 
   function onKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
     if (!showPanel) return;
+    if (searching && event.key === "Enter") {
+      event.preventDefault();
+      return;
+    }
     if (event.key === "ArrowDown") {
       event.preventDefault();
       setActive((i) => Math.min(i + 1, Math.max(rows.length - 1, 0)));
@@ -147,7 +169,12 @@ export function PatientSearch() {
       </label>
       {showPanel && (
         <div className="patient-search-panel" id={listId} role="listbox">
-          {rows.length === 0 && (
+          {searching && (
+            <p className="muted patient-search-status" role="status">
+              Searching…
+            </p>
+          )}
+          {!searching && rows.length === 0 && (
             <Link
               className="btn btn-primary patient-search-new"
               to={`${NEW_PATIENT_PATH}?name=${encodeURIComponent(q.trim())}`}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { TIMED_OUT_QUERY } from "../../api/session-end";
 import { StatusBadge } from "../../ui/StatusBadge";
 import { devSignInUrl, getMe, SIGN_IN_URL } from "./api";
@@ -30,9 +30,9 @@ export function LandingPage() {
           <h1 id="staff-title">Clinic staff</h1>
           <p className="muted">For the doctor and the receptionist.</p>
           {signedIn ? (
-            <a className="btn btn-primary" href="/app">
+            <Link className="btn btn-primary" to="/app">
               Continue to the app
-            </a>
+            </Link>
           ) : (
             <a className="btn btn-primary" href={SIGN_IN_URL}>
               Sign in with Google
