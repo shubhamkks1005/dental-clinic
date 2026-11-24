@@ -1,6 +1,8 @@
 import { firstPage } from "@clinic/shared";
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { listPatients, type PatientListRow } from "../patients";
+import { TextInput } from "../../ui/form";
 
 type Props = {
   selected: PatientListRow | null;
@@ -43,7 +45,7 @@ export function QuickBookPatient({ selected, onSelect, onClear }: Props) {
     <div className="quick-book-search">
       <label>
         Patient
-        <input
+        <TextInput
           className="input"
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -62,6 +64,11 @@ export function QuickBookPatient({ selected, onSelect, onClear }: Props) {
             </li>
           ))}
         </ul>
+      ) : null}
+      {q.trim() && rows.length === 0 ? (
+        <p className="small muted">
+          Not found? <Link to="/app/patients/new">New patient</Link>
+        </p>
       ) : null}
     </div>
   );

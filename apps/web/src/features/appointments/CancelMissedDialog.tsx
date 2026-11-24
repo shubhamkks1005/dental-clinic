@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { cancelAppointment, markMissed } from "./api";
+import { Select, TextInput } from "../../ui/form";
 
 type Props = {
   open: boolean;
@@ -73,7 +74,7 @@ export function CancelMissedDialog({
         {mode === "cancel" ? (
           <label>
             Reason
-            <select
+            <Select
               className="input"
               value={reason}
               onChange={(e) => setReason(e.target.value as CancelReasonCode)}
@@ -83,12 +84,12 @@ export function CancelMissedDialog({
                   {CANCEL_REASON_LABEL[r]}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         ) : null}
         <label>
           {mode === "missed" ? "Why did they miss it?" : "Note"}
-          <input
+          <TextInput
             className="input"
             value={detail}
             maxLength={150}

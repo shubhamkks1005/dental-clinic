@@ -7,9 +7,17 @@ import { useVisibleInterval } from "../../ui/useVisibleInterval";
 import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
 import { listDayAppointments, type DayAppointmentsReply, type SuggestedSlot } from "./api";
 import { bookedMessage } from "./booked-message";
+import { DateStrip } from "./DateStrip";
 import { DayView } from "./DayView";
+import { PhoneDayList } from "./PhoneDayList";
 import { QuickBookDialog } from "./QuickBookDialog";
+import { useWeek, weekDays } from "./useWeek";
+import { WeekView, weekBooked } from "./WeekView";
+import { formatDate, plural } from "@clinic/shared";
+import { useWide } from "../../ui/use-wide";
 import "./day-view.css";
+import "./week-view.css";
+import { TextInput } from "../../ui/form";
 
 function validDate(raw: string | null): string | null {
   if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
@@ -35,6 +43,12 @@ export function AppointmentsScreen() {
   const [data, setData] = useState<DayAppointmentsReply | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [bookOpen, setBookOpen] = useState(wantBook);
+  const [tick, setTick] = useState(0);
+  const laptop = useWide(1024);
+  const tablet = useWide(768);
+  // Week grid needs room: laptop only. Phone and tablet use the day.
+  const week = laptop && params.get("view") !== "day";
+  const weekData = useWeek(week, dateLocal, tick);
 
   const prefill = useMemo(
     () => ({ dateLocal, startMin: bookMin, patientId }),
@@ -60,6 +74,7 @@ export function AppointmentsScreen() {
   }, [load]);
 
   useVisibleInterval(load, AUTO_REFRESH_MS);
+  useVisibleInterval(() => setTick((t) => t + 1), AUTO_REFRESH_MS);
 
   useEffect(() => {
     if (wantBook) setBookOpen(true);
@@ -92,27 +107,75 @@ export function AppointmentsScreen() {
 
   function onBooked(slot: SuggestedSlot) {
     // The booking may be on another day: go there so it is on screen, and say where it went.
-    if (slot.dateLocal === dateLocal) load();
-    else setDate(slot.dateLocal);
+    if (slot.dateLocal === dateLocal) {
+      load();
+      setTick((t) => t + 1);
+    } else setDate(slot.dateLocal);
     toast({ text: bookedMessage(slot.dateLocal, slot.startMin) });
+  }
+
+  const changed = () => {
+    load();
+    setTick((t) => t + 1);
+  };
+  const step = week ? 7 : 1;
+  const unit = week ? "week" : "day";
+  const days = weekDays(dateLocal);
+  const booked = week && weekData.days ? weekBooked(weekData.days) : null;
+  const dayLive = data?.appointments.filter(
+    (a) => a.status !== "cancelled" && a.status !== "no_show" && a.status !== "rescheduled",
+  );
+  const title = week
+    ? `${formatDate(days[0] as string)} to ${formatDate(days[5] as string)}`
+    : formatDate(dateLocal);
+  const summary = week
+    ? booked !== null && `${plural(booked, "appointment")} this week`
+    : data && !data.window.closed && `${dayLive?.length ?? 0} booked`;
+  function openBook(startMin?: number) {
+    const next = new URLSearchParams(params);
+    next.set("date", dateLocal);
+    next.set("book", startMin === undefined ? "1" : String(startMin));
+    setParams(next, { replace: true });
+    setBookOpen(true);
+  }
+  function setView(view: "day" | "week") {
+    const next = new URLSearchParams(params);
+    next.set("view", view);
+    setParams(next, { replace: true });
   }
 
   return (
     <div className="appointments-page">
       <header className="appointments-head">
-        <h1>Appointments</h1>
+        <div>
+          <h1>Appointments</h1>
+          <p className="muted small">
+            <strong>{title}</strong>
+            {summary ? ` · ${summary}` : ""}
+          </p>
+        </div>
         <div className="appointments-date-nav">
+          {laptop ? (
+            <div className="view-toggle" role="group" aria-label="View">
+              <button type="button" aria-pressed={!week} onClick={() => setView("day")}>
+                Day
+              </button>
+              <button type="button" aria-pressed={week} onClick={() => setView("week")}>
+                Week
+              </button>
+            </div>
+          ) : null}
           <button
             type="button"
             className="btn"
-            aria-label="Previous day"
-            onClick={() => setDate(addIstDays(dateLocal, -1))}
+            aria-label={`Previous ${unit}`}
+            onClick={() => setDate(addIstDays(dateLocal, -step))}
           >
             Previous
           </button>
           <label className="appointments-date">
             <span className="sr-only">Date</span>
-            <input
+            <TextInput
               type="date"
               value={dateLocal}
               onChange={(e) => {
@@ -123,46 +186,53 @@ export function AppointmentsScreen() {
           <button
             type="button"
             className="btn"
-            aria-label="Next day"
-            onClick={() => setDate(addIstDays(dateLocal, 1))}
+            aria-label={`Next ${unit}`}
+            onClick={() => setDate(addIstDays(dateLocal, step))}
           >
             Next
           </button>
           <button type="button" className="btn" onClick={() => setDate(today)}>
             Today
           </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-              const next = new URLSearchParams(params);
-              next.set("book", "1");
-              setParams(next, { replace: true });
-              setBookOpen(true);
-            }}
-          >
-            Book
+          <button type="button" className="btn btn-primary" onClick={() => openBook()}>
+            Book appointment
           </button>
         </div>
       </header>
 
-      {error ? <p className="field-error">{error}</p> : null}
-      {!data && !error ? <p className="muted">Loading…</p> : null}
-      {data ? (
+      {!tablet ? <DateStrip days={days} selected={dateLocal} onPick={setDate} label="Day" /> : null}
+      {error || weekData.error ? (
+        <p className="field-error">{week ? weekData.error : error}</p>
+      ) : null}
+      {week ? (
+        weekData.days ? (
+          <WeekView
+            days={weekData.days}
+            today={today}
+            onOpenDay={(d) => {
+              const next = new URLSearchParams(params);
+              next.set("date", d);
+              next.set("view", "day");
+              setParams(next, { replace: true });
+            }}
+            onChanged={changed}
+          />
+        ) : weekData.error ? null : (
+          <p className="muted">Loading…</p>
+        )
+      ) : !data && !error ? (
+        <p className="muted">Loading…</p>
+      ) : data && tablet ? (
         <DayView
           dateLocal={data.dateLocal}
           window={data.window}
           appointments={data.appointments}
           serverNow={data.serverNow}
-          onEmptySlot={(startMin) => {
-            const next = new URLSearchParams(params);
-            next.set("date", dateLocal);
-            next.set("book", String(startMin));
-            setParams(next, { replace: true });
-            setBookOpen(true);
-          }}
-          onChanged={load}
+          onEmptySlot={openBook}
+          onChanged={changed}
         />
+      ) : data ? (
+        <PhoneDayList window={data.window} appointments={data.appointments} onChanged={changed} />
       ) : null}
 
       <QuickBookDialog

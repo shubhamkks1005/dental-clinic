@@ -1,0 +1,259 @@
+/* Q2.7: colour kinds, week grid, phone day list, date strip. Calendar.dc.html / PhoneCalendar.dc.html. */
+.kind-clean {
+  --k-bg: #e3f6e8;
+  --k-bar: #2e9e57;
+  --k-fg: #14532d;
+}
+.kind-consult {
+  --k-bg: #e0e7ff;
+  --k-bar: #1e4fa3;
+  --k-fg: #1e3a8a;
+}
+.kind-rct {
+  --k-bg: #d8f0ee;
+  --k-bar: #0b7a75;
+  --k-fg: #115e59;
+}
+.kind-ext {
+  --k-bg: #fef3c7;
+  --k-bar: #d58a1a;
+  --k-fg: #78350f;
+}
+.kind-ortho {
+  --k-bg: #ede4fb;
+  --k-bar: #7c3aed;
+  --k-fg: #5b21b6;
+}
+.kind-emer {
+  --k-bg: #ffe4d6;
+  --k-bar: #d9622b;
+  --k-fg: #9a3412;
+}
+
+.week-view {
+  display: grid;
+  gap: var(--s4);
+}
+.week-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+.week-cols {
+  display: grid;
+  grid-template-columns: 68px repeat(var(--week-n, 6), minmax(0, 1fr));
+}
+.week-card:has(.week-col:nth-child(8)) .week-cols {
+  --week-n: 7;
+}
+.week-heads {
+  border-bottom: 1px solid var(--border);
+}
+.week-head {
+  min-height: 44px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  background: transparent;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.week-head-today {
+  color: var(--brand, #1e4fa3);
+  background: #f5f8fd;
+}
+.week-scroll {
+  max-height: min(70vh, 640px);
+  overflow: auto;
+}
+.week-body {
+  position: relative;
+}
+.week-hours {
+  display: grid;
+  align-content: start;
+  font-size: 12px;
+  color: var(--muted);
+}
+.week-hours span {
+  padding: 2px 6px;
+  box-sizing: border-box;
+  border-top: 1px solid #eef2f5;
+}
+.week-col {
+  position: relative;
+  border-left: 1px solid var(--border);
+  background-image: linear-gradient(#eef2f5 1px, transparent 1px);
+  background-size: 100% 56px;
+}
+.week-event {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+  gap: 0;
+  padding: 3px 6px;
+  text-align: left;
+  border: 0;
+  border-left: 4px solid var(--k-bar);
+  border-radius: 8px;
+  background: var(--k-bg);
+  color: var(--k-fg);
+  overflow: hidden;
+  cursor: pointer;
+  min-height: 28px;
+}
+.week-event strong {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.week-event .small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.week-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin: 0;
+  padding: var(--s3);
+  border-top: 1px solid var(--border);
+}
+.week-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--k-bar);
+}
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+}
+.view-toggle button {
+  min-height: 44px;
+  padding: 0 var(--s4);
+  border: 0;
+  background: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.view-toggle button[aria-pressed="true"] {
+  background: var(--navy, #0f2a5c);
+  color: #fff;
+}
+
+.date-strip {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.date-strip-day {
+  flex: 1 0 48px;
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: #fff;
+  color: var(--navy, #0f2a5c);
+  cursor: pointer;
+}
+.date-strip-on {
+  background: var(--navy, #0f2a5c);
+  border-color: var(--navy, #0f2a5c);
+  color: #fff;
+}
+
+.phone-day {
+  display: grid;
+  gap: var(--s3);
+}
+.phone-day-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s2);
+}
+.phone-day-row {
+  width: 100%;
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 64px 4px 1fr auto;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s3);
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+.phone-day-time,
+.phone-day-who {
+  display: grid;
+}
+.phone-day-bar {
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--k-bar);
+}
+.phone-day-free {
+  margin: 0;
+}
+.link-button {
+  border: 0;
+  background: none;
+  padding: 0 var(--s2);
+  min-height: 44px;
+  color: var(--brand, #1e4fa3);
+  font-weight: 600;
+  cursor: pointer;
+}
+.day-details-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  max-height: 75vh;
+  overflow: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -8px 24px rgba(15, 42, 92, 0.18);
+}
+.day-details-sheet .day-details {
+  border-radius: 16px 16px 0 0;
+}
+
+@media (min-width: 768px) {
+  .week-view {
+    grid-template-columns: 1fr minmax(240px, 300px);
+    align-items: start;
+  }
+  .week-view:not(:has(.day-details)) {
+    grid-template-columns: 1fr;
+  }
+  .day-details-sheet {
+    position: static;
+    box-shadow: none;
+    max-height: none;
+  }
+}
+
+.date-strip {
+  background:
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 24px 100% no-repeat local,
+    linear-gradient(to left, rgb(15 42 92 / 14%), transparent) right / 8px 100% no-repeat scroll;
+}

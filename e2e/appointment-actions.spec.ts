@@ -14,7 +14,7 @@ function isoDate(daysAhead: number): string {
 async function registerPatient(page: Page, name: string, stamp: string) {
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
-  await page.getByLabel("Gender").selectOption("female");
+  await page.getByLabel("Female", { exact: true }).check();
   await page.getByLabel("Or age (years)").fill("30");
   await page.getByLabel("Mobile", { exact: true }).fill(`9000${stamp}`);
   await page.getByRole("button", { name: "Save patient" }).click();
@@ -28,7 +28,7 @@ async function bookFutureSlot(page: Page): Promise<string> {
     .or(page.getByRole("link", { name: "Book appointment" }))
     .click();
   const dialog = page.locator("dialog[open]");
-  await dialog.getByLabel("Visit type").selectOption({ label: "Consultation" });
+  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
   const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
   let date = "";
   for (let day = 1; day <= 7; day++) {
@@ -81,7 +81,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await registerPatient(page, name, stamp);
   const bookedDate = await bookFutureSlot(page);
-  await page.goto(`/app/appointments?date=${bookedDate}`);
+  await page.goto(`/app/appointments?date=${bookedDate}&view=day`);
 
   // ---- Calendar panel: Reschedule reopens the Book dialog with the patient filled ----
   const card = page.locator(".day-card", { hasText: name });
@@ -91,6 +91,9 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   const dialog = page.locator("dialog[open]");
   await expect(dialog.getByText("Reschedule appointment")).toBeVisible();
   await expect(dialog).toContainText(name);
+  // The dialog opens on today: pick the booked day again, then its last time.
+  await dialog.getByLabel(/More dates/).fill(bookedDate);
+  await page.waitForTimeout(1200);
   await dialog
     .getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ })
     .last()
@@ -99,7 +102,10 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await expect(page.locator(".toast-text", { hasText: /Moved to/ })).toBeVisible();
 
   // Missed is not offered yet for a future booking (the 15 minute rule).
-  await page.locator(".day-card:not(.day-card-muted)", { hasText: name }).click();
+  const moved = page.locator(".day-card:not(.day-card-muted)", { hasText: name });
+  await expect(moved).toHaveCount(1);
+  await moved.click();
+  await expect(page.getByLabel("Appointment details")).toContainText("Booked");
   await expect(
     page.getByLabel("Appointment details").getByRole("button", { name: "Missed (later)" }),
   ).toBeDisabled();
@@ -128,7 +134,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   // ---- Missed (any time of day): a booking from yesterday, marked from the calendar panel ----
   await bookFutureSlot(page);
   const yesterday = moveBookingToPast(name, -1, 23 * 60);
-  await page.goto(`/app/appointments?date=${yesterday}`);
+  await page.goto(`/app/appointments?date=${yesterday}&view=day`);
   await page.locator(".day-card", { hasText: name }).click();
   await page
     .getByLabel("Appointment details")

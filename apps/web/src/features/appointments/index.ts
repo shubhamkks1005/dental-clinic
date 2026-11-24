@@ -8,3 +8,4 @@ export {
 export { QuickBookDialog } from "./QuickBookDialog";
 export { QuickBookPatient } from "./QuickBookPatient";
 export { AppointmentActions, type ActionableAppointment } from "./AppointmentActions";
+export { VisitTypeChips } from "./BookPickers";

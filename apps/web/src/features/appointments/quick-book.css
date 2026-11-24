@@ -89,3 +89,40 @@
 .quick-book-next {
   margin: var(--s3) 0 var(--s2);
 }
+
+/* Q2.7: Book dialog follows PhoneBook.dc.html: chips, date strip, fixed footer. */
+.time-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.field-label {
+  margin: 0 0 var(--s2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.quick-book-more-dates {
+  margin-top: var(--s2);
+}
+.quick-book-footer {
+  position: sticky;
+  bottom: 0;
+  background: var(--card, #fff);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+  align-items: center;
+}
+.quick-book-summary {
+  margin-right: auto;
+}
+.quick-book,
+.quick-book > * {
+  min-width: 0;
+}

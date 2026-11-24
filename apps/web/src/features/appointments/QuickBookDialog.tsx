@@ -1,14 +1,16 @@
-import { formatClockTime, istDate, type ListItem } from "@clinic/shared";
-import { formatDate } from "../../ui/format";
+import { addIstDays, formatClockTime, formatDate, istDate, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { getPatient, type PatientListRow } from "../patients";
 import { bookAppointment, rescheduleAppointment, type SuggestedSlot } from "./api";
+import { noFreeTimesText, TimeChips, VisitTypeChips } from "./BookPickers";
+import { DateStrip } from "./DateStrip";
 import { QuickBookPatient } from "./QuickBookPatient";
 import { useBookSlots } from "./useBookSlots";
 import "./quick-book.css";
+import { TextInput, Textarea } from "../../ui/form";
 
 type Prefill = {
   dateLocal: string;
@@ -145,44 +147,46 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
           onClear={() => setPatient(null)}
         />
 
-        <label>
-          Visit type
-          <select
-            className="input"
+        <div>
+          <p className="field-label">Visit type</p>
+          <VisitTypeChips
+            items={visitTypes}
             value={visitTypeId}
-            onChange={(e) => setVisitTypeId(e.target.value)}
+            onPick={setVisitTypeId}
             disabled={!patient || Boolean(reschedule)}
-          >
-            <option value="">Choose…</option>
-            {visitTypes.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Date
-          <input
-            className="input"
-            type="date"
-            min={istDate(new Date())}
-            value={dateLocal}
-            onChange={(e) => setDateLocal(e.target.value)}
-            disabled={!patient}
           />
-        </label>
+        </div>
+
+        <div>
+          <p className="field-label">Date</p>
+          <DateStrip
+            days={Array.from({ length: 7 }, (_, i) => addIstDays(istDate(new Date()), i))}
+            selected={dateLocal}
+            onPick={setDateLocal}
+            label="Next 7 days"
+          />
+          <label className="quick-book-more-dates">
+            More dates
+            <TextInput
+              className="input"
+              type="date"
+              min={istDate(new Date())}
+              value={dateLocal}
+              onChange={(e) => setDateLocal(e.target.value)}
+              disabled={!patient}
+            />
+          </label>
+        </div>
 
         <fieldset className="quick-book-slots" disabled={!visitTypeId}>
-          <legend>Free times on {formatDate(dateLocal)}</legend>
+          <legend>
+            {dateLocal ? `Free times on ${formatDate(dateLocal)}` : "Pick a date to see free times"}
+          </legend>
           {loading ? <p className="muted small">Looking for free times…</p> : null}
           {!loading && visitTypeId && daySlots.length === 0 ? (
-            <p className="muted small">
-              No free time on this day. Pick another date or a time below.
-            </p>
+            <p className="muted small">{noFreeTimesText(dateLocal, nextSlots)}</p>
           ) : null}
-          <SlotButtons slots={daySlots} chosen={slot} onPick={setSlot} showDate={false} />
+          <TimeChips slots={daySlots} chosen={slot} onPick={setSlot} />
           {nextSlots.length > 0 ? (
             <>
               <p className="small muted quick-book-next">Next free times</p>
@@ -193,14 +197,14 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
 
         {reschedule ? null : (
           <label>
-            What they said on the phone
-            <textarea
+            Note (optional)
+            <Textarea
               className="input"
               rows={2}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               maxLength={500}
-              placeholder="Optional note"
+              placeholder="What they said on the phone"
               disabled={!patient}
             />
           </label>
@@ -209,7 +213,12 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
         {error ? <p className="field-error">{error}</p> : null}
         {whyNot ? <p className="muted small">{whyNot}</p> : null}
 
-        <div className="dialog-actions">
+        <div className="dialog-actions quick-book-footer">
+          {slot ? (
+            <span className="small muted quick-book-summary">
+              {formatDate(slot.dateLocal)}, {formatClockTime(slot.startMin)}
+            </span>
+          ) : null}
           <button type="button" className="btn" onClick={onClose}>
             Cancel
           </button>

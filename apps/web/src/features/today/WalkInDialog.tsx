@@ -4,8 +4,9 @@ import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { type PatientListRow } from "../patients";
-import { QuickBookPatient } from "../appointments";
+import { QuickBookPatient, VisitTypeChips } from "../appointments";
 import { walkInAppointment } from "./api";
+import { Checkbox } from "../../ui/form";
 
 type Props = {
   open: boolean;
@@ -63,25 +64,17 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
           onSelect={setPatient}
           onClear={() => setPatient(null)}
         />
-        <label>
-          Visit type
-          <select
-            className="input"
+        <div>
+          <p className="field-label">Visit type</p>
+          <VisitTypeChips
+            items={visitTypes}
             value={visitTypeId}
-            onChange={(e) => setVisitTypeId(e.target.value)}
+            onPick={setVisitTypeId}
             disabled={!patient}
-          >
-            <option value="">Choose…</option>
-            {visitTypes.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.label}
-              </option>
-            ))}
-          </select>
-        </label>
+          />
+        </div>
         <label className="today-check">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={emergency}
             onChange={(e) => setEmergency(e.target.checked)}
             disabled={!patient}
