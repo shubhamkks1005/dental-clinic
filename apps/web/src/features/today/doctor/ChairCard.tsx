@@ -10,6 +10,9 @@ type Props = {
   nextName: string | null;
   /** Patients finished today (for the all-done message). */
   done: number;
+  /** The doctor is on a break; the time they are back (for the card's text). */
+  onBreak: boolean;
+  breakBack: string;
   /** Start the Next patient (the card's own button when the chair is free). */
   onStartNext?: () => void;
   onOpenVisit: () => void;
@@ -23,39 +26,62 @@ export function ChairCard({
   busy,
   nextName,
   done,
+  onBreak,
+  breakBack,
   onStartNext,
   onOpenVisit,
   onDone,
 }: Props) {
   const cls = `td-chair${spotlight ? " is-spotlight" : ""}${chair ? "" : " is-empty"}`;
   if (!chair) {
-    // Three calm states: patients are waiting (call the next one), everyone is seen, nobody yet.
-    const state = nextName ? "waiting" : done > 0 ? "finished" : "quiet";
+    // The chair is empty for three reasons: the doctor is on a break, patients are waiting outside
+    // (nobody sent them in and the doctor has not called them), or everyone has been seen.
+    const state = onBreak ? "break" : nextName ? "waiting" : done > 0 ? "finished" : "quiet";
+    const TEXT = {
+      break: [
+        "The chair is free during your break",
+        `Back around ${breakBack}. Patients can wait; nothing has moved.`,
+      ],
+      waiting: [
+        "The chair is free",
+        `${nextName} is waiting outside. Call them in when you are ready.`,
+      ],
+      finished: [
+        "All patients seen",
+        `${done} ${done === 1 ? "patient" : "patients"} seen today. Nothing left in the list. Well done.`,
+      ],
+      quiet: [
+        "The chair is free",
+        "Nobody has arrived yet. New patients will appear in the list below.",
+      ],
+    } as const;
+    const [title, line] = TEXT[state];
     return (
       <section id="td-chair" className={`${cls} is-${state}`} aria-label="Current patient in chair">
         <span className="td-free-badge" aria-hidden="true">
           {state === "waiting" ? <span className="td-ripple" /> : null}
+          {state === "break" ? (
+            <>
+              <span className="td-steam-1" />
+              <span className="td-steam-2" />
+            </>
+          ) : null}
           <span className={`td-free-icon${state === "finished" ? " td-draw" : ""}`}>
-            {state === "finished" ? icons.taskDone : icons.chair}
+            {state === "finished" ? icons.taskDone : state === "break" ? icons.coffee : icons.chair}
           </span>
         </span>
         <div className="td-chair-body">
           <span className="td-eyebrow">In chair now</span>
-          <h2 className="td-chair-name">
-            {state === "waiting"
-              ? "The chair is free"
-              : state === "finished"
-                ? "All patients seen"
-                : "No one in the chair"}
-          </h2>
-          <p className="td-chair-meta">
-            {state === "waiting"
-              ? `Next up: ${nextName}. Call them in when you are ready.`
-              : state === "finished"
-                ? `${done} ${done === 1 ? "patient" : "patients"} seen today. Nothing left in the list.`
-                : "Nobody has arrived yet. New patients will appear in the list below."}
-          </p>
+          <h2 className="td-chair-name">{title}</h2>
+          <p className="td-chair-meta">{line}</p>
         </div>
+        {state === "finished" ? (
+          <span className="td-spark" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+        ) : null}
         {state === "waiting" && onStartNext ? (
           <button
             type="button"

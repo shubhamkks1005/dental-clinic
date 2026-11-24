@@ -488,3 +488,52 @@
     display: none;
   }
 }
+
+/* Break state: the cup floats and steam rises. Victory: small stars twinkle. */
+.td-chair.is-break .td-free-icon {
+  display: inline-flex;
+  animation: td-float 3.2s ease-in-out infinite;
+}
+.td-chair.is-break .td-steam-1,
+.td-chair.is-break .td-steam-2 {
+  background: rgba(77, 97, 106, 0.45);
+}
+@keyframes td-twinkle {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+}
+.td-spark i {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #d9a441;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: td-twinkle 2.4s ease-in-out infinite;
+}
+.td-spark i:nth-child(1) {
+  left: 4px;
+  top: 30px;
+}
+.td-spark i:nth-child(2) {
+  left: 44px;
+  top: 4px;
+  animation-delay: 0.8s;
+}
+.td-spark i:nth-child(3) {
+  left: 76px;
+  top: 40px;
+  animation-delay: 1.5s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .td-chair.is-break .td-free-icon,
+  .td-spark i {
+    animation: none !important;
+  }
+}

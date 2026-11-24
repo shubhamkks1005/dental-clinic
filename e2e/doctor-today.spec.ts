@@ -111,7 +111,7 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator(".td-counts")).toContainText("waiting");
   await expect(page.getByRole("region", { name: "Current patient in chair" })).toContainText(
-    "The chair is free",
+    /The chair is free/,
   );
   await expect(page.locator("li.td-row")).toHaveCount(4);
   // Only one search box on the page
@@ -156,7 +156,7 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
   await expect(page.getByRole("button", { name: /Take a break/ })).toBeDisabled();
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await expect(page.getByRole("region", { name: "Current patient in chair" })).toContainText(
-    "The chair is free",
+    /The chair is free/,
   );
 
   // Break: start 10 min, +5, -5, reload keeps it, I'm back

@@ -71,10 +71,10 @@
   background: rgba(208, 230, 240, 0.35);
 }
 .td-row-done {
-  background: rgba(210, 242, 222, 0.32);
+  background: rgba(244, 249, 246, 0.6);
 }
 .td-row-done:hover {
-  background: rgba(210, 242, 222, 0.48);
+  background: rgba(238, 245, 241, 0.9);
 }
 .td-row-late {
   background: rgba(255, 218, 214, 0.25);
