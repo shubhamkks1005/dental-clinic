@@ -53,11 +53,33 @@ describe("request scope", () => {
     ).rejects.toThrow("sync");
   });
 
+  it("shared -> forget -> shared: the second read asks the server again", async () => {
+    const scope = createRequestScope();
+    const load = vi.fn().mockResolvedValueOnce(["old"]).mockResolvedValueOnce(["old", "new"]);
+    await expect(scope.shared("k", load)).resolves.toEqual(["old"]);
+    await expect(scope.shared("k", load)).resolves.toEqual(["old"]); // still one request
+    expect(load).toHaveBeenCalledTimes(1);
+    scope.forget("k");
+    await expect(scope.shared("k", load)).resolves.toEqual(["old", "new"]);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("forget: a key nobody asked for is fine, other keys stay shared", async () => {
+    const scope = createRequestScope();
+    const load = vi.fn(async () => 1);
+    scope.forget("never-used");
+    await scope.shared("a", load);
+    scope.forget("b");
+    await scope.shared("a", load);
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
   it("no scope: every call goes to the server", async () => {
     const load = vi.fn(async () => 1);
     await noRequestScope.shared("k", load);
     await noRequestScope.shared("k", load);
     noRequestScope.prefetch("k", load);
+    noRequestScope.forget("k");
     expect(load).toHaveBeenCalledTimes(2);
   });
 });

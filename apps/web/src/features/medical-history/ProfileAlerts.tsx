@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { scopeKey } from "../../ui/request-scope";
+import { useRequestScope } from "../../ui/RequestScope";
 import { AlertsStrip } from "./AlertsStrip";
 import { getAlertFlags, getMedicalHistory, type AlertRow } from "./api";
 
@@ -11,6 +13,7 @@ type Props = {
 
 /** Header strip on S04/S17: doctor gets labels; receptionist gets icon flags only (3.3.2 / 3.3.3). */
 export function ProfileAlerts({ patientId, canViewClinical, canSeeFlags }: Props) {
+  const scope = useRequestScope();
   const [alerts, setAlerts] = useState<AlertRow[] | null>(null);
   const [flags, setFlags] = useState<{ hasAlert: boolean; hasRestricted: boolean } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +24,8 @@ export function ProfileAlerts({ patientId, canViewClinical, canSeeFlags }: Props
     setAlerts(null);
     setFlags(null);
     if (canViewClinical) {
-      getMedicalHistory(patientId)
+      scope
+        .takeOr(scopeKey.medicalHistory(patientId), () => getMedicalHistory(patientId))
         .then((res) => {
           if (!cancelled) setAlerts(res.alerts);
         })
@@ -31,7 +35,8 @@ export function ProfileAlerts({ patientId, canViewClinical, canSeeFlags }: Props
           }
         });
     } else if (canSeeFlags) {
-      getAlertFlags(patientId)
+      scope
+        .takeOr(scopeKey.alertFlags(patientId), () => getAlertFlags(patientId))
         .then((res) => {
           if (!cancelled) setFlags(res.flags);
         })
@@ -44,7 +49,7 @@ export function ProfileAlerts({ patientId, canViewClinical, canSeeFlags }: Props
     return () => {
       cancelled = true;
     };
-  }, [patientId, canViewClinical, canSeeFlags]);
+  }, [patientId, canViewClinical, canSeeFlags, scope]);
 
   if (!canViewClinical && !canSeeFlags) return null;
   if (error) {

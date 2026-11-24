@@ -4,12 +4,18 @@ import { listDayAppointments } from "../appointments/api";
 import { getPatientChart, loadChartView } from "../chart/api";
 import { listPatientBills } from "../billing";
 import { getList } from "../lists/api";
-import { getMedicalHistory } from "../medical-history/api";
+import { getAlertFlags, getMedicalHistory } from "../medical-history/api";
 import { getPatientConsents, listPatientAppointments } from "../patients/api";
 import { listVisitPrescriptions } from "../prescriptions/api";
 
 /** What the signed-in person may see and do on the visit screen. */
-export type VisitAccess = { canViewClinical: boolean; canEdit: boolean; canWriteRx: boolean };
+export type VisitAccess = {
+  canViewClinical: boolean;
+  canEdit: boolean;
+  canWriteRx: boolean;
+  /** Receptionist: the visit header shows alert flags only. */
+  canSeeFlags?: boolean;
+};
 
 type LoadedVisit = { id: string; patientId: string; status: "draft" | "final" | "void" };
 
@@ -38,8 +44,10 @@ export function prefetchForVisit(scope: RequestScope, visit: LoadedVisit, access
   const draft = visit.status === "draft";
   scope.prefetch(scopeKey.bills(patientId), () => listPatientBills(patientId));
   scope.prefetch(scopeKey.patientAppointments(patientId), () => listPatientAppointments(patientId));
-  if (access.canWriteRx) {
+  if (access.canWriteRx || access.canViewClinical) {
     scope.prefetch(scopeKey.medicalHistory(patientId), () => getMedicalHistory(patientId));
+  } else if (access.canSeeFlags) {
+    scope.prefetch(scopeKey.alertFlags(patientId), () => getAlertFlags(patientId));
   }
   if (draft) {
     void listOnce(scope, "procedures").catch(() => {});

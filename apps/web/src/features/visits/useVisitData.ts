@@ -11,7 +11,7 @@ import { prefetchForVisit, prefetchOnOpen, type VisitAccess } from "./visit-pref
  */
 export function useVisitData(id: string | undefined, access: VisitAccess) {
   const scope = useRequestScope();
-  const { canViewClinical, canEdit, canWriteRx } = access;
+  const { canViewClinical, canEdit, canWriteRx, canSeeFlags } = access;
   const [visit, setVisit] = useState<VisitSummary | null>(null);
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [recent, setRecent] = useState<VisitRecent[]>([]);
@@ -24,7 +24,7 @@ export function useVisitData(id: string | undefined, access: VisitAccess) {
     setVisit(null);
     setPatient(null);
     setRecent([]);
-    const rights = { canViewClinical, canEdit, canWriteRx };
+    const rights = { canViewClinical, canEdit, canWriteRx, canSeeFlags };
     prefetchOnOpen(scope, id, rights);
     getVisit(id)
       .then(async (row) => {
@@ -51,7 +51,7 @@ export function useVisitData(id: string | undefined, access: VisitAccess) {
     return () => {
       cancelled = true;
     };
-  }, [id, scope, canViewClinical, canEdit, canWriteRx]);
+  }, [id, scope, canViewClinical, canEdit, canWriteRx, canSeeFlags]);
 
   return { visit, patient, recent, error, setVisit };
 }

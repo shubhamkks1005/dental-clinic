@@ -31,10 +31,12 @@ function VisitScreenBody({ id }: { id: string | undefined }) {
   const canViewClinical = permissions.includes("clinical.view");
   const canEdit = permissions.includes("clinical.edit");
   const canWriteRx = permissions.includes("prescriptions.write");
+  const canSeeFlags = permissions.includes("clinical.alert_flag");
   const { visit, patient, recent, error, setVisit } = useVisitData(id, {
     canViewClinical,
     canEdit,
     canWriteRx,
+    canSeeFlags,
   });
   const [tab, setTab] = useState<VisitTabId>("visit");
   const [planTooth, setPlanTooth] = useState<FdiTooth | null>(null);
@@ -85,7 +87,7 @@ function VisitScreenBody({ id }: { id: string | undefined }) {
         visit={visit}
         patient={patient}
         canViewClinical={canViewClinical}
-        canSeeFlags={permissions.includes("clinical.alert_flag")}
+        canSeeFlags={canSeeFlags}
         onPastVisits={() => setTab("history")}
       />
       <Tabs

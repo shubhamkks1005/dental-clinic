@@ -9,6 +9,8 @@ export type RequestScope = {
   shared<T>(key: string, load: () => Promise<T>): Promise<T>;
   prefetch<T>(key: string, load: () => Promise<T>): void;
   takeOr<T>(key: string, load: () => Promise<T>): Promise<T>;
+  /** Call after this screen changes a shared list: the next `shared` read asks the server again. */
+  forget(key: string): void;
 };
 
 function start<T>(load: () => Promise<T>): Promise<T> {
@@ -45,6 +47,9 @@ export function createRequestScope(): RequestScope {
       handoff.delete(key);
       return p as Promise<T>;
     },
+    forget(key: string) {
+      shared.delete(key);
+    },
   };
 }
 
@@ -53,6 +58,7 @@ export const noRequestScope: RequestScope = {
   shared: (_key, load) => start(load),
   prefetch: () => {},
   takeOr: (_key, load) => start(load),
+  forget: () => {},
 };
 
 /** One naming rule for keys, so the code that prefetches and the code that reads agree. */
@@ -65,6 +71,7 @@ export const scopeKey = {
   bills: (patientId: string) => `bills:${patientId}`,
   patientAppointments: (patientId: string) => `patient-appointments:${patientId}`,
   medicalHistory: (patientId: string) => `medical-history:${patientId}`,
+  alertFlags: (patientId: string) => `alert-flags:${patientId}`,
   dayAppointments: (dateLocal: string) => `day-appointments:${dateLocal}`,
   visitPrescriptions: (visitId: string) => `visit-prescriptions:${visitId}`,
 };
