@@ -73,3 +73,22 @@ describe("permission table per role (1.3.4)", () => {
     ]);
   });
 });
+
+// Part T (T1.8): who may take a break, ask the doctor and answer.
+describe("doctor Today permissions (T1.8)", () => {
+  it("only the doctor takes a break and answers requests; only the desk asks", () => {
+    expect(ROLES.filter((r) => isAllowed(r, "breaks.manage"))).toEqual(["doctor"]);
+    expect(ROLES.filter((r) => isAllowed(r, "approvals.answer"))).toEqual(["doctor"]);
+    expect(ROLES.filter((r) => isAllowed(r, "approvals.request"))).toEqual(["receptionist"]);
+  });
+
+  it("the developer gets none of them, and skip, pull forward and late stay appointments.manage", () => {
+    for (const a of ["breaks.manage", "approvals.answer", "approvals.request"] as const) {
+      expect(isAllowed("developer", a)).toBe(false);
+    }
+    expect(ROLES.filter((r) => isAllowed(r, "appointments.manage"))).toEqual([
+      "doctor",
+      "receptionist",
+    ]);
+  });
+});
