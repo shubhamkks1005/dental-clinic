@@ -9,6 +9,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 - Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
+**Part 5 cleanup is DONE (2026-11-24)**: gate passed, Library and Clinic and doctor finished, Payments/Refunds apart, late entry and Undo, keyboard/focus/width specs (79 browser tests pass). Nothing is half done.
 **Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
 - Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
 - Needs the doctor: wording "As directed" for dose, frequency, days and timing of a medicine added with "Add to my list" in the visit (DECISIONS.md, DRAFT).

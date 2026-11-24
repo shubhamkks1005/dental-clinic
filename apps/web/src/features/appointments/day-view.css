@@ -80,7 +80,19 @@
 .day-empty:hover,
 .day-empty:focus-visible {
   background: var(--soft-blue, #e6eefa);
-  outline: none;
+}
+
+.day-empty:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+/* A 15 minute slot is about 21 px high: too small to tap. Below 1024 px the Book appointment
+   button is the way in (44 px targets), the empty slots are for mouse and keyboard on a laptop. */
+@media (max-width: 1023px) {
+  .day-empty {
+    display: none;
+  }
 }
 
 .day-now {

@@ -205,6 +205,7 @@
 - packages/db/src/repos/appointments-undo-cancel.ts (+test) - repos.appointments.undoCancel: a cancelled appointment goes back to scheduled within 120 s if its time is still free (same UPDATE), audit row; route POST /api/staff/appointments/:id/undo-cancel (domain undoCancelAppointment also drops the queued "cancelled" message)
 - apps/web/src/features/appointments/LateEntry.tsx - Book dialog "Late entry" (time + reason, sent as overrideReason); closed days list their late entries (DayView uses PhoneDayList when closed); Toast has an optional action button (Undo, 10 s)
 - e2e/calendar-late-undo.spec.ts, e2e/calendar-helpers.ts - Undo and late entry browser specs, shared booking helpers
+- e2e/rx-not-issued.spec.ts - doctor Today lists a written-but-not-issued prescription (after the patient is Done); e2e/part5-keyboard-widths.spec.ts - keyboard-only Tab and focus-ring pass, dialog focus (in, Esc, back to opener) and 360/768/1366 width and 44 px checks for Calendar, Messages, New patient, More, Reports, Settings, Clinic and doctor, Library
 - e2e/library.spec.ts, e2e/settings-clinic.spec.ts - Q2.13 browser specs (drawer, chips, Reorder, columns, preview, amber, keyboard and focus, 360/768/1366)
 - src/features/more/ - phone More screen: UserCard (Sign out) + the main items without a phone tab, filtered by role
 - src/ui/useVisibleInterval.ts + visible-interval.ts (+ test) - 2.4.7 60s poll while tab visible
