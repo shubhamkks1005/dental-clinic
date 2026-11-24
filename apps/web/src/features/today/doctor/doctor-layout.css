@@ -923,6 +923,67 @@ html[data-doctor-today] .shell-top .top-search {
   color: var(--td-muted);
 }
 
+/* Margins: close to the app's usual ones, only a little tighter (the top bar stays, with less
+   space above and below it; the page is a little wider). */
+html[data-doctor-today] .page {
+  max-width: 1360px;
+  padding-top: 8px;
+}
+@media (min-width: 768px) {
+  html[data-doctor-today] .shell-top {
+    padding-top: 14px;
+    padding-bottom: 6px;
+  }
+}
+
+/* Empty chair: a calm, finished-feeling card */
+.td-chair.is-empty {
+  position: relative;
+  overflow: hidden;
+  justify-content: flex-start;
+  gap: 16px;
+  border: 1px solid rgba(20, 108, 67, 0.25);
+  background: linear-gradient(100deg, #e7f8ee, #f2fbf6 55%, #eaf4f8);
+  box-shadow: 0 6px 18px -8px rgba(20, 108, 67, 0.25);
+}
+.td-chair.is-empty.is-finished {
+  background: linear-gradient(100deg, #d1f4e0, #e7f8ee 55%, #fef0c7);
+}
+.td-free-orb {
+  position: absolute;
+  top: -50px;
+  right: 40px;
+  width: 170px;
+  height: 170px;
+  border-radius: 9999px;
+  background: rgba(209, 244, 224, 0.9);
+  filter: blur(28px);
+  pointer-events: none;
+}
+.td-free-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  background: #fff;
+  color: var(--td-success);
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(20, 108, 67, 0.2);
+  flex: none;
+}
+.td-chair.is-empty .td-eyebrow {
+  color: var(--td-success);
+}
+.td-chair.is-empty .td-chair-name {
+  color: var(--td-success-text);
+}
+.td-chair.is-empty .td-chair-meta {
+  color: var(--td-muted);
+}
+
 /* Less empty space around the page: the empty top bar goes (its search is hidden here and the user
    card is in the sidebar from 768 px), and the page uses the full width with small gutters. */
 html[data-doctor-today] .page {
