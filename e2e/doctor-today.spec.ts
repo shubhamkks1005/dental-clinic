@@ -232,3 +232,108 @@ for (const [width, height, label] of [
     await desk.dispose();
   });
 }
+
+// T2.8: the desk asks the doctor from Today; the doctor answers; the desk sees it. Skip by the desk
+// shows on the doctor's list as "Order updated by <name>".
+test("desk: Ask the doctor, the answer, and Skip shows on the doctor's list", async ({
+  browser,
+  playwright,
+}) => {
+  test.setTimeout(120_000);
+  const deskApi = await signedInAs(playwright, "receptionist");
+  const docApi = await signedInAs(playwright, "doctor");
+  const { stamp, ids } = await seed(deskApi, ["Gita Test", "Hema Test"]);
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 800 } });
+  const page = await ctx.newPage();
+  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await page.goto("/app");
+  const row = page.locator("li.today-row", { hasText: `Gita Test ${stamp}` });
+  await row.getByRole("button", { name: /More actions/ }).click();
+  await page.getByRole("menuitem", { name: "Ask the doctor..." }).click();
+  const dialog = page.locator("dialog[open]");
+  await dialog.getByLabel("Note for the doctor").fill("Pain, wants 3 PM");
+  await dialog.getByRole("button", { name: "Send to the doctor" }).click();
+  const strip = page.getByRole("region", { name: "Asked the doctor" });
+  await expect(strip).toContainText("Waiting for the doctor");
+
+  // The doctor says yes through the API; the desk sees the answer and presses Got it.
+  const list = await call(docApi, "GET", "/approvals");
+  const mine = (
+    list.data.approvals as Array<{ id: string; version: number; appointmentId: string }>
+  ).find((a) => a.appointmentId === ids[0])!;
+  const answer = await call(docApi, "POST", `/approvals/${mine.id}/answer`, {
+    decision: "approve",
+    note: "Yes",
+    version: mine.version,
+  });
+  expect(answer.status).toBe(200);
+  await page.reload();
+  await expect(strip).toContainText("Doctor said yes");
+  await strip.getByRole("button", { name: "Got it" }).click();
+  await expect(page.getByRole("region", { name: "Asked the doctor" })).toHaveCount(0);
+
+  // Skip by the desk
+  await row.getByRole("button", { name: /More actions/ }).click();
+  await page.getByRole("menuitem", { name: "Skip" }).click();
+  await page.getByRole("alertdialog").getByRole("button", { name: "Skip" }).click();
+  await expect(page.locator(".toast-text", { hasText: "Skipped" })).toBeVisible();
+
+  const doc = await browser.newContext({ viewport: { width: 1366, height: 800 } });
+  const docPage = await doc.newPage();
+  await docPage.goto("/api/staff/auth/dev-login?role=doctor");
+  await docPage.goto("/app");
+  await expect(docPage.locator(".td-note")).toContainText(/Order updated by .+ at /);
+  await ctx.close();
+  await doc.close();
+  await deskApi.dispose();
+  await docApi.dispose();
+});
+
+// T2.10: keyboard only. The row menu opens with Enter, arrows move, Esc closes and focus returns;
+// the Skip confirm closes with Esc; the break menu works from the keyboard.
+test("doctor Today: keyboard only", async ({ browser, playwright }) => {
+  test.setTimeout(90_000);
+  const desk = await signedInAs(playwright, "receptionist");
+  const { stamp } = await seed(desk, ["Indu Test", "Jaya Test"]);
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 700 } });
+  const page = await ctx.newPage();
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/app");
+  const more = rowOf(page, `Indu Test ${stamp}`).getByRole("button", { name: /More actions/ });
+  await more.focus();
+  await page.keyboard.press("Enter");
+  const menu = page.getByRole("menu", { name: /Actions for/ });
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("menuitem").first()).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("ArrowUp");
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(more).toBeFocused();
+
+  // Skip from the keyboard: Enter on the item, then Esc on the confirm leaves the order alone.
+  const before = await page.locator("li.td-row .td-name").allTextContents();
+  await page.keyboard.press("Enter");
+  await page.getByRole("menuitem", { name: "Skip (stepped out)" }).focus();
+  await page.keyboard.press("Enter");
+  const confirm = page.getByRole("alertdialog");
+  await expect(confirm).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(confirm).toBeHidden();
+  expect(await page.locator("li.td-row .td-name").allTextContents()).toEqual(before);
+
+  // The break menu from the keyboard
+  const breakButton = page.getByRole("button", { name: /Take a break/ });
+  await breakButton.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("menu", { name: "Take a break" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(breakButton).toBeFocused();
+
+  // The list rows have a readable name: name, time, status, next
+  await expect(rowOf(page, `Indu Test ${stamp}`).locator(".td-row-main")).toHaveAccessibleName(
+    /Indu Test .*, \d{1,2}:\d{2} [AP]M, waiting.*, next/,
+  );
+  await ctx.close();
+  await desk.dispose();
+});

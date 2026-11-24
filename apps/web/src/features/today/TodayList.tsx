@@ -1,7 +1,7 @@
 import { formatRupees, type AppointmentStatus } from "@clinic/shared";
 import { Link } from "react-router";
 import { StatusBadge } from "../../ui/StatusBadge";
-import { AppointmentActions } from "../appointments";
+import { DeskRowActions } from "./DeskRowActions";
 import { AlertsStrip } from "../medical-history";
 import type { TodayListRow } from "./buildTodayModel";
 
@@ -10,9 +10,10 @@ type Props = {
   busyId: string | null;
   onStatus: (id: string, status: AppointmentStatus, version: number) => void;
   onChanged: () => void;
+  onAsked: () => void;
 };
 
-export function TodayList({ rows, busyId, onStatus, onChanged }: Props) {
+export function TodayList({ rows, busyId, onStatus, onChanged, onAsked }: Props) {
   return (
     <section className="today-list" aria-labelledby="today-list-title">
       <div className="today-list-head">
@@ -80,7 +81,8 @@ export function TodayList({ rows, busyId, onStatus, onChanged }: Props) {
                     {row.primary.label}
                   </button>
                 ) : null}
-                <AppointmentActions
+                <DeskRowActions
+                  onAsked={onAsked}
                   row={{
                     id: row.id,
                     patientId: row.patientId,

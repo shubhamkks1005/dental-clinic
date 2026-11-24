@@ -6,6 +6,7 @@ import { RouteFallback } from "../../ui/RouteFallback";
 import { shortName } from "../../ui/names";
 import { plural } from "../../ui/format";
 import { useMe } from "../auth";
+import { AskedStrip, DoctorBreakNotice } from "./DeskDoctorLinks";
 import { FollowUpList } from "./FollowUpList";
 import { DoctorToday } from "./DoctorToday";
 import { NextPatientCard } from "./NextPatientCard";
@@ -44,7 +45,8 @@ export function TodayScreen() {
 function DeskToday() {
   const me = useMe();
   const isDoctor = me.role === "doctor";
-  const { model, error, busyId, serverNow, load, onStatus } = useTodayModel();
+  const { model, error, busyId, serverNow, currentBreak, load, onStatus } = useTodayModel();
+  const [askedKey, setAskedKey] = useState(0);
   const [walkInOpen, setWalkInOpen] = useState(false);
   const [params, setParams] = useSearchParams();
   // Q1.9: the top bar's Walk-in on another page lands here with ?walkin=1.
@@ -81,7 +83,9 @@ function DeskToday() {
       </header>
 
       {error ? <p className="field-error">{error}</p> : null}
+      {!isDoctor ? <DoctorBreakNotice current={currentBreak} /> : null}
       {!isDoctor && model ? <TodayStats model={model} /> : null}
+      {!isDoctor ? <AskedStrip refreshKey={askedKey} /> : null}
       {!isDoctor ? (
         <div className="today-phone-actions">
           <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
@@ -104,7 +108,13 @@ function DeskToday() {
             />
           </div>
           <div className="today-main">
-            <TodayList rows={model.rows} busyId={busyId} onStatus={onStatus} onChanged={load} />
+            <TodayList
+              rows={model.rows}
+              busyId={busyId}
+              onStatus={onStatus}
+              onChanged={load}
+              onAsked={() => setAskedKey((k) => k + 1)}
+            />
           </div>
           <div className="today-calls">
             <FollowUpList items={model.callList} onChanged={load} />

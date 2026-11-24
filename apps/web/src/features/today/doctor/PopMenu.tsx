@@ -31,6 +31,9 @@ const ITEM_HEIGHT = 40;
 export function PopMenu({ label, open, anchor, items, onClose }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const wasOpen = useRef(false);
+  // The page clears the anchor when it closes the menu; focus still goes back to that button.
+  const lastAnchor = useRef<HTMLElement | null>(null);
+  if (anchor) lastAnchor.current = anchor;
 
   useEffect(() => {
     if (open) {
@@ -38,7 +41,7 @@ export function PopMenu({ label, open, anchor, items, onClose }: Props) {
       ref.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
     } else if (wasOpen.current) {
       wasOpen.current = false;
-      anchor?.focus();
+      lastAnchor.current?.focus();
     }
     // The anchor is read only to return focus.
   }, [open]);

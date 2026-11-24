@@ -30,11 +30,19 @@ type Props = {
    * (Open profile) under it, then Cancel and Missed as plain buttons. Default: one "..." menu. */
   layout?: "menu" | "panel";
   children?: ReactNode;
+  /** More lines for the "..." menu, before Reschedule (the desk adds Ask the doctor, Skip ...). */
+  extraItems?: MenuItem[];
 };
 
 // Q1.4: one "..." menu for Reschedule, Cancel and Missed, used on Today, the calendar panel and
 // the patient's Appointments tab. It owns its dialogs so each screen only places it.
-export function AppointmentActions({ row, onChanged, layout = "menu", children }: Props) {
+export function AppointmentActions({
+  row,
+  onChanged,
+  layout = "menu",
+  children,
+  extraItems = [],
+}: Props) {
   const toast = useToast();
   const [dialog, setDialog] = useState<"cancel" | "missed" | "reschedule" | null>(null);
 
@@ -46,7 +54,7 @@ export function AppointmentActions({ row, onChanged, layout = "menu", children }
         now: new Date(),
       })
     : "not allowed";
-  const items: MenuItem[] = [];
+  const items: MenuItem[] = [...extraItems];
   if (isAllowedStatusTransition(from, "rescheduled")) {
     items.push({ label: "Reschedule", onSelect: () => setDialog("reschedule") });
   }

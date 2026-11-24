@@ -1,4 +1,4 @@
-import { istDate, type AppointmentStatus } from "@clinic/shared";
+import { istDate, type AppointmentStatus, type CurrentBreak } from "@clinic/shared";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../../api/client";
 import { refreshFailure } from "../../ui/refresh-fail";
@@ -13,6 +13,7 @@ export function useTodayModel() {
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [serverNow, setServerNow] = useState(() => new Date());
+  const [currentBreak, setCurrentBreak] = useState<CurrentBreak | null>(null);
   const hasModel = useRef(false);
   hasModel.current = model !== null;
 
@@ -20,6 +21,7 @@ export function useTodayModel() {
     listDayAppointments(istDate(new Date()))
       .then((data) => {
         setServerNow(new Date(data.serverNow));
+        setCurrentBreak(data.currentBreak ?? null);
         setModel(buildTodayModel(data.appointments, data.window, data.serverNow));
         setError(null);
       })
@@ -57,5 +59,5 @@ export function useTodayModel() {
     }
   }
 
-  return { model, error, busyId, serverNow, load, onStatus };
+  return { model, error, busyId, serverNow, currentBreak, load, onStatus };
 }
