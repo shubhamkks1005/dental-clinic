@@ -4,8 +4,8 @@
 /* "Waiting for you" panel: minimize / restore */
 .td-split.is-animating .td-list-card {
   transition:
-    flex 380ms var(--td-ease),
-    width 380ms var(--td-ease);
+    flex 228ms var(--td-ease),
+    width 228ms var(--td-ease);
 }
 .td-panel {
   overflow: hidden;
@@ -14,12 +14,12 @@
 .td-panel.is-animating {
   will-change: width, transform, opacity;
   transition:
-    width 380ms var(--td-ease),
-    max-height 380ms var(--td-ease),
-    margin 380ms var(--td-ease),
-    opacity 280ms var(--td-ease) 40ms,
-    transform 380ms var(--td-ease),
-    border-width 200ms ease;
+    width 228ms var(--td-ease),
+    max-height 228ms var(--td-ease),
+    margin 228ms var(--td-ease),
+    opacity 168ms var(--td-ease) 24ms,
+    transform 228ms var(--td-ease),
+    border-width 120ms ease;
 }
 @media (min-width: 1024px) {
   .td-panel {
@@ -35,11 +35,11 @@
   }
   .td-panel.is-animating.is-minimized {
     transition:
-      width 360ms var(--td-ease),
-      margin 360ms var(--td-ease),
-      opacity 220ms var(--td-ease),
-      transform 360ms var(--td-ease),
-      border-width 200ms ease;
+      width 216ms var(--td-ease),
+      margin 216ms var(--td-ease),
+      opacity 132ms var(--td-ease),
+      transform 216ms var(--td-ease),
+      border-width 120ms ease;
   }
 }
 @media (max-width: 1023px) {
@@ -57,11 +57,11 @@
 }
 .td-restore {
   transition:
-    opacity 260ms var(--td-ease),
-    transform 260ms var(--td-ease),
-    max-width 280ms var(--td-ease),
-    padding 260ms ease,
-    margin 260ms ease;
+    opacity 156ms var(--td-ease),
+    transform 156ms var(--td-ease),
+    max-width 168ms var(--td-ease),
+    padding 156ms ease,
+    margin 156ms ease;
   max-width: 220px;
   overflow: hidden;
 }
@@ -83,9 +83,9 @@
   pointer-events: none;
   will-change: transform, opacity;
   transition:
-    opacity 220ms var(--td-ease-menu),
-    transform 240ms var(--td-ease-menu),
-    visibility 0s linear 240ms;
+    opacity 132ms var(--td-ease-menu),
+    transform 144ms var(--td-ease-menu),
+    visibility 0s linear 144ms;
 }
 .td-menu.menu-up {
   transform-origin: bottom right;
@@ -101,8 +101,8 @@
   pointer-events: auto;
   transform: scale(1) translateY(0);
   transition:
-    opacity 240ms var(--td-ease-menu),
-    transform 260ms var(--td-ease-menu),
+    opacity 144ms var(--td-ease-menu),
+    transform 156ms var(--td-ease-menu),
     visibility 0s linear 0s;
 }
 
@@ -111,11 +111,11 @@
   max-height: 260px;
   overflow: hidden;
   transition:
-    transform 260ms var(--td-ease),
-    opacity 220ms var(--td-ease),
-    max-height 260ms var(--td-ease) 140ms,
-    padding 260ms var(--td-ease) 140ms,
-    border-width 200ms ease 140ms;
+    transform 156ms var(--td-ease),
+    opacity 132ms var(--td-ease),
+    max-height 156ms var(--td-ease) 84ms,
+    padding 156ms var(--td-ease) 84ms,
+    border-width 120ms ease 84ms;
 }
 .td-item.is-removing {
   transform: translateX(100%);
@@ -140,7 +140,7 @@
   }
 }
 .td-item.is-new {
-  animation: td-slide-in 340ms var(--td-ease) forwards;
+  animation: td-slide-in 204ms var(--td-ease) forwards;
 }
 
 /* Note drawer, and the Submit button that appears when the doctor types */
@@ -150,9 +150,9 @@
   overflow: hidden;
   margin-top: 0;
   transition:
-    max-height 240ms var(--td-ease),
-    opacity 180ms ease,
-    margin-top 180ms ease;
+    max-height 144ms var(--td-ease),
+    opacity 108ms ease,
+    margin-top 108ms ease;
 }
 .td-note-drawer.is-open {
   max-height: 52px;
@@ -168,10 +168,10 @@
   pointer-events: none;
   transform: scale(0.9);
   transition:
-    max-width 220ms var(--td-ease),
-    opacity 180ms ease,
-    padding 220ms ease,
-    transform 220ms var(--td-ease);
+    max-width 132ms var(--td-ease),
+    opacity 108ms ease,
+    padding 132ms ease,
+    transform 132ms var(--td-ease);
 }
 .td-submit.is-visible {
   max-width: 96px;
@@ -187,12 +187,12 @@
   position: relative;
   max-height: 180px;
   transition:
-    transform 460ms var(--td-ease),
-    opacity 280ms var(--td-ease),
-    max-height 280ms var(--td-ease) 120ms,
-    padding 280ms var(--td-ease) 120ms,
-    box-shadow 220ms ease,
-    background-color 260ms ease;
+    transform 276ms var(--td-ease),
+    opacity 168ms var(--td-ease),
+    max-height 168ms var(--td-ease) 72ms,
+    padding 168ms var(--td-ease) 72ms,
+    box-shadow 132ms ease,
+    background-color 156ms ease;
 }
 .td-row.is-lifted {
   z-index: 25;
@@ -249,9 +249,9 @@
 /* The In chair card */
 .td-chair {
   transition:
-    transform 340ms var(--td-ease),
-    opacity 240ms var(--td-ease),
-    box-shadow 340ms ease;
+    transform 204ms var(--td-ease),
+    opacity 144ms var(--td-ease),
+    box-shadow 204ms ease;
 }
 .td-chair.is-swapping {
   opacity: 0.45;
@@ -272,9 +272,9 @@
   pointer-events: none;
   visibility: hidden;
   transition:
-    opacity 180ms var(--td-ease),
-    transform 220ms var(--td-ease),
-    visibility 180ms ease;
+    opacity 108ms var(--td-ease),
+    transform 132ms var(--td-ease),
+    visibility 108ms ease;
 }
 .td-search-pop.is-open {
   opacity: 1;
@@ -293,7 +293,7 @@
   }
 }
 .td-search-item {
-  animation: td-search-in 220ms var(--td-ease) both;
+  animation: td-search-in 132ms var(--td-ease) both;
 }
 
 /* Break mode */
@@ -352,12 +352,12 @@
   transform: translateY(-8px) scale(0.985);
   pointer-events: none;
   transition:
-    max-height 380ms var(--td-ease),
-    opacity 300ms ease,
-    padding 380ms var(--td-ease),
-    margin 380ms var(--td-ease),
-    transform 380ms var(--td-ease),
-    border-width 200ms ease;
+    max-height 228ms var(--td-ease),
+    opacity 180ms ease,
+    padding 228ms var(--td-ease),
+    margin 228ms var(--td-ease),
+    transform 228ms var(--td-ease),
+    border-width 120ms ease;
 }
 .td-break.is-active {
   max-height: 180px;

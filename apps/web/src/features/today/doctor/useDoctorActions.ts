@@ -39,8 +39,8 @@ type Deps = {
   hide: (key: string) => void;
 };
 
-const LIFT_MS = 170;
-const SETTLE_MS = 470;
+const LIFT_MS = 100;
+const SETTLE_MS = 280;
 
 /** Everything the doctor can do on Today, with the animation and the server call for each. */
 export function useDoctorActions({ model, patch, load, hide }: Deps) {
@@ -147,7 +147,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
         undo();
         fail(result, "Could not start this patient. The list is back as it was.");
       } else {
-        await new Promise((r) => setTimeout(r, card && el ? 650 : 0));
+        await new Promise((r) => setTimeout(r, card && el ? 400 : 0));
       }
       load();
     };
@@ -245,7 +245,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
       } else if (item.cancel) await dismissCancelRequest(item.cancel.id);
       else hide(item.key);
       // The line slides out first (420 ms in the design), then the list is read again.
-      window.setTimeout(load, 420);
+      window.setTimeout(load, 250);
     } catch (e) {
       fail(e, "Could not save your answer.");
       load();
