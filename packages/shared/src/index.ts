@@ -46,6 +46,7 @@ export * from "./patient-age";
 export * from "./patient-fields";
 export * from "./consents";
 export * from "./consent-templates";
+export * from "./consent-warning";
 export * from "./consent-print";
 export * from "./consent-body";
 export * from "./timings-lines";

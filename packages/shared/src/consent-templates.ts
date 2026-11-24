@@ -62,14 +62,6 @@ export const CONSENT_TEMPLATE_META: Record<
   photo_xray: { lang: "en", toothLine: false },
 };
 
-/** Procedures that soft-warn when treatment consent is missing (3.8.2). */
-export const CONSENT_WARN_PROCEDURE_LABELS = ["extraction", "extract"] as const;
-
-export function procedureNeedsConsentWarning(label: string): boolean {
-  const n = label.trim().toLowerCase();
-  return CONSENT_WARN_PROCEDURE_LABELS.some((k) => n.includes(k));
-}
-
 export const DRAFT_CONSENT_TEMPLATES: ConsentTemplates = {
   extraction: HI_EXTRACTION,
   filling: HI_FILLING,

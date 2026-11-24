@@ -5,9 +5,9 @@ import {
   CONSENT_TEMPLATE_META,
   DRAFT_CONSENT_TEMPLATES,
   consentTemplatesSchema,
-  procedureNeedsConsentWarning,
   resolveConsentTemplates,
 } from "./consent-templates";
+import { procedureNeedsConsentWarning } from "./consent-warning";
 import { hasActiveConsent, type ConsentRow } from "./consents";
 
 describe("consent templates (3.8.1)", () => {

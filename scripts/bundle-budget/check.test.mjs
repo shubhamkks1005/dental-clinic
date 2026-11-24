@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 import { BUDGET, firstLoadFiles, measureFirstLoad, measureJs, overBudget } from "./check.mjs";
 
 describe("bundle budget (S0.1.2)", () => {
-  it("passes at today's size (1,035,359 raw / 305,991 gzip; first load 906,565 / 266,508)", () => {
-    const first = { raw: 906_565, gzip: 266_508 };
+  it("passes at today's size (1,035,359 raw / 305,991 gzip; first load 853,241 / 257,249)", () => {
+    const first = { raw: 853_241, gzip: 257_249 };
     expect(overBudget({ raw: 1_035_359, gzip: 305_991 }, BUDGET, first)).toEqual([]);
   });
 

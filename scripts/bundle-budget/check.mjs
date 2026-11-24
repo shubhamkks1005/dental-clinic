@@ -7,6 +7,8 @@ import { gzipSync } from "node:zlib";
 //   all JS (36 chunks): 1,035,359 B raw, 305,991 B gzip. Before: 1 file, 1,029,300 / 289,003.
 //   first load (index.html scripts + modulepreload + stylesheets, 30 files): 906,565 B raw,
 //   266,508 B gzip. Before: 1 JS + 1 CSS file, 1,051,931 raw / about 294,200 gzip.
+// S3.1.4: Hindi consent forms left the first load (consent-warning.ts split out): first load is now
+//   853,241 B raw, 257,249 B gzip (was 906,565 / 266,508); its two limits sit about 6% above that.
 // Each limit sits about 6% above the measured size. The total gzip limit went UP from 310,000
 // because 36 small chunks gzip worse than one file; the owner decides whether that is fine. To raise a limit, the owner decides
 // (docs/PLAN.md Part S rule 5); do not raise it just to make a build pass.
@@ -15,8 +17,8 @@ export const BUDGET = {
   jsRawBytes: 1_095_000,
   jsGzipBytes: 323_000,
   // Only what index.html loads straight away (JS + CSS), i.e. what the sign-in page downloads.
-  firstLoadRawBytes: 960_000,
-  firstLoadGzipBytes: 282_000,
+  firstLoadRawBytes: 905_000,
+  firstLoadGzipBytes: 273_000,
 };
 
 function sizeOf(bytes) {
