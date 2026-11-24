@@ -4,8 +4,6 @@ import {
   buildDashboardFromCells,
   istDate,
   parseDashboardRange,
-  STAT_DIM_NONE,
-  type DashboardKpis,
   type DashboardPayload,
   type DashboardRangeQuery,
   type ResolvedDashboardRange,
@@ -17,16 +15,9 @@ import type { Ctx } from "../context";
 import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { patientRequests } from "../schema/patient-requests";
-import {
-  appointments,
-  bills,
-  dailyStats,
-  monthlyStats,
-  opsStatus,
-  paymentAllocations,
-  refunds,
-} from "../schema";
-import { computeDayStatRows, computeMonthStatRows } from "./daily-stats-queries";
+import { appointments, dailyStats, monthlyStats, opsStatus } from "../schema";
+import { computeDayStatRows, type StatRow } from "./daily-stats-queries";
+import { loadKpis } from "./dashboard-kpis";
 
 const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
@@ -48,14 +39,19 @@ async function loadPayload(
   now: Date,
 ): Promise<DashboardPayload> {
   const today = istDate(now);
-  const primary = await loadCells(db, range.from, range.to, range.grain, today);
-  let compare: { cells: StatCell[]; rowsRead: number } = { cells: [], rowsRead: 0 };
-  if (range.compareFrom && range.compareTo) {
-    compare = await loadCells(db, range.compareFrom, range.compareTo, range.grain, today);
-  }
-  const kpis = await loadKpis(db, today);
-  const heat = await loadBusyHeat(db, range.from, range.to);
-  const backupRow = await db.select().from(opsStatus).where(eq(opsStatus.key, "backup_d1")).get();
+  // Today is computed live once and shared by the cells and the KPI tiles (S1.1.2).
+  const todayRows = once(() => computeDayStatRows(db, today));
+  const noCompare = { cells: [] as StatCell[], rowsRead: 0 };
+  // S1.1.3: everything below is independent, so it runs together.
+  const [primary, compare, kpis, side] = await Promise.all([
+    loadCells(db, range.from, range.to, range.grain, today, todayRows),
+    range.compareFrom && range.compareTo
+      ? loadCells(db, range.compareFrom, range.compareTo, range.grain, today, todayRows)
+      : noCompare,
+    loadKpis(db, today, todayRows),
+    loadSideReads(db, range.from, range.to, today),
+  ]);
+  const { heat, backupRow, reqRow } = side;
   const payload = buildDashboardFromCells(
     range,
     primary.cells,
@@ -72,16 +68,8 @@ async function loadPayload(
       detail = {};
     }
   }
-  const reqRow = await db
-    .select({
-      open: sql<number>`count(*)`,
-      overdue: sql<number>`coalesce(sum(case when ${patientRequests.dueOn} < ${today} then 1 else 0 end), 0)`,
-    })
-    .from(patientRequests)
-    .where(and(eq(patientRequests.status, "open"), isNull(patientRequests.deletedAt)))
-    .get();
   payload.attention = {
-    requests: { open: reqRow?.open ?? 0, overdue: reqRow?.overdue ?? 0 },
+    requests: { open: Number(reqRow?.open ?? 0), overdue: Number(reqRow?.overdue ?? 0) },
     backup: backupAttentionLine(
       backupRow ? { status: backupRow.status, checkedAt: backupRow.checkedAt, detail } : null,
       now.getTime(),
@@ -90,62 +78,39 @@ async function loadPayload(
   return payload;
 }
 
-async function loadKpis(
-  db: Db,
-  today: string,
-): Promise<{ value: DashboardKpis; rowsRead: number }> {
-  let rowsRead = 0;
-  const todayRows = await computeDayStatRows(db, today);
-  rowsRead += todayRows.length;
-  const yesterday = addIstDays(today, -1);
-  const yRows = await computeDayStatRows(db, yesterday);
-  rowsRead += yRows.length;
+function once<T>(make: () => Promise<T>): () => Promise<T> {
+  let p: Promise<T> | undefined;
+  return () => (p ??= make());
+}
 
-  const month = today.slice(0, 7);
-  const monthRows = await computeMonthStatRows(db, month);
-  rowsRead += monthRows.length;
-  const prevMonth = addMonthsYm(month, -1);
-  const prevMonthRows = await computeMonthStatRows(db, prevMonth);
-  rowsRead += prevMonthRows.length;
-
-  const outstanding = await outstandingPaise(db);
-  rowsRead += 1;
-
-  const metric = (rows: { metric: string; dim: string; value: number }[], name: string) =>
-    rows.find((r) => r.metric === name && r.dim === STAT_DIM_NONE)?.value ?? 0;
-
-  const refundDay = sql`date(${refunds.approvedAt}, '+5 hours', '+30 minutes')`;
-  const refundRow = await db
-    .select({ value: sql<number>`coalesce(sum(${refunds.amountPaise}), 0)` })
-    .from(refunds)
-    .where(and(isNull(refunds.deletedAt), sql`${refundDay} like ${`${month}-%`}`))
-    .get();
-  rowsRead += 1;
-  const monthRefunds = Number(refundRow?.value ?? 0);
-
+/** Busy heat, backup status and open patient requests: three independent reads, one db.batch. */
+async function loadSideReads(db: Db, from: string, to: string, today: string) {
+  const [heatRows, ops, req] = await db.batch([
+    busyHeatQuery(db, from, to),
+    db.select().from(opsStatus).where(eq(opsStatus.key, "backup_d1")),
+    db
+      .select({
+        open: sql<number>`count(*)`,
+        overdue: sql<number>`coalesce(sum(case when ${patientRequests.dueOn} < ${today} then 1 else 0 end), 0)`,
+      })
+      .from(patientRequests)
+      .where(and(eq(patientRequests.status, "open"), isNull(patientRequests.deletedAt))),
+  ]);
+  const cells = heatRows.map((r) => ({
+    row: DOW[Number(r.dow) ?? 0] ?? "Sun",
+    col: String(Number(r.hour)),
+    value: Number(r.value ?? 0),
+  }));
   return {
-    rowsRead,
-    value: {
-      monthRefundsPaise: monthRefunds,
-      monthPaymentsPaise: metric(monthRows, "collected_paise") + monthRefunds,
-      todayArrived: metric(todayRows, "arrived_patients"),
-      prevTodayArrived: metric(yRows, "arrived_patients"),
-      monthNew: metric(monthRows, "new_patients"),
-      prevMonthNew: metric(prevMonthRows, "new_patients"),
-      monthCollectedPaise: metric(monthRows, "collected_paise"),
-      prevMonthCollectedPaise: metric(prevMonthRows, "collected_paise"),
-      outstandingPaise: outstanding,
-    },
+    heat: { cells, rowsRead: cells.length },
+    backupRow: ops[0],
+    reqRow: req[0],
   };
 }
 
 /** 6.3.6: arrived appointments by IST weekday × hour (start_min). */
-async function loadBusyHeat(
-  db: Db,
-  from: string,
-  to: string,
-): Promise<{ cells: { row: string; col: string; value: number }[]; rowsRead: number }> {
-  const rows = await db
+function busyHeatQuery(db: Db, from: string, to: string) {
+  return db
     .select({
       dow: sql<number>`cast(strftime('%w', ${appointments.dateLocal}) as integer)`,
       hour: sql<number>`cast(${appointments.startMin} / 60 as integer)`,
@@ -163,40 +128,7 @@ async function loadBusyHeat(
     .groupBy(
       sql`strftime('%w', ${appointments.dateLocal})`,
       sql`cast(${appointments.startMin} / 60 as integer)`,
-    )
-    .all();
-  const cells = rows.map((r) => ({
-    row: DOW[Number(r.dow) ?? 0] ?? "Sun",
-    col: String(Number(r.hour)),
-    value: Number(r.value ?? 0),
-  }));
-  return { cells, rowsRead: cells.length };
-}
-
-/** Clinic-wide outstanding (issued − allocated). One aggregate row. */
-async function outstandingPaise(db: Db): Promise<number> {
-  const row = await db
-    .select({
-      value: sql<number>`coalesce(sum(${bills.totalPaise} - coalesce((
-        select sum(${paymentAllocations.amountPaise})
-        from ${paymentAllocations}
-        where ${paymentAllocations.billId} = ${bills.id}
-          and ${paymentAllocations.deletedAt} is null
-      ), 0)), 0)`,
-    })
-    .from(bills)
-    .where(and(eq(bills.status, "issued"), isNull(bills.deletedAt)))
-    .get();
-  // D1: refunds that went back out of bill payments re-open the due (see bills-paid.ts).
-  const reopened = await db.all<{ value: number }>(sql`
-    select coalesce(sum(max(0, r.refunded - (p.amount_paise - coalesce(a.applied, 0)))), 0) as value
-    from payments p
-    join (select payment_id, sum(amount_paise) as refunded from refunds
-          where deleted_at is null group by payment_id) r on r.payment_id = p.id
-    left join (select payment_id, sum(amount_paise) as applied from payment_allocations
-               where deleted_at is null group by payment_id) a on a.payment_id = p.id
-    where p.deleted_at is null`);
-  return Math.max(0, Number(row?.value ?? 0) + Number(reopened[0]?.value ?? 0));
+    );
 }
 
 async function loadCells(
@@ -205,6 +137,7 @@ async function loadCells(
   to: string,
   grain: "day" | "month",
   today: string,
+  todayRows: () => Promise<StatRow[]>,
 ): Promise<{ cells: StatCell[]; rowsRead: number }> {
   if (grain === "month") {
     const fromM = from.slice(0, 7);
@@ -255,7 +188,7 @@ async function loadCells(
   }
 
   if (from <= today && today <= to) {
-    const live = await computeDayStatRows(db, today);
+    const live = await todayRows();
     rowsRead += live.length;
     for (const r of live) {
       cells.push({ period: today, metric: r.metric, dim: r.dim, value: r.value });
@@ -267,10 +200,4 @@ async function loadCells(
 
 function addDayBefore(day: string): string {
   return addIstDays(day, -1);
-}
-
-function addMonthsYm(ym: string, delta: number): string {
-  const [y, m] = ym.split("-").map(Number) as [number, number];
-  const d = new Date(Date.UTC(y, m - 1 + delta, 1));
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
