@@ -40,4 +40,26 @@ describe("security headers", () => {
     expect(rules).toMatch(/Permissions-Policy: camera=\(\)/);
     expect(rules).not.toMatch(/unsafe-inline|unsafe-eval/);
   });
+
+  it("hashed assets and fonts get a long cache; index.html never gets immutable (S2.1.1)", () => {
+    const rules = readFileSync(`${REPO_ROOT}apps/web/public/_headers`, "utf8").replace(/\r/g, "");
+    const blocks = new Map<string, string>();
+    let current = "";
+    for (const line of rules.split("\n")) {
+      if (/^\S/.test(line)) {
+        current = line.trim();
+        blocks.set(current, "");
+      } else if (current) blocks.set(current, `${blocks.get(current)}${line}\n`);
+    }
+    expect(blocks.get("/assets/*")).toContain("Cache-Control: public, max-age=31536000, immutable");
+    expect(blocks.get("/fonts/*")).toMatch(/Cache-Control: public, max-age=31536000/);
+    // No rule that covers index.html ("/*", "/", "/index.html") may be immutable or cache-controlled.
+    for (const path of ["/*", "/", "/index.html"]) {
+      expect(blocks.get(path) ?? "").not.toMatch(/immutable/i);
+    }
+    // Only /assets/* may be immutable at all.
+    for (const [path, body] of blocks) {
+      if (path !== "/assets/*") expect(body).not.toMatch(/immutable/i);
+    }
+  });
 });
