@@ -13,6 +13,9 @@ export const APPOINTMENT_STATUS_LABEL: Record<AppointmentStatus, string> = {
   rescheduled: statusWord("appointment", "rescheduled").label,
 };
 
+/** Words for the two list flags. They are not appointment statuses (the status wheel stays as is). */
+export const APPOINTMENT_FLAG_LABEL = { steppedOut: "Stepped out", late: "Late" } as const;
+
 /** Badge tones used by the staff UI (matches DESIGN.md status colours). */
 export type AppointmentStatusTone = StatusTone;
 

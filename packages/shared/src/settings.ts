@@ -53,6 +53,8 @@ export const SETTING_SCHEMAS = {
   "appointments.no_show_after_minutes": intTunable("appointments.no_show_after_minutes"),
   "appointments.status_undo_hours": intTunable("appointments.status_undo_hours"),
   // 3.3.4 / 6.5.3: medical history review cadence.
+  "appointments.late_after_minutes": intTunable("appointments.late_after_minutes"),
+  "today.running_late_after_minutes": intTunable("today.running_late_after_minutes"),
   "medical_history.stale_months": intTunable("medical_history.stale_months"),
   "ui.auto_refresh_seconds": intTunable("ui.auto_refresh_seconds"),
   "files.storage_warn_gb": intTunable("files.storage_warn_gb"),

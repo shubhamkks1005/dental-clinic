@@ -15,6 +15,8 @@ describe("setting rules (1.5.1)", () => {
       "appointments.book_ahead_days",
       "appointments.no_show_after_minutes",
       "appointments.status_undo_hours",
+      "appointments.late_after_minutes",
+      "today.running_late_after_minutes",
       "medical_history.stale_months",
       "ui.auto_refresh_seconds",
       "files.storage_warn_gb",

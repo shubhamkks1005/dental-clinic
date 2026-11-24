@@ -24,6 +24,20 @@ export const TUNABLES = {
     label: "Undo cancel/no-show (hours)",
     help: "Hours to put a cancelled or no-show visit back on the schedule. Example: 24.",
   },
+  "appointments.late_after_minutes": {
+    default: 10,
+    min: 1,
+    max: 120,
+    label: "Late after (minutes)",
+    help: "Minutes after the start time a patient is marked late. Example: 10.",
+  },
+  "today.running_late_after_minutes": {
+    default: 10,
+    min: 1,
+    max: 120,
+    label: "Running late chip after (minutes)",
+    help: "Show the doctor's late chip when the first patient starts this many minutes after the booked time. Example: 10.",
+  },
   "medical_history.stale_months": {
     default: 6,
     min: 1,

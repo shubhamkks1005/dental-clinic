@@ -22,6 +22,8 @@ export const SETTING_HELP: Record<SettingKey, string> = {
   "appointments.book_ahead_days": TUNABLES["appointments.book_ahead_days"].help,
   "appointments.no_show_after_minutes": TUNABLES["appointments.no_show_after_minutes"].help,
   "appointments.status_undo_hours": TUNABLES["appointments.status_undo_hours"].help,
+  "appointments.late_after_minutes": TUNABLES["appointments.late_after_minutes"].help,
+  "today.running_late_after_minutes": TUNABLES["today.running_late_after_minutes"].help,
   "medical_history.stale_months": TUNABLES["medical_history.stale_months"].help,
   "ui.auto_refresh_seconds": TUNABLES["ui.auto_refresh_seconds"].help,
   "files.storage_warn_gb": TUNABLES["files.storage_warn_gb"].help,
