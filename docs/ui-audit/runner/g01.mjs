@@ -36,7 +36,8 @@ await flow({ id: process.argv[2] || "G01-first-patient-lifecycle", role: "recept
   await c.click(p.getByRole("button", { name: "Send in" }).last(), "Click Send in on Riya's row");
   // ---- Doctor ----
   await c.as("doctor", "Switch to the doctor");
-  await c.click(p.getByRole("region", { name: "Now" }).filter({ hasText: "Riya" }).getByRole("button", { name: "Open visit" }), "Doctor clicks Open visit on Riya (Now card)");
+  if ((await p.getByRole("button", { name: /Rest of the day/ }).count()) > 0) await p.getByRole("button", { name: /Rest of the day/ }).click().catch(() => {});
+  await c.click(p.getByRole("region", { name: "Now" }).filter({ hasText: "Riya" }).getByRole("button", { name: "Open visit" }).or(p.locator("li.doctor-row", { hasText: "Riya" }).getByRole("button", { name: "Open visit" })).first(), "Doctor clicks Open visit on Riya (Now card, or her row when another patient is in the chair)");
   // Q2.4: the whole doctor chain is on ONE screen, no tab switch.
   await c.type(p.getByLabel("Complaint"), "Wants alignment check, mild crowding lower front", "Type complaint");
   await c.type(p.getByLabel("Findings"), "Crowding lower anterior, no caries seen", "Type findings");

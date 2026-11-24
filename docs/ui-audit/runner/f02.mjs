@@ -15,7 +15,7 @@ await flow({ id: process.argv[2] || "F02-phone-full-day", role: "receptionist", 
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Book");
   await c.m("Appointments after booking"); await c.go(`/app/appointments?date=${TOMORROW}&view=day`, "Calendar tomorrow on the phone"); await c.m("Calendar");
   await c.go("/app/patients", "Patients list"); await c.m("Patients list");
-  await c.type(p.getByPlaceholder(/Search by name|mobile|patient code/).last(), "Neha", "Search Neha"); await p.waitForTimeout(900); await c.look("Search result on the phone");
+  await c.type(p.getByPlaceholder(/Search by name/).first(), "Neha", "Search Neha"); await p.waitForTimeout(900); await c.look("Search result on the phone");
   await c.click(p.getByRole("link", { name: "Neha Testcase" }).first(), "Open Neha");
   await c.m("Profile (receptionist)");
   await c.click(p.getByRole("tab", { name: "Billing", exact: true }), "Billing tab"); await c.m("Billing tab");
@@ -26,9 +26,8 @@ await flow({ id: process.argv[2] || "F02-phone-full-day", role: "receptionist", 
   await c.go("/app/more", "More tab"); await c.m("More");
   await c.as("doctor", "Switch to the doctor (same phone)"); await c.m("Today (doctor)");
   await c.click(p.getByRole("button", { name: "Open visit" }).or(p.getByRole("link", { name: "Open visit" })).first(), "Open visit"); await c.m("Visit");
-  await c.type(p.getByLabel("Chief complaint"), "Pain on phone test", "Complaint");
-  await c.click(p.getByRole("tab", { name: "Chart", exact: true }), "Chart tab"); await c.m("Chart tab");
-  await c.click(p.getByRole("tab", { name: "Medicines", exact: true }), "Medicines tab"); await c.m("Medicines tab");
+  await c.type(p.getByLabel("Complaint"), "Pain on phone test", "Complaint");
+  await c.click(p.getByRole("tab", { name: "Plan", exact: true }), "Plan tab"); await c.m("Plan tab");
   await c.go("/app/reports", "Reports (doctor)"); await c.m("Reports");
   await c.go("/app/settings", "Settings (doctor)"); await c.m("Settings");
 });

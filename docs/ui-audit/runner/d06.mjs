@@ -6,10 +6,7 @@ await flow({ id: process.argv[2] || "D06-discount-request-and-approval", role: "
   // doctor prepares a finalised visit with a draft bill (setup)
   await c.go("/app", "SETUP: the doctor finishes a visit so that a draft bill exists");
   await c.click(p.getByRole("button", { name: "Open visit" }).or(p.getByRole("link", { name: "Open visit" })).first(), "Open the visit in chair (Tara)");
-  await c.click(p.getByRole("tab", { name: "Chart", exact: true }), "Chart tab");
-  await c.click(p.getByRole("button", { name: /^Tooth 36, permanent/ }), "Click tooth 36");
-  await c.pick(p.getByRole("region", { name: "Procedures" }).last().getByLabel("Procedure"), { index: 1 }, "Choose the first procedure (the list starts empty)");
-  await c.click(p.getByRole("button", { name: "Add procedure" }), "Add procedure (Scaling ₹1,500)");
+  await c.click(p.getByRole("group", { name: "Procedures done" }).getByRole("button").first(), "Pick the first procedure chip (Scaling) on the Visit screen");
   await c.click(p.getByRole("button", { name: "Finalise visit" }), "Finalise visit");
   await c.click(d().getByRole("button", { name: "Finalise" }), "Confirm Finalise");
   await c.click(p.getByRole("button", { name: "Review first" }), "Review first (a draft bill opens, so a discount can be asked)");

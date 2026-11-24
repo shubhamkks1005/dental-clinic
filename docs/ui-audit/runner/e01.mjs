@@ -5,14 +5,14 @@ await flow({ id: process.argv[2] || "E01-settings-timings-visit-type-medicine", 
   // ---- Timings ----
   await c.go("/app/settings/timings", "PART 1: the doctor wants the clinic open late today (Monday) to see how timings change booking");
   await c.look("Timings screen");
-  const save = p.getByRole("button", { name: /^Save/ });
+  const save = p.getByRole("button", { name: "Save opening hours" });
   c.note("Save button state before any change: " + ((await save.count()) ? (await save.first().isEnabled() ? "enabled" : "disabled") : "no Save button"));
   await p.locator('input[name="week.mon.end"]').fill("23:30"); await c.look("Monday closing time changed to 23:30");
   await c.click(save, "Click Save");
   c.note("After save: " + (await msg()));
   await c.look("After saving timings");
   await p.locator('input[name="week.mon.end"]').fill("07:00");
-  await c.click(save, "EDGE: set Monday closing 07:00 (before opening 10:00) and Save");
+  c.note("EDGE: Monday closing 07:00 (before opening). Save disabled: " + (await save.isDisabled()) + " | reason: " + (await p.locator(".field-error").allInnerTexts()).join(" / "));
   await p.waitForTimeout(6500);
   c.note("6 seconds after pressing Save with closing before opening: messages on screen = [" + (await msg()) + "]");
   await c.look("Still no message");
@@ -61,7 +61,6 @@ await flow({ id: process.argv[2] || "E01-settings-timings-visit-type-medicine", 
   await c.as("doctor", "Doctor: does the new medicine appear in a visit?");
   await c.go("/app", "Doctor Today");
   await c.click(p.getByRole("button", { name: "Open visit" }).or(p.getByRole("link", { name: "Open visit" })).first(), "Open a visit");
-  await c.click(p.getByRole("tab", { name: "Medicines", exact: true }), "Medicines tab");
   await c.type(p.getByPlaceholder(/Search medicine/), "Ibu", "Search 'Ibu'");
   await c.look("Is Ibuprofen found?");
   c.note("Ibuprofen found in the visit's search: " + /Ibuprofen/.test(await c.text()));

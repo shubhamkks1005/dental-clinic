@@ -16,7 +16,7 @@ await flow({ id: process.argv[2] || "F04-double-click-offline-back-and-reload", 
   await c.type(p.getByLabel("Full name"), "Double Click", "Name"); await c.click(p.getByLabel("Male", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "29", "Age"); await c.type(p.locator("input[type=tel]").first(), "9000099050", "Mobile");
   await p.getByRole("button", { name: "Save patient" }).dblclick(); await p.waitForTimeout(1800);
   await c.go("/app/patients", "Patients list: how many 'Double Click' patients exist now?");
-  await c.type(p.getByPlaceholder(/Search by name|mobile|patient code/).last(), "Double Click", "Search"); await p.waitForTimeout(1000);
+  await c.type(p.getByPlaceholder(/Search by name/).first(), "Double Click", "Search"); await p.waitForTimeout(1000);
   c.note("Patients named Double Click after one double click on Save: " + ((await c.text()).match(/Double Click/g) || []).length);
   await c.look("Search result");
   // 3 offline

@@ -2,12 +2,14 @@
 // domain functions. Refuses to run on anything but the staging database. Safe to re-run.
 //
 //   pnpm --filter @clinic/worker db:seed:staging -- --staging      (remote staging D1)
-//   pnpm --filter @clinic/worker db:seed:staging -- --local        (dry rehearsal on local D1)
+//   pnpm --filter @clinic/worker db:seed:staging -- --local --persist-to <scratch folder>
+//        (rehearsal on a SCRATCH local D1 made with `wr d1 migrations apply --persist-to <folder>`;
+//         the owner's own .wrangler/state folder is refused)
 //
 // Remote mode needs CLOUDFLARE_API_TOKEN typed in this terminal (read -rs). Never printed.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createRequire } from "node:module";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { exit, argv } from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -17,6 +19,8 @@ const STAGING_NAME = "dental-clinic-staging";
 const LOCAL_NAME = "dental-clinic-local";
 const wantsLocal = argv.includes("--local");
 const wantsStaging = argv.includes("--staging");
+const persistIdx = argv.indexOf("--persist-to");
+const persistTo = persistIdx > -1 ? resolve(argv[persistIdx + 1] ?? "") : null;
 
 if (wantsLocal === wantsStaging) {
   console.error(
@@ -32,6 +36,20 @@ function stagingDatabaseId() {
     /"database_name":\s*"dental-clinic-staging",\s*"database_id":\s*"([0-9a-f-]{36})"/,
   );
   return m ? m[1] : null;
+}
+
+// Local mode needs an explicit scratch folder and never the owner's own local database.
+if (wantsLocal) {
+  if (!persistTo || persistIdx < 0 || !argv[persistIdx + 1]) {
+    console.error(
+      "--local needs --persist-to <scratch folder> (a database made by migrations only).",
+    );
+    exit(1);
+  }
+  if (persistTo.startsWith(join(workerDir, ".wrangler/state"))) {
+    console.error("Refusing: that is the owner's local database. Use a scratch folder.");
+    exit(1);
+  }
 }
 
 const target = wantsLocal
@@ -82,7 +100,7 @@ Object.assign(process.env, env);
 const proxy = await getPlatformProxy({
   configPath,
   environment,
-  persist: wantsLocal ? { path: join(workerDir, ".wrangler/state/v3") } : false,
+  persist: wantsLocal ? { path: join(persistTo, "v3") } : false,
 });
 
 try {

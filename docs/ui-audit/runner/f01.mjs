@@ -3,10 +3,10 @@ await flow({ id: process.argv[2] || "F01-receptionist-opens-doctor-only-pages", 
   const p = c.page; const B = "http://localhost:8787";
   // doctor collects ids
   await c.go("/app/patients", "The doctor looks up real record ids first (a finalised visit, its prescription, the patient)");
-  await c.click(p.getByRole("link", { name: "Neha Testcase" }).first(), "Open Neha Testcase");
+  await c.click(p.getByRole("link", { name: "Bina Testcase" }).first(), "Open Neha Testcase");
   const pid = p.url().split("/").pop();
   await c.click(p.getByRole("tab", { name: "Visits", exact: true }), "Open the Visits tab");
-  await c.click(p.getByRole("link", { name: /2026/ }).first(), "Open the finalised visit");
+  await c.click(p.getByRole("link", { name: /Final/ }).first(), "Open the finalised visit");
   const vid = p.url().split("/").pop();
   const rxr = await p.request.get(`${B}/api/staff/visits/${vid}/prescriptions`); const rxj = await rxr.json().catch(() => ({}));
   const rid = rxj?.data?.prescriptions?.[0]?.id || "none";

@@ -10,13 +10,13 @@ await flow({ id: process.argv[2] || "G10-two-screens-same-record", role: "doctor
   await c.click(A.getByRole("button", { name: "Open visit" }).or(A.getByRole("link", { name: "Open visit" })).first(), "Tab A: open the visit");
   const visitUrl = A.url();
   await B.goto(visitUrl); await settle(B);
-  await c.type(A.getByLabel("Chief complaint"), "Complaint typed in tab A", "Tab A: type the chief complaint"); await A.waitForTimeout(2200);
+  await c.type(A.getByLabel("Complaint"), "Complaint typed in tab A", "Tab A: type the chief complaint"); await A.waitForTimeout(2200);
   c.note("Tab A after 2 s: " + (await msg(A)));
-  await B.getByLabel("Exam").fill("Exam typed in tab B"); await B.waitForTimeout(2200);
+  await B.getByText("More: history, gums, vitals").click(); await B.getByLabel("Gums").fill("Gums typed in tab B"); await B.waitForTimeout(2200);
   c.note("Tab B (opened before A typed) after typing and 2 s: " + (await msg(B)));
   await B.screenshot({ path: "/Users/shubham.kumar/dental-clinic/docs/ui-audit/flows/G10-two-screens-same-record/tabB-after-typing.jpg", type: "jpeg", quality: 55 });
   await B.reload(); await settle(B);
-  c.note("After reloading tab B the saved values are: complaint='" + (await B.getByLabel("Chief complaint").inputValue()) + "', exam='" + (await B.getByLabel("Exam").inputValue()) + "'");
+  c.note("After reloading tab B the saved values are: complaint='" + (await B.getByLabel("Complaint").inputValue()) + "', gums='" + (await B.getByLabel("Gums").inputValue()) + "'");
   // ---- Part 2: two tabs take a payment ----
   await c.as("receptionist", "PART 2: the receptionist has Neha's Billing tab open in two tabs (both show ₹2,500 due)");
   await c.go("/app/patients", "Patients");
