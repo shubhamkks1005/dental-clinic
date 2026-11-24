@@ -1,10 +1,10 @@
-import { paidByBill } from "./bills-paid";
+import { inChunks, issuedBillPaidSql, paidByBill } from "./bills-paid";
 import { daysBetweenOn, dueAgeBucket, istDate, type DueAgeBucket } from "@clinic/shared";
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
-import { bills, duesCalls, patients } from "../schema";
+import { bills, duesCalls } from "../schema";
 import { readyToBillByAppointment } from "./bills-ready";
 
 export type DuesListRow = {
@@ -24,21 +24,19 @@ export async function duesByPatientIds(db: Db, patientIds: string[]): Promise<Ma
   const out = new Map<string, number>();
   if (patientIds.length === 0) return out;
 
-  const open = await db
-    .select({
-      id: bills.id,
-      patientId: bills.patientId,
-      totalPaise: bills.totalPaise,
-    })
-    .from(bills)
-    .where(
-      and(
-        inArray(bills.patientId, patientIds),
-        eq(bills.status, "issued"),
-        isNull(bills.deletedAt),
-      ),
-    )
-    .all();
+  const open = await inChunks(patientIds, (part) =>
+    db
+      .select({
+        id: bills.id,
+        patientId: bills.patientId,
+        totalPaise: bills.totalPaise,
+      })
+      .from(bills)
+      .where(
+        and(inArray(bills.patientId, part), eq(bills.status, "issued"), isNull(bills.deletedAt)),
+      )
+      .all(),
+  );
   if (open.length === 0) return out;
 
   const ids = open.map((b) => b.id);
@@ -62,71 +60,41 @@ export function billsDuesListRepo(db: Db, ctx: Ctx) {
       assertAllowed(ctx, "bills.create");
       const today = istDate(asOf);
 
-      const open = await db
-        .select({
-          id: bills.id,
-          patientId: bills.patientId,
-          billOn: bills.billOn,
-          totalPaise: bills.totalPaise,
-          patientCode: patients.code,
-          patientName: patients.fullName,
-        })
-        .from(bills)
-        .innerJoin(patients, eq(bills.patientId, patients.id))
-        .where(and(eq(bills.status, "issued"), isNull(bills.deletedAt), isNull(patients.deletedAt)))
-        .all();
-
-      if (open.length === 0) {
-        return {
-          rows: [],
-          totalDuePaise: 0,
-          byBucket: { "0-30": 0, "31-60": 0, "61+": 0 },
-        };
-      }
-
-      const ids = open.map((b) => b.id);
-      const paidMap = await paidByBill(db, ids);
-
-      type Acc = {
+      // One query, no id list: per patient due (bills with due > 0 only) and oldest such bill.
+      const found = await db.all<{
         patientId: string;
         patientCode: string;
         patientName: string;
         duePaise: number;
         oldestBillOn: string;
-      };
-      const byPatient = new Map<string, Acc>();
-      for (const b of open) {
-        const due = b.totalPaise - (paidMap.get(b.id) ?? 0);
-        if (due <= 0) continue;
-        const cur = byPatient.get(b.patientId);
-        if (!cur) {
-          byPatient.set(b.patientId, {
-            patientId: b.patientId,
-            patientCode: b.patientCode,
-            patientName: b.patientName,
-            duePaise: due,
-            oldestBillOn: b.billOn,
-          });
-        } else {
-          cur.duePaise += due;
-          if (b.billOn < cur.oldestBillOn) cur.oldestBillOn = b.billOn;
-        }
-      }
+      }>(sql`${issuedBillPaidSql()}
+        SELECT o.patient_id AS patientId, p.code AS patientCode, p.full_name AS patientName,
+          SUM(o.due) AS duePaise, MIN(o.bill_on) AS oldestBillOn
+        FROM open_bills o
+        JOIN patients p ON p.id = o.patient_id AND p.deleted_at IS NULL
+        WHERE o.due > 0
+        GROUP BY o.patient_id`);
+
+      const byPatient = new Map(
+        found.map((f) => [f.patientId, { ...f, duePaise: Number(f.duePaise) }]),
+      );
 
       const patientIds = [...byPatient.keys()];
       const lastCalls = new Map<string, { note: string; calledOn: string }>();
       if (patientIds.length > 0) {
-        const callRows = await db
-          .select({
-            patientId: duesCalls.patientId,
-            note: duesCalls.note,
-            calledOn: duesCalls.calledOn,
-            createdAt: duesCalls.createdAt,
-          })
-          .from(duesCalls)
-          .where(and(inArray(duesCalls.patientId, patientIds), isNull(duesCalls.deletedAt)))
-          .orderBy(desc(duesCalls.createdAt))
-          .all();
+        const callRows = await inChunks(patientIds, (part) =>
+          db
+            .select({
+              patientId: duesCalls.patientId,
+              note: duesCalls.note,
+              calledOn: duesCalls.calledOn,
+              createdAt: duesCalls.createdAt,
+            })
+            .from(duesCalls)
+            .where(and(inArray(duesCalls.patientId, part), isNull(duesCalls.deletedAt)))
+            .orderBy(desc(duesCalls.createdAt))
+            .all(),
+        );
         for (const c of callRows) {
           if (!lastCalls.has(c.patientId)) {
             lastCalls.set(c.patientId, { note: c.note, calledOn: c.calledOn });
