@@ -1,5 +1,6 @@
 import { addIstDays, istDate } from "@clinic/shared";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { refreshFailure } from "../../ui/refresh-fail";
 import { useSearchParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { useToast } from "../../ui/Toast";
@@ -55,19 +56,29 @@ export function AppointmentsScreen() {
     [dateLocal, bookMin, patientId],
   );
 
+  // Old data counts only if it is for the date on screen.
+  const hasDay = useRef(false);
+  hasDay.current = data?.dateLocal === dateLocal;
+
+  // Week mode: the week's 7 requests already hold this day, so no separate day request.
   const load = useCallback(() => {
-    setError(null);
+    if (week) return;
     listDayAppointments(dateLocal)
-      .then(setData)
+      .then((next) => {
+        setData(next);
+        setError(null);
+      })
       .catch((e) => {
-        setData(null);
-        setError(
+        const fail = refreshFailure(
+          hasDay.current,
           e instanceof ApiError
             ? e.message
             : "Could not load the day. Check the connection, then try again.",
         );
+        if (!fail.keepData) setData(null);
+        setError(fail.error);
       });
-  }, [dateLocal]);
+  }, [dateLocal, week]);
 
   useEffect(() => {
     load();

@@ -1,6 +1,7 @@
 import { istDate, type AppointmentStatus } from "@clinic/shared";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../../api/client";
+import { refreshFailure } from "../../ui/refresh-fail";
 import { useVisibleInterval } from "../../ui/useVisibleInterval";
 import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
 import { changeAppointmentStatus, listDayAppointments } from "./api";
@@ -12,6 +13,8 @@ export function useTodayModel() {
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [serverNow, setServerNow] = useState(() => new Date());
+  const hasModel = useRef(false);
+  hasModel.current = model !== null;
 
   const load = useCallback(() => {
     listDayAppointments(istDate(new Date()))
@@ -21,12 +24,14 @@ export function useTodayModel() {
         setError(null);
       })
       .catch((e) => {
-        setModel(null);
-        setError(
+        const fail = refreshFailure(
+          hasModel.current,
           e instanceof ApiError
             ? e.message
             : "Could not load today. Check the connection, then try again.",
         );
+        if (!fail.keepData) setModel(null);
+        setError(fail.error);
       });
   }, []);
 

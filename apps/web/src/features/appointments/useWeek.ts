@@ -1,5 +1,6 @@
 import { addIstDays } from "@clinic/shared";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { refreshFailure } from "../../ui/refresh-fail";
 import { listDayAppointments, type DayAppointmentsReply } from "./api";
 
 /** Monday of the week that holds `day` (YYYY-MM-DD). */
@@ -19,15 +20,24 @@ export function useWeek(active: boolean, day: string, refreshKey: number) {
   const [days, setDays] = useState<DayAppointmentsReply[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const first = weekStart(day);
+  // Old data counts only if it is for this same week.
+  const hasWeek = useRef(false);
+  hasWeek.current = days?.[0]?.dateLocal === first;
 
   const load = useCallback(() => {
     if (!active) return;
-    setError(null);
     Promise.all(weekDays(first).map((d) => listDayAppointments(d)))
-      .then(setDays)
+      .then((next) => {
+        setDays(next);
+        setError(null);
+      })
       .catch(() => {
-        setDays(null);
-        setError("Could not load the week. Check the connection, then try again.");
+        const fail = refreshFailure(
+          hasWeek.current,
+          "Could not load the week. Check the connection, then try again.",
+        );
+        if (!fail.keepData) setDays(null);
+        setError(fail.error);
       });
   }, [active, first]);
 
