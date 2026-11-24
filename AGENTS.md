@@ -7,7 +7,7 @@ The human owner is a developer who gives you tasks; the doctor (his sister) is n
 ## Start of every session (do this first, nothing else)
 0. Fresh clone or "new laptop" (no node_modules)? Read docs/SETUP_NEW_LAPTOP.md first and guide the owner through it.
 1. Read docs/RUN_PROMPT.md (standing rules), docs/HANDOFF.md / docs/STATE.md (where we are), docs/FIXES.md (the owner's bug and polish list, work it top to bottom), and docs/MAP.md (what each file does).
-1b. Current phase is Phase Q (docs/PHASE_Q.md): read the section of the task named in HANDOFF.md. Product audit and designs: docs/product-audit/, docs/ui-audit/, docs/design/proposal/.
+1b. Current phase is Phase Q (docs/PHASE_Q.md): read the section of the task named in HANDOFF.md. Product audit and designs: docs/product-audit/, docs/ui-audit/, docs/design/proposal/. FINAL DESIGNS WIN (owner, 2026-11-25): a file in docs/design/final/ (index: docs/design/final/README.md) is the final design for that screen and beats anything in docs/design/proposal/, the PDF or an older task text; docs/design/proposal/ is only a reference for screens that have no final design yet.
 2. Do NOT read the whole codebase. Find files with search (grep/ripgrep), then read only the lines you need.
 3. If the task needs a decision that is not in docs/SPEC.md or docs/DECISIONS.md, ASK the owner. Never guess clinical, legal, tax or money rules. (When following RUN_PROMPT.md, prefer writing the choice in DECISIONS.md and continuing unless it is a real blocker.)
 

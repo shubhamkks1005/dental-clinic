@@ -1,5 +1,7 @@
 # Design proposal (2026-11-23): screens to build in Phase Q
 
+> **NOT FINAL (2026-11-25).** The owner now gives final designs one screen at a time in `docs/design/final/`; those win over every file here. This folder is only a reference for screens that have no final design yet. `DoctorToday.dc.html` is replaced by `docs/design/final/doctor_today.html`.
+
 These are the visual designs for the screens that are missing or broken in the app. They follow `docs/DESIGN.md` and the mockup PDF `docs/design/align-dentistry-screens.pdf` (S01-S19). Where this proposal and the PDF differ, this proposal is newer and wins for the screens listed below; for every other screen the PDF still wins.
 
 ## How to read them

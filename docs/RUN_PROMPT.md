@@ -8,7 +8,7 @@ This file is complete on its own. Also follow AGENTS.md stack/data/privacy rules
 Details and the task order: docs/PHASE_Q.md. Work in PARTS: take the Part named under "Next task" in docs/HANDOFF.md and do its tasks one after another in one long session (commit after each task). If context runs out, a new chat resumes the same Part at the first task not Done.
 - A task is done only when its "Done when" was run in a real browser (Playwright, http://localhost:8787, every role that can use the screen) and pnpm check is green. Unit tests alone are not enough.
 - EXCEPTION to "do not stop to ask": for money rules (refund, advance, discount), clinical or legal wording, who may see what, and any task marked BLOCKED in PHASE_Q.md, do NOT guess. Write the question under "Waiting on me" in HANDOFF.md and take the next unblocked task.
-- UI tasks: read the matching file in docs/design/proposal/ (index: docs/design/proposal/README.md) and tick docs/ui-audit/REVIEW_CHECKLIST.md. Say which design file you followed.
+- UI tasks: read the matching file in docs/design/proposal/ (index: docs/design/proposal/README.md) and tick docs/ui-audit/REVIEW_CHECKLIST.md. Say which design file you followed. FIRST check docs/design/final/README.md: if the screen has a final design there, follow it exactly (animations and behaviour too) and it overrides docs/design/proposal/.
 - After each task: update docs/ui-audit/AUDIT.md status of the issues fixed, MAP.md, STATE.md, HANDOFF.md, then commit locally with the task id first in the message. Never push.
 - Context is limited: when it is nearly full, finish or revert the edit, update HANDOFF.md (exact next step), commit, stop.
 

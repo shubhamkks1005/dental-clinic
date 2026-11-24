@@ -6,6 +6,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 - New laptop or fresh clone: follow docs/SETUP_NEW_LAPTOP.md (the AI guides the owner; the owner pushes).
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
+- **FINAL DESIGNS (2026-11-25):** screens the owner has finished are in docs/design/final/ (README there). Those override docs/design/proposal/ and the PDF. First one: doctor_today.html (doctor's Today page), planned as PLAN Part T (backend T1.x then UI T2.x, nothing built yet). The owner will add more final designs screen by screen; when one arrives, add a row to docs/design/final/README.md and a plan task.
 - Phase Q Parts 1 to 5 are done (see "Done in Phase Q"). Part 5 gate: passed (STATE.md "Part 5"; all 18 runner flows ran on a seeded scratch DB).
 - Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 

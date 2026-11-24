@@ -1,0 +1,2257 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Today — Align Dentistry</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'nav-surface': '#263F4D',
+        'on-nav-surface': '#F4F8FA',
+        'on-nav-surface-variant': '#C2D3DC',
+        'nav-border': '#355363',
+        'success': '#146C43',
+        'on-success': '#FFFFFF',
+        'success-container': '#D1F4E0',
+        'on-success-container': '#0B462B',
+        'warning': '#9A5B00',
+        'on-warning': '#FFFFFF',
+        'warning-container': '#FEF0C7',
+        'on-warning-container': '#693D00',
+        'info': '#0F5266',
+        'on-info': '#FFFFFF',
+        'info-container': '#D0E6F0',
+        'on-info-container': '#003544',
+        'light-primary': '#054D61',
+        'light-on-primary': '#FFFFFF',
+        'light-primary-container': '#0F5266',
+        'light-on-primary-container': '#B9EAFF',
+        'light-secondary': '#4D616A',
+        'light-on-secondary': '#FFFFFF',
+        'light-secondary-container': '#D0E6F0',
+        'light-on-secondary-container': '#091E26',
+        'light-tertiary': '#502C00',
+        'light-on-tertiary': '#FFFFFF',
+        'light-tertiary-container': '#6B4213',
+        'light-on-tertiary-container': '#FFDCBE',
+        'light-error': '#BA1A1A',
+        'light-on-error': '#FFFFFF',
+        'light-error-container': '#FFDAD6',
+        'light-on-error-container': '#93000A',
+        'light-background': '#F8F9FB',
+        'light-on-background': '#191C1D',
+        'light-surface': '#F8F9FB',
+        'light-surface-dim': '#D9DADC',
+        'light-surface-bright': '#F8F9FB',
+        'light-surface-container-lowest': '#FFFFFF',
+        'light-surface-container-low': '#F2F4F5',
+        'light-surface-container': '#EDEEEF',
+        'light-surface-container-high': '#E7E8EA',
+        'light-surface-container-highest': '#E1E2E4',
+        'light-on-surface': '#191C1D',
+        'light-surface-variant': '#DCE4E8',
+        'light-on-surface-variant': '#40484C',
+        'light-outline': '#70787C',
+        'light-outline-variant': '#C0C8CC',
+        'light-inverse-surface': '#2E3132',
+        'light-inverse-on-surface': '#F0F1F2',
+        'light-inverse-primary': '#96CFE6',
+        'dark-primary': '#B0C7F7',
+        'dark-on-primary': '#183057',
+        'dark-primary-container': '#122B52',
+        'dark-on-primary-container': '#D7E2FF',
+        'dark-secondary': '#BFC6DB',
+        'dark-on-secondary': '#293041',
+        'dark-secondary-container': '#41495A',
+        'dark-on-secondary-container': '#DBE2F8',
+        'dark-tertiary': '#F7BA89',
+        'dark-on-tertiary': '#4B2702',
+        'dark-tertiary-container': '#452300',
+        'dark-on-tertiary-container': '#FFDCC2',
+        'dark-error': '#FFB4AB',
+        'dark-on-error': '#690005',
+        'dark-error-container': '#93000A',
+        'dark-on-error-container': '#FFDAD6',
+        'dark-background': '#121316',
+        'dark-on-background': '#E3E2E6',
+        'dark-surface': '#121316',
+        'dark-surface-dim': '#121316',
+        'dark-surface-bright': '#38393C',
+        'dark-surface-container-lowest': '#0D0E11',
+        'dark-surface-container-low': '#1B1B1E',
+        'dark-surface-container': '#1F1F22',
+        'dark-surface-container-high': '#292A2D',
+        'dark-surface-container-highest': '#343538',
+        'dark-on-surface': '#E3E2E6',
+        'dark-surface-variant': '#44474E',
+        'dark-on-surface-variant': '#C4C6CF',
+        'dark-outline': '#8E9099',
+        'dark-outline-variant': '#44474E',
+        'dark-inverse-surface': '#E3E2E6',
+        'dark-inverse-on-surface': '#303033',
+        'dark-inverse-primary': '#485E88',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '24px',
+        'page-margin': '24px',
+      },
+      fontFamily: {
+        'display': ['"Wix Madefor Display"', 'sans-serif'],
+        'headline': ['"Wix Madefor Display"', 'sans-serif'],
+        'title': ['"Instrument Sans"', 'sans-serif'],
+        'body': ['"Instrument Sans"', 'sans-serif'],
+        'label': ['"Instrument Sans"', 'sans-serif'],
+        'mono': ['"Spline Sans Mono"', 'monospace'],
+      },
+      fontSize: {
+        'display-md': ['36px', { lineHeight: '44px', letterSpacing: '-0.5px', fontWeight: '700' }],
+        'display-md-mobile': ['28px', { lineHeight: '34px', letterSpacing: '-0.25px', fontWeight: '700' }],
+        'headline-lg': ['28px', { lineHeight: '36px', letterSpacing: '-0.4px', fontWeight: '700' }],
+        'headline-md': ['22px', { lineHeight: '28px', letterSpacing: '-0.2px', fontWeight: '600' }],
+        'title-lg': ['18px', { lineHeight: '24px', letterSpacing: '-0.1px', fontWeight: '600' }],
+        'title-md': ['15px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '600' }],
+        'body-md': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '600' }],
+        'label-md': ['12px', { lineHeight: '16px', letterSpacing: '0.2px', fontWeight: '600' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.3px', fontWeight: '500' }],
+        'mono-sm': ['12px', { lineHeight: '16px', letterSpacing: '0px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '120ms',
+        'surface-enter': '200ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+        'surface-enter': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+        'surface-enter': 'cubic-bezier(0.2, 0, 0, 1)',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Spline+Sans+Mono:wght@400;500;600&amp;family=Wix+Madefor+Display:wght@500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined, .material-symbols-rounded, .material-symbols-sharp, .material-icons { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; direction: ltr; vertical-align: middle; }
+    .patient-scroll::-webkit-scrollbar { width: 6px; }
+    .patient-scroll::-webkit-scrollbar-track { background: transparent; }
+    .patient-scroll::-webkit-scrollbar-thumb { background: rgba(111, 121, 124, 0.3); border-radius: 9999px; }
+
+    /* Smooth Waiting for you minimize / expand animation (only active during toggle) */
+    #todays-list-section.is-animating {
+      transition: flex 380ms cubic-bezier(0.22, 1, 0.36, 1), width 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .waiting-panel-shell {
+      overflow: hidden;
+      transform-origin: top left;
+    }
+    .waiting-panel-shell.is-animating {
+      will-change: width, transform, opacity;
+      transition:
+        width 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        max-height 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 280ms cubic-bezier(0.22, 1, 0.36, 1) 40ms,
+        transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-width 200ms ease;
+    }
+    @media (min-width: 1024px) {
+      .waiting-panel-shell {
+        width: 340px;
+      }
+      .waiting-panel-shell.is-minimized {
+        width: 0px;
+        margin-left: -16px;
+        opacity: 0;
+        transform: scale(0.84) translate(-28px, -12px);
+        pointer-events: none;
+        border-width: 0px;
+      }
+      .waiting-panel-shell.is-animating.is-minimized {
+        transition:
+          width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+          margin 360ms cubic-bezier(0.22, 1, 0.36, 1),
+          opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+          transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+          border-width 200ms ease;
+      }
+    }
+    @media (max-width: 1023px) {
+      .waiting-panel-shell {
+        width: 100%;
+        max-height: 700px;
+      }
+      .waiting-panel-shell.is-minimized {
+        max-height: 0px;
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+        pointer-events: none;
+        border-width: 0px;
+      }
+    }
+
+    /* Smooth restore pill transition in Today's list header */
+    .restore-pill {
+      transition:
+        opacity 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        max-width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        padding 260ms ease,
+        margin 260ms ease;
+      max-width: 220px;
+      overflow: hidden;
+    }
+    .restore-pill.is-hidden {
+      max-width: 0px;
+      opacity: 0;
+      transform: scale(0.85);
+      padding-left: 0px;
+      padding-right: 0px;
+      margin-left: -8px;
+      border-width: 0px;
+      pointer-events: none;
+    }
+
+    /* Silky-smooth 3-dots dropdown open & close animation */
+    .menu-animate {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition:
+        opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 240ms;
+    }
+    .menu-animate.menu-up {
+      transform-origin: bottom right;
+      transform: scale(0.88) translateY(8px);
+    }
+    .menu-animate.menu-down {
+      transform-origin: top right;
+      transform: scale(0.88) translateY(-8px);
+    }
+    .menu-animate.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+      transition:
+        opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0s linear 0s;
+    }
+
+    /* Waiting for you item slide-out right + smooth collapse so items below slide up */
+    .waiting-item {
+      max-height: 260px;
+      overflow: hidden;
+      transition:
+        transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        max-height 260ms cubic-bezier(0.22, 1, 0.36, 1) 140ms,
+        padding 260ms cubic-bezier(0.22, 1, 0.36, 1) 140ms,
+        border-width 200ms ease 140ms;
+    }
+    .waiting-item.is-removing {
+      transform: translateX(100%);
+      opacity: 0;
+      max-height: 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      border-top-width: 0px;
+      border-bottom-width: 0px;
+      pointer-events: none;
+    }
+
+    /* Incoming new request slide-in animation */
+    @keyframes waitingSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateX(28px);
+        max-height: 0px;
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+        max-height: 260px;
+      }
+    }
+    .waiting-item-enter {
+      animation: waitingSlideIn 340ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Smooth Submit button reveal when doctor types a note */
+    .note-submit-btn {
+      max-width: 0px;
+      opacity: 0;
+      padding-left: 0px;
+      padding-right: 0px;
+      overflow: hidden;
+      pointer-events: none;
+      transform: scale(0.9);
+      transition:
+        max-width 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 180ms ease,
+        padding 220ms ease,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .note-submit-btn.is-visible {
+      max-width: 96px;
+      opacity: 1;
+      padding-left: 12px;
+      padding-right: 12px;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    /* Today's list row animations: Cancel, Pull forward (3-beat Lift -> Glide -> Settle), Skip, Start */
+    .list-row {
+      position: relative;
+      max-height: 180px;
+      transition:
+        transform 460ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        max-height 280ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
+        padding 280ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
+        box-shadow 220ms ease,
+        background-color 260ms ease;
+    }
+    .list-row.is-lifted {
+      z-index: 25;
+      background-color: #f4fbfc;
+      box-shadow: 0 18px 36px -8px rgba(5, 77, 97, 0.24), 0 0 0 1px rgba(5, 77, 97, 0.22);
+      border-radius: 8px;
+      transform: scale(1.022) translateY(-4px);
+    }
+    .list-row.is-removing {
+      transform: translateX(48px);
+      opacity: 0;
+      max-height: 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      border-top-width: 0px;
+      border-bottom-width: 0px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .list-row[data-status="cancelled"] > a {
+      position: relative;
+      opacity: 0.72;
+    }
+    .list-row[data-status="cancelled"] > a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background-color: #BA1A1A;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .list-row[data-status="done"] {
+      background-color: rgba(210, 242, 222, 0.32);
+    }
+    .list-row[data-status="done"]:hover {
+      background-color: rgba(210, 242, 222, 0.48);
+    }
+    .list-row[data-status="late"] {
+      background-color: rgba(255, 218, 214, 0.25);
+    }
+    .list-row[data-status="late"]:hover {
+      background-color: rgba(255, 218, 214, 0.4);
+    }
+    .waiting-note-drawer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin-top: 0;
+      transition:
+        max-height 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 180ms ease,
+        margin-top 180ms ease;
+    }
+    .waiting-note-drawer.is-open {
+      max-height: 52px;
+      opacity: 1;
+      margin-top: 2px;
+    }
+    .auto-scroll-list {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(5, 77, 97, 0.26) transparent;
+    }
+    .auto-scroll-list::-webkit-scrollbar {
+      width: 7px;
+    }
+    .auto-scroll-list::-webkit-scrollbar-track {
+      background: transparent;
+      margin-block: 4px;
+    }
+    .auto-scroll-list::-webkit-scrollbar-thumb {
+      background-color: rgba(5, 77, 97, 0.22);
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    .auto-scroll-list::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(5, 77, 97, 0.45);
+    }
+    /* Patient Search Popover & Live Filter Animations */
+    #search-results-popover {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.985);
+      transform-origin: top center;
+      pointer-events: none;
+      visibility: hidden;
+      transition:
+        opacity 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 180ms ease;
+    }
+    #search-results-popover.is-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      visibility: visible;
+    }
+    @keyframes searchItemIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .search-result-item {
+      animation: searchItemIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .list-row.is-search-hidden {
+      opacity: 0;
+      max-height: 0px;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      border-top-width: 0px;
+      border-bottom-width: 0px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    @keyframes searchSpotlight {
+      0% { box-shadow: inset 3px 0 0 #054D61, 0 0 0 0 rgba(5, 77, 97, 0.28); background-color: rgba(203, 238, 246, 0.55); }
+      70% { box-shadow: inset 3px 0 0 #054D61, 0 0 0 4px rgba(5, 77, 97, 0); background-color: rgba(203, 238, 246, 0.32); }
+      100% { box-shadow: inset 0 0 0 transparent; }
+    }
+    .list-row.is-search-spotlight,
+    #in-chair-card.is-search-spotlight {
+      animation: searchSpotlight 1400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #in-chair-card {
+      transition:
+        transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 240ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 340ms ease;
+    }
+    #in-chair-card.is-swapping {
+      opacity: 0.45;
+      transform: translateY(10px) scale(0.985);
+    }
+    #in-chair-card.is-receiving {
+      transform: translateY(-3px) scale(1.012);
+      box-shadow: 0 20px 40px -8px rgba(5, 77, 97, 0.55), 0 0 0 2px rgba(255, 255, 255, 0.45);
+    }
+    /* Relaxing Break Mode Animations */
+    @keyframes breakBreathe {
+      0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.45; }
+      50% { transform: scale(1.16) translate(8px, -6px); opacity: 0.8; }
+    }
+    @keyframes cupFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-4px) rotate(-3deg); }
+    }
+    @keyframes steamRise {
+      0% { transform: translateY(3px) scaleX(0.9); opacity: 0; }
+      40% { opacity: 0.75; }
+      100% { transform: translateY(-9px) scaleX(1.15); opacity: 0; }
+    }
+    .break-orb {
+      animation: breakBreathe 5s ease-in-out infinite;
+    }
+    .break-cup-float {
+      animation: cupFloat 3.2s ease-in-out infinite;
+    }
+    .break-steam-1 {
+      animation: steamRise 2.4s ease-in-out infinite;
+    }
+    .break-steam-2 {
+      animation: steamRise 2.4s ease-in-out infinite 0.9s;
+    }
+    #break-banner {
+      max-height: 0px;
+      opacity: 0;
+      padding-top: 0px;
+      padding-bottom: 0px;
+      margin-bottom: -16px;
+      border-width: 0px;
+      transform: translateY(-8px) scale(0.985);
+      pointer-events: none;
+      transition:
+        max-height 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 300ms ease,
+        padding 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        margin 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-width 200ms ease;
+    }
+    #break-banner.is-active {
+      max-height: 180px;
+      opacity: 1;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      margin-bottom: 0px;
+      border-width: 1px;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body class="bg-light-surface text-light-on-surface font-body antialiased">
+  <div class="min-h-[1024px] flex bg-light-surface" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Persistent Left Navigation Rail (Doctor Role) -->
+    <aside class="relative overflow-x-hidden overflow-y-auto auto-scroll-list w-[240px] shrink-0 bg-nav-surface border-r border-nav-border text-on-nav-surface min-h-[1024px] lg:sticky lg:top-0 lg:h-[1024px] flex flex-col justify-between p-3 gap-2" data-stitch-vh="min-h-[1024px]===min-h-screen|||lg:h-[1024px]===lg:h-screen">
+      <div class="pointer-events-none absolute -top-8 right-0 w-40 h-40 rounded-full bg-light-secondary-container/20 blur-2xl" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute top-44 -left-12 w-36 h-36 rounded-full bg-success-container/15 blur-2xl" aria-hidden="true"></div>
+
+      <div class="relative z-10 flex flex-col gap-gutter-sm">
+        <div class="flex items-center gap-gutter-sm p-2.5 rounded-md bg-light-secondary-container border border-light-on-primary-container/50 shadow-sm">
+          <div class="w-9 h-9 rounded bg-light-primary flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px] text-light-on-primary" aria-hidden="true">dentistry</span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-headline text-title-md text-light-on-secondary-container leading-tight" data-design-text-token="title-md">Align Dentistry</span>
+            <span class="font-label text-label-sm text-light-primary" data-design-text-token="label-sm">Orthodontics</span>
+          </div>
+        </div>
+
+        <nav aria-label="Primary navigation" class="flex flex-col gap-gutter-sm">
+          <div class="flex flex-col gap-1.5">
+            <span class="px-3 pb-0.5 font-label text-label-sm uppercase tracking-wider text-on-nav-surface-variant" data-design-text-token="label-sm">Clinic</span>
+            <a href="#today" aria-current="page" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full bg-light-primary-container ring-1 ring-light-on-primary-container/40 text-light-on-primary font-label text-label-lg transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px] text-light-on-primary-container" aria-hidden="true">schedule</span>
+              <span data-design-text-token="label-lg">Today</span>
+            </a>
+            <a href="../patients-directory/PatientsDirectory.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 transition-colors duration-state-change font-label text-label-lg">
+              <span class="material-symbols-outlined text-[18px] text-light-on-primary-container" aria-hidden="true">group</span>
+              <span data-design-text-token="label-lg">Patients</span>
+            </a>
+            <a href="../appointments-calendar/AppointmentsCalendar.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 transition-colors duration-state-change font-label text-label-lg">
+              <span class="material-symbols-outlined text-[18px] text-success-container" aria-hidden="true">calendar_today</span>
+              <span data-design-text-token="label-lg">Appointments</span>
+            </a>
+            <a href="../billing-dues/BillingDues.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 transition-colors duration-state-change font-label text-label-lg">
+              <span class="material-symbols-outlined text-[18px] text-warning-container" aria-hidden="true">receipt_long</span>
+              <span data-design-text-token="label-lg">Billing</span>
+            </a>
+            <a href="../messages-inbox/MessagesInbox.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 transition-colors duration-state-change font-label text-label-lg">
+              <span class="material-symbols-outlined text-[18px] text-light-error-container" aria-hidden="true">chat_bubble</span>
+              <span data-design-text-token="label-lg">Messages</span>
+            </a>
+          </div>
+
+          <div class="flex flex-col gap-1.5 pt-gutter-sm border-t border-nav-border/80">
+            <span class="px-3 pb-0.5 font-label text-label-sm uppercase tracking-wider text-on-nav-surface-variant" data-design-text-token="label-sm">Practice</span>
+            <a href="../reports-dashboard/ReportsDashboard.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 hover:text-on-nav-surface font-label text-label-lg transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px] text-light-on-primary-container/80" aria-hidden="true">bar_chart</span>
+              <span data-design-text-token="label-lg">Reports</span>
+            </a>
+            <a href="../library-catalog/LibraryCatalog.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 hover:text-on-nav-surface font-label text-label-lg transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px] text-success-container/80" aria-hidden="true">menu_book</span>
+              <span data-design-text-token="label-lg">Library</span>
+            </a>
+            <a href="../settings-hub/SettingsHub.html" class="flex items-center gap-gutter-sm px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 hover:text-on-nav-surface font-label text-label-lg transition-colors duration-state-change">
+              <span class="material-symbols-outlined text-[18px] text-warning-container/80" aria-hidden="true">tune</span>
+              <span data-design-text-token="label-lg">Settings</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Doctor Identity Footer Card -->
+      <div class="relative overflow-hidden z-10 p-2.5 rounded-md bg-gradient-to-b from-light-on-primary/15 via-nav-border/65 to-nav-border/80 border border-nav-border border-t-light-on-primary/45 flex flex-col gap-gutter-sm shrink-0">
+        <div class="relative z-10 flex items-center gap-gutter-sm">
+          <div class="relative w-9 h-9 rounded-full bg-light-secondary-container text-light-on-secondary-container flex items-center justify-center font-label text-label-md shrink-0">
+            <span data-design-text-token="label-md">AM</span>
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-nav-surface" aria-hidden="true"></span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-label text-label-lg text-light-on-primary leading-tight" data-design-text-token="label-lg">Dr. Arvind Mehta</span>
+            <span class="font-body text-label-sm text-on-nav-surface/90" data-design-text-token="label-sm">Doctor</span>
+          </div>
+        </div>
+        <button type="button" class="relative z-10 w-full py-1.5 px-3 rounded-full border border-nav-border bg-nav-surface text-on-nav-surface font-label text-label-md hover:bg-nav-border transition-colors duration-state-change inline-flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]" aria-hidden="true">logout</span>
+          <span data-design-text-token="label-md">Sign out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Column -->
+    <div class="flex-1 flex flex-col min-w-0 bg-gradient-to-br from-light-secondary-container/20 via-light-surface to-success-container/15">
+
+      <!-- Main Doctor Today Content -->
+      <main class="flex-1 px-gutter-lg py-5 max-w-[1440px] w-full mx-auto flex flex-col gap-3.5">
+
+        <!-- On Break Banner (Smooth animated relaxing mode with live countdown; appears at the very top when active) -->
+        <div id="break-banner" class="relative overflow-hidden px-gutter-lg rounded-md bg-gradient-to-r from-light-secondary-container/80 via-success-container/35 to-warning-container/40 border border-light-primary/25 shadow-sm flex flex-wrap items-center justify-between gap-gutter-md">
+          <div class="break-orb pointer-events-none absolute -top-10 -left-8 w-44 h-44 rounded-full bg-light-secondary-container/60 blur-2xl" aria-hidden="true"></div>
+          <div class="break-orb pointer-events-none absolute -bottom-10 right-16 w-40 h-40 rounded-full bg-success-container/50 blur-2xl" style="animation-delay: 1.8s;" aria-hidden="true"></div>
+
+          <div class="relative z-10 flex items-center gap-gutter-md">
+            <div class="relative w-12 h-12 rounded-full bg-light-surface-container-lowest/90 border border-light-primary/20 shadow-sm flex items-center justify-center shrink-0">
+              <span class="break-steam-1 pointer-events-none absolute -top-1 left-3.5 w-1 h-2.5 rounded-full bg-light-primary/50" aria-hidden="true"></span>
+              <span class="break-steam-2 pointer-events-none absolute -top-1.5 right-3.5 w-1 h-2.5 rounded-full bg-light-primary/40" aria-hidden="true"></span>
+              <span class="break-cup-float material-symbols-outlined text-[24px] text-light-primary" aria-hidden="true">coffee</span>
+            </div>
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="font-headline text-title-lg text-light-on-surface" data-design-text-token="title-lg">Break mode · Relax &amp; recharge</span>
+                <span id="break-label-pill" class="px-2 py-0.5 rounded-full bg-light-surface-container-lowest/80 border border-light-primary/20 font-label text-label-sm text-light-primary tabular-nums">15 min</span>
+              </div>
+              <span class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Front desk paused new chair calls · Take a breather, Dr. Mehta.</span>
+            </div>
+          </div>
+
+          <div class="relative z-10 flex items-center gap-gutter-sm">
+            <div class="flex items-center gap-3 px-3 py-1.5 rounded-md bg-light-surface-container-lowest/80 border border-light-primary/15 shadow-sm">
+              <div class="flex flex-col items-end">
+                <span class="font-label text-label-sm text-light-on-surface-variant">Time left</span>
+                <span id="break-countdown" class="font-mono text-title-lg text-light-primary font-semibold tabular-nums leading-tight">15:00</span>
+              </div>
+              <span class="w-px h-7 bg-light-primary/15 shrink-0" aria-hidden="true"></span>
+              <div class="flex flex-col items-start">
+                <span class="font-label text-label-sm text-light-on-surface-variant">Total</span>
+                <span id="break-total-time" class="font-mono text-title-md text-light-on-surface-variant font-medium tabular-nums leading-tight">15:00</span>
+              </div>
+            </div>
+            <button id="extend-break-btn" type="button" onclick="extendBreak(5)" class="whitespace-nowrap py-2 px-3 rounded border border-light-primary/35 bg-light-surface-container-lowest/90 text-light-primary font-label text-label-md shadow-sm hover:bg-light-surface-container-lowest tabular-nums">
+              +5 min
+            </button>
+            <button id="back-to-work-btn" type="button" class="whitespace-nowrap py-2 px-4 rounded bg-light-primary text-light-on-primary font-label text-label-md shadow-sm hover:bg-light-primary-container">
+              <span data-design-text-token="label-md">I&#39;m back</span>
+            </button>
+          </div>
+
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-light-primary/10">
+            <div id="break-progress-bar" class="h-full bg-light-primary transition-[width] duration-1000 ease-linear" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- 6.1 Summary Header Strip (Top of page) -->
+        <section aria-label="Doctor status summary" class="flex flex-wrap items-center justify-between gap-gutter-md">
+          <div class="flex flex-col gap-1">
+            <div class="flex flex-wrap items-center gap-gutter-sm">
+              <h1 class="font-headline text-headline-lg text-light-on-surface" data-design-text-token="headline-lg">Saturday, 22 November</h1>
+              <span id="doctor-state-pill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-info-container text-on-info-container font-label text-label-md" data-design-text-token="label-md">
+                <span class="w-2 h-2 rounded-full bg-info" aria-hidden="true"></span>
+                Visit in progress
+              </span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-warning-container text-on-warning-container font-label text-label-md tabular-nums" data-design-text-token="label-md">
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">schedule</span>
+                20 min late
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-gutter-sm font-body text-body-md text-light-on-surface-variant tabular-nums">
+              <span><strong class="font-semibold text-light-on-surface">3</strong> waiting</span>
+              <span>·</span>
+              <span><strong class="font-semibold text-light-on-surface">3</strong> not yet arrived</span>
+              <span>·</span>
+              <span><strong class="font-semibold text-light-on-surface">4</strong> done</span>
+              <span>·</span>
+              <span class="inline-flex items-center gap-1 text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">
+                <span class="material-symbols-outlined text-[15px] text-success" aria-hidden="true">sync</span>
+                Updated just now
+              </span>
+            </div>
+          </div>
+
+          <!-- Patient Search + Take a break control -->
+          <div class="flex flex-wrap items-center gap-gutter-sm shrink-0">
+            <div class="relative w-72 xl:w-80" id="doctor-search-wrap">
+              <span class="material-symbols-outlined text-[18px] text-light-outline absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true">search</span>
+              <input id="doctor-search" type="search" autocomplete="off" aria-label="Search patient by name, mobile, or patient number" placeholder="Search patient, mobile, or ID" class="w-full pl-9 pr-14 py-2 rounded bg-light-surface-container-lowest border border-light-outline-variant shadow-sm font-body text-body-md text-light-on-surface placeholder:text-light-outline focus:outline-none focus:ring-2 focus:ring-info">
+              <button id="search-clear-btn" type="button" onclick="clearDoctorSearch()" aria-label="Clear search" class="hidden absolute right-8 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+                <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+              </button>
+              <kbd id="search-kbd-hint" class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-light-surface-container-low border border-light-outline-variant font-mono text-mono-sm text-light-on-surface-variant">/</kbd>
+
+              <!-- Floating Live Search Results Popover -->
+              <div id="search-results-popover" role="listbox" aria-label="Matching patients" class="absolute right-0 left-auto w-[420px] max-w-[90vw] top-[calc(100%+6px)] z-50 rounded-md bg-light-surface-container-lowest border border-light-outline-variant shadow-[0_18px_40px_-8px_rgba(25,28,29,0.22)] overflow-hidden">
+                <div class="px-3.5 py-2 bg-light-surface-container-low/70 border-b border-light-outline-variant/70 flex items-center justify-between gap-2">
+                  <span id="search-results-summary" class="font-label text-label-sm text-light-on-surface-variant">Today&#39;s queue &amp; clinic patients</span>
+                  <span class="font-label text-label-sm text-light-on-surface-variant">↑↓ navigate · Enter jump</span>
+                </div>
+                <ul id="search-results-list" class="max-h-72 overflow-y-auto auto-scroll-list divide-y divide-light-outline-variant/60"></ul>
+              </div>
+            </div>
+
+            <div class="relative">
+              <button id="break-menu-btn" type="button" aria-expanded="false" class="whitespace-nowrap inline-flex items-center gap-gutter-sm px-4 py-2 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-lg shadow-sm hover:bg-light-surface-container-low">
+                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">coffee</span>
+                <span data-design-text-token="label-lg">Take a break</span>
+                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">expand_more</span>
+              </button>
+              <div id="break-menu" class="menu-animate menu-down absolute right-0 mt-1.5 w-56 rounded-md bg-light-surface-container-lowest border border-light-outline-variant shadow-[0_14px_28px_-6px_rgba(25,28,29,0.2)] p-1.5 z-30 flex flex-col gap-0.5">
+                <button type="button" data-mins="5" data-label="Quick stretch" class="break-option w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between gap-2 hover:bg-light-secondary-container/40 transition-colors">
+                  <span class="inline-flex items-center gap-2 font-body text-body-md text-light-on-surface">
+                    <span class="material-symbols-outlined text-[16px] text-info" aria-hidden="true">self_improvement</span>
+                    <span>5 min</span>
+                  </span>
+                  <span class="font-body text-label-sm text-light-on-surface-variant">Stretch</span>
+                </button>
+                <button type="button" data-mins="10" data-label="Short breather" class="break-option w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between gap-2 hover:bg-light-secondary-container/40 transition-colors">
+                  <span class="inline-flex items-center gap-2 font-body text-body-md text-light-on-surface">
+                    <span class="material-symbols-outlined text-[16px] text-success" aria-hidden="true">spa</span>
+                    <span>10 min</span>
+                  </span>
+                  <span class="font-body text-label-sm text-light-on-surface-variant">Rest</span>
+                </button>
+                <button type="button" data-mins="15" data-label="Coffee &amp; reset" class="break-option w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between gap-2 hover:bg-light-secondary-container/40 transition-colors">
+                  <span class="inline-flex items-center gap-2 font-body text-body-md text-light-on-surface">
+                    <span class="material-symbols-outlined text-[16px] text-light-primary" aria-hidden="true">coffee</span>
+                    <span>15 min</span>
+                  </span>
+                  <span class="font-body text-label-sm text-light-on-surface-variant">Coffee</span>
+                </button>
+                <button type="button" data-mins="45" data-label="Lunch break" class="break-option w-full text-left px-2.5 py-1.5 rounded flex items-center justify-between gap-2 hover:bg-warning-container/40 transition-colors">
+                  <span class="inline-flex items-center gap-2 font-body text-body-md text-light-on-surface">
+                    <span class="material-symbols-outlined text-[16px] text-warning" aria-hidden="true">restaurant</span>
+                    <span>45 min</span>
+                  </span>
+                  <span class="font-body text-label-sm text-light-on-surface-variant">Lunch</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6.2 Current Patient (Exactly One) -->
+        <section id="in-chair-card" aria-label="Current patient in chair" class="shrink-0 bg-light-primary-container text-light-on-primary rounded-md px-gutter-lg py-4 flex flex-wrap items-center justify-between gap-gutter-md shadow-[0_14px_30px_-8px_rgba(5,77,97,0.45),inset_0_1px_0_rgba(255,255,255,0.22)]">
+          <div class="flex flex-col gap-1.5">
+            <div class="flex flex-wrap items-center gap-gutter-sm">
+              <span class="font-label text-label-sm uppercase tracking-wider text-light-on-primary-container" data-design-text-token="label-sm">In chair now</span>
+              <span id="in-chair-pno" class="px-2.5 py-0.5 rounded bg-light-surface-container-lowest/15 border border-light-on-primary/20 font-mono text-mono-sm text-light-on-primary tabular-nums" data-design-text-token="mono-sm">P-000405</span>
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-light-error-container text-light-on-error-container font-label text-label-sm" data-design-text-token="label-sm">
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">warning</span>
+                Penicillin allergy
+              </span>
+            </div>
+            <h2 id="in-chair-name" class="font-headline text-headline-md text-light-on-primary" data-design-text-token="headline-md">Karan Yadav</h2>
+            <p id="in-chair-meta" class="font-body text-body-md text-light-on-primary-container tabular-nums" data-design-text-token="body-md">Consultation · In chair since 10:32 AM</p>
+          </div>
+
+          <div class="flex items-center gap-gutter-sm">
+            <a href="../doctor-visit/DoctorVisit.html" class="whitespace-nowrap py-2.5 px-5 rounded bg-light-surface-container-lowest text-light-primary font-label text-label-lg shadow-[0_4px_10px_rgba(0,0,0,0.18)] hover:bg-light-surface-container-low">
+              <span data-design-text-token="label-lg">Open visit</span>
+            </a>
+            <button type="button" class="whitespace-nowrap py-2.5 px-4 rounded border border-light-on-primary/35 bg-light-primary text-light-on-primary font-label text-label-lg hover:bg-light-primary/80">
+              <span data-design-text-token="label-lg">Done</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Primary Flex Layout: Today's List + Collapsible Waiting For You -->
+        <div class="flex flex-col lg:flex-row gap-gutter-md items-start">
+
+          <!-- 6.3 Today's List (One Scrollable List, Expands smoothly when Waiting panel minimizes) -->
+          <section id="todays-list-section" class="w-full lg:flex-1 min-w-0 bg-light-surface-container-lowest border border-light-outline-variant rounded-md shadow-[0_4px_14px_-2px_rgba(25,28,29,0.06)]">
+            <header class="px-gutter-lg py-3 border-b border-light-outline-variant flex flex-wrap items-center justify-between gap-gutter-sm">
+              <div class="flex items-center gap-gutter-sm">
+                <h2 class="font-headline text-title-lg text-light-on-surface" data-design-text-token="title-lg">Today&#39;s list</h2>
+                <span class="px-2.5 py-0.5 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-md tabular-nums" data-design-text-token="label-md">6 patients</span>
+              </div>
+              <div class="flex items-center gap-gutter-sm">
+                <span class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Order updated by Priya at 10:48 AM</span>
+                <button id="restore-waiting-btn" type="button" onclick="toggleWaitingPanel(false)" class="restore-pill is-hidden whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-light-outline-variant bg-light-surface-container-low text-light-on-surface font-label text-label-md hover:bg-light-surface-container">
+                  <span class="material-symbols-outlined text-[16px] text-light-primary shrink-0" aria-hidden="true">left_panel_open</span>
+                  <span>Waiting for you</span>
+                  <span id="restore-waiting-count" class="px-1.5 py-0.5 rounded-full bg-light-error text-light-on-error font-label text-label-sm tabular-nums leading-none shrink-0">4</span>
+                </button>
+              </div>
+            </header>
+
+            <!-- Subtle Column Header -->
+            <div class="hidden sm:flex items-center justify-between px-gutter-lg py-2 bg-light-surface-container-low/60 border-b border-light-outline-variant/70 font-label text-label-sm uppercase tracking-wider text-light-on-surface-variant">
+              <div class="flex items-center gap-gutter-md flex-1 min-w-0">
+                <span class="w-20 shrink-0">Time</span>
+                <span>Patient &amp; Visit</span>
+              </div>
+              <div class="flex items-center gap-gutter-sm shrink-0">
+                <span class="w-[128px] text-center">Status</span>
+                <span class="w-[112px] text-right">Action</span>
+              </div>
+            </div>
+
+            <ul id="todays-list" class="divide-y divide-light-outline-variant/70 max-h-[460px] overflow-y-auto auto-scroll-list">
+
+              <!-- 1. Waiting (Earliest arrival first) — NEXT marker -->
+              <li class="list-row px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md bg-light-secondary-container/20 hover:bg-light-secondary-container/35 transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">11:00 AM</span>
+                    <span class="font-label text-label-sm text-warning" data-design-text-token="label-sm">Exp 11:20</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Rahul Sharma</span>
+                      <span class="px-2 py-0.5 rounded-full bg-light-primary text-light-on-primary font-label text-label-sm" data-design-text-token="label-sm">Next</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="whitespace-nowrap shrink-0 font-mono text-mono-sm text-light-on-surface-variant/90 tabular-nums" data-design-text-token="mono-sm">P-000412</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Braces fitting · Bringing X-ray report</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-warning-container text-on-warning-container font-label text-label-md tabular-nums" data-design-text-token="label-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-warning" aria-hidden="true"></span>
+                    Waiting 12 min
+                  </span>
+                  <button type="button" onclick="startPatientVisit(this)" class="whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded bg-light-primary text-light-on-primary font-label text-label-md hover:bg-light-primary-container">
+                    <span data-design-text-token="label-md">Start</span>
+                  </button>
+                  <button type="button" onclick="openRowMenu(this)" aria-label="More actions for Rahul Sharma" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">more_horiz</span>
+                  </button>
+                </div>
+              </li>
+
+              <!-- 2. Waiting -->
+              <li class="list-row px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md hover:bg-light-surface-container-low transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">11:45 AM</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Neha Gupta</span>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="whitespace-nowrap shrink-0 font-mono text-mono-sm text-light-on-surface-variant/90 tabular-nums" data-design-text-token="mono-sm">P-000414</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Follow-up · 15 min</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-warning-container text-on-warning-container font-label text-label-md tabular-nums" data-design-text-token="label-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-warning" aria-hidden="true"></span>
+                    Waiting 4 min
+                  </span>
+                  <button type="button" onclick="startPatientVisit(this)" class="whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">
+                    <span data-design-text-token="label-md">Start</span>
+                  </button>
+                  <button type="button" onclick="openRowMenu(this)" aria-label="More actions for Neha Gupta" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">more_horiz</span>
+                  </button>
+                </div>
+              </li>
+
+              <!-- 3. Not arrived (with medical alert) -->
+              <li class="list-row px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md hover:bg-light-surface-container-low transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">12:00 PM</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Mohd. Arif</span>
+                      <span class="px-2 py-0.5 rounded-full bg-light-error-container text-light-on-error-container font-label text-label-sm" data-design-text-token="label-sm">Asthma</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="whitespace-nowrap shrink-0 font-mono text-mono-sm text-light-on-surface-variant/90 tabular-nums" data-design-text-token="mono-sm">P-000410</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Retainer check · Pain, emergency</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-md" data-design-text-token="label-md">
+                    Not arrived
+                  </span>
+                  <button type="button" onclick="startPatientVisit(this)" class="whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">
+                    <span data-design-text-token="label-md">Start</span>
+                  </button>
+                  <button type="button" onclick="openRowMenu(this)" aria-label="More actions for Mohd. Arif" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">more_horiz</span>
+                  </button>
+                </div>
+              </li>
+
+              <!-- Lunch Break Divider -->
+              <li id="lunch-divider" class="lunch-divider relative overflow-hidden px-gutter-lg py-2.5 bg-gradient-to-r from-warning-container/45 via-warning-container/20 to-warning-container/45 border-y border-dashed border-warning/45 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-gutter-md min-w-0">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-on-warning-container">1:00 PM</span>
+                    <span class="font-label text-label-sm text-on-warning-container/75">Midday</span>
+                  </div>
+                  <div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-light-surface-container-lowest/90 border border-warning/35 shadow-sm shrink-0">
+                    <span class="w-5 h-5 rounded-full bg-warning-container text-on-warning-container flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-[13px]" aria-hidden="true">restaurant</span>
+                    </span>
+                    <span class="font-title text-title-md text-light-on-surface">Lunch break</span>
+                    <span class="text-warning/60" aria-hidden="true">·</span>
+                    <span class="font-label text-label-sm text-on-warning-container tabular-nums">1:00–1:45 PM</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 font-label text-label-sm tabular-nums shrink-0">
+                  <span id="before-lunch-count" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-light-surface-container-lowest border border-warning/30 text-light-on-surface">
+                    <span class="material-symbols-outlined text-[12px] text-warning" aria-hidden="true">wb_sunny</span>
+                    <span>3 before lunch</span>
+                  </span>
+                  <span id="after-lunch-count" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-light-surface-container-lowest border border-light-outline-variant text-light-on-surface-variant">
+                    <span class="material-symbols-outlined text-[12px] text-light-on-surface-variant" aria-hidden="true">wb_twilight</span>
+                    <span>3 after lunch</span>
+                  </span>
+                </div>
+              </li>
+
+              <!-- 4. Stepped out -->
+              <li class="list-row px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md hover:bg-light-surface-container-low transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">10:45 AM</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Pooja Mishra</span>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="whitespace-nowrap shrink-0 font-mono text-mono-sm text-light-on-surface-variant/90 tabular-nums" data-design-text-token="mono-sm">P-000415</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Ortho adjustment · Went to pharmacy</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-md" data-design-text-token="label-md">
+                    Stepped out
+                  </span>
+                  <button type="button" onclick="startPatientVisit(this)" class="whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">
+                    <span data-design-text-token="label-md">Back</span>
+                  </button>
+                  <button type="button" onclick="openRowMenu(this)" aria-label="More actions for Pooja Mishra" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low">
+                    <span class="material-symbols-outlined text-[18px]" aria-hidden="true">more_horiz</span>
+                  </button>
+                </div>
+              </li>
+
+              <!-- 5. Late (with 3-dots menu open cleanly at bottom-right so all rows stay unobstructed) -->
+              <li data-status="late" class="list-row relative px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">10:15 AM</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Vikram Kapoor</span>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="whitespace-nowrap shrink-0 font-mono text-mono-sm text-light-on-surface-variant/90 tabular-nums" data-design-text-token="mono-sm">P-000312</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Scaling · Arrived 25 min after slot</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-error-container text-light-on-error-container font-label text-label-md" data-design-text-token="label-md">
+                    Late
+                  </span>
+                  <button type="button" id="late-dialog-trigger" onclick="startPatientVisit(this)" class="whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">
+                    <span data-design-text-token="label-md">Start</span>
+                  </button>
+                  <div class="relative">
+                    <button type="button" onclick="toggleInlineMenu()" aria-expanded="false" aria-label="More actions for Vikram Kapoor" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low">
+                      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">more_horiz</span>
+                    </button>
+                    <!-- 3-Dots Dropdown Menu (opens upward on bottom row so it never clips) -->
+                    <div id="inline-row-menu" role="menu" aria-label="Row actions" class="menu-animate menu-up absolute right-0 bottom-10 z-30 w-56 rounded-md bg-light-surface-container-lowest border border-light-outline-variant shadow-[0_14px_30px_-6px_rgba(25,28,29,0.2)] py-1.5">
+                      <button type="button" role="menuitem" onclick="pullForwardRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+                        <span class="material-symbols-outlined text-[18px] text-light-primary" aria-hidden="true">arrow_upward</span>
+                        <span>Pull forward (see next)</span>
+                      </button>
+                      <button type="button" role="menuitem" onclick="skipRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+                        <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">directions_walk</span>
+                        <span>Skip (stepped out)</span>
+                      </button>
+                      <button type="button" role="menuitem" onclick="openLateDialog()" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+                        <span class="material-symbols-outlined text-[18px] text-warning" aria-hidden="true">schedule</span>
+                        <span>Late arrived</span>
+                      </button>
+                      <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+                        <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">person_off</span>
+                        <span>Missed</span>
+                      </button>
+                      <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+                        <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">event_repeat</span>
+                        <span>Reschedule</span>
+                      </button>
+                      <div class="my-1 border-t border-light-outline-variant"></div>
+                      <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-error hover:bg-light-error-container/30">
+                        <span class="material-symbols-outlined text-[18px] text-light-error" aria-hidden="true">cancel</span>
+                        <span>Cancel appointment</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <!-- 6. Done (at bottom) -->
+              <li data-status="done" class="list-row px-gutter-lg py-3 flex flex-wrap sm:flex-nowrap items-center justify-between gap-gutter-md transition-colors duration-state-change">
+                <a href="../doctor-visit/DoctorVisit.html" class="flex items-center gap-gutter-md min-w-0 flex-1">
+                  <div class="w-20 shrink-0 flex flex-col tabular-nums">
+                    <span class="font-title text-title-md text-light-on-surface-variant" data-design-text-token="title-md">10:00 AM</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <span class="font-title text-title-md text-light-on-surface-variant" data-design-text-token="title-md">Meena Joshi</span>
+                    <div class="flex items-center gap-1.5 font-body text-body-sm text-light-on-surface-variant">
+                      <span class="font-mono text-mono-sm text-light-on-surface-variant/80 tabular-nums" data-design-text-token="mono-sm">P-000389</span>
+                      <span aria-hidden="true">·</span>
+                      <span>Braces adjustment · 20 min</span>
+                    </div>
+                  </div>
+                </a>
+                <div class="flex items-center gap-gutter-sm shrink-0">
+                  <span class="whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-success-container text-on-success-container font-label text-label-md" data-design-text-token="label-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-success" aria-hidden="true"></span>
+                    Done
+                  </span>
+                  <span class="w-[72px]" aria-hidden="true"></span>
+                  <span class="w-8" aria-hidden="true"></span>
+                </div>
+              </li>
+
+            </ul>
+          </section>
+
+          <!-- 6.4 "Waiting for you" Panel -->
+          <aside id="waiting-panel" class="waiting-panel-shell shrink-0 bg-light-surface-container-lowest border border-light-outline-variant rounded-md overflow-hidden shadow-[0_4px_14px_-2px_rgba(25,28,29,0.06)]">
+            <div class="w-full lg:w-[340px]">
+              <header class="px-gutter-lg py-3 border-b border-light-outline-variant flex items-center justify-between gap-gutter-sm">
+                <div class="flex items-center gap-gutter-sm">
+                  <h2 class="font-headline text-title-lg text-light-on-surface" data-design-text-token="title-lg">Waiting for you</h2>
+                  <span id="waiting-count-badge" class="px-2.5 py-0.5 rounded-full bg-light-error text-light-on-error font-label text-label-md tabular-nums" data-design-text-token="label-md">4</span>
+                </div>
+                <button id="minimize-waiting-btn" type="button" onclick="toggleWaitingPanel(true)" title="Minimize Waiting for you" aria-label="Minimize Waiting for you" class="inline-flex items-center justify-center w-8 h-8 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant hover:bg-light-surface-container-low hover:text-light-on-surface shrink-0">
+                  <span class="material-symbols-outlined text-[18px]" aria-hidden="true">close_fullscreen</span>
+                </button>
+              </header>
+
+              <ul id="waiting-list" class="divide-y divide-light-outline-variant max-h-[460px] overflow-y-auto auto-scroll-list">
+                <!-- 1. Urgent Request -->
+                <li class="waiting-item p-gutter-md bg-light-error-container/15 flex flex-col gap-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded-full bg-light-error-container text-light-on-error-container font-label text-label-sm" data-design-text-token="label-sm">Urgent request</span>
+                      <span class="px-1.5 py-0.5 rounded-full bg-info-container text-on-info-container font-label text-label-sm">New</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <span class="font-label text-label-sm text-light-on-surface-variant tabular-nums">10:50 AM</span>
+                      <button type="button" onclick="resolveWaitingItem(this)" aria-label="Dismiss request" title="Dismiss" class="w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Imran Khan</span>
+                      <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums" data-design-text-token="mono-sm">P-000419</span>
+                    </div>
+                    <p class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Emergency insert at 3:00 PM · Requested by Priya</p>
+                  </div>
+                  <div class="flex items-center gap-1.5 pt-0.5">
+                    <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded bg-light-primary text-light-on-primary font-label text-label-md hover:bg-light-primary-container">Yes</button>
+                    <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">No</button>
+                    <button type="button" onclick="toggleWaitingNote(this)" aria-expanded="false" class="py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant font-label text-label-md hover:bg-light-surface-container-low inline-flex items-center gap-1 shrink-0">
+                      <span class="material-symbols-outlined text-[15px]" aria-hidden="true">edit_note</span>
+                      <span>Note</span>
+                    </button>
+                  </div>
+                  <div class="waiting-note-drawer">
+                    <div class="flex items-center gap-1.5 pt-1">
+                      <input type="text" oninput="toggleNoteSubmit(this)" aria-label="Note for Priya" placeholder="Add a note for Priya..." class="flex-1 min-w-0 px-2.5 py-1 rounded border border-light-outline-variant bg-light-surface-container-lowest font-body text-body-sm text-light-on-surface placeholder:text-light-outline focus:outline-none focus:ring-2 focus:ring-info">
+                      <button type="button" onclick="resolveWaitingItem(this)" class="note-submit-btn shrink-0 py-1 rounded bg-light-primary text-light-on-primary font-label text-label-sm whitespace-nowrap hover:bg-light-primary-container">Submit</button>
+                    </div>
+                  </div>
+                </li>
+
+                <!-- 2. Discount Approval -->
+                <li class="waiting-item p-gutter-md flex flex-col gap-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2 py-0.5 rounded-full bg-warning-container text-on-warning-container font-label text-label-sm" data-design-text-token="label-sm">Discount approval</span>
+                    <div class="flex items-center gap-1">
+                      <span class="font-label text-label-sm text-light-on-surface-variant tabular-nums">₹200 off</span>
+                      <button type="button" onclick="resolveWaitingItem(this)" aria-label="Dismiss discount approval" title="Dismiss" class="w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Meena Joshi</span>
+                      <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums" data-design-text-token="mono-sm">P-000389</span>
+                    </div>
+                    <p class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Billing discount · Requested by Priya</p>
+                  </div>
+                  <div class="flex items-center gap-1.5 pt-0.5">
+                    <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded bg-light-primary text-light-on-primary font-label text-label-md hover:bg-light-primary-container">Approve</button>
+                    <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">Reject</button>
+                    <button type="button" onclick="toggleWaitingNote(this)" aria-expanded="false" class="py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant font-label text-label-md hover:bg-light-surface-container-low inline-flex items-center gap-1 shrink-0">
+                      <span class="material-symbols-outlined text-[15px]" aria-hidden="true">edit_note</span>
+                      <span>Note</span>
+                    </button>
+                  </div>
+                  <div class="waiting-note-drawer">
+                    <div class="flex items-center gap-1.5 pt-1">
+                      <input type="text" oninput="toggleNoteSubmit(this)" aria-label="Note for discount" placeholder="Add a note (optional)..." class="flex-1 min-w-0 px-2.5 py-1 rounded border border-light-outline-variant bg-light-surface-container-lowest font-body text-body-sm text-light-on-surface placeholder:text-light-outline focus:outline-none focus:ring-2 focus:ring-info">
+                      <button type="button" onclick="resolveWaitingItem(this)" class="note-submit-btn shrink-0 py-1 rounded bg-light-primary text-light-on-primary font-label text-label-sm whitespace-nowrap hover:bg-light-primary-container">Submit</button>
+                    </div>
+                  </div>
+                </li>
+
+                <!-- 3. Prescription Not Issued -->
+                <li class="waiting-item p-gutter-md flex flex-col gap-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2 py-0.5 rounded-full bg-info-container text-on-info-container font-label text-label-sm" data-design-text-token="label-sm">Prescription</span>
+                    <div class="flex items-center gap-1">
+                      <span class="font-label text-label-sm text-light-on-surface-variant">Today</span>
+                      <button type="button" onclick="resolveWaitingItem(this)" aria-label="Dismiss prescription reminder" title="Dismiss" class="w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">Karan Yadav</span>
+                      <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums" data-design-text-token="mono-sm">P-000405</span>
+                    </div>
+                    <p class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Prescription written, pending issue</p>
+                  </div>
+                  <div class="flex items-center pt-0.5">
+                    <a href="../doctor-visit/DoctorVisit.html" class="w-full text-center py-1.5 px-3 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">Issue prescription</a>
+                  </div>
+                </li>
+
+                <!-- 4. Unfinished Visit Draft -->
+                <li class="waiting-item p-gutter-md flex flex-col gap-2">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2 py-0.5 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-sm" data-design-text-token="label-sm">Visit draft</span>
+                    <div class="flex items-center gap-1">
+                      <span class="font-label text-label-sm text-light-on-surface-variant">Draft</span>
+                      <button type="button" onclick="resolveWaitingItem(this)" aria-label="Dismiss draft reminder" title="Dismiss" class="w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="font-title text-title-md text-light-on-surface" data-design-text-token="title-md">R. Kulkarni</span>
+                      <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums" data-design-text-token="mono-sm">P-000378</span>
+                    </div>
+                    <p class="font-body text-body-sm text-light-on-surface-variant" data-design-text-token="body-sm">Visit notes drafted, not signed</p>
+                  </div>
+                  <div class="flex items-center pt-0.5">
+                    <a href="../doctor-visit/DoctorVisit.html" class="w-full text-center py-1.5 px-3 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">Finish draft</a>
+                  </div>
+                </li>
+              </ul>
+
+              <!-- Empty State when all decisions are cleared -->
+              <div id="waiting-empty-state" class="hidden p-gutter-lg text-center flex flex-col items-center gap-gutter-sm">
+                <span class="material-symbols-outlined text-[28px] text-success" aria-hidden="true">task_alt</span>
+                <p class="font-title text-title-md text-light-on-surface">All caught up</p>
+                <p class="font-body text-body-sm text-light-on-surface-variant">New requests from Priya will slide in here.</p>
+                <button type="button" onclick="simulateIncomingRequest()" class="mt-1 px-3 py-1.5 rounded border border-light-outline-variant bg-light-surface-container-low text-light-on-surface font-label text-label-sm hover:bg-light-surface-container">Simulate new request</button>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Row Secondary Menu Popover -->
+  <div id="row-menu-popover" role="menu" aria-label="Row actions" class="menu-animate menu-down fixed z-40 w-56 rounded-md bg-light-surface-container-lowest border border-light-outline-variant shadow-[0_14px_30px_-6px_rgba(25,28,29,0.2)] py-1.5">
+    <button id="row-menu-pull-btn" type="button" role="menuitem" onclick="pullForwardRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+      <span class="material-symbols-outlined text-[18px] text-light-primary" aria-hidden="true">arrow_upward</span>
+      <span>Pull forward (see next)</span>
+    </button>
+    <button type="button" role="menuitem" onclick="skipRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+      <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">directions_walk</span>
+      <span>Skip (stepped out)</span>
+    </button>
+    <button type="button" role="menuitem" onclick="openLateDialog()" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+      <span class="material-symbols-outlined text-[18px] text-warning" aria-hidden="true">schedule</span>
+      <span>Late arrived</span>
+    </button>
+    <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+      <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">person_off</span>
+      <span>Missed</span>
+    </button>
+    <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-on-surface hover:bg-light-surface-container-low">
+      <span class="material-symbols-outlined text-[18px] text-light-on-surface-variant" aria-hidden="true">event_repeat</span>
+      <span>Reschedule</span>
+    </button>
+    <div class="my-1 border-t border-light-outline-variant"></div>
+    <button type="button" role="menuitem" onclick="cancelRow(this)" class="w-full text-left px-3.5 py-2 flex items-center gap-2.5 font-body text-body-md text-light-error hover:bg-light-error-container/30">
+      <span class="material-symbols-outlined text-[18px] text-light-error" aria-hidden="true">cancel</span>
+      <span>Cancel appointment</span>
+    </button>
+  </div>
+
+  <!-- Late-Patient Dialog -->
+  <div id="late-dialog" class="hidden fixed inset-0 z-50 bg-light-on-surface/40 backdrop-blur-sm flex items-center justify-center p-gutter-md">
+    <div role="dialog" aria-modal="true" aria-labelledby="late-dialog-title" class="w-full max-w-md bg-light-surface-container-lowest border border-light-outline-variant rounded-md p-gutter-lg shadow-xl flex flex-col gap-gutter-md">
+      <div class="flex items-start justify-between">
+        <div>
+          <h2 id="late-dialog-title" class="font-headline text-headline-md text-light-on-surface">Late patient · Vikram Kapoor</h2>
+          <span class="font-mono text-mono-sm text-light-on-surface-variant">P-000312 · Slot 10:15 AM</span>
+        </div>
+        <button type="button" onclick="closeLateDialog()" aria-label="Close dialog" class="p-1 rounded hover:bg-light-surface-container-low">
+          <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <p class="font-body text-body-md text-light-on-surface-variant">Same appointment is reused (no new charge). Choose the outcome:</p>
+      <div class="flex flex-col gap-gutter-sm">
+        <button type="button" onclick="closeLateDialog()" class="w-full py-2.5 px-4 rounded bg-light-primary text-light-on-primary font-label text-label-lg hover:bg-light-primary-container">Coming today (move back in queue)</button>
+        <button type="button" onclick="closeLateDialog()" class="w-full py-2.5 px-4 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-lg hover:bg-light-surface-container-low">Another day (reschedule)</button>
+        <button type="button" onclick="closeLateDialog()" class="w-full py-2.5 px-4 rounded border border-light-error/30 bg-light-error-container/40 text-light-on-error-container font-label text-label-lg hover:bg-light-error-container">Not coming (cancel)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Confirmation Dialog (Pull forward / Out-of-order Start) -->
+  <div id="confirm-action-dialog" class="hidden fixed inset-0 z-50 bg-light-on-surface/40 backdrop-blur-sm flex items-center justify-center p-gutter-md" onclick="if (event.target === this) closeConfirmDialog()">
+    <div role="dialog" aria-modal="true" aria-labelledby="confirm-title" class="w-full max-w-md bg-light-surface-container-lowest border border-light-outline-variant rounded-md p-gutter-lg shadow-xl flex flex-col gap-gutter-md">
+      <div class="flex items-start justify-between gap-gutter-sm">
+        <div class="flex flex-col gap-0.5">
+          <h2 id="confirm-title" class="font-headline text-headline-md text-light-on-surface">Confirm action</h2>
+          <span id="confirm-subtitle" class="font-mono text-mono-sm text-light-on-surface-variant">Patient</span>
+        </div>
+        <button type="button" onclick="closeConfirmDialog()" aria-label="Close confirmation" class="p-1 rounded hover:bg-light-surface-container-low">
+          <span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <p id="confirm-message" class="font-body text-body-md text-light-on-surface-variant">Are you sure you want to proceed?</p>
+      <div class="flex items-center justify-end gap-gutter-sm pt-1">
+        <button type="button" id="confirm-cancel-btn" onclick="closeConfirmDialog()" class="px-4 py-2 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-lg hover:bg-light-surface-container-low">Cancel</button>
+        <button type="button" id="confirm-proceed-btn" class="px-4 py-2 rounded bg-light-primary text-light-on-primary font-label text-label-lg hover:bg-light-primary-container">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const breakBtn = document.getElementById('break-menu-btn');
+    const breakMenu = document.getElementById('break-menu');
+    const breakBanner = document.getElementById('break-banner');
+    const backBtn = document.getElementById('back-to-work-btn');
+    const statePill = document.getElementById('doctor-state-pill');
+    const rowMenu = document.getElementById('row-menu-popover');
+    const lateDialog = document.getElementById('late-dialog');
+    const confirmDialog = document.getElementById('confirm-action-dialog');
+    const confirmTitle = document.getElementById('confirm-title');
+    const confirmSubtitle = document.getElementById('confirm-subtitle');
+    const confirmMessage = document.getElementById('confirm-message');
+    const confirmProceedBtn = document.getElementById('confirm-proceed-btn');
+    let activeMenuBtn = null;
+    let pendingConfirmAction = null;
+
+    const breakCountdownEl = document.getElementById('break-countdown');
+    const breakTotalTimeEl = document.getElementById('break-total-time');
+    const breakProgressBar = document.getElementById('break-progress-bar');
+    const breakLabelPill = document.getElementById('break-label-pill');
+    let breakTimerId = null;
+    let breakTotalSeconds = 0;
+    let breakRemainingSeconds = 0;
+    let breakCurrentMinutes = 0;
+    let breakCurrentLabel = 'Break';
+
+    function formatBreakTime(totalSeconds) {
+      const m = Math.floor(totalSeconds / 60);
+      const s = totalSeconds % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function tickBreakCountdown() {
+      breakRemainingSeconds = Math.max(0, breakRemainingSeconds - 1);
+      if (breakCountdownEl) breakCountdownEl.textContent = formatBreakTime(breakRemainingSeconds);
+      if (breakProgressBar && breakTotalSeconds > 0) {
+        const pct = Math.max(0, (breakRemainingSeconds / breakTotalSeconds) * 100);
+        breakProgressBar.style.width = `${pct}%`;
+      }
+      if (breakRemainingSeconds === 0 && breakTimerId) {
+        clearInterval(breakTimerId);
+        breakTimerId = null;
+      }
+    }
+
+    function startBreakCountdown(minutes, label) {
+      if (breakTimerId) clearInterval(breakTimerId);
+      breakCurrentMinutes = minutes;
+      breakCurrentLabel = label || 'Break';
+      breakTotalSeconds = minutes * 60;
+      breakRemainingSeconds = breakTotalSeconds;
+
+      if (breakLabelPill) breakLabelPill.textContent = `${breakCurrentMinutes} min · ${breakCurrentLabel}`;
+      if (breakCountdownEl) breakCountdownEl.textContent = formatBreakTime(breakRemainingSeconds);
+      if (breakTotalTimeEl) breakTotalTimeEl.textContent = formatBreakTime(breakTotalSeconds);
+      if (breakProgressBar) breakProgressBar.style.width = '100%';
+
+      breakBanner.classList.add('is-active');
+      statePill.innerHTML = '<span class="w-2 h-2 rounded-full bg-warning" aria-hidden="true"></span>On break';
+      statePill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-warning-container text-on-warning-container font-label text-label-md';
+
+      breakTimerId = setInterval(tickBreakCountdown, 1000);
+    }
+
+    window.extendBreak = function (mins) {
+      const addMins = parseInt(mins || 5, 10);
+      const addSecs = addMins * 60;
+      breakCurrentMinutes += addMins;
+      breakTotalSeconds += addSecs;
+      breakRemainingSeconds += addSecs;
+
+      if (breakLabelPill) breakLabelPill.textContent = `${breakCurrentMinutes} min · ${breakCurrentLabel}`;
+      if (breakCountdownEl) breakCountdownEl.textContent = formatBreakTime(breakRemainingSeconds);
+      if (breakTotalTimeEl) breakTotalTimeEl.textContent = formatBreakTime(breakTotalSeconds);
+      if (breakProgressBar && breakTotalSeconds > 0) {
+        const pct = Math.min(100, Math.max(0, (breakRemainingSeconds / breakTotalSeconds) * 100));
+        breakProgressBar.style.width = `${pct}%`;
+      }
+      if (!breakTimerId && breakRemainingSeconds > 0) {
+        breakTimerId = setInterval(tickBreakCountdown, 1000);
+      }
+    };
+
+    breakBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const willOpen = !breakMenu.classList.contains('is-open');
+      breakMenu.classList.toggle('is-open', willOpen);
+      breakBtn.setAttribute('aria-expanded', String(willOpen));
+    });
+
+    document.querySelectorAll('.break-option').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        const mins = parseInt(opt.getAttribute('data-mins') || '15', 10);
+        const label = opt.getAttribute('data-label') || 'Break';
+        breakMenu.classList.remove('is-open');
+        breakBtn.setAttribute('aria-expanded', 'false');
+        startBreakCountdown(mins, label);
+      });
+    });
+
+    backBtn.addEventListener('click', () => {
+      if (breakTimerId) {
+        clearInterval(breakTimerId);
+        breakTimerId = null;
+      }
+      breakBanner.classList.remove('is-active');
+      statePill.innerHTML = '<span class="w-2 h-2 rounded-full bg-info" aria-hidden="true"></span>Visit in progress';
+      statePill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-info-container text-on-info-container font-label text-label-md';
+    });
+
+    window.toggleWaitingPanel = function (minimize) {
+      const panel = document.getElementById('waiting-panel');
+      const listSection = document.getElementById('todays-list-section');
+      const restoreBtn = document.getElementById('restore-waiting-btn');
+      if (!panel || !restoreBtn) return;
+      panel.classList.add('is-animating');
+      if (listSection) listSection.classList.add('is-animating');
+      if (minimize) {
+        panel.classList.add('is-minimized');
+        panel.setAttribute('aria-hidden', 'true');
+        restoreBtn.classList.remove('is-hidden');
+      } else {
+        panel.classList.remove('is-minimized');
+        panel.removeAttribute('aria-hidden');
+        restoreBtn.classList.add('is-hidden');
+      }
+    };
+
+    window.toggleWaitingNote = function (btn) {
+      const item = btn.closest('li.waiting-item');
+      if (!item) return;
+      const drawer = item.querySelector('.waiting-note-drawer');
+      if (!drawer) return;
+      const willOpen = !drawer.classList.contains('is-open');
+      drawer.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', String(willOpen));
+      btn.classList.toggle('bg-light-secondary-container', willOpen);
+      btn.classList.toggle('text-light-primary', willOpen);
+      btn.classList.toggle('border-light-primary/35', willOpen);
+      if (willOpen) {
+        const input = drawer.querySelector('input');
+        if (input) setTimeout(() => input.focus(), 120);
+      }
+    };
+
+    window.toggleNoteSubmit = function (input) {
+      const submitBtn = input.parentElement && input.parentElement.querySelector('.note-submit-btn');
+      if (!submitBtn) return;
+      if (input.value.trim().length > 0) {
+        submitBtn.classList.add('is-visible');
+      } else {
+        submitBtn.classList.remove('is-visible');
+      }
+    };
+
+    window.updateWaitingCount = function () {
+      const list = document.getElementById('waiting-list');
+      const badge = document.getElementById('waiting-count-badge');
+      const restoreBadge = document.getElementById('restore-waiting-count');
+      const emptyState = document.getElementById('waiting-empty-state');
+      if (!list) return;
+      const remaining = list.querySelectorAll('li.waiting-item:not(.is-removing)').length;
+      if (badge) badge.textContent = String(remaining);
+      if (restoreBadge) restoreBadge.textContent = String(remaining);
+      if (emptyState) {
+        if (remaining === 0) {
+          emptyState.classList.remove('hidden');
+        } else {
+          emptyState.classList.add('hidden');
+        }
+      }
+    };
+
+    window.resolveWaitingItem = function (btn) {
+      const item = btn.closest('li.waiting-item');
+      if (!item || item.classList.contains('is-removing')) return;
+      item.classList.add('is-removing');
+      updateWaitingCount();
+      setTimeout(() => {
+        item.remove();
+        updateWaitingCount();
+      }, 420);
+    };
+
+    window.simulateIncomingRequest = function () {
+      const list = document.getElementById('waiting-list');
+      if (!list) return;
+      const li = document.createElement('li');
+      li.className = 'waiting-item waiting-item-enter p-gutter-md bg-light-error-container/15 flex flex-col gap-2';
+      li.innerHTML = `
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-light-error-container text-light-on-error-container font-label text-label-sm">Urgent request</span>
+            <span class="px-1.5 py-0.5 rounded-full bg-info-container text-on-info-container font-label text-label-sm">New</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="font-label text-label-sm text-light-on-surface-variant tabular-nums">Just now</span>
+            <button type="button" onclick="resolveWaitingItem(this)" aria-label="Dismiss request" title="Dismiss" class="w-6 h-6 rounded-full text-light-on-surface-variant hover:bg-light-surface-container hover:text-light-on-surface inline-flex items-center justify-center">
+              <span class="material-symbols-outlined text-[15px]" aria-hidden="true">close</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-0.5">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-title text-title-md text-light-on-surface">Imran Khan</span>
+            <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums">P-000419</span>
+          </div>
+          <p class="font-body text-body-sm text-light-on-surface-variant">Emergency insert at 3:00 PM · Requested by Priya</p>
+        </div>
+        <div class="flex items-center gap-1.5 pt-0.5">
+          <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded bg-light-primary text-light-on-primary font-label text-label-md hover:bg-light-primary-container">Yes</button>
+          <button type="button" onclick="resolveWaitingItem(this)" class="flex-1 py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low">No</button>
+          <button type="button" onclick="toggleWaitingNote(this)" aria-expanded="false" class="py-1.5 px-2.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface-variant font-label text-label-md hover:bg-light-surface-container-low inline-flex items-center gap-1 shrink-0">
+            <span class="material-symbols-outlined text-[15px]" aria-hidden="true">edit_note</span>
+            <span>Note</span>
+          </button>
+        </div>
+        <div class="waiting-note-drawer">
+          <div class="flex items-center gap-1.5 pt-1">
+            <input type="text" oninput="toggleNoteSubmit(this)" aria-label="Note for Priya" placeholder="Add a note for Priya..." class="flex-1 min-w-0 px-2.5 py-1 rounded border border-light-outline-variant bg-light-surface-container-lowest font-body text-body-sm text-light-on-surface placeholder:text-light-outline focus:outline-none focus:ring-2 focus:ring-info">
+            <button type="button" onclick="resolveWaitingItem(this)" class="note-submit-btn shrink-0 py-1 rounded bg-light-primary text-light-on-primary font-label text-label-sm whitespace-nowrap hover:bg-light-primary-container">Submit</button>
+          </div>
+        </div>
+      `;
+      list.prepend(li);
+      updateWaitingCount();
+    };
+
+    window.toggleInlineMenu = function () {
+      const m = document.getElementById('inline-row-menu');
+      if (!m) return;
+      rowMenu.classList.remove('is-open');
+      m.classList.toggle('is-open');
+    };
+
+    window.openRowMenu = function (btn) {
+      const inlineMenu = document.getElementById('inline-row-menu');
+      if (inlineMenu) inlineMenu.classList.remove('is-open');
+
+      if (activeMenuBtn === btn && rowMenu.classList.contains('is-open')) {
+        rowMenu.classList.remove('is-open');
+        activeMenuBtn = null;
+        return;
+      }
+
+      const targetRow = btn.closest('li.list-row');
+      const pullBtn = document.getElementById('row-menu-pull-btn');
+      if (pullBtn && targetRow) {
+        const isFirst = !targetRow.previousElementSibling;
+        pullBtn.classList.toggle('hidden', isFirst);
+      }
+
+      const rect = btn.getBoundingClientRect();
+      const menuHeight = 272;
+      const openUp = rect.bottom + menuHeight > window.innerHeight;
+      rowMenu.classList.remove('menu-up', 'menu-down');
+      rowMenu.classList.add(openUp ? 'menu-up' : 'menu-down');
+      rowMenu.style.top = openUp
+        ? Math.max(16, rect.top - menuHeight - 6) + 'px'
+        : (rect.bottom + 6) + 'px';
+      rowMenu.style.left = Math.max(16, rect.right - 224) + 'px';
+
+      rowMenu.classList.remove('is-open');
+      void rowMenu.offsetWidth;
+      rowMenu.classList.add('is-open');
+      activeMenuBtn = btn;
+    };
+
+    function getTargetRow(triggerEl) {
+      const inlineRow = triggerEl.closest('li.list-row');
+      if (inlineRow) return inlineRow;
+      if (activeMenuBtn) return activeMenuBtn.closest('li.list-row');
+      return null;
+    }
+
+    function closeAllRowMenus() {
+      rowMenu.classList.remove('is-open');
+      const m = document.getElementById('inline-row-menu');
+      if (m) m.classList.remove('is-open');
+      activeMenuBtn = null;
+    }
+
+    function getPrevPatientRow(row) {
+      let prev = row ? row.previousElementSibling : null;
+      while (prev && !prev.classList.contains('list-row')) {
+        prev = prev.previousElementSibling;
+      }
+      return prev;
+    }
+
+    function getNextPatientRow(row) {
+      let next = row ? row.nextElementSibling : null;
+      while (next && !next.classList.contains('list-row')) {
+        next = next.nextElementSibling;
+      }
+      return next;
+    }
+
+    function updateLunchCounts() {
+      const list = document.getElementById('todays-list');
+      const beforeEl = document.getElementById('before-lunch-count');
+      const afterEl = document.getElementById('after-lunch-count');
+      if (!list || !beforeEl || !afterEl) return;
+      let before = 0;
+      let after = 0;
+      let seenLunch = false;
+      Array.from(list.children).forEach((el) => {
+        if (el.id === 'lunch-divider') {
+          seenLunch = true;
+          return;
+        }
+        if (el.classList.contains('list-row')) {
+          if (seenLunch) after++;
+          else before++;
+        }
+      });
+      const beforeLabel = beforeEl.querySelector('span:last-child') || beforeEl;
+      const afterLabel = afterEl.querySelector('span:last-child') || afterEl;
+      beforeLabel.textContent = `${before} before lunch`;
+      afterLabel.textContent = `${after} after lunch`;
+    }
+
+    function getRowDetails(row) {
+      const name = row.querySelector('span.font-title.text-title-md:not(.tabular-nums)')?.textContent?.trim() || 'Patient';
+      const pno = row.querySelector('span.font-mono')?.textContent?.trim() || 'P-000000';
+      const time = row.querySelector('span.font-title.text-title-md.tabular-nums, div.tabular-nums span:first-child')?.textContent?.trim() || '';
+      const visitText = row.querySelector('div.flex.items-center.gap-1\\.5 span:last-child')?.textContent?.trim() || 'Visit';
+      return { name, pno, time, visitText };
+    }
+
+    function isRowNext(row) {
+      return Array.from(row.querySelectorAll('span')).some((s) => s.textContent.trim() === 'Next');
+    }
+
+    function setRowAsNext(targetRow, list) {
+      Array.from(list.children).forEach((r) => {
+        r.classList.remove('bg-light-secondary-container/20');
+        const nextBadge = Array.from(r.querySelectorAll('span')).find((s) => s.textContent.trim() === 'Next');
+        if (nextBadge && r !== targetRow) {
+          nextBadge.remove();
+        }
+      });
+      targetRow.classList.add('bg-light-secondary-container/20');
+      if (!isRowNext(targetRow)) {
+        const nameSpan = targetRow.querySelector('span.font-title.text-title-md:not(.tabular-nums)');
+        if (nameSpan && nameSpan.parentElement) {
+          let rowWrap = nameSpan.parentElement;
+          if (!rowWrap.classList.contains('flex-wrap')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex items-center gap-2 flex-wrap';
+            rowWrap.insertBefore(wrapper, nameSpan);
+            wrapper.appendChild(nameSpan);
+            rowWrap = wrapper;
+          }
+          const badge = document.createElement('span');
+          badge.className = 'px-2 py-0.5 rounded-full bg-light-primary text-light-on-primary font-label text-label-sm';
+          badge.setAttribute('data-design-text-token', 'label-sm');
+          badge.textContent = 'Next';
+          rowWrap.appendChild(badge);
+        }
+      }
+    }
+
+    function openConfirmDialog({ title, subtitle, message, proceedLabel, onConfirm }) {
+      confirmTitle.textContent = title;
+      confirmSubtitle.textContent = subtitle;
+      confirmMessage.textContent = message;
+      confirmProceedBtn.textContent = proceedLabel;
+      pendingConfirmAction = onConfirm;
+      confirmDialog.classList.remove('hidden');
+    }
+
+    window.closeConfirmDialog = function () {
+      confirmDialog.classList.add('hidden');
+      pendingConfirmAction = null;
+    };
+
+    confirmProceedBtn.addEventListener('click', () => {
+      const action = pendingConfirmAction;
+      closeConfirmDialog();
+      if (typeof action === 'function') action();
+    });
+
+    function flipReorder(list, mutateDom) {
+      const rows = Array.from(list.children);
+      const firstTops = new Map(rows.map((r) => [r, r.getBoundingClientRect().top]));
+      mutateDom();
+      updateLunchCounts();
+      const updatedRows = Array.from(list.children);
+      updatedRows.forEach((r) => {
+        const prevTop = firstTops.get(r);
+        if (prevTop === undefined) return;
+        const deltaY = prevTop - r.getBoundingClientRect().top;
+        if (deltaY !== 0) {
+          r.style.transition = 'none';
+          r.style.transform = `translateY(${deltaY}px)`;
+        }
+      });
+      void list.offsetHeight;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          updatedRows.forEach((r) => {
+            r.style.transition = '';
+            r.style.transform = '';
+          });
+        });
+      });
+    }
+
+    function executePullForward(row, list) {
+      const prevRow = getPrevPatientRow(row);
+      if (!prevRow) return;
+
+      // Beat 1: Lift the row off the list
+      row.classList.add('is-lifted');
+      setTimeout(() => {
+        const prevTopBefore = prevRow.getBoundingClientRect().top;
+        const rowTopBefore = row.getBoundingClientRect().top;
+
+        // Swap one slot up
+        list.insertBefore(row, prevRow);
+        updateLunchCounts();
+        if (!getPrevPatientRow(row)) {
+          setRowAsNext(row, list);
+        }
+
+        const prevDelta = prevTopBefore - prevRow.getBoundingClientRect().top;
+        const rowDelta = rowTopBefore - row.getBoundingClientRect().top;
+
+        prevRow.style.transition = 'none';
+        prevRow.style.transform = `translateY(${prevDelta}px)`;
+        row.style.transition = 'none';
+        row.style.transform = `translateY(${rowDelta - 4}px) scale(1.022)`;
+        void list.offsetHeight;
+
+        // Beat 2: Upper row slides down while lifted row glides one slot up
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            prevRow.style.transition = 'transform 440ms cubic-bezier(0.22, 1, 0.36, 1)';
+            prevRow.style.transform = 'translateY(0)';
+            row.style.transition = 'transform 440ms cubic-bezier(0.22, 1, 0.36, 1)';
+            row.style.transform = 'translateY(-4px) scale(1.022)';
+          });
+        });
+
+        // Beat 3: Settle smoothly into its new slot
+        setTimeout(() => {
+          row.classList.remove('is-lifted');
+          row.style.transition = '';
+          row.style.transform = '';
+          prevRow.style.transition = '';
+          prevRow.style.transform = '';
+        }, 470);
+      }, 170);
+    }
+
+    window.pullForwardRow = function (btn) {
+      const row = getTargetRow(btn);
+      const list = document.getElementById('todays-list');
+      closeAllRowMenus();
+      const prevRow = getPrevPatientRow(row);
+      if (!row || !list || !prevRow) return;
+      const { name, pno, time } = getRowDetails(row);
+      const prevName = getRowDetails(prevRow).name;
+      openConfirmDialog({
+        title: `Move ${name} up one slot?`,
+        subtitle: `${pno}${time ? ' · ' + time : ''}`,
+        message: `${name} will move one position up ahead of ${prevName}.`,
+        proceedLabel: 'Pull forward',
+        onConfirm: () => executePullForward(row, list)
+      });
+    };
+
+    function getRightCol(row) {
+      return row ? row.querySelector(':scope > div.shrink-0') : null;
+    }
+
+    function executeSkipRow(row, list) {
+      const nextRow = getNextPatientRow(row);
+      const canSwapDown = nextRow && nextRow.getAttribute('data-status') !== 'done';
+      const wasNext = isRowNext(row);
+      const rightCol = getRightCol(row);
+      const statusPill = rightCol ? rightCol.querySelector(':scope > span') : null;
+      const actionBtn = rightCol ? rightCol.querySelector(':scope > button') : null;
+
+      if (!canSwapDown) {
+        row.classList.remove('bg-light-secondary-container/20');
+        if (statusPill) {
+          statusPill.className = 'whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-md';
+          statusPill.textContent = 'Stepped out';
+        }
+        if (actionBtn) {
+          actionBtn.className = 'whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low';
+          actionBtn.textContent = 'Back';
+        }
+        return;
+      }
+
+      row.classList.add('is-lifted');
+      setTimeout(() => {
+        const nextTopBefore = nextRow.getBoundingClientRect().top;
+        const rowTopBefore = row.getBoundingClientRect().top;
+
+        row.classList.remove('bg-light-secondary-container/20');
+        if (statusPill) {
+          statusPill.className = 'whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-surface-container text-light-on-surface-variant font-label text-label-md';
+          statusPill.textContent = 'Stepped out';
+        }
+        if (actionBtn) {
+          actionBtn.className = 'whitespace-nowrap inline-flex items-center justify-center w-[72px] py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-label-md hover:bg-light-surface-container-low';
+          actionBtn.textContent = 'Back';
+        }
+
+        // Move one position down (nextRow moves up, never below Done)
+        list.insertBefore(nextRow, row);
+        updateLunchCounts();
+        if (wasNext) {
+          setRowAsNext(nextRow, list);
+        }
+
+        const nextDelta = nextTopBefore - nextRow.getBoundingClientRect().top;
+        const rowDelta = rowTopBefore - row.getBoundingClientRect().top;
+
+        nextRow.style.transition = 'none';
+        nextRow.style.transform = `translateY(${nextDelta}px)`;
+        row.style.transition = 'none';
+        row.style.transform = `translateY(${rowDelta - 4}px) scale(1.022)`;
+        void list.offsetHeight;
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            nextRow.style.transition = 'transform 440ms cubic-bezier(0.22, 1, 0.36, 1)';
+            nextRow.style.transform = 'translateY(0)';
+            row.style.transition = 'transform 440ms cubic-bezier(0.22, 1, 0.36, 1)';
+            row.style.transform = 'translateY(-4px) scale(1.022)';
+          });
+        });
+
+        setTimeout(() => {
+          row.classList.remove('is-lifted');
+          row.style.transition = '';
+          row.style.transform = '';
+          nextRow.style.transition = '';
+          nextRow.style.transform = '';
+        }, 470);
+      }, 170);
+    }
+
+    window.skipRow = function (btn) {
+      const row = getTargetRow(btn);
+      const list = document.getElementById('todays-list');
+      closeAllRowMenus();
+      if (!row || !list || row.getAttribute('data-status') === 'done') return;
+      const { name, pno, time } = getRowDetails(row);
+      const nextRow = getNextPatientRow(row);
+      const canSwapDown = nextRow && nextRow.getAttribute('data-status') !== 'done';
+      const msg = canSwapDown
+        ? `${getRowDetails(nextRow).name} will move up one slot and ${name} will move one position down.`
+        : `${name} will be marked as Stepped out (above Done patients).`;
+      openConfirmDialog({
+        title: `Skip ${name}?`,
+        subtitle: `${pno}${time ? ' · ' + time : ''}`,
+        message: msg,
+        proceedLabel: 'Skip',
+        onConfirm: () => executeSkipRow(row, list)
+      });
+    };
+
+    window.cancelRow = function (btn) {
+      const row = getTargetRow(btn);
+      const list = document.getElementById('todays-list');
+      closeAllRowMenus();
+      if (!row || !list) return;
+      const wasNext = isRowNext(row);
+      const rightCol = getRightCol(row);
+      const statusPill = rightCol ? rightCol.querySelector(':scope > span') : null;
+      const actionBtn = rightCol ? rightCol.querySelector(':scope > button') : null;
+
+      flipReorder(list, () => {
+        row.setAttribute('data-status', 'cancelled');
+        row.classList.remove('bg-light-secondary-container/20');
+        row.classList.add('bg-light-error-container/15');
+        const nextBadge = Array.from(row.querySelectorAll('span')).find((s) => s.textContent.trim() === 'Next');
+        if (nextBadge) nextBadge.remove();
+
+        if (statusPill) {
+          statusPill.className = 'whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-light-error text-light-on-error font-label text-label-md';
+          statusPill.textContent = 'Cancelled';
+        }
+        if (actionBtn) {
+          actionBtn.disabled = true;
+          actionBtn.className = 'w-[72px] py-1.5 invisible pointer-events-none';
+          actionBtn.textContent = '—';
+        }
+
+        const firstDone = list.querySelector('li.list-row[data-status="done"]');
+        if (firstDone && firstDone !== row) {
+          list.insertBefore(row, firstDone);
+        } else {
+          list.appendChild(row);
+        }
+
+        if (wasNext && list.firstElementChild && list.firstElementChild !== row) {
+          setRowAsNext(list.firstElementChild, list);
+        }
+      });
+    };
+
+    function executeStartPatient(row) {
+      const list = document.getElementById('todays-list');
+      const card = document.getElementById('in-chair-card');
+      const nameEl = document.getElementById('in-chair-name');
+      const pnoEl = document.getElementById('in-chair-pno');
+      const metaEl = document.getElementById('in-chair-meta');
+      if (!row || !card || !nameEl || !pnoEl || !metaEl) return;
+
+      const { name, pno, visitText } = getRowDetails(row);
+      const cardRect = card.getBoundingClientRect();
+      const rowRect = row.getBoundingClientRect();
+
+      // Create morphing shared-element block from row -> In chair now card
+      const ghost = document.createElement('div');
+      ghost.style.position = 'fixed';
+      ghost.style.left = `${rowRect.left}px`;
+      ghost.style.top = `${rowRect.top}px`;
+      ghost.style.width = `${rowRect.width}px`;
+      ghost.style.height = `${rowRect.height}px`;
+      ghost.style.zIndex = '60';
+      ghost.style.borderRadius = '8px';
+      ghost.style.backgroundColor = '#ffffff';
+      ghost.style.color = '#191c1d';
+      ghost.style.border = '1px solid #054d61';
+      ghost.style.boxShadow = '0 18px 40px -8px rgba(5, 77, 97, 0.35)';
+      ghost.style.padding = '16px 24px';
+      ghost.style.display = 'flex';
+      ghost.style.flexDirection = 'column';
+      ghost.style.justifyContent = 'center';
+      ghost.style.gap = '6px';
+      ghost.style.pointerEvents = 'none';
+      ghost.style.transition = [
+        'left 520ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'top 520ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'width 520ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'height 520ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'background-color 480ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'color 420ms ease',
+        'border-color 420ms ease',
+        'box-shadow 480ms ease'
+      ].join(', ');
+      ghost.innerHTML = `
+        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;opacity:0.8;">Moving to chair…</div>
+        <div style="font-size:20px;font-weight:700;line-height:1.2;">${name}</div>
+        <div style="font-size:12px;font-family:monospace;opacity:0.85;">${pno} · ${visitText.split('·')[0].trim()}</div>
+      `;
+      document.body.appendChild(ghost);
+
+      row.style.opacity = '0';
+      card.classList.add('is-swapping');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          ghost.style.left = `${cardRect.left}px`;
+          ghost.style.top = `${cardRect.top}px`;
+          ghost.style.width = `${cardRect.width}px`;
+          ghost.style.height = `${cardRect.height}px`;
+          ghost.style.backgroundColor = '#054d61';
+          ghost.style.color = '#ffffff';
+          ghost.style.borderColor = 'rgba(255,255,255,0.28)';
+          ghost.style.boxShadow = '0 22px 44px -10px rgba(5, 77, 97, 0.55)';
+        });
+      });
+
+      setTimeout(() => {
+        nameEl.textContent = name;
+        pnoEl.textContent = pno;
+        metaEl.textContent = `${visitText.split('·')[0].trim()} · In chair since Just now`;
+        card.classList.remove('is-swapping');
+        card.classList.add('is-receiving');
+        ghost.style.transition = 'opacity 140ms ease';
+        ghost.style.opacity = '0';
+      }, 500);
+
+      setTimeout(() => {
+        ghost.remove();
+        card.classList.remove('is-receiving');
+        const wasNext = isRowNext(row);
+        if (list) {
+          flipReorder(list, () => {
+            row.remove();
+            if (wasNext && list.firstElementChild) {
+              setRowAsNext(list.firstElementChild, list);
+            }
+          });
+        } else {
+          row.remove();
+        }
+      }, 640);
+    }
+
+    window.startPatientVisit = function (btn) {
+      const row = btn.closest('li.list-row');
+      if (!row) return;
+      if (btn.textContent.trim() === 'Back') {
+        const rightCol = getRightCol(row);
+        const statusPill = rightCol ? rightCol.querySelector(':scope > span') : null;
+        if (statusPill) {
+          statusPill.className = 'whitespace-nowrap inline-flex items-center justify-center gap-1.5 w-[128px] py-1 rounded-full bg-warning-container text-on-warning-container font-label text-label-md tabular-nums';
+          statusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-warning" aria-hidden="true"></span>Waiting';
+        }
+        btn.textContent = 'Start';
+        return;
+      }
+      if (isRowNext(row)) {
+        executeStartPatient(row);
+        return;
+      }
+      const { name, pno, time } = getRowDetails(row);
+      const nextRow = Array.from(document.querySelectorAll('#todays-list li.list-row')).find((r) => isRowNext(r));
+      const nextName = nextRow ? getRowDetails(nextRow).name : 'the Next patient';
+      openConfirmDialog({
+        title: `Start ${name} now?`,
+        subtitle: `${pno}${time ? ' · ' + time : ''}`,
+        message: `${nextName} is currently Next in queue. Are you sure you want to start ${name} ahead of them?`,
+        proceedLabel: 'Start visit',
+        onConfirm: () => executeStartPatient(row)
+      });
+    };
+
+    window.openLateDialog = function () {
+      closeAllRowMenus();
+      lateDialog.classList.remove('hidden');
+    };
+
+    window.closeLateDialog = function () {
+      lateDialog.classList.add('hidden');
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#row-menu-popover') && !e.target.closest('button[onclick^="openRowMenu"]')) {
+        rowMenu.classList.remove('is-open');
+        activeMenuBtn = null;
+      }
+      if (!e.target.closest('#inline-row-menu') && !e.target.closest('button[onclick="toggleInlineMenu()"]')) {
+        const m = document.getElementById('inline-row-menu');
+        if (m) m.classList.remove('is-open');
+      }
+      if (!e.target.closest('#break-menu') && !e.target.closest('#break-menu-btn')) {
+        breakMenu.classList.remove('is-open');
+        breakBtn.setAttribute('aria-expanded', 'false');
+      }
+      if (!e.target.closest('#doctor-search-wrap')) {
+        const sp = document.getElementById('search-results-popover');
+        if (sp) sp.classList.remove('is-open');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        rowMenu.classList.remove('is-open');
+        activeMenuBtn = null;
+        const m = document.getElementById('inline-row-menu');
+        if (m) m.classList.remove('is-open');
+        breakMenu.classList.remove('is-open');
+        breakBtn.setAttribute('aria-expanded', 'false');
+        lateDialog.classList.add('hidden');
+        closeConfirmDialog();
+        const sp = document.getElementById('search-results-popover');
+        if (sp) sp.classList.remove('is-open');
+      }
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('doctor-search').focus();
+      }
+    });
+
+    // Live Patient Search (Popover + Queue Filter + Spotlight Jump)
+    (function initDoctorSearch() {
+      const searchInput = document.getElementById('doctor-search');
+      const popover = document.getElementById('search-results-popover');
+      const resultsList = document.getElementById('search-results-list');
+      const summaryEl = document.getElementById('search-results-summary');
+      const clearBtn = document.getElementById('search-clear-btn');
+      const kbdHint = document.getElementById('search-kbd-hint');
+      if (!searchInput || !popover || !resultsList) return;
+
+      const phoneDirectory = {
+        'P-000405': '98104-22190',
+        'P-000412': '98201-77412',
+        'P-000414': '98711-53094',
+        'P-000410': '98119-88402',
+        'P-000415': '99102-66318',
+        'P-000312': '98994-11205',
+        'P-000389': '98180-34901',
+        'P-000419': '98112-40982',
+        'P-000378': '98209-17544',
+        'P-000294': '98730-62119'
+      };
+
+      const clinicExtras = [
+        { name: 'Imran Khan', pno: 'P-000419', phone: phoneDirectory['P-000419'], status: 'Urgent request · 3:00 PM', statusTone: 'error', targetEl: null },
+        { name: 'R. Kulkarni', pno: 'P-000378', phone: phoneDirectory['P-000378'], status: 'Visit draft open', statusTone: 'neutral', targetEl: null },
+        { name: 'Ananya Verma', pno: 'P-000294', phone: phoneDirectory['P-000294'], status: 'Clinic directory', statusTone: 'neutral', targetEl: null }
+      ];
+
+      let activeResultIdx = -1;
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function highlightText(text, query) {
+        if (!query) return escapeHtml(text);
+        const safe = escapeHtml(text);
+        const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'ig');
+        return safe.replace(re, '<mark class="bg-light-secondary-container text-light-primary rounded px-0.5 font-medium">$1</mark>');
+      }
+
+      function getSearchablePatients() {
+        const items = [];
+        const inChairCard = document.getElementById('in-chair-card');
+        const inChairName = document.getElementById('in-chair-name')?.textContent?.trim();
+        const inChairPno = document.getElementById('in-chair-pno')?.textContent?.trim();
+        if (inChairName && inChairPno) {
+          items.push({
+            name: inChairName,
+            pno: inChairPno,
+            phone: phoneDirectory[inChairPno] || '98100-00000',
+            status: 'In chair now',
+            statusTone: 'primary',
+            targetEl: inChairCard
+          });
+        }
+        document.querySelectorAll('#todays-list li.list-row').forEach((row) => {
+          const { name, pno, time } = getRowDetails(row);
+          const rightCol = getRightCol(row);
+          const pillText = rightCol?.querySelector(':scope > span')?.textContent?.trim() || 'Scheduled';
+          const rowStatus = row.getAttribute('data-status') || '';
+          let tone = 'warning';
+          if (rowStatus === 'done') tone = 'success';
+          else if (rowStatus === 'late' || rowStatus === 'cancelled') tone = 'error';
+          else if (pillText === 'Not arrived' || pillText === 'Stepped out') tone = 'neutral';
+          items.push({
+            name,
+            pno,
+            phone: phoneDirectory[pno] || '98100-00000',
+            status: time ? `${pillText} · ${time}` : pillText,
+            statusTone: tone,
+            targetEl: row
+          });
+        });
+        clinicExtras.forEach((extra) => {
+          if (!items.some((i) => i.pno === extra.pno)) items.push(extra);
+        });
+        return items;
+      }
+
+      function toneClass(tone) {
+        if (tone === 'primary') return 'bg-light-primary text-light-on-primary';
+        if (tone === 'success') return 'bg-success-container text-on-success-container';
+        if (tone === 'error') return 'bg-light-error-container text-light-on-error-container';
+        if (tone === 'warning') return 'bg-warning-container text-on-warning-container';
+        return 'bg-light-surface-container text-light-on-surface-variant';
+      }
+
+      function filterTodaysList(query) {
+        const q = query.trim().toLowerCase();
+        const lunchDiv = document.getElementById('lunch-divider');
+        document.querySelectorAll('#todays-list li.list-row').forEach((row) => {
+          if (!q) {
+            row.classList.remove('is-search-hidden');
+            return;
+          }
+          const { name, pno } = getRowDetails(row);
+          const phone = (phoneDirectory[pno] || '').toLowerCase();
+          const matched = name.toLowerCase().includes(q) || pno.toLowerCase().includes(q) || phone.includes(q);
+          row.classList.toggle('is-search-hidden', !matched);
+        });
+        if (lunchDiv) lunchDiv.classList.toggle('hidden', q.length > 0);
+      }
+
+      function spotlightTarget(el) {
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.remove('is-search-spotlight');
+        void el.offsetWidth;
+        el.classList.add('is-search-spotlight');
+        setTimeout(() => el.classList.remove('is-search-spotlight'), 1450);
+      }
+
+      function renderResults(query) {
+        const q = query.trim().toLowerCase();
+        const all = getSearchablePatients();
+        const matches = q
+          ? all.filter((p) => p.name.toLowerCase().includes(q) || p.pno.toLowerCase().includes(q) || p.phone.toLowerCase().includes(q))
+          : all.slice(0, 6);
+
+        activeResultIdx = matches.length > 0 ? 0 : -1;
+        if (summaryEl) {
+          summaryEl.textContent = q
+            ? `${matches.length} ${matches.length === 1 ? 'patient' : 'patients'} matched`
+            : "Today's queue & recent patients";
+        }
+
+        if (matches.length === 0) {
+          resultsList.innerHTML = `
+            <li class="search-result-item px-4 py-6 text-center flex flex-col items-center gap-1">
+              <span class="material-symbols-outlined text-[22px] text-light-outline" aria-hidden="true">person_search</span>
+              <span class="font-title text-title-md text-light-on-surface">No patient found</span>
+              <span class="font-body text-body-sm text-light-on-surface-variant">Try another name, mobile number, or P-number</span>
+            </li>
+          `;
+          return;
+        }
+
+        resultsList.innerHTML = matches.map((p, idx) => `
+          <li role="option" data-idx="${idx}" style="animation-delay: ${idx * 25}ms" class="search-result-item px-3.5 py-2.5 flex items-center justify-between gap-3 cursor-pointer transition-colors ${idx === 0 ? 'bg-light-secondary-container/35' : 'hover:bg-light-surface-container-low'}">
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-title text-title-md text-light-on-surface">${highlightText(p.name, query.trim())}</span>
+                <span class="px-1.5 py-0.5 rounded bg-light-surface-container font-mono text-mono-sm text-light-on-surface-variant tabular-nums">${highlightText(p.pno, query.trim())}</span>
+              </div>
+              <span class="font-body text-body-sm text-light-on-surface-variant tabular-nums">${highlightText(p.phone, query.trim())}</span>
+            </div>
+            <span class="shrink-0 px-2.5 py-1 rounded-full font-label text-label-sm tabular-nums ${toneClass(p.statusTone)}">${escapeHtml(p.status)}</span>
+          </li>
+        `).join('');
+
+        resultsList.querySelectorAll('li[role="option"]').forEach((li, idx) => {
+          li.addEventListener('click', () => {
+            const picked = matches[idx];
+            popover.classList.remove('is-open');
+            if (picked && picked.targetEl) {
+              searchInput.value = '';
+              filterTodaysList('');
+              if (clearBtn) clearBtn.classList.add('hidden');
+              if (kbdHint) kbdHint.classList.remove('hidden');
+              setTimeout(() => spotlightTarget(picked.targetEl), 80);
+            } else {
+              window.location.href = '../patient-profile/PatientProfile.html';
+            }
+          });
+        });
+      }
+
+      window.clearDoctorSearch = function () {
+        searchInput.value = '';
+        filterTodaysList('');
+        if (clearBtn) clearBtn.classList.add('hidden');
+        if (kbdHint) kbdHint.classList.remove('hidden');
+        renderResults('');
+        searchInput.focus();
+      };
+
+      searchInput.addEventListener('focus', () => {
+        renderResults(searchInput.value);
+        popover.classList.add('is-open');
+      });
+
+      searchInput.addEventListener('input', () => {
+        const val = searchInput.value;
+        if (clearBtn) clearBtn.classList.toggle('hidden', val.length === 0);
+        if (kbdHint) kbdHint.classList.toggle('hidden', val.length > 0);
+        filterTodaysList(val);
+        renderResults(val);
+        popover.classList.add('is-open');
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        const options = Array.from(resultsList.querySelectorAll('li[role="option"]'));
+        if (!options.length) return;
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeResultIdx = (activeResultIdx + 1) % options.length;
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeResultIdx = (activeResultIdx - 1 + options.length) % options.length;
+        } else if (e.key === 'Enter' && activeResultIdx >= 0) {
+          e.preventDefault();
+          options[activeResultIdx].click();
+          return;
+        } else {
+          return;
+        }
+        options.forEach((opt, i) => {
+          opt.classList.toggle('bg-light-secondary-container/35', i === activeResultIdx);
+        });
+        options[activeResultIdx].scrollIntoView({ block: 'nearest' });
+      });
+    })();
+  </script>
+
+
+</body></html>
