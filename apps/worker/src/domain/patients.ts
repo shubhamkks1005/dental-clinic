@@ -44,15 +44,31 @@ export async function listPatients(
     if (onlyIds.length === 0)
       return { rows: [], total: 0, page: query.page, pageSize: query.pageSize };
   }
-  const page = await repos.patients.list(query, { status, filter, onlyIds });
-  const dues = new Map<string, number>();
+  const now = new Date();
+  const page = await repos.patients.listPage(query, { status, filter, onlyIds, now });
   const ids = page.rows.map((r) => r.id);
-  for (let i = 0; i < ids.length; i += 40) {
-    for (const [id, due] of await repos.bills.duesForPatients(ids.slice(i, i + 40))) {
-      dues.set(id, due);
-    }
-  }
-  return { ...page, rows: page.rows.map((r) => ({ ...r, duePaise: dues.get(r.id) ?? 0 })) };
+  // Last visit, next appointment and dues all need only the page ids: ask for them together.
+  const [extra, dues] = await Promise.all([
+    repos.patients.visitAndNext(ids, now),
+    duesForPage(repos, ids),
+  ]);
+  return {
+    ...page,
+    rows: page.rows.map((r) => ({
+      ...r,
+      lastVisitOn: extra.last.get(r.id) ?? null,
+      nextAppointment: extra.next.get(r.id) ?? null,
+      duePaise: dues.get(r.id) ?? 0,
+    })),
+  };
+}
+
+// D1 allows 100 bound values per query: chunks of 40, all chunks together.
+async function duesForPage(repos: Repos, ids: string[]): Promise<Map<string, number>> {
+  const chunks: string[][] = [];
+  for (let i = 0; i < ids.length; i += 40) chunks.push(ids.slice(i, i + 40));
+  const maps = await Promise.all(chunks.map((c) => repos.bills.duesForPatients(c)));
+  return new Map(maps.flatMap((m) => [...m]));
 }
 
 // 2.2.2 profile.

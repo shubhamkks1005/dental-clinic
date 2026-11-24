@@ -36,6 +36,13 @@ const SORTABLE = ["full_name", "code", "created_at"] as const;
 /** Hard cap on ids from the token index before loading patient rows (plan budget). */
 const SEARCH_ID_CAP = 100;
 
+/** A list row before the last visit and next appointment are added. */
+export type PatientListBaseRow = Omit<PatientListRow, "lastVisitOn" | "nextAppointment">;
+export type VisitAndNext = {
+  last: Map<string, string>;
+  next: Map<string, { dateLocal: string; startMin: number }>;
+};
+
 export type PatientListStatus = "active" | "archived" | "all";
 
 /** 2.2.5: quick filters. inactive_6m uses registration day until appointments exist (2.3). */
@@ -54,74 +61,96 @@ export type PatientListOptions = {
 // 2.1.6: list uses patient_search range on the first word; extra words filter in memory.
 // Soft-deleted rows are hidden. Archived hidden by default (2.1.8).
 export function patientsRepo(db: Db, ctx: Ctx) {
-  return {
-    async list(query: PageQuery, options: PatientListOptions = {}): Promise<Page<PatientListRow>> {
-      assertAllowed(ctx, "patients.view");
-      const status = options.status ?? "active";
-      const words = searchWords(query.q);
-      const idFilter = words.length > 0 ? await matchPatientIds(db, words) : null;
-      if (idFilter !== null && idFilter.length === 0) {
-        return { rows: [], total: 0, page: query.page, pageSize: query.pageSize };
-      }
+  /** The page itself (count and rows together). S3.4.1: callers that also need dues use this. */
+  async function listPage(
+    query: PageQuery,
+    options: PatientListOptions = {},
+  ): Promise<Page<PatientListBaseRow>> {
+    assertAllowed(ctx, "patients.view");
+    const status = options.status ?? "active";
+    const words = searchWords(query.q);
+    const idFilter = words.length > 0 ? await matchPatientIds(db, words) : null;
+    if (idFilter !== null && idFilter.length === 0) {
+      return { rows: [], total: 0, page: query.page, pageSize: query.pageSize };
+    }
 
-      const now = options.now ?? new Date();
-      const where = and(
-        isNull(patients.deletedAt),
-        status === "all"
-          ? undefined
-          : eq(patients.status, status === "archived" ? "archived" : "active"),
-        idFilter ? inArray(patients.id, idFilter) : undefined,
-        options.onlyIds ? inArray(patients.id, options.onlyIds) : undefined,
-        filterClause(options.filter ?? null, now),
-      );
-      const { limit, offset } = pageWindow(query);
-      const order = orderClause(query);
+    const now = options.now ?? new Date();
+    const where = and(
+      isNull(patients.deletedAt),
+      status === "all"
+        ? undefined
+        : eq(patients.status, status === "archived" ? "archived" : "active"),
+      idFilter ? inArray(patients.id, idFilter) : undefined,
+      options.onlyIds ? inArray(patients.id, options.onlyIds) : undefined,
+      filterClause(options.filter ?? null, now),
+    );
+    const { limit, offset } = pageWindow(query);
+    const order = orderClause(query);
 
-      const [totalRow, rows] = await Promise.all([
-        db
-          .select({ n: sql<number>`count(*)` })
-          .from(patients)
-          .where(where)
-          .get(),
-        db
-          .select({
-            id: patients.id,
-            code: patients.code,
-            fullName: patients.fullName,
-            gender: patients.gender,
-            ageYearsAtReg: patients.ageYearsAtReg,
-            dateOfBirth: patients.dateOfBirth,
-            createdAt: patients.createdAt,
-            mobile: patients.mobile,
-            status: patients.status,
-          })
-          .from(patients)
-          .where(where)
-          .orderBy(...order)
-          .limit(limit)
-          .offset(offset)
-          .all(),
-      ]);
+    const [totalRow, rows] = await Promise.all([
+      db
+        .select({ n: sql<number>`count(*)` })
+        .from(patients)
+        .where(where)
+        .get(),
+      db
+        .select({
+          id: patients.id,
+          code: patients.code,
+          fullName: patients.fullName,
+          gender: patients.gender,
+          ageYearsAtReg: patients.ageYearsAtReg,
+          dateOfBirth: patients.dateOfBirth,
+          createdAt: patients.createdAt,
+          mobile: patients.mobile,
+          status: patients.status,
+        })
+        .from(patients)
+        .where(where)
+        .orderBy(...order)
+        .limit(limit)
+        .offset(offset)
+        .all(),
+    ]);
 
-      const extra = await visitAndNext(
-        db,
-        rows.map((r) => r.id),
-        now,
-      );
-      return {
-        rows: rows.map((r) => ({
-          ...r,
-          gender: r.gender as PatientGender,
-          status: r.status as "active" | "archived",
-          lastVisitOn: extra.last.get(r.id) ?? null,
-          nextAppointment: extra.next.get(r.id) ?? null,
-        })),
-        total: Number(totalRow?.n ?? 0),
-        page: query.page,
-        pageSize: query.pageSize,
-      };
-    },
-  };
+    return {
+      rows: rows.map((r) => ({
+        ...r,
+        gender: r.gender as PatientGender,
+        status: r.status as "active" | "archived",
+      })),
+      total: Number(totalRow?.n ?? 0),
+      page: query.page,
+      pageSize: query.pageSize,
+    };
+  }
+
+  /** Last visit day and next appointment for these patients (chunks run together). */
+  async function visitAndNextFor(ids: string[], now: Date = new Date()): Promise<VisitAndNext> {
+    assertAllowed(ctx, "patients.view");
+    return visitAndNext(db, ids, now);
+  }
+
+  async function list(
+    query: PageQuery,
+    options: PatientListOptions = {},
+  ): Promise<Page<PatientListRow>> {
+    const page = await listPage(query, options);
+    const extra = await visitAndNextFor(
+      page.rows.map((r) => r.id),
+      options.now,
+    );
+    return {
+      ...page,
+      rows: page.rows.map((r) => ({
+        ...r,
+        lastVisitOn: extra.last.get(r.id) ?? null,
+        nextAppointment: extra.next.get(r.id) ?? null,
+      })),
+    };
+  }
+
+  return { listPage, visitAndNext: visitAndNextFor, list };
 }
 
 async function matchPatientIds(db: Db, words: string[]): Promise<string[]> {
@@ -200,13 +229,13 @@ function filterClause(filter: PatientListFilter | null, now: Date): SQL | undefi
 }
 
 /** Last visit day and next appointment for the patients on one page (two small queries). */
-async function visitAndNext(db: Db, allIds: string[], now: Date) {
+async function visitAndNext(db: Db, allIds: string[], now: Date): Promise<VisitAndNext> {
   const last = new Map<string, string>();
   const next = new Map<string, { dateLocal: string; startMin: number }>();
-  // D1 takes at most 100 bound values per query: work in chunks.
-  for (let i = 0; i < allIds.length; i += 40) {
-    await visitAndNextChunk(db, allIds.slice(i, i + 40), now, last, next);
-  }
+  // D1 takes at most 100 bound values per query: chunks of 40, all sent together.
+  const chunks: string[][] = [];
+  for (let i = 0; i < allIds.length; i += 40) chunks.push(allIds.slice(i, i + 40));
+  await Promise.all(chunks.map((ids) => visitAndNextChunk(db, ids, now, last, next)));
   return { last, next };
 }
 
@@ -217,7 +246,7 @@ async function visitAndNextChunk(
   last: Map<string, string>,
   next: Map<string, { dateLocal: string; startMin: number }>,
 ) {
-  const lastRows = await db
+  const lastQuery = db
     .select({ patientId: visits.patientId, day: sql<string>`max(${visits.visitDateLocal})` })
     .from(visits)
     .where(
@@ -229,9 +258,7 @@ async function visitAndNextChunk(
     )
     .groupBy(visits.patientId)
     .all();
-  for (const r of lastRows) last.set(r.patientId, r.day);
-
-  const apptRows = await db
+  const apptQuery = db
     .select({
       patientId: appointments.patientId,
       status: appointments.status,
@@ -248,6 +275,8 @@ async function visitAndNextChunk(
       ),
     )
     .all();
+  const [lastRows, apptRows] = await Promise.all([lastQuery, apptQuery]);
+  for (const r of lastRows) last.set(r.patientId, r.day);
   const byPatient = new Map<string, typeof apptRows>();
   for (const a of apptRows) byPatient.set(a.patientId, [...(byPatient.get(a.patientId) ?? []), a]);
   for (const [id, list] of byPatient) {
