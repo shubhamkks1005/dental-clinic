@@ -1,21 +1,22 @@
 # HANDOFF (for the next AI session)
 
-Written: 2026-11-24 (after Gate A). Read RUN_PROMPT.md, then docs/PHASE_Q.md (only the section of the task below). Fake data only. Never push, never deploy, never apply migrations (give the owner the command).
+Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (only the section of the task below). Fake data only. Never push, never deploy, never apply migrations (give the owner the command).
 
 ## Where we are
 - Phases 0-7 are done locally (see STATE.md). Phase 8 (portal) is NOT started and stays paused.
 - **Phase Q (quality, safety and redesign) is the current phase.** The audit is finished: docs/ui-audit/ (pages, 18 flows with screenshots, runner scripts), docs/product-audit/ (ISSUES, IDEAL_EXPERIENCE, ROADMAP), docs/design/proposal/ (new screen designs).
-- Phase Q Parts 1 to 4 are done (see "Done in Phase Q").
+- Phase Q Parts 1 to 5 are done (see "Done in Phase Q"). Part 5 gate: passed with exceptions (STATE.md "Part 5": flows that need the seeded staging patients were not run to the end).
 - Next free migration: **0057** (0056 bill_cancel_requests is NEW, owner applies it on staging) (0054 and 0055 are new and still to be applied by the owner on staging). Part 3 so far added ONE migration, 0056 (Q1.9).
 
 ## Next task
-**Part 4 is DONE (2026-11-24): Q2.1 to Q2.6.** Next: **Part 5, starting at Q2.7** (calendar and booking, designs Calendar.dc.html, PhoneCalendar.dc.html, PhoneBook.dc.html), then Q2.8 to Q2.13 and Q4.1 in docs/PHASE_Q.md order. Part 4 has no gate of its own; the Part 5 gate is Gate B if PHASE_Q.md names one.
-- Tools ready: ui/page (PageHeader, Card, ListRow, EmptyState, TodoRows), StatusLabel, formatDate/formatMoney/plural, DataTable `renderCard`, shared pickNextAppointment. Screenshots go in docs/ui-audit/screenshots/redesign/<task>/.
-- Gaps left from Part 4 (not blockers): Today "Waiting for you" has no "Prescription not issued" line (needs a small endpoint listing draft prescriptions); the round "+" still shows on every phone screen except the visit (Q2.11 limits it); the visit chart's own controls (Chart as of, Apply condition, Dentition) take a lot of height above the teeth; procedure chips cannot be removed (no remove API); runner d02.mjs still fails at its later step "Open the bill again" (stale since Q2.3, not a Today problem); Today "+ New patient" shows in the doctor's top bar though the design has none.
-- Runner notes: g01.mjs now has NO tab switch in the doctor part (9 clicks Open visit to Create bill; whole chain 27 clicks). d05.mjs: its one failed request is the deliberate payment on a closed day (answer: "This day is closed. Use a late entry or ask the doctor to reopen it.", an expected refusal, not a bug). Library is doctor-only: the receptionist sees no Library item and gets "Not available for your role" at /app/library (checked in a browser).
-- e2e specs run in file-name order and some need bills made by core-loop (data-billing-hub.spec.ts). Run `pnpm exec playwright test` (40 pass). macOS has no `timeout` command. Stop any dev server on port 8787 before running Playwright (it reuses a running server and its database).
+**Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
+- Gaps left from Part 5 (not blockers): Q2.13 Library has no add drawer, no Reorder mode and no "used in 30 days" column (it reuses the list editor in tabs); Settings "Clinic and doctor" is still the old form with no live prescription preview; Reports does not split Payments and Refunds (dashboard sends one number); Today stat/other phone detail checks; calendar has no late-entry or undo-after-cancel (PA-M06); Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
+- Needs the doctor: wording "As directed" for dose, frequency, days and timing of a medicine added with "Add to my list" in the visit (DECISIONS.md, DRAFT).
+- Tools ready: ui/form (TextInput, Select, Textarea, Checkbox, Radio; lint forbids raw tags in features/), useWide, DateStrip, VisitTypeChips, pills in base.css.
+- Runner notes: the Book dialog has chips now (`getByRole("button", { name: "Consultation", exact: true })`), label "Note (optional)", "Book appointment" button; new patient has Female/Male/Other radios, "Privacy notice given", "Allow reminders"; calendar specs use `&view=day` (laptop default is the week grid). Run `pnpm exec playwright test` (48 pass). Stop any dev server on port 8787 first.
 
 ## Done in Phase Q
+- Part 5, 2026-11-24 (git log "Q2.7", "Q2.8", "Q2.9", "Q2.10 ..."): week calendar and phone day list, new Book dialog, Messages by patient, new patient form, one input family with lint rule, sidebar from 768 and "+" only on Today and Patients, Reports with Things to watch, Settings 8 items and Library, Add to my list in the visit, Prescription-not-issued line. Also fixed: clock-dependent tests, duplicate check cutting off the exact mobile match.
 - Q2.6 Patients list and profile, 2026-11-24 (git log "Q2.6"). Last visit / Next appointment / Due, new filters, phone cards, profile on Overview with role actions. Next: Part 5, Q2.7.
 - Q2.5 Both Today screens, 2026-11-24 (git log "Q2.5"). One main button per row, stat strip, To follow up, doctor Now / Next / Waiting for you.
 - Q2.4 Visit on one screen, 2026-11-24 (git log "Q2.4 step 1/2/3"). Tabs Visit / Plan / History / Files; sticky Finalise bar; old tabbed code deleted; VisitMedicinesPanel split.

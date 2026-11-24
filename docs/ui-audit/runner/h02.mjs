@@ -6,7 +6,7 @@ await flow({ id: process.argv[2] || "H02-messages-no-consent-no-mobile-and-resch
     await c.go("/app/patients/new", `Register ${name}: ${consent ? "SMS consent ticked" : "NO SMS consent"}${noMobile ? ", NO mobile" : ""}`);
     await c.type(p.getByLabel("Full name"), name, "Name"); await c.click(p.getByLabel("Female", { exact: true }), "Gender"); await c.type(p.getByLabel("Or age (years)"), "35", "Age");
     if (noMobile) { await c.click(p.getByLabel("No mobile"), "Tick No mobile"); await p.getByLabel(/Why|reason/i).first().fill("Elderly, uses family phone").catch(() => {}); } else await c.type(p.locator("input[type=tel]").first(), mob, "Mobile");
-    if (consent) { await c.click(p.getByLabel("Privacy notice given"), "Tick privacy"); await c.click(p.getByLabel("Allow reminders"), "Tick SMS"); }
+    if (consent) { await c.click(p.getByLabel("Privacy notice given"), "Tick privacy"); if (noMobile) c.note("Allow reminders is off with no mobile (Q2.9): " + (await p.getByLabel("Allow reminders").isDisabled())); else await c.click(p.getByLabel("Allow reminders"), "Tick SMS"); }
     await c.click(p.getByRole("button", { name: "Save patient" }), "Save patient");
     // Q1.8: a possible duplicate asks "Same person?" first; these test people are new people.
     if (await p.getByRole("button", { name: "Save as new patient" }).count()) await c.click(p.getByRole("button", { name: "Save as new patient" }), "Same person? No: save as new patient");

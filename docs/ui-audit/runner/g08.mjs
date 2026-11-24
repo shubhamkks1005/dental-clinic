@@ -20,8 +20,9 @@ await flow({ id: process.argv[2] || "G08-child-with-guardian-and-shared-mobile",
   // book
   await c.click(p.getByRole("button", { name: "Book appointment" }).or(p.getByRole("link", { name: "Book appointment" })), "Book appointment");
   await c.click(d().getByRole("button", { name: "Consultation", exact: true }), "Consultation");
-  await d().getByLabel("Date").fill("2026-11-24"); await p.waitForTimeout(1200);
-  await c.click(d().getByRole("button", { name: "12:15 PM", exact: true }), "Pick 12:15 PM");
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  await d().getByLabel(/More dates/).fill(tomorrow); await p.waitForTimeout(1200);
+  await c.click(d().getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ }).first(), "Pick the first free time");
   await c.type(d().getByLabel(/Note/), "child checkup", "Note");
   await c.click(d().getByRole("button", { name: "Book", exact: true }), "Book");
   await p.request.get(B + "/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*"); await p.waitForTimeout(1500);

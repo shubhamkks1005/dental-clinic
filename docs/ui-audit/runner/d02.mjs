@@ -31,6 +31,7 @@ await flow({ id: process.argv[2] || "D02-refund-and-cancel-a-bill", role: "recep
   await c.click(p.getByRole("button", { name: "Record refund" }), "Click Record refund");
   await c.look("After the refund");
   await c.click(p.getByRole("link", { name: /SB-/ }).first(), "Open the bill again");
+  await c.click(p.getByText("More actions"), "Open More actions (Cancel bill sits there since Q2.3)");
   await c.click(p.getByRole("button", { name: "Cancel bill" }), "Click Cancel bill");
   await c.type(p.getByLabel("Reason").last(), "Wrong procedure billed", "Type the reason");
   await c.click(p.getByRole("button", { name: "Confirm cancel" }), "Confirm cancel (nothing paid now)");
