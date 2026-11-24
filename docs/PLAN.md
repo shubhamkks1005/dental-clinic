@@ -6656,6 +6656,7 @@ Checkpoint: Lighthouse dobara, S0.2.4 se compare.
 S3.1.1 React.lazy: print, settings, library, reports, billing, certificates, messages, requests, errors, style-guide (M). apps/web/src/routes/StaffRoutes.tsx. Done jab: e2e aur smoke pass, CSP error nahi.
 S3.1.2 Vendor libraries ka alag chunk (S). apps/web/vite.config.ts.
 S3.1.3 Bundle budget: abhi total JS naapta hai (lazy chunks bhi), isliye pehli-load ka alag limit jodo (index.html jo scripts load kare unka size) aur total limit tight karo (S).
+S3.1.4 Hindi consent text (~46 KB raw) pehli load se hatao: procedureNeedsConsentWarning ko consent-templates.ts se alag shared file me, features/visits/finalise-warnings.ts ka import badlo (S). Measured: first load abhi 906 KB raw / 266 KB gzip (S3.1 ke baad).
 S3.2.1 Day list me flags, dues, ready-to-bill, clinic settings ek saath (M). apps/worker/src/domain/appointments.ts.
 S3.2.2 Week ke liye range endpoint GET /appointments?from=&to= (M); route-matrix update; useWeek me 1 request.
 S3.3.1 Visit screen: lists getVisit ke saath shuru, 4 round se 2 (M). features/visits/useVisitData.ts + panels.
