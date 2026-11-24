@@ -33,6 +33,9 @@ export type DashboardKpis = {
   prevMonthNew: number;
   monthCollectedPaise: number;
   prevMonthCollectedPaise: number;
+  /** This month: money taken and money given back, apart (collected = payments minus refunds). */
+  monthPaymentsPaise: number;
+  monthRefundsPaise: number;
   outstandingPaise: number;
 };
 

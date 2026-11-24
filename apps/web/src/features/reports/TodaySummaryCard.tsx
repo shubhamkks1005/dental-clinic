@@ -9,6 +9,8 @@ export function TodaySummaryCard() {
     dateLocal: string;
     arrived: number;
     remaining: number;
+    paymentsPaise: number;
+    refundsPaise: number;
     collectedPaise: number;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +46,12 @@ export function TodaySummaryCard() {
           <dd>{data.remaining}</dd>
         </div>
         <div>
-          <dt>Collected</dt>
-          <dd>{formatRupees(data.collectedPaise)}</dd>
+          <dt>Payments</dt>
+          <dd>{formatRupees(data.paymentsPaise)}</dd>
+        </div>
+        <div>
+          <dt>Refunds</dt>
+          <dd>{formatRupees(data.refundsPaise)}</dd>
         </div>
       </dl>
     </section>

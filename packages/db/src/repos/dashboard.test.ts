@@ -51,6 +51,8 @@ describe("dashboard (6.3.1)", () => {
     expect(dash.series).toHaveLength(2);
     expect(dash.procedures[0]).toEqual({ dim: "RCT", value: 2 });
     expect(dash.kpis).toBeDefined();
+    expect(dash.kpis.monthRefundsPaise).toBe(0);
+    expect(dash.kpis.monthPaymentsPaise).toBe(dash.kpis.monthCollectedPaise);
     expect(dash.kpis.outstandingPaise).toBeGreaterThanOrEqual(0);
     expect(dash.rowsRead).toBeLessThan(2000);
   });

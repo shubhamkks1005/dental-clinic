@@ -9,6 +9,10 @@ export type TodaySummary = {
   dateLocal: string;
   arrived: number;
   remaining: number;
+  /** Money taken today and money given back today, kept apart (never one negative number). */
+  paymentsPaise: number;
+  refundsPaise: number;
+  /** Payments minus refunds. */
   collectedPaise: number;
 };
 
@@ -67,6 +71,8 @@ export function todaySummaryRepo(db: Db, ctx: Ctx) {
         dateLocal,
         arrived: Number(arrived?.value ?? 0),
         remaining: Number(remaining?.value ?? 0),
+        paymentsPaise: Number(paid?.value ?? 0),
+        refundsPaise: Number(refunded?.value ?? 0),
         collectedPaise: Number(paid?.value ?? 0) - Number(refunded?.value ?? 0),
       };
     },

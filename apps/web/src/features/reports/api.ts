@@ -33,6 +33,8 @@ export function fetchTodaySummary() {
     dateLocal: string;
     arrived: number;
     remaining: number;
+    paymentsPaise: number;
+    refundsPaise: number;
     collectedPaise: number;
   }>("/api/staff/dashboard/today-summary");
 }

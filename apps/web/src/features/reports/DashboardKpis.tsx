@@ -25,9 +25,9 @@ export function DashboardKpis({ kpis }: Props) {
         tone={tileTone(neu.kind)}
       />
       <KpiTile
-        label="Collected this month"
-        value={formatRupees(kpis.monthCollectedPaise)}
-        note={collectedNote.text}
+        label="Payments this month"
+        value={formatRupees(kpis.monthPaymentsPaise)}
+        note={`Refunds ${formatRupees(kpis.monthRefundsPaise)}. Net ${formatRupees(kpis.monthCollectedPaise)}: ${collectedNote.text}`}
         tone={collectedNote.tone}
       />
       <KpiTile

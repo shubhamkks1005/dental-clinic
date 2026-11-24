@@ -53,7 +53,7 @@ Evidence paths: `flows/<id>` means `docs/ui-audit/flows/<id>/` (screenshots are 
 | PA-B10 | Patient summary | "Next appointment" is wrong or disagrees: it shows today's walk-in (already in chair) instead of tomorrow's booking; Overview says "No upcoming appointment" while History strip shows 2026-11-27 for the same patient. | Medium | Observed | flows/G01 step 61; PAGES (probe on Neha) | One shared "next appointment" function (first future, not started). Source: P9 |
 | PA-B11 | Validation | A date of birth in the future is reported as "Patients under 18 need a guardian on the record." | Medium | Observed | flows/A02 steps 39-44 | Reject with "The date of birth is in the future." Source: A2-4 |
 | PA-B12 | Billing: day close | After the day is closed a payment is refused with "Use a late entry or ask the doctor to reopen it", but no late entry exists in the UI. | Medium | Observed | flows/D05 step 42 | Provide the late-entry path or change the sentence. Source: D5-3 (also PA-X in category 6) |
-| PA-B13 | Reports | "Collected" can show a negative number (-₹50) when refunds exceed payments for a day. | Low | Observed (seed data) | shots/reports/reports-laptop.png; flows/F01 step 27 | Show Payments and Refunds on separate lines. Source: M10, F1-6 |
+| PA-B13 | Reports | "Collected" can show a negative number (-₹50) when refunds exceed payments for a day. | Low | Fixed (cleanup 3: Payments and Refunds lines; dashboard KPI carries both) | shots/reports/reports-laptop.png; flows/F01 step 27 | Show Payments and Refunds on separate lines. Source: M10, F1-6 |
 
 ## 2. Frontend / UI bugs
 | ID | Area | Problem and why it matters | Sev | Conf | Evidence | Recommended solution |

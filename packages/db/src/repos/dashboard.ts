@@ -24,6 +24,7 @@ import {
   monthlyStats,
   opsStatus,
   paymentAllocations,
+  refunds,
 } from "../schema";
 import { computeDayStatRows, computeMonthStatRows } from "./daily-stats-queries";
 
@@ -113,9 +114,20 @@ async function loadKpis(
   const metric = (rows: { metric: string; dim: string; value: number }[], name: string) =>
     rows.find((r) => r.metric === name && r.dim === STAT_DIM_NONE)?.value ?? 0;
 
+  const refundDay = sql`date(${refunds.approvedAt}, '+5 hours', '+30 minutes')`;
+  const refundRow = await db
+    .select({ value: sql<number>`coalesce(sum(${refunds.amountPaise}), 0)` })
+    .from(refunds)
+    .where(and(isNull(refunds.deletedAt), sql`${refundDay} like ${`${month}-%`}`))
+    .get();
+  rowsRead += 1;
+  const monthRefunds = Number(refundRow?.value ?? 0);
+
   return {
     rowsRead,
     value: {
+      monthRefundsPaise: monthRefunds,
+      monthPaymentsPaise: metric(monthRows, "collected_paise") + monthRefunds,
       todayArrived: metric(todayRows, "arrived_patients"),
       prevTodayArrived: metric(yRows, "arrived_patients"),
       monthNew: metric(monthRows, "new_patients"),

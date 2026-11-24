@@ -45,6 +45,21 @@ describe("today summary (6.3.8)", () => {
     expect(s.arrived).toBe(1);
     expect(s.remaining).toBe(2);
     expect(s.collectedPaise).toBe(50_000);
+    expect(s.paymentsPaise).toBe(50_000);
+    expect(s.refundsPaise).toBe(0);
+  });
+
+  it("keeps payments and refunds as two positive numbers", async () => {
+    t.sqlite
+      .prepare(
+        `INSERT INTO refunds (id, created_by, updated_by, payment_id, patient_id, amount_paise, mode, reason, approved_by, approved_at)
+         VALUES ('rf1', 'system', 'system', 'pay1', 'p1', 60000, 'cash', 'Fake reason', 'doc-a', '2026-11-23T07:00:00.000Z')`,
+      )
+      .run();
+    const s = await createRepos(t.db, receptionist).todaySummary.get(NOW);
+    expect(s.paymentsPaise).toBe(50_000);
+    expect(s.refundsPaise).toBe(60_000);
+    expect(s.collectedPaise).toBe(-10_000);
   });
 
   it("developer cannot read today summary", async () => {

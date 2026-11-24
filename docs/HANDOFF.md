@@ -10,7 +10,7 @@ Written: 2026-11-24 (after Part 5). Read RUN_PROMPT.md, then docs/PHASE_Q.md (on
 
 ## Next task
 **Part 5 is DONE (2026-11-24): Q2.7 to Q2.13 and Q4.1** (Q4.1 and Q2.13 partly, see the gaps). Phase Q has no task left that is not Done or Blocked except the gaps below and the Q3.x tasks (later phase; the owner must say when). Phase 8 (portal) stays paused.
-- Gaps left from Part 5 (not blockers): Reports does not split Payments and Refunds (dashboard sends one number); Today stat/other phone detail checks; calendar has no late-entry or undo-after-cancel (PA-M06); Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
+- Gaps left from Part 5 (not blockers): Today stat/other phone detail checks; calendar has no late-entry or undo-after-cancel (PA-M06); Messages page has no per-day grouping, only per patient; procedure chips still cannot be removed; Library is doctor-only (D4).
 - Needs the doctor: wording "As directed" for dose, frequency, days and timing of a medicine added with "Add to my list" in the visit (DECISIONS.md, DRAFT).
 - Tools ready: ui/form (TextInput, Select, Textarea, Checkbox, Radio; lint forbids raw tags in features/), useWide, DateStrip, VisitTypeChips, pills in base.css.
 - Runner notes: the Book dialog has chips now (`getByRole("button", { name: "Consultation", exact: true })`), label "Note (optional)", "Book appointment" button; new patient has Female/Male/Other radios, "Privacy notice given", "Allow reminders"; calendar specs use `&view=day` (laptop default is the week grid). Run `pnpm exec playwright test` (48 pass). Stop any dev server on port 8787 first.
