@@ -922,3 +922,22 @@ html[data-doctor-today] .shell-top .top-search {
 .td-chair.is-empty .td-chair-meta {
   color: var(--td-muted);
 }
+
+/* Less empty space around the page: the empty top bar goes (its search is hidden here and the user
+   card is in the sidebar from 768 px), and the page uses the full width with small gutters. */
+html[data-doctor-today] .page {
+  max-width: none;
+  padding: 16px 20px 20px;
+}
+@media (min-width: 768px) {
+  html[data-doctor-today] .shell-top {
+    display: none;
+  }
+  html[data-doctor-today] .shell {
+    grid-template-rows: 1fr;
+    grid-template-areas: "nav main";
+  }
+  html[data-doctor-today] .page {
+    padding: 14px 20px 20px;
+  }
+}
