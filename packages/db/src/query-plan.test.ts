@@ -186,6 +186,15 @@ describe("query-plan guard: Part T tables", () => {
     expect(plan.join(" ")).toMatch(/appointments_day_(queue|status)_idx|appointments_chair_day/);
   });
 
+  it("the queue move reads one whole day by its date index, with no full scan", () => {
+    const plan = queryPlan(
+      t.sqlite,
+      `SELECT id FROM appointments WHERE date_local = (SELECT date_local FROM appointments WHERE id = ?) AND deleted_at IS NULL`,
+      ["a1"],
+    );
+    expect(fullScans(plan)).toEqual([]);
+  });
+
   it("the open break of a day uses its partial unique index", () => {
     const plan = queryPlan(
       t.sqlite,
