@@ -8,7 +8,6 @@ import { plural } from "../../ui/format";
 import { useMe } from "../auth";
 import { AskedStrip, DoctorBreakNotice } from "./DeskDoctorLinks";
 import { FollowUpList } from "./FollowUpList";
-import { DoctorToday } from "./DoctorToday";
 import { NextPatientCard } from "./NextPatientCard";
 import { TodayActions } from "./TodayActions";
 import { TodayList } from "./TodayList";
@@ -29,7 +28,7 @@ function greeting(now: Date): string {
   return hour < 17 ? "Good afternoon" : "Good evening";
 }
 
-// Main.dc.html / DoctorToday.dc.html (laptop) and PhoneToday.dc.html (phone). Q2.5.
+// The desk Today: Main.dc.html (laptop) and PhoneToday.dc.html (phone). Q2.5. The doctor page is features/today/doctor/.
 export function TodayScreen() {
   const me = useMe();
   // The doctor has a page of their own (final design, Part T); everyone else keeps this one.
@@ -44,7 +43,6 @@ export function TodayScreen() {
 
 function DeskToday() {
   const me = useMe();
-  const isDoctor = me.role === "doctor";
   const { model, error, busyId, serverNow, currentBreak, load, onStatus } = useTodayModel();
   const [askedKey, setAskedKey] = useState(0);
   const [walkInOpen, setWalkInOpen] = useState(false);
@@ -56,11 +54,9 @@ function DeskToday() {
     setParams({}, { replace: true });
   }, [params, setParams]);
 
-  const who = isDoctor ? `Dr. ${shortName(me.name)}` : shortName(me.name);
+  const who = shortName(me.name);
   const subtitle = model
-    ? isDoctor
-      ? `${istLongDate(serverNow)} · ${plural(model.appointmentsCount, "patient")} today · ${model.doctorDoneCount} done`
-      : `${istLongDate(serverNow)} · ${plural(model.appointmentsCount, "appointment")} today`
+    ? `${istLongDate(serverNow)} · ${plural(model.appointmentsCount, "appointment")} today`
     : istLongDate(serverNow);
 
   return (
@@ -75,27 +71,21 @@ function DeskToday() {
         <button type="button" className="hero-search hero-phone-only" aria-label="Search patients">
           {icons.search}
         </button>
-        {!isDoctor ? (
-          <div className="hero-actions">
-            <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
-          </div>
-        ) : null}
+        <div className="hero-actions">
+          <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
+        </div>
       </header>
 
       {error ? <p className="field-error">{error}</p> : null}
-      {!isDoctor ? <DoctorBreakNotice current={currentBreak} /> : null}
-      {!isDoctor && model ? <TodayStats model={model} /> : null}
-      {!isDoctor ? <AskedStrip refreshKey={askedKey} /> : null}
-      {!isDoctor ? (
-        <div className="today-phone-actions">
-          <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
-        </div>
-      ) : null}
+      <DoctorBreakNotice current={currentBreak} />
+      {model ? <TodayStats model={model} /> : null}
+      <AskedStrip refreshKey={askedKey} />
+      <div className="today-phone-actions">
+        <TodayActions serverNow={serverNow} onWalkIn={() => setWalkInOpen(true)} />
+      </div>
       {!model && !error ? <p className="muted">Loading…</p> : null}
 
-      {model && isDoctor ? <DoctorToday model={model} busyId={busyId} onStatus={onStatus} /> : null}
-
-      {model && !isDoctor ? (
+      {model ? (
         <div className="today-body">
           <div className="today-next">
             <NextPatientCard

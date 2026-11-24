@@ -217,7 +217,7 @@ Each task: read the design file, rebuild with shared components, run the matchin
 | Q2.2 | Apply status words, date and money formats to Today, Calendar, Profile, History, Billing, print | n/a | PA-L03, PA-D05, PA-D07 | Q2.1 |
 | Q2.3 | Billing hub (Today, Dues, Bills, Day close tabs), Bill screen, Payment card; remove internal sentences from screen and print (gst_mode, missing registration number) and decide the draft step (D5) | `Billing.dc.html`, `Bill.dc.html` | PA-U02, PA-D02, PA-D04, PA-L08, PA-D08 | Q2.1, Q1.3, D5 |
 | Q2.4 | Visit on one screen with the sticky Finalise bar and checklist, read-only final view, alerts at the top | `Visit.dc.html`, `PhoneVisit.dc.html` | PA-U03, PA-F10, PA-F11, PA-U17, PA-D09 | Q2.1, Q1.1, Q0.3 |
-| Q2.5 | Both Today screens | `Main.dc.html`, `DoctorToday.dc.html`, `PhoneToday.dc.html` | PA-U10, PA-U01, PA-M05, PA-F15 | Q2.1, Q1.2, Q1.7 |
+| Q2.5 | Both Today screens (the doctor one is replaced by PLAN Part T, docs/design/final/doctor_today.html) | `Main.dc.html`, `PhoneToday.dc.html` | PA-U10, PA-U01, PA-M05, PA-F15 | Q2.1, Q1.2, Q1.7 |
 | Q2.6 | Patients list columns (Last visit, Next appointment, Due) and profile (opens on Overview, role actions) | PDF S02, S04 | PA-U07, PA-U08, PA-F19 | Q2.1 |
 | Q2.7 | Calendar week view, phone day list, new Book dialog (date strip, 8 time chips, fixed footer, empty states) | `Calendar.dc.html`, PDF S07, S08 | PA-F12, PA-F17, PA-M06 | Q1.4 |
 | Q2.8 | Messages page | `Messages.dc.html` | PA-U09, PA-L11, PA-N04 | Q1.5 |

@@ -7,7 +7,7 @@ The mockups are reference only and will be revised later. If a newer PDF replace
 
 ## Screen map (caption in the PDF -> real screen)
 Laptop (1366 px wide):
-- S01 Today: staff home, queue, next patient.
+- S01 Today: staff home, queue, next patient. The doctor's Today follows its own final design: docs/design/final/doctor_today.html (PLAN Part T, apps/web/src/features/today/doctor/).
 - S02 Patients: patient list with search.
 - S03 New patient: form with the read-only patient number box.
 - S04 Patient profile: tabs, payments card, braces progress.

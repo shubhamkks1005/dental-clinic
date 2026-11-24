@@ -88,8 +88,12 @@ This manual covers everyday tasks in the clinic software. For technical problems
 ## Doctor — everyday tasks
 
 ### Today screen (doctor view)
-- Shows the next patient (Now) and the next 3 upcoming patients.
-- Click the patient's name to open their visit.
+- **In chair now** shows the patient you are seeing, with **Open visit** and **Done**. Press **Start** on a patient in the list and they move into the chair.
+- **Today's list** has everyone once, in your order. **Next** marks the first patient who is waiting. **Exp 11:20** is when you will probably see them. A yellow "min late" chip means the first patient will start later than booked.
+- **Skip** (in the "..." menu): the patient steps out and the next one moves up. **Back** puts them in the queue again. **Pull forward** moves one patient one place up. **Late arrived**: choose Coming today (same appointment goes to the back, no new charge), Another day (reschedule) or Not coming (cancel). None of these change any bill or message.
+- **Take a break**: choose 5, 10, 15 or 45 minutes (only when nobody is in the chair). The banner counts down; use +5 min or -5 min, then **I'm back**. A break does not move or cancel any appointment. If someone presses Start during your break you get a warning with **Start anyway**.
+- **Waiting for you**: requests from the front desk (Yes, No, or a Note), discount approvals (Approve or Reject), prescriptions not issued, visit drafts. The X hides a prescription or draft for today only.
+- **Order updated by Priya at 10:48 AM** shows when the front desk changed the order.
 
 ### Opening a visit
 1. From the Today screen, click the current patient's name.

@@ -16,5 +16,4 @@ export {
   recordPayment,
   type DuesRow,
 } from "./api";
-export { WaitingForYou } from "./WaitingForYou";
 export { CaExportPanel } from "./CaExportPanel";

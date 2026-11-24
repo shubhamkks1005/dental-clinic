@@ -79,14 +79,6 @@ export type TodayModel = {
     note: string;
     mobile: string | null;
   }[];
-  /** Doctor view: the patient to see now (in chair, else arrived, else next upcoming). */
-  doctorNow: TodayListRow | null;
-  /** Doctor view: the whole day in time order, so nothing waits for the desk. */
-  doctorDay: TodayListRow[];
-  /** Doctor: up to 3 patients after Now (waiting first), and everyone else of the day. */
-  doctorNext: TodayListRow[];
-  doctorRest: TodayListRow[];
-  doctorDoneCount: number;
 };
 
 function initials(name: string): string {
@@ -192,28 +184,7 @@ export function buildTodayModel(
       mobile: a.patientMobile ? displayMobile(a.patientMobile) : null,
     }));
 
-  const doctorDay = rows.filter((r) => r.status !== "no_show");
-  const doctorNow =
-    doctorDay.find((r) => r.status === "in_chair") ??
-    (nextId ? doctorDay.find((r) => r.id === nextId) : undefined) ??
-    doctorDay.find((r) => r.status === "scheduled" || r.status === "confirmed") ??
-    null;
-
-  const waitingFirst = (r: TodayListRow) => (r.status === "arrived" ? 0 : 1);
-  const doctorUpcoming = doctorDay
-    .filter(
-      (r) =>
-        r.id !== doctorNow?.id &&
-        (r.status === "arrived" || r.status === "scheduled" || r.status === "confirmed"),
-    )
-    .sort((a, b) => waitingFirst(a) - waitingFirst(b));
-  const doctorNext = doctorUpcoming.slice(0, 3);
-  const shown = new Set([doctorNow?.id, ...doctorNext.map((r) => r.id)]);
-
   return {
-    doctorNext,
-    doctorRest: doctorDay.filter((r) => !shown.has(r.id)),
-    doctorDoneCount: doctorDay.filter((r) => r.status === "completed").length,
     appointmentsCount: active.filter((a) => a.status !== "no_show").length,
     openSlots,
     waitingCount: arrived.length,
@@ -242,7 +213,5 @@ export function buildTodayModel(
       : null,
     rows,
     callList,
-    doctorNow,
-    doctorDay,
   };
 }
