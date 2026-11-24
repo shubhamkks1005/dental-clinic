@@ -62,6 +62,22 @@ describe("today summary (6.3.8)", () => {
     expect(s.collectedPaise).toBe(-10_000);
   });
 
+  it("counts a refund at IST 23:59:59.999 today, not one at IST 00:00 tomorrow", async () => {
+    const insert = t.sqlite.prepare(
+      `INSERT INTO refunds (id, created_by, updated_by, payment_id, patient_id, amount_paise, mode, reason, approved_by, approved_at)
+       VALUES (?, 'system', 'system', 'pay1', 'p1', ?, 'cash', 'Fake reason', 'doc-a', ?)`,
+    );
+    // IST 2026-11-23 00:00:00 = 2026-11-22T18:30:00.000Z (first instant of today)
+    insert.run("rf-start", 100, "2026-11-22T18:30:00.000Z");
+    // IST 2026-11-23 23:59:59.999 = 2026-11-23T18:29:59.999Z (last instant of today)
+    insert.run("rf-end", 200, "2026-11-23T18:29:59.999Z");
+    // One ms before today, and IST 2026-11-24 00:00 (tomorrow): both outside.
+    insert.run("rf-before", 400, "2026-11-22T18:29:59.999Z");
+    insert.run("rf-next", 800, "2026-11-23T18:30:00.000Z");
+    const s = await createRepos(t.db, receptionist).todaySummary.get(NOW);
+    expect(s.refundsPaise).toBe(300);
+  });
+
   it("developer cannot read today summary", async () => {
     const developer: Ctx = { userId: "dev", role: "developer", requestId: "r3" };
     await expect(createRepos(t.db, developer).todaySummary.get(NOW)).rejects.toBeInstanceOf(

@@ -3,7 +3,7 @@ import app from "./index";
 import { makeEnv, ORIGIN } from "./testing/app-env";
 
 // S0.1.1: every /api reply tells DevTools how long it took and how many queries it ran.
-const FORMAT = /^total;dur=\d+, db;dur=\d+, queries;desc="\d+"$/;
+const FORMAT = /^total;dur=\d+, db;dur=\d+, queries;desc="\d+", statements;desc="\d+"$/;
 
 describe("Server-Timing header", () => {
   it("is on /api replies, success and error, as numbers only", async () => {
@@ -20,8 +20,13 @@ describe("Server-Timing header", () => {
     const queries = Number(
       /queries;desc="(\d+)"/.exec(res.headers.get("server-timing") ?? "")?.[1],
     );
+    const statements = Number(
+      /statements;desc="(\d+)"/.exec(res.headers.get("server-timing") ?? "")?.[1],
+    );
     expect(queries).toBeGreaterThanOrEqual(1);
     expect(queries).toBeLessThan(50);
+    // A batch is one round trip, so statements can never be fewer than round trips.
+    expect(statements).toBeGreaterThanOrEqual(queries);
   });
 
   it("is not added to web pages", async () => {

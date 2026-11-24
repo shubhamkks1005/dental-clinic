@@ -4,6 +4,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
 import { appointments, payments, refunds } from "../schema";
+import { dayPeriod, inUtc } from "./stats-range";
 
 export type TodaySummary = {
   dateLocal: string;
@@ -58,13 +59,14 @@ export function todaySummaryRepo(db: Db, ctx: Ctx) {
         .where(and(eq(payments.dayLocal, dateLocal), isNull(payments.deletedAt)))
         .get();
 
-      const refundDay = sql`date(${refunds.approvedAt}, '+5 hours', '+30 minutes')`;
+      // UTC range of the IST day, so the refunds index can be used (S2.2.4).
+      const day = dayPeriod(dateLocal);
       const refunded = await db
         .select({
           value: sql<number>`coalesce(sum(${refunds.amountPaise}), 0)`,
         })
         .from(refunds)
-        .where(and(isNull(refunds.deletedAt), sql`${refundDay} = ${dateLocal}`))
+        .where(and(isNull(refunds.deletedAt), inUtc(refunds.approvedAt, day)))
         .get();
 
       return {

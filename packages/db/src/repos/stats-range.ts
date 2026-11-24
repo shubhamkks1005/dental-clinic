@@ -1,4 +1,4 @@
-import { addIstDays, istLocalToUtc } from "@clinic/shared";
+import { addIstDays, addMonthsYm, istLocalToUtc } from "@clinic/shared";
 import { and, gte, lt, type SQL } from "drizzle-orm";
 import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { istMonthStartUtcIso } from "./patients";
@@ -14,12 +14,8 @@ export type StatPeriod = {
   utcTo: string;
 };
 
-/** YYYY-MM plus whole months. */
-export function addMonthsYm(ym: string, delta: number): string {
-  const [y, m] = ym.split("-").map(Number) as [number, number];
-  const d = new Date(Date.UTC(y, m - 1 + delta, 1));
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
-}
+// addMonthsYm lives in @clinic/shared (one copy); re-exported so callers here keep one import.
+export { addMonthsYm };
 
 // Start of an IST month as UTC ISO. Reuses the patients helper (it reads the IST month of a Date).
 function monthStartUtc(ym: string): string {

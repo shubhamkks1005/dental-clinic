@@ -55,7 +55,8 @@ function endOfMonth(day: string): string {
   return `${monthOf(day)}-${String(last).padStart(2, "0")}`;
 }
 
-function addMonthsYm(ym: string, delta: number): string {
+/** YYYY-MM plus whole months. The one copy: stats-range.ts in packages/db imports it. */
+export function addMonthsYm(ym: string, delta: number): string {
   const [y, m] = ym.split("-").map(Number) as [number, number];
   const d = new Date(Date.UTC(y, m - 1 + delta, 1));
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;

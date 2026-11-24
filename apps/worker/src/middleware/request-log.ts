@@ -5,7 +5,7 @@ import type { AppEnv } from "../types";
 
 // One JSON line per /api or /hooks request (method, path, status, ms, requestId). Runs in
 // finally so a crash still leaves a request line that shares the Error ID with the error log.
-// /api replies also carry Server-Timing (S0.1.1): total ms, DB ms, query count. Numbers only.
+// /api replies also carry Server-Timing (S0.1.1): total ms, DB ms, D1 round trips and statements. Numbers only.
 export function requestLog(): MiddlewareHandler<AppEnv> {
   return async (c, next) => {
     const started = Date.now();
