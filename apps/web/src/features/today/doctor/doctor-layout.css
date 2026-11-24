@@ -859,8 +859,13 @@ html[data-doctor-today] .shell-top .top-search {
 }
 @media (pointer: coarse) {
   .td-btn,
-  .td-x {
+  .td-x,
+  .td-search-input,
+  .td-note-input {
     min-height: 44px;
+  }
+  .td-more {
+    width: 44px;
   }
   .td-x {
     width: 44px;

@@ -184,3 +184,51 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
   await ctx.close();
   await desk.dispose();
 });
+
+// T2.9: phone and tablet. No sideways scroll, tap targets of 44 px, the same screen in one column.
+for (const [width, height, label] of [
+  [360, 740, "360"],
+  [768, 1024, "768"],
+  [1366, 650, "1366"],
+] as const) {
+  test(`doctor Today at ${label} px: no sideways scroll, big tap targets`, async ({
+    browser,
+    playwright,
+  }) => {
+    test.setTimeout(90_000);
+    const desk = await signedInAs(playwright, "receptionist");
+    const { stamp } = await seed(desk, ["Esha Test", "Farah Test"]);
+    const touch = width < 1024;
+    const ctx = await browser.newContext({
+      viewport: { width, height },
+      hasTouch: touch,
+      isMobile: touch,
+    });
+    const page = await ctx.newPage();
+    await page.goto("/api/staff/auth/dev-login?role=doctor");
+    await page.goto("/app");
+    await expect(rowOf(page, `Esha Test ${stamp}`)).toBeVisible();
+    const sideways = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(sideways).toBeLessThanOrEqual(1);
+    if (touch) {
+      for (const sel of [
+        ".td-action",
+        ".td-more",
+        ".td-row-main",
+        ".td-break-btn",
+        ".td-search-input",
+      ]) {
+        const box = await page.locator(sel).first().boundingBox();
+        expect(box?.height ?? 0, `${sel} height at ${label}`).toBeGreaterThanOrEqual(43.5);
+      }
+    }
+    await page.screenshot({
+      path: `docs/ui-audit/screenshots/redesign/T2/DoctorToday-${label}.png`,
+      fullPage: true,
+    });
+    await ctx.close();
+    await desk.dispose();
+  });
+}

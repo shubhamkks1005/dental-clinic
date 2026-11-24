@@ -1,13 +1,13 @@
 import { istHour, istLongDate } from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { icons } from "../../ui/icons";
+import { RouteFallback } from "../../ui/RouteFallback";
 import { shortName } from "../../ui/names";
 import { plural } from "../../ui/format";
 import { useMe } from "../auth";
 import { FollowUpList } from "./FollowUpList";
 import { DoctorToday } from "./DoctorToday";
-import { DoctorTodayPage } from "./doctor/DoctorTodayPage";
 import { NextPatientCard } from "./NextPatientCard";
 import { TodayActions } from "./TodayActions";
 import { TodayList } from "./TodayList";
@@ -16,6 +16,11 @@ import { useTodayModel } from "./useTodayModel";
 import { WalkInDialog } from "./WalkInDialog";
 import "./today.css";
 import "./today-cards.css";
+
+// Its own chunk (S3.1): the doctor page is big and only the doctor opens it.
+const DoctorTodayPage = lazy(() =>
+  import("./doctor/DoctorTodayPage").then((m) => ({ default: m.DoctorTodayPage })),
+);
 
 function greeting(now: Date): string {
   const hour = istHour(now);
@@ -27,7 +32,13 @@ function greeting(now: Date): string {
 export function TodayScreen() {
   const me = useMe();
   // The doctor has a page of their own (final design, Part T); everyone else keeps this one.
-  return me.role === "doctor" ? <DoctorTodayPage /> : <DeskToday />;
+  return me.role === "doctor" ? (
+    <Suspense fallback={<RouteFallback />}>
+      <DoctorTodayPage />
+    </Suspense>
+  ) : (
+    <DeskToday />
+  );
 }
 
 function DeskToday() {
