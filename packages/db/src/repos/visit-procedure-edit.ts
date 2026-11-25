@@ -19,11 +19,16 @@ export type UpdateVisitProcedureInput = {
 // 3.2.3: change, remove (soft delete) and restore a procedure line on a draft visit.
 export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
   return {
-    async update(lineId: string, version: number, input: UpdateVisitProcedureInput) {
+    async update(
+      lineId: string,
+      version: number,
+      input: UpdateVisitProcedureInput,
+      visitId?: string,
+    ) {
       assertAllowed(ctx, "clinical.edit");
       assertTooth(input.toothFdi);
       assertSurfaces(input.surfaces);
-      const line = await loadLine(db, lineId, "live");
+      const line = await loadLine(db, lineId, "live", visitId);
       if (line.version !== version) throw new ConflictError();
       const surfaces = input.surfaces ? [...new Set(input.surfaces)] : undefined;
       const note = input.note === undefined ? undefined : input.note?.trim() || null;
@@ -65,9 +70,9 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
     },
 
     /** Soft delete (draft only). The reply carries the new version, which Undo needs. */
-    async remove(lineId: string, version: number): Promise<{ version: number }> {
+    async remove(lineId: string, version: number, visitId?: string): Promise<{ version: number }> {
       assertAllowed(ctx, "clinical.edit");
-      const line = await loadLine(db, lineId, "live");
+      const line = await loadLine(db, lineId, "live", visitId);
       if (line.version !== version) throw new ConflictError();
       await db.batch([
         db
@@ -97,9 +102,9 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
     },
 
     /** Undo of remove: clears the soft delete (draft only). */
-    async restore(lineId: string, version: number) {
+    async restore(lineId: string, version: number, visitId?: string) {
       assertAllowed(ctx, "clinical.edit");
-      const line = await loadLine(db, lineId, "deleted");
+      const line = await loadLine(db, lineId, "deleted", visitId);
       if (line.version !== version) throw new ConflictError();
       await db.batch([
         db
@@ -124,7 +129,7 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
 }
 
 // One query: the line and its visit status. "live" wants a line not yet removed; "deleted" the opposite.
-async function loadLine(db: Db, lineId: string, want: "live" | "deleted") {
+async function loadLine(db: Db, lineId: string, want: "live" | "deleted", visitId?: string) {
   const row = await db
     .select({
       id: visitProcedures.id,
@@ -135,12 +140,17 @@ async function loadLine(db: Db, lineId: string, want: "live" | "deleted") {
       note: visitProcedures.note,
       deletedAt: visitProcedures.deletedAt,
       visitStatus: visits.status,
+      visitId: visitProcedures.visitId,
     })
     .from(visitProcedures)
     .innerJoin(visits, eq(visits.id, visitProcedures.visitId))
     .where(eq(visitProcedures.id, lineId))
     .get();
-  if (!row || (want === "live") !== (row.deletedAt === null)) {
+  if (
+    !row ||
+    (visitId && row.visitId !== visitId) ||
+    (want === "live") !== (row.deletedAt === null)
+  ) {
     throw new NotFoundError("That procedure");
   }
   if (row.visitStatus !== "draft") {

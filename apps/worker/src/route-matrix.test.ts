@@ -164,6 +164,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/visits/:id/procedures" && method === "POST") {
     return JSON.stringify({ listItemId: "proc1", toothFdi: 46, surfaces: ["o"] });
   }
+  if (/^\/api\/staff\/visits\/:id\/(diagnoses|procedures)\/:lineId(\/restore)?$/.test(path)) {
+    return JSON.stringify(method === "PATCH" ? { version: 1, toothFdi: 36 } : { version: 1 });
+  }
   if (path === "/api/staff/visits/:id/finalise" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }

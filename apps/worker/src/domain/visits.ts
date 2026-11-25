@@ -6,6 +6,9 @@ import {
   parseFinaliseVisit,
   parseOpenVisit,
   parsePatchVisit,
+  parseUpdateVisitDiagnosis,
+  parseUpdateVisitProcedure,
+  parseVisitLineVersion,
 } from "@clinic/shared";
 
 export async function openVisit(repos: Repos, body: unknown) {
@@ -94,4 +97,79 @@ export async function addVisitAddendum(repos: Repos, id: string, body: unknown) 
   if (!parsed.ok) return parsed;
   const addendum = await repos.visits.addAddendum(id, parsed.value);
   return { ok: true as const, addendum };
+}
+
+// B3: change, remove and undo for one line. The visit id in the URL must own the line.
+export async function updateVisitDiagnosis(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseUpdateVisitDiagnosis(body);
+  if (!parsed.ok) return parsed;
+  const { version, ...fields } = parsed.value;
+  const diagnosis = await repos.visitDiagnoses.update(lineId, version, fields, visitId);
+  return { ok: true as const, diagnosis };
+}
+
+export async function removeVisitDiagnosis(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseVisitLineVersion(body);
+  if (!parsed.ok) return parsed;
+  const removed = await repos.visitDiagnoses.remove(lineId, parsed.value.version, visitId);
+  return { ok: true as const, version: removed.version };
+}
+
+export async function restoreVisitDiagnosis(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseVisitLineVersion(body);
+  if (!parsed.ok) return parsed;
+  const diagnosis = await repos.visitDiagnoses.restore(lineId, parsed.value.version, visitId);
+  return { ok: true as const, diagnosis };
+}
+
+export async function updateVisitProcedure(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseUpdateVisitProcedure(body);
+  if (!parsed.ok) return parsed;
+  const { version, ...fields } = parsed.value;
+  const procedure = await repos.visitProcedures.update(lineId, version, fields, visitId);
+  return { ok: true as const, procedure };
+}
+
+export async function removeVisitProcedure(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseVisitLineVersion(body);
+  if (!parsed.ok) return parsed;
+  const removed = await repos.visitProcedures.remove(lineId, parsed.value.version, visitId);
+  return { ok: true as const, version: removed.version };
+}
+
+export async function restoreVisitProcedure(
+  repos: Repos,
+  visitId: string,
+  lineId: string,
+  body: unknown,
+) {
+  const parsed = parseVisitLineVersion(body);
+  if (!parsed.ok) return parsed;
+  const procedure = await repos.visitProcedures.restore(lineId, parsed.value.version, visitId);
+  return { ok: true as const, procedure };
 }

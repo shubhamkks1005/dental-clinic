@@ -361,6 +361,36 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "clinical.edit" },
   },
   {
+    method: "PATCH",
+    path: "/api/staff/visits/:id/diagnoses/:lineId",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "DELETE",
+    path: "/api/staff/visits/:id/diagnoses/:lineId",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/visits/:id/diagnoses/:lineId/restore",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "PATCH",
+    path: "/api/staff/visits/:id/procedures/:lineId",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "DELETE",
+    path: "/api/staff/visits/:id/procedures/:lineId",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/visits/:id/procedures/:lineId/restore",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
     method: "POST",
     path: "/api/staff/visits/:id/finalise",
     access: { kind: "permission", action: "clinical.edit" },

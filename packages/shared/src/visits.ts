@@ -150,3 +150,48 @@ export function parseAddVisitProcedure(body: unknown) {
   }
   return { ok: true as const, value: parsed.data };
 }
+
+const lineVersion = z.number({ error: "Reload the visit and try again." }).int().positive();
+
+// Remove and Undo (restore) a diagnosis or procedure line: the version the doctor last saw.
+export const visitLineVersionBody = z.object({ version: lineVersion }).strict();
+
+export function parseVisitLineVersion(body: unknown) {
+  const parsed = visitLineVersionBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const updateVisitDiagnosisBody = z
+  .object({
+    version: lineVersion,
+    toothFdi: z.number().int().min(11).max(85).nullable(),
+  })
+  .strict();
+
+export function parseUpdateVisitDiagnosis(body: unknown) {
+  const parsed = updateVisitDiagnosisBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
+export const updateVisitProcedureBody = z
+  .object({
+    version: lineVersion,
+    toothFdi: z.number().int().min(11).max(85).nullable().optional(),
+    surfaces: z.array(surfaceSchema).max(6).optional(),
+    note: z.string().trim().max(1000).nullable().optional(),
+  })
+  .strict();
+
+export function parseUpdateVisitProcedure(body: unknown) {
+  const parsed = updateVisitProcedureBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the form." };
+  }
+  return { ok: true as const, value: parsed.data };
+}

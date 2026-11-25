@@ -125,10 +125,15 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
       };
     },
 
-    async update(lineId: string, version: number, input: UpdateVisitDiagnosisInput) {
+    async update(
+      lineId: string,
+      version: number,
+      input: UpdateVisitDiagnosisInput,
+      visitId?: string,
+    ) {
       assertAllowed(ctx, "clinical.edit");
       assertTooth(input.toothFdi);
-      const line = await loadLine(db, lineId, "live");
+      const line = await loadLine(db, lineId, "live", visitId);
       if (line.version !== version) throw new ConflictError();
       await db.batch([
         db
@@ -158,9 +163,9 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
     },
 
     /** Soft delete (draft only). The reply carries the new version, which Undo needs. */
-    async remove(lineId: string, version: number): Promise<{ version: number }> {
+    async remove(lineId: string, version: number, visitId?: string): Promise<{ version: number }> {
       assertAllowed(ctx, "clinical.edit");
-      const line = await loadLine(db, lineId, "live");
+      const line = await loadLine(db, lineId, "live", visitId);
       if (line.version !== version) throw new ConflictError();
       await db.batch([
         db
@@ -190,9 +195,9 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
     },
 
     /** Undo of remove: clears the soft delete (draft only). */
-    async restore(lineId: string, version: number) {
+    async restore(lineId: string, version: number, visitId?: string) {
       assertAllowed(ctx, "clinical.edit");
-      const line = await loadLine(db, lineId, "deleted");
+      const line = await loadLine(db, lineId, "deleted", visitId);
       if (line.version !== version) throw new ConflictError();
       await db.batch([
         db
@@ -217,7 +222,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
 }
 
 // One query: the line and its visit status. "live" wants a line not yet removed; "deleted" the opposite.
-async function loadLine(db: Db, lineId: string, want: "live" | "deleted") {
+async function loadLine(db: Db, lineId: string, want: "live" | "deleted", visitId?: string) {
   const row = await db
     .select({
       id: visitDiagnoses.id,
@@ -226,12 +231,17 @@ async function loadLine(db: Db, lineId: string, want: "live" | "deleted") {
       toothFdi: visitDiagnoses.toothFdi,
       deletedAt: visitDiagnoses.deletedAt,
       visitStatus: visits.status,
+      visitId: visitDiagnoses.visitId,
     })
     .from(visitDiagnoses)
     .innerJoin(visits, eq(visits.id, visitDiagnoses.visitId))
     .where(eq(visitDiagnoses.id, lineId))
     .get();
-  if (!row || (want === "live") !== (row.deletedAt === null)) {
+  if (
+    !row ||
+    (visitId && row.visitId !== visitId) ||
+    (want === "live") !== (row.deletedAt === null)
+  ) {
     throw new NotFoundError("That diagnosis");
   }
   if (row.visitStatus !== "draft") {

@@ -11,6 +11,12 @@ import {
   listVisitTimeline,
   openVisit,
   patchVisit,
+  removeVisitDiagnosis,
+  removeVisitProcedure,
+  restoreVisitDiagnosis,
+  restoreVisitProcedure,
+  updateVisitDiagnosis,
+  updateVisitProcedure,
 } from "../domain/visits";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
@@ -80,6 +86,78 @@ staffVisits.post("/visits/:id/procedures", async (c) => {
   const result = await addVisitProcedure(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ procedure: result.procedure }), 201);
+});
+
+staffVisits.patch("/visits/:id/diagnoses/:lineId", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await updateVisitDiagnosis(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ diagnosis: result.diagnosis }));
+});
+
+staffVisits.delete("/visits/:id/diagnoses/:lineId", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await removeVisitDiagnosis(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ version: result.version }));
+});
+
+staffVisits.post("/visits/:id/diagnoses/:lineId/restore", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await restoreVisitDiagnosis(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ diagnosis: result.diagnosis }));
+});
+
+staffVisits.patch("/visits/:id/procedures/:lineId", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await updateVisitProcedure(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ procedure: result.procedure }));
+});
+
+staffVisits.delete("/visits/:id/procedures/:lineId", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await removeVisitProcedure(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ version: result.version }));
+});
+
+staffVisits.post("/visits/:id/procedures/:lineId/restore", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await restoreVisitProcedure(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("lineId"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ procedure: result.procedure }));
 });
 
 staffVisits.post("/visits/:id/finalise", async (c) => {
