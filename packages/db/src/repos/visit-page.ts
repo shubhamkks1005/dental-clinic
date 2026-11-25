@@ -88,6 +88,7 @@ export type VisitPage = {
     takenOn: string | null;
     createdAt: string;
     hasThumb: boolean;
+    mime: string;
   }[];
   /** Medicines of the latest issued prescription. */
   previousMedicines: {
@@ -233,6 +234,7 @@ export function visitPageRepo(db: Db, ctx: Ctx) {
             .select({
               id: files.id,
               kind: files.kind,
+              mime: files.mime,
               originalFilename: files.originalFilename,
               caption: files.caption,
               toothFdi: files.toothFdi,

@@ -78,6 +78,7 @@ export type VisitPageData = {
   files: {
     id: string;
     kind: string;
+    mime: string;
     originalFilename: string;
     caption: string | null;
     toothFdi: number | null;
