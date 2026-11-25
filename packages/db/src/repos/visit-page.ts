@@ -1,6 +1,8 @@
 import {
   actionForFileKind,
+  followUpStatus,
   istDate,
+  type FollowUpStatus,
   NEXT_APPOINTMENT_STATUSES,
   pickNextAppointment,
 } from "@clinic/shared";
@@ -96,6 +98,8 @@ export type VisitPage = {
       days: string;
     }[];
   } | null;
+  /** Strip: is the patient late for the follow-up asked on the latest issued prescription (design 30). */
+  followUp: FollowUpStatus | null;
 };
 
 // B5: everything the doctor visit page needs in TWO round trips (one read of the visit to learn
@@ -239,6 +243,7 @@ export function visitPageRepo(db: Db, ctx: Ctx) {
             .select({
               rxNo: prescriptions.rxNo,
               issuedAt: prescriptions.issuedAt,
+              followUpOn: prescriptions.followUpOn,
               genericName: prescriptionItems.genericName,
               brand: prescriptionItems.brand,
               strength: prescriptionItems.strength,
@@ -279,6 +284,14 @@ export function visitPageRepo(db: Db, ctx: Ctx) {
           : null,
         duesPaise: Number(dues[0]?.due ?? 0),
         files: shownFiles,
+        followUp: rx[0]
+          ? followUpStatus({
+              followUpOn: rx[0].followUpOn,
+              issuedOn: rx[0].issuedAt ? istDate(new Date(rx[0].issuedAt)) : null,
+              medicineDays: rx.map((r) => r.days),
+              today,
+            })
+          : null,
         previousMedicines: rx[0]
           ? {
               rxNo: rx[0].rxNo,

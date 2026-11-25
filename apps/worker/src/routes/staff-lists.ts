@@ -34,6 +34,11 @@ staffLists.get("/library/medicine-usage", async (c) =>
   c.json(ok({ counts: await signedIn(c).repos.prescriptions.medicineUsage30d() })),
 );
 
+// Design 30: "popular" diagnoses and procedures for the visit page search (counts only, doctor only).
+staffLists.get("/library/line-usage", async (c) =>
+  c.json(ok(await signedIn(c).repos.visitDiagnoses.diagnosisProcedureUsage30d())),
+);
+
 staffLists.get("/lists/:key", async (c) =>
   c.json(ok({ items: await listItemsOf(signedIn(c).repos, c.req.param("key")) })),
 );

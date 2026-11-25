@@ -77,6 +77,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/library/line-usage",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/lists/:key",
     access: { kind: "permission", action: "settings.read" },
   },

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isFdiTooth } from "./teeth";
 
 // B8: marks the doctor draws on an X-ray or photo. Coordinates are in the viewer's own space
 // (x 0-400, y 0-300), so they do not depend on the screen size. Saved as one versioned JSON on the file.
@@ -15,6 +16,8 @@ const base = {
     .string()
     .regex(/^#[0-9A-Fa-f]{6}$/, "Use a colour like #E11D48.")
     .optional(),
+  // Line thickness the doctor chose (design: slider 1 to 8). Optional so older saved marks stay valid.
+  width: z.number().min(0.5).max(8).optional(),
 };
 
 export const annotationItemSchema = z.discriminatedUnion("type", [
@@ -51,6 +54,13 @@ export const annotationsSchema = z
     v: z.literal(1),
     scale: annotationScaleSchema.nullable(),
     items: z.array(annotationItemSchema).max(ANNOTATION_MAX_ITEMS, "Too many marks on one image."),
+    // The viewer lets the doctor tag several teeth and write one note per image. Both optional
+    // (older saves have neither); they live in this document, so no migration.
+    teeth: z
+      .array(z.number().int().refine(isFdiTooth, "Use a tooth number like 36."))
+      .max(32, "Too many teeth on one image.")
+      .optional(),
+    note: z.string().trim().max(500, "The note is too long (500 letters at most).").optional(),
   })
   .strict()
   .superRefine((a, ctx) => {

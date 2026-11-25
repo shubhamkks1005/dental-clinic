@@ -77,10 +77,10 @@ function seed(sqlite: Sqlite) {
     "a".repeat(64),
   );
   run(
-    `INSERT INTO prescriptions (id, created_by, updated_by, patient_id, doctor_id, status, rx_no, issued_at)
-     VALUES ('rx1', 's', 's', ?, 'doc-a', 'issued', 'RX-1', '2026-10-01T05:00:00.000Z'),
-            ('rx2', 's', 's', ?, 'doc-a', 'issued', 'RX-2', '2026-10-05T05:00:00.000Z'),
-            ('rx3', 's', 's', ?, 'doc-a', 'draft', NULL, NULL)`,
+    `INSERT INTO prescriptions (id, created_by, updated_by, patient_id, doctor_id, status, rx_no, issued_at, follow_up_on)
+     VALUES ('rx1', 's', 's', ?, 'doc-a', 'issued', 'RX-1', '2026-10-01T05:00:00.000Z', NULL),
+            ('rx2', 's', 's', ?, 'doc-a', 'issued', 'RX-2', '2026-10-05T05:00:00.000Z', '2026-11-20'),
+            ('rx3', 's', 's', ?, 'doc-a', 'draft', NULL, NULL, '2026-12-31')`,
     P,
     P,
     P,
@@ -121,6 +121,20 @@ describe("visit page read (B5)", () => {
       "Amoxicillin",
       "Ibuprofen",
     ]);
+  });
+
+  it("says how late the follow-up is, from the latest issued prescription only (design 30 strip)", async () => {
+    const t = countingDb();
+    seed(t.sqlite);
+    const repos = createRepos(t.db, doctor);
+    const page = await repos.visitPage.get("v-now", new Date("2026-11-25T05:00:00.000Z"));
+    // rx2: follow-up asked for 20 Nov, 5-day course from 5 Oct. The draft rx3 date is ignored.
+    expect(page.followUp).toEqual({
+      dueOn: "2026-11-20",
+      daysLate: 5,
+      medsFinishedOn: "2026-10-10",
+      state: "late",
+    });
   });
 
   it("is two round trips and 10 queries at most (PLAN Part S)", async () => {
@@ -166,6 +180,7 @@ describe("visit page read (B5)", () => {
       duesPaise: 0,
       files: [],
       previousMedicines: null,
+      followUp: null,
     });
   });
 

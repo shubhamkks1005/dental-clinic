@@ -157,6 +157,21 @@ Things the UI must know:
 - Not built (not in section 5): FDI multi-tag of an X-ray (files have one `tooth_fdi`); the "Not saved yet" row is client state.
 - The 10-query count for B5 excludes the session and permission check of the request itself.
 
+
+## 5c. Design 30 (2026-11-25): what is new and what was built
+The owner pasted a newer file (`doctor_visit_smart_accordions (30).html`) and will save it as docs/design/final/doctor_visit.html. The B1 to B10 backend was NOT redone. Only what (30) needs and B1 to B10 did not give:
+| # | New in (30) | Verdict | Done |
+|---|---|---|---|
+| B11 | X-ray line thickness slider | `width` (0.5 to 8) added to every mark in `file-annotations.ts`; older saves stay valid | built |
+| B12 | X-ray: several teeth tagged + one note per image | stored INSIDE the annotations document (`teeth`: FDI list, `note`: 500 letters), no migration; the `files.tooth_fdi` column stays as the main tooth | built |
+| B13 | Strip: "Follow-up: 4 days late (18 Nov due, meds finished)" | `GET /visits/:id/page` now returns `followUp` {dueOn, daysLate, medsFinishedOn, state} from the latest ISSUED prescription (pure `followUpStatus` in packages/shared/src/visit-strip.ts); still 10 queries | built |
+| B14 | Strip: "No diabetes / No blood thinner" | NO new read: the screen uses the existing medical history read; `historyAnswer(items, STRIP_CODES.diabetes)` gives yes / no / unknown; the screen prints "No diabetes" ONLY for "no" (never for unknown) | built (helper) |
+| B15 | "Popular" diagnoses and procedures in the search; "Recently used" medicines | `GET /api/staff/library/line-usage` (counts per name in 30 days, doctor only, `repos.visitDiagnoses.diagnosisProcedureUsage30d`); medicines use the existing `/library/medicine-usage` | built |
+| - | "Chart as of" list, and the complaint and findings of an older visit | exists: visits list of the patient + `GET /visits/:id`; no change | none needed |
+| - | Letterhead tagline, qualifications, speciality, registration, extra line, email, Instagram, timings | exist in settings (`clinic.*`, `doctor.*`) | none needed |
+| - | Pending treatment "2 sittings remaining" | OPEN: `plan_items.sittings` is a total only and finalise completes an item at once. Needs an owner rule | waits for owner |
+| - | QR picture on the prescription | OPEN: only the Instagram name is stored | waits for owner |
+
 ## 6. Logic changes (frontend)
 - State: replace the prototype's globals (`state`, `rxState`, `diagProcState`) with the app's data hooks (`useVisitData`, `useVisitPrescription`, new `useVisitDiagnosesProcedures`). Server is the truth; HTML objects are demo data.
 - Optimistic (status-like only): add/remove diagnosis and procedure lines may appear at once and roll back with one plain sentence if the server refuses; they carry NO money decision (fee is a copy). Never optimistic: Issue, Finalise, anything on a bill.
@@ -296,3 +311,4 @@ Test cases for this part:
 ## 12. Log
 - 2026-11-25: plan written from the pasted HTML (file not yet saved in docs/design/final/). Nothing built.
 - 2026-11-25: Phase A (backend) done, B1 to B10, one local commit each (c6e442b, 5eefaeb, d1cf693, 0fbd526, 4c211f2, 2151229, 0d9f8df, c8119fd, ad29904, d6730f4). New migrations 0058, 0059, 0060 (owner applies, never applied by the agent). UI waits for the HTML (Q14).
+- 2026-11-25: design (30) compared with B1 to B10. Built B11 to B15 (see 5c). Open for the owner: sittings rule, QR picture.

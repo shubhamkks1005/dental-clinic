@@ -81,6 +81,7 @@ export * from "./file-annotations";
 export * from "./tooth-history";
 export * from "./dentition";
 export * from "./medical-history";
+export * from "./visit-strip";
 export * from "./plan-items";
 export * from "./estimate-print";
 export * from "./certificates";
