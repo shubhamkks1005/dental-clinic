@@ -231,6 +231,16 @@ Jobs: 1) find an item and fix it, 2) add an item, 3) confirm "Needs review" medi
 | 3 | Which quick views for medicines? | C4, F1 | All, Needs review, Hidden, plus "Not used in 30 days" | Only All, Needs review, Hidden. |
 | 4 | Keep the one-tap "Confirm" button on a medicine card? | E4 | Remove; saving after opening the item marks it reviewed | Confirm stays, but it OPENS the card (edit view) filled in; Save there = reviewed (same as any save). Needs review = medicines the doctor wrote in a visit that were not in the Library. Every time the doctor issues a medicine its counter rises, and the Library shows "Dr X wrote this N times". |
 
+### Owner answers on the medicine card form (2026-11-25)
+| Question | Answer |
+|---|---|
+| Required fields | Name only. Empty strength, form, dose, frequency, days and timing read "As directed" (never "5 days"). |
+| Combination | A Yes/No switch in the form; it starts ON as a suggestion when the name has a "+". |
+| Written-N-times counter | Both the total and the last 30 days: "Dr X wrote this 48 times (6 in the last 30 days)". Counts come from issued prescriptions only. |
+| Added by and Last updated by | Inside the Edit form, at the bottom (who and when). Not on the card. |
+
+Effect on findings: B2 (name is the only required field; no other validation sentence needed for dose/days), E1 ("As directed" for every empty clinical field), D2 (who and when only in Edit), E4 (counter shows total and 30 days; total per doctor is NEW, small).
+
 ## 6. Backend and data summary
 - EXISTS: `list_items` (label, data_json, active, sort_order, version, created_by/updated_by), list routes (add, update, hide, move, 409 stale version), `GET /api/staff/library/medicine-usage`, `LIST_DEFS` fields, `data.reviewed`.
 - FIX FIRST: unique index (list_key, label) and 422 "duplicate name" contradict the owner's duplicate rule (B1). Small migration.
