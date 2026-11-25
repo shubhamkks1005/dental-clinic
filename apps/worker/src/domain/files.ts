@@ -1,6 +1,6 @@
 import type { FileRecord, Repos } from "@clinic/db";
 import { NotFoundError } from "@clinic/db";
-import type { FileRow } from "@clinic/shared";
+import { parseSaveAnnotations, type FileRow } from "@clinic/shared";
 import type { StorageAdapter } from "../adapters/storage";
 import { uploadPatientFile, type UploadFileInput } from "./files-upload";
 
@@ -39,4 +39,20 @@ export async function readFileBytes(
     body: obj.body,
     contentType: opts?.thumb ? "image/jpeg" : obj.contentType || row.mime,
   };
+}
+
+// B8: marks on an X-ray or photo (doctor only; the repo checks files.clinical).
+export async function getFileAnnotations(repos: Repos, fileId: string) {
+  return repos.fileAnnotations.get(fileId);
+}
+
+export async function saveFileAnnotations(repos: Repos, fileId: string, body: unknown) {
+  const parsed = parseSaveAnnotations(body);
+  if (!parsed.ok) return parsed;
+  const saved = await repos.fileAnnotations.save(
+    fileId,
+    parsed.value.version,
+    parsed.value.annotations,
+  );
+  return { ok: true as const, saved };
 }

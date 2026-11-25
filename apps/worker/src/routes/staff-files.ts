@@ -3,9 +3,11 @@ import { Hono } from "hono";
 import { StorageNotConfiguredError } from "../adapters/storage";
 import { storageFromEnv } from "../adapters/storage-from-env";
 import {
+  getFileAnnotations,
   getPatientFile,
   listPatientFiles,
   readFileBytes,
+  saveFileAnnotations,
   softDeletePatientFile,
   storageUsageBytes,
   uploadFile,
@@ -104,6 +106,18 @@ staffFiles.get("/files/:id/content", async (c) => {
     "content-disposition": `inline; filename="${safeFilename(row.originalFilename)}"`,
   });
   return new Response(body, { status: 200, headers });
+});
+
+// B8: marks on an X-ray or photo (doctor only).
+staffFiles.get("/files/:id/annotations", async (c) => {
+  return c.json(ok(await getFileAnnotations(signedIn(c).repos, c.req.param("id"))));
+});
+
+staffFiles.put("/files/:id/annotations", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await saveFileAnnotations(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok(result.saved));
 });
 
 staffFiles.delete("/files/:id", async (c) => {

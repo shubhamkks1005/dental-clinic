@@ -21,11 +21,19 @@ export const files = sqliteTable(
     toothFdi: integer("tooth_fdi"),
     takenOn: text("taken_on"),
     thumbKey: text("thumb_key"),
+    // B8: pen / circle / arrow / text / measure marks as versioned JSON (max 64 KB), doctor only.
+    annotationsJson: text("annotations_json"),
   },
   (t) => [
     index("files_patient_created_idx").on(t.patientId, t.createdAt),
     check("files_kind_check", oneOf(t.kind.name, FILE_KINDS)),
     check("files_mime_check", oneOf(t.mime.name, FILE_MIME_TYPES)),
+    check(
+      "files_annotations_json",
+      sql.raw(
+        `("annotations_json" IS NULL OR (json_valid("annotations_json") AND length("annotations_json") <= 65536))`,
+      ),
+    ),
     check("files_bytes_positive", sql.raw(`"bytes" > 0`)),
     check("files_sha256_length", sql.raw(`length("sha256") = 64`)),
     check(

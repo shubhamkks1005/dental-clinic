@@ -486,6 +486,16 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "files.documents" },
   },
   {
+    method: "GET",
+    path: "/api/staff/files/:id/annotations",
+    access: { kind: "permission", action: "files.clinical" },
+  },
+  {
+    method: "PUT",
+    path: "/api/staff/files/:id/annotations",
+    access: { kind: "permission", action: "files.clinical" },
+  },
+  {
     method: "DELETE",
     path: "/api/staff/files/:id",
     access: { kind: "permission", action: "files.documents" },

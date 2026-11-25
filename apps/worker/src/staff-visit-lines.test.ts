@@ -264,3 +264,41 @@ describe("tooth note route (B7)", () => {
     ).toBe(400);
   });
 });
+
+describe("x-ray annotation routes (B8)", () => {
+  it("doctor reads and saves; receptionist 403; stale version 409; bad mark 400", async () => {
+    sqlite
+      .prepare(
+        `INSERT INTO files (id, created_by, updated_by, patient_id, r2_key, kind, mime, bytes, sha256)
+         VALUES ('f-xr', 's', 's', 'p1', 'k-xr', 'iopa', 'image/jpeg', 10, ?)`,
+      )
+      .run("b".repeat(64));
+    const url = "/api/staff/files/f-xr/annotations";
+    const empty = { v: 1, scale: null, items: [] };
+    const got = await call("doc@example.test", "GET", url);
+    expect(((await got.json()) as { data: { version: number } }).data.version).toBe(1);
+
+    const saved = await call("doc@example.test", "PUT", url, {
+      version: 1,
+      annotations: { ...empty, items: [{ id: "a", type: "arrow", x1: 1, y1: 1, x2: 9, y2: 9 }] },
+    });
+    expect(saved.status).toBe(200);
+    expect(((await saved.json()) as { data: { version: number } }).data.version).toBe(2);
+
+    expect(
+      (await call("doc@example.test", "PUT", url, { version: 1, annotations: empty })).status,
+    ).toBe(409);
+    expect(
+      (
+        await call("doc@example.test", "PUT", url, {
+          version: 2,
+          annotations: { ...empty, items: [{ id: "a", type: "circle", cx: 500, cy: 1, r: 1 }] },
+        })
+      ).status,
+    ).toBe(400);
+    expect((await call("rec@example.test", "GET", url)).status).toBe(403);
+    expect(
+      (await call("rec@example.test", "PUT", url, { version: 2, annotations: empty })).status,
+    ).toBe(403);
+  });
+});
