@@ -60,6 +60,27 @@ Each list shows: a title with a one-line help sentence, a count per filter, and 
 
 How many items: medicines 60 to 200, procedures 20 to 60, visit types 5 to 15, diagnoses 30 to 100, quick phrases 10 to 40, medicine sets 5 to 20, others under 30. The page loads 25 rows and then offers "Show more".
 
+## 5b. Suggestions while typing (owner request, 2026-11-25)
+The clinic is dental only. When the doctor types in a field, the page suggests matching dental choices so typing stays short. Rules:
+- Suggest ONLY when what is typed matches something. Nothing typed or no match: show no list at all (never a full list on focus).
+- Suggestions come from a list bundled with the app (no outside service, nothing leaves the clinic, works offline). The doctor reviews the bundled list before pilot.
+- A suggestion is a help, never forced: the doctor can still type their own value.
+- Reachable by keyboard and touch; each suggestion is large enough to tap.
+
+| Field | Suggests | When a suggestion is picked |
+|---|---|---|
+| Medicine name | Generic and brand names of common dental medicines (antibiotics, painkillers, mouthwash, gels) | Form, strength, usual dose, frequency, days and with-food fill in; the doctor can change each |
+| Form, frequency, days, with food | Common values (tablet, capsule, gel; 1-0-1; 5 days; after food), words not raw tokens | Value is filled |
+| Tags and category | Tags and categories already used in this clinic's list | Value is filled |
+| Procedure name | Common dental procedures (scaling, extraction, RCT, filling, crown...) | Name and optional short code fill in. The FEE is never suggested: the doctor types it (money is never guessed) |
+| Visit type | Common types (consultation, follow-up, RCT sitting...) | Name and usual length fill in |
+| Diagnosis | Common dental diagnoses (caries, pulpitis, gingivitis...) | Name fills in |
+| Quick phrase | Common dental note templates | Full text fills in; editable |
+| Referral source | Common sources (Google, friend or family, Instagram, walk-in) | Name fills in |
+| Medicine in a Medicine set | Only medicines already in this clinic's Medicines list (see rule below) | Medicine is added to the set |
+
+**Medicine set rule (MUST):** a set can contain only medicines that already exist (and are not hidden) in the Medicines list. The doctor picks them by search; free typing is not accepted. If the medicine is not in the list, the same place offers "Add it to Medicines first" and then returns to the set. If a medicine in a set is later hidden or renamed, the set shows a clear warning on that medicine and cannot be used as-is until fixed.
+
 ## 6. Actions catalogue
 | # | Action | Who | True first | What changes | Other effects | Undo? | Confirm? | Must NEVER happen |
 |---|---|---|---|---|---|---|---|---|
@@ -127,6 +148,10 @@ Visit (medicine search, diagnosis autocomplete, procedures, quick phrases), Pres
 | 3 | Real delete or Hide only? | Hide only. |
 | 4 | Allergens and Medical history checklist under More, or their own tabs? | Designer's choice: whichever looks better in the design. Keep the tab count small on a phone. |
 | 5 | Receptionist sees Library? | No (doctor only, as already decided). |
+| 6 | Bundled dental suggestion list? | Yes, but only matching suggestions while typing, never the full list. |
+| 7 | Outside spelling-check API (RxNorm)? | Never. |
+| 8 | Medicine sets: only from the Medicines list? | Yes. |
+| 9 | Suggest procedure fees? | No, the doctor types the fee. |
 
 ## 14. Out of scope
 Patient data of any kind. Settings (clinic details, timings, staff, billing and tax). Bulk import or export of lists. Prices of medicines or stock levels. Editing an issued prescription or a bill.
