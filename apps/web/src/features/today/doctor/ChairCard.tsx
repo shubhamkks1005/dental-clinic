@@ -5,7 +5,9 @@ import type { DoctorModel } from "./doctor-model";
 type Props = {
   chair: DoctorModel["chair"];
   spotlight: boolean;
-  busy: boolean;
+  /** Open visit is running / Done is running (separate, so Done never says Opening). */
+  opening: boolean;
+  finishing: boolean;
   /** Who is Next, for the empty card's hint. */
   nextName: string | null;
   /** Patients finished today (for the all-done message). */
@@ -23,7 +25,8 @@ type Props = {
 export function ChairCard({
   chair,
   spotlight,
-  busy,
+  opening,
+  finishing,
   nextName,
   done,
   onBreak,
@@ -70,7 +73,7 @@ export function ChairCard({
             {state === "finished" ? icons.taskDone : state === "break" ? icons.coffee : icons.chair}
           </span>
         </span>
-        <div className="td-chair-body">
+        <div className="td-chair-body td-fade" key={state}>
           <span className="td-eyebrow">In chair now</span>
           <h2 className="td-chair-name">{title}</h2>
           <p className="td-chair-meta">{line}</p>
@@ -86,7 +89,7 @@ export function ChairCard({
           <button
             type="button"
             className="td-btn is-primary td-call"
-            disabled={busy}
+            disabled={opening || finishing}
             onClick={onStartNext}
           >
             Call {nextName}
@@ -118,10 +121,20 @@ export function ChairCard({
         </p>
       </div>
       <div className="td-chair-actions">
-        <button type="button" className="td-btn td-btn-light" disabled={busy} onClick={onOpenVisit}>
-          {busy ? "Opening…" : "Open visit"}
+        <button
+          type="button"
+          className="td-btn td-btn-light"
+          disabled={opening || finishing}
+          onClick={onOpenVisit}
+        >
+          {opening ? "Opening…" : "Open visit"}
         </button>
-        <button type="button" className="td-btn td-btn-ghost" disabled={busy} onClick={onDone}>
+        <button
+          type="button"
+          className="td-btn td-btn-ghost"
+          disabled={opening || finishing}
+          onClick={onDone}
+        >
           Done
         </button>
       </div>

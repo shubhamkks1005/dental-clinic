@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 export type PopItem = {
   key: string;
@@ -21,7 +22,6 @@ type Props = {
 };
 
 const WIDTH = 224;
-const ITEM_HEIGHT = 40;
 
 /**
  * The small menu of the doctor's Today (row "..." and "Take a break"): opens with the design's
@@ -73,23 +73,29 @@ export function PopMenu({ label, open, anchor, items, onClose }: Props) {
     buttons[(next + buttons.length) % buttons.length]?.focus();
   }
 
-  const rect = anchor?.getBoundingClientRect();
-  const height = items.length * ITEM_HEIGHT + 16;
-  const up = rect ? rect.bottom + height > window.innerHeight : false;
-  const style = rect
-    ? {
-        top: up ? Math.max(16, rect.top - height - 6) : rect.bottom + 6,
-        left: Math.max(16, Math.min(rect.right - WIDTH, window.innerWidth - WIDTH - 16)),
-      }
-    : undefined;
+  // Position from the real size of the menu: under the button, or above it when there is no room.
+  const [place, setPlace] = useState<{ top: number; left: number; up: boolean } | null>(null);
+  useLayoutEffect(() => {
+    if (!open || !anchor || !ref.current) return;
+    const rect = anchor.getBoundingClientRect();
+    const height = ref.current.offsetHeight;
+    const up = rect.bottom + 6 + height > window.innerHeight - 8;
+    setPlace({
+      top: up ? Math.max(8, rect.top - height - 6) : rect.bottom + 6,
+      left: Math.max(8, Math.min(rect.right - WIDTH, window.innerWidth - WIDTH - 8)),
+      up,
+    });
+  }, [open, anchor, items.length]);
+  const up = place?.up ?? false;
+  const style = place ? { top: place.top, left: place.left } : undefined;
 
-  return (
+  return createPortal(
     <div
       ref={ref}
       role="menu"
       aria-label={label}
       aria-hidden={!open}
-      className={`td-menu ${up ? "menu-up" : "menu-down"}${open ? " is-open" : ""}`}
+      className={`today-doc td-menu ${up ? "menu-up" : "menu-down"}${open ? " is-open" : ""}`}
       style={style}
       onKeyDown={keys}
     >
@@ -117,6 +123,7 @@ export function PopMenu({ label, open, anchor, items, onClose }: Props) {
           </button>
         </div>
       ))}
-    </div>
+    </div>,
+    document.body,
   );
 }

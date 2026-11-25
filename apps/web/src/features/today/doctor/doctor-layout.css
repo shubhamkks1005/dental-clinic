@@ -956,3 +956,8 @@ html[data-doctor-today] .shell-top .top-search {
     min-height: 44px;
   }
 }
+
+/* Dialogs on this page: a light overlay, not a heavy dark one */
+.td-page dialog.dialog::backdrop {
+  background: rgba(25, 28, 29, 0.28);
+}

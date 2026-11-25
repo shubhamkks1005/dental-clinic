@@ -31,7 +31,10 @@ export function Dialog({
     if (!dialog) return;
     if (open && !dialog.open) {
       opener.current = document.activeElement;
+      const { scrollX, scrollY } = window;
       dialog.showModal();
+      // The browser focuses the first control and can scroll the page to it: put the page back.
+      window.scrollTo(scrollX, scrollY);
     } else if (!open && dialog.open) {
       dialog.close();
     }

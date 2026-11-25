@@ -12,6 +12,7 @@ type Props = {
   spotlightId: string | null;
   liftedId: string | null;
   removingIds: ReadonlySet<string>;
+  cancelledIds: ReadonlySet<string>;
   startBlocked: string | null;
   restore: ReactNode;
   onOpen: (row: Row) => void;
@@ -59,6 +60,7 @@ export function DoctorList({
   spotlightId,
   liftedId,
   removingIds,
+  cancelledIds,
   startBlocked,
   restore,
   onOpen,
@@ -114,6 +116,7 @@ export function DoctorList({
                 row={row}
                 lifted={liftedId === row.id}
                 removing={removingIds.has(row.id)}
+                cancelled={cancelledIds.has(row.id)}
                 hidden={hiddenIds.has(row.id)}
                 spotlight={spotlightId === row.id}
                 startBlocked={startBlocked}

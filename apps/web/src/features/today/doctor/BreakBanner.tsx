@@ -5,7 +5,7 @@ import {
   istMinutes,
   type CurrentBreak,
 } from "@clinic/shared";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { icons } from "../../../ui/icons";
 import { useVisibleInterval } from "../../../ui/useVisibleInterval";
 
@@ -32,6 +32,12 @@ export function breakEndsAtMs(b: Pick<CurrentBreak, "startedAt" | "minutes">): n
  */
 export function BreakBanner({ current, doctorName, busy, onAdjust, onBack }: Props) {
   const [, setTick] = useState(0);
+  // The bar must not animate from empty on the first paint: it only animates once it is on screen.
+  const [barReady, setBarReady] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setBarReady(true), 80);
+    return () => window.clearTimeout(t);
+  }, []);
   useVisibleInterval(() => setTick((t) => t + 1), 1000);
   // Keep the last break while the banner folds away, so the text does not jump.
   const shown = useRef<CurrentBreak | null>(null);
@@ -40,7 +46,7 @@ export function BreakBanner({ current, doctorName, busy, onAdjust, onBack }: Pro
   const total = b ? b.minutes * 60 : 0;
   const left = b ? Math.max(0, Math.ceil((breakEndsAtMs(b) - Date.now()) / 1000)) : 0;
   const over = b !== null && left === 0;
-  const pct = total > 0 ? Math.min(100, (left / total) * 100) : 0;
+  const pct = current && total > 0 ? Math.min(100, (left / total) * 100) : 100;
   const canShorten =
     b !== null &&
     b.minutes - BREAK_STEP_MINUTES >= BREAK_MIN_MINUTES &&
@@ -112,7 +118,10 @@ export function BreakBanner({ current, doctorName, busy, onAdjust, onBack }: Pro
         </button>
       </div>
       <span className="td-break-track" aria-hidden="true">
-        <span className="td-break-bar" style={{ width: `${pct}%` }} />
+        <span
+          className="td-break-bar"
+          style={{ width: `${pct}%`, transition: barReady && current ? undefined : "none" }}
+        />
       </span>
     </section>
   );

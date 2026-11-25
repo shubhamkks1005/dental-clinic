@@ -138,7 +138,7 @@ export function DoctorTodayPage() {
       <BreakBanner
         current={model.currentBreak}
         doctorName={shortName(me.name)}
-        busy={act.busy}
+        busy={act.breakBusy}
         onAdjust={(d) => model.currentBreak && void act.changeBreak(model.currentBreak, d)}
         onBack={() => model.currentBreak && void act.backFromBreak(model.currentBreak)}
       />
@@ -161,7 +161,8 @@ export function DoctorTodayPage() {
       <ChairCard
         chair={model.chair}
         spotlight={model.chair?.id === act.spotlightId}
-        busy={act.openingId !== null || act.busy}
+        opening={act.openingId !== null}
+        finishing={act.finishing}
         nextName={next?.name ?? null}
         done={model.done}
         onBreak={model.currentBreak !== null}
@@ -179,7 +180,8 @@ export function DoctorTodayPage() {
           hiddenIds={hidden}
           spotlightId={act.spotlightId}
           liftedId={act.liftedId}
-          removingIds={new Set()}
+          removingIds={act.removingIds}
+          cancelledIds={act.cancelledIds}
           startBlocked={startBlocked}
           restore={restore}
           onOpen={(r) => void act.openVisit(r)}
@@ -226,9 +228,10 @@ export function DoctorTodayPage() {
           appointment={act.cancelRow.row}
           onClose={() => act.setCancelRow(null)}
           onDone={(text) => {
+            const row = act.cancelRow?.row;
             toast({ text });
             act.setCancelRow(null);
-            data.load();
+            if (row) act.markCancelled(row);
           }}
         />
       ) : null}

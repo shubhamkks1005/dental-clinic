@@ -162,7 +162,8 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
   // Break: start 10 min, +5, -5, reload keeps it, I'm back
   await page.getByRole("button", { name: /Take a break/ }).click();
   await page.getByRole("menuitem", { name: /10 min/ }).click();
-  await expect(page.locator(".td-break.is-active")).toBeVisible();
+  // Optimistic: the banner opens at once, not after the server answers.
+  await expect(page.locator(".td-break.is-active")).toBeVisible({ timeout: 400 });
   await expect(page.locator(".td-pill", { hasText: "On break" })).toBeVisible();
   await page.getByRole("button", { name: "+5 min" }).click();
   await expect(page.locator(".td-break")).toContainText("15 min");

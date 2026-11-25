@@ -7,6 +7,7 @@ type Props = {
   row: Row;
   lifted: boolean;
   removing: boolean;
+  cancelled: boolean;
   hidden: boolean;
   spotlight: boolean;
   startBlocked: string | null;
@@ -21,6 +22,7 @@ export function DoctorRow({
   row,
   lifted,
   removing,
+  cancelled,
   hidden,
   spotlight,
   startBlocked,
@@ -36,6 +38,7 @@ export function DoctorRow({
     row.isNext ? "is-next" : "",
     lifted ? "is-lifted" : "",
     removing ? "is-removing" : "",
+    cancelled ? "is-cancelled" : "",
     hidden ? "is-search-hidden" : "",
     spotlight ? "is-spotlight" : "",
   ]
@@ -67,11 +70,15 @@ export function DoctorRow({
         </span>
       </button>
       <div className="td-row-side">
-        <span className={`td-pill td-status ${PILL_CLASS[row.kind]}`}>
-          {pillHasDot(row.kind) ? <span className="td-dot" aria-hidden="true" /> : null}
-          {row.pill}
+        <span
+          className={`td-pill td-status ${cancelled ? "td-pill-cancelled" : PILL_CLASS[row.kind]}`}
+        >
+          {pillHasDot(row.kind) && !cancelled ? (
+            <span className="td-dot" aria-hidden="true" />
+          ) : null}
+          {cancelled ? "Cancelled" : row.pill}
         </span>
-        {action ? (
+        {action && !cancelled ? (
           <button
             type="button"
             className={`td-btn td-action${action.primary ? " is-primary" : ""}`}
