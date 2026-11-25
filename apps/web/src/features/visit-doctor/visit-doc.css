@@ -11,7 +11,7 @@
   );
 }
 
-/* Header: back to Today, patient, then the always-visible strip. */
+/* Header: back to Today, patient, then the always-visible strip (design: header band). */
 .vd-head {
   background: var(--vd-card);
   border-bottom: 1px solid var(--vd-line);
@@ -24,52 +24,85 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.vd-head-left,
+.vd-head-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.vd-head-left {
   gap: 10px;
 }
-.vd-back {
+.vd-head-right {
+  gap: 8px;
+}
+.vd-head-note {
+  color: var(--vd-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.vd-back,
+.vd-add-file {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 6px 12px;
   border: 1px solid var(--vd-line);
-  border-radius: var(--vd-radius-sm);
+  border-radius: var(--vd-radius);
   background: var(--vd-low);
   color: var(--vd-text);
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 16px;
   text-decoration: none;
 }
-.vd-back:hover {
-  border-color: var(--vd-primary);
+.vd-back .vd-icon {
+  font-size: 18px;
+}
+.vd-add-file {
+  background: var(--vd-card);
+  color: var(--vd-primary);
 }
 .vd-name {
-  font-size: 22px;
-  line-height: 28px;
-  font-weight: 600;
   margin: 0;
+  color: var(--vd-text);
+  font-family: "Wix Madefor Display", sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  line-height: 28px;
 }
 .vd-sub {
-  font-size: 14px;
   color: var(--vd-muted);
+  font-size: 14px;
+  line-height: 20px;
 }
 .vd-code {
   padding: 2px 8px;
-  border-radius: var(--vd-radius-sm);
+  border-radius: var(--vd-radius);
   background: var(--vd-secondary-bg);
   color: var(--vd-primary);
-  font-family: ui-monospace, monospace;
+  font-family: "Spline Sans Mono", monospace;
   font-size: 12px;
   font-weight: 500;
+  line-height: 16px;
 }
 .vd-strip {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   padding-top: 6px;
   border-top: 1px solid rgb(192 200 204 / 60%);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 16px;
 }
 .vd-chip {
   display: inline-flex;
@@ -85,15 +118,50 @@
 button.vd-chip {
   cursor: pointer;
 }
+.vd-chip-icon {
+  font-size: 14px;
+}
+.vd-chip-icon-primary {
+  color: var(--vd-primary);
+}
 .vd-chip-error {
-  background: var(--vd-error-bg);
+  background: rgb(255 218 214 / 60%);
   color: var(--vd-error-text);
-  border-color: rgb(186 26 26 / 35%);
+  border-color: rgb(186 26 26 / 30%);
+}
+button.vd-chip-error:hover {
+  border-color: var(--vd-error);
 }
 .vd-chip-warning {
   background: var(--vd-warning-bg);
   color: var(--vd-warning-text);
   border-color: rgb(154 91 0 / 40%);
+}
+/* Medical alerts from the patient record, drawn as the design's red chips. */
+.vd-strip .mh-alert-list {
+  display: contents;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.vd-strip .mh-alert,
+.vd-strip .mh-alert-restricted {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid rgb(186 26 26 / 40%);
+  border-radius: 9999px;
+  background: var(--vd-error-bg);
+  color: var(--vd-error-text);
+}
+.vd-strip .mh-alert::before,
+.vd-strip .mh-alert-restricted::before {
+  content: "warning";
+  font-family: "Material Symbols Outlined";
+  font-feature-settings: "liga";
+  font-size: 14px;
+  line-height: 1;
 }
 
 /* Body: accordions on the left, side pane on the right. */

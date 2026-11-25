@@ -26,13 +26,23 @@ export function VisitDocHeader({ patient, page, canViewClinical, canSeeFlags, on
   return (
     <header className="vd-head">
       <div className="vd-head-row">
-        <Link to="/app" className="vd-back">
-          <span aria-hidden="true">←</span>
-          <span>Today</span>
-        </Link>
-        <h1 className="vd-name">{patient.fullName}</h1>
-        <span className="vd-sub">{facts.ageGender}</span>
-        <span className="vd-code">{patient.code}</span>
+        <div className="vd-head-left">
+          <Link to="/app" className="vd-back">
+            <span className="vd-icon" aria-hidden="true">
+              arrow_back
+            </span>
+            <span>Today</span>
+          </Link>
+          <h1 className="vd-name">{patient.fullName}</h1>
+          <span className="vd-sub">{facts.ageGender}</span>
+          <span className="vd-code">{patient.code}</span>
+        </div>
+        <div className="vd-head-right">
+          <span className="vd-head-note">Smart Collapsible Accordions</span>
+          <Link className="vd-add-file" to={`/app/patients/${patient.id}?tab=files`}>
+            + Add file
+          </Link>
+        </div>
       </div>
       <div className="vd-strip" aria-label="Patient alerts">
         <ProfileAlerts
@@ -40,15 +50,28 @@ export function VisitDocHeader({ patient, page, canViewClinical, canSeeFlags, on
           canViewClinical={canViewClinical}
           canSeeFlags={canSeeFlags}
         />
-        {bp && <span className="vd-chip">{bp}</span>}
+        {bp && (
+          <span className="vd-chip">
+            <span className="vd-icon vd-chip-icon vd-chip-icon-primary" aria-hidden="true">
+              monitor_heart
+            </span>
+            <span>{bp}</span>
+          </span>
+        )}
         {dues && (
           <button type="button" className="vd-chip vd-chip-error" onClick={onDues}>
-            {dues}
+            <span className="vd-icon vd-chip-icon" aria-hidden="true">
+              account_balance_wallet
+            </span>
+            <span>{dues}</span>
           </button>
         )}
         {follow && (
           <span className={`vd-chip ${page.followUp?.state === "late" ? "vd-chip-warning" : ""}`}>
-            {follow}
+            <span className="vd-icon vd-chip-icon" aria-hidden="true">
+              schedule
+            </span>
+            <span>{follow}</span>
           </span>
         )}
       </div>

@@ -1,0 +1,194 @@
+/* The app frame on the visit page, as in the final design: 240 px navy sidebar with CLINIC and
+   PRACTICE groups, no top search bar, Instrument Sans 16 px on #F8F9FB. Everything is scoped to
+   body.vd-page, which DoctorVisitPage sets, so other pages keep their own frame. */
+body.vd-page {
+  background: #f8f9fb;
+  color: #191c1d;
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+body.vd-page .shell-top {
+  display: none;
+}
+/* The design header sits flush at the top and uses the whole width. */
+body.vd-page .page {
+  max-width: none;
+  padding: 0;
+}
+body.vd-page .shell-main {
+  min-height: 100dvh;
+}
+@media (min-width: 768px) {
+  body.vd-page .shell {
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-rows: 1fr;
+    grid-template-areas: "nav main";
+  }
+  body.vd-page .shell-nav {
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px;
+    background: #263f4d;
+    border-right: 1px solid #355363;
+    color: #f4f8fa;
+  }
+  body.vd-page .nav-brand {
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid rgb(185 234 255 / 50%);
+    border-radius: 12px;
+    background: #d0e6f0;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  }
+  body.vd-page .nav-brand .logo-tile {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: #054d61;
+    color: #fff;
+  }
+  body.vd-page .nav-brand svg {
+    width: 20px;
+    height: 20px;
+  }
+  body.vd-page .nav-clinic {
+    color: #091e26;
+    font-family: "Wix Madefor Display", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 22px;
+  }
+  body.vd-page .nav-tagline {
+    color: #054d61;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    line-height: 16px;
+  }
+  body.vd-page .nav-list {
+    flex-direction: column;
+    gap: 4px;
+  }
+  body.vd-page .nav-list li:first-child::before,
+  body.vd-page .nav-list li:nth-child(6)::before {
+    display: block;
+    padding: 4px 12px 0;
+    color: #c2d3dc;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    line-height: 16px;
+    text-transform: uppercase;
+  }
+  body.vd-page .nav-list li:first-child::before {
+    content: "Clinic";
+  }
+  body.vd-page .nav-list li:nth-child(6) {
+    margin-top: 4px;
+    border-top: 1px solid rgb(53 83 99 / 80%);
+  }
+  body.vd-page .nav-list li:nth-child(6)::before {
+    content: "Practice";
+    padding-top: 12px;
+  }
+  body.vd-page .nav-list a {
+    min-height: 0;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    color: #f4f8fa;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  body.vd-page .nav-list li:nth-child(n + 6) a {
+    color: #c2d3dc;
+  }
+  body.vd-page .nav-list a:hover {
+    background: rgb(53 83 99 / 80%);
+  }
+  body.vd-page .nav-list a.active {
+    background: rgb(53 83 99 / 60%);
+    color: #f4f8fa;
+  }
+  /* Icons: the design's Material Symbols, drawn from the link address. */
+  body.vd-page .nav-list a svg {
+    display: none;
+  }
+  body.vd-page .nav-list a::before {
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
+    font-family: "Material Symbols Outlined";
+    font-feature-settings: "liga";
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+    color: #b9eaff;
+  }
+  body.vd-page .nav-list a[href="/app"]::before {
+    content: "schedule";
+  }
+  body.vd-page .nav-list a[href="/app/patients"]::before {
+    content: "group";
+  }
+  body.vd-page .nav-list a[href="/app/appointments"]::before {
+    content: "calendar_today";
+    color: #d1f4e0;
+  }
+  body.vd-page .nav-list a[href="/app/billing"]::before {
+    content: "receipt_long";
+    color: #fef0c7;
+  }
+  body.vd-page .nav-list a[href="/app/messages"]::before {
+    content: "chat_bubble";
+    color: #ffdad6;
+  }
+  body.vd-page .nav-list a[href="/app/reports"]::before {
+    content: "bar_chart";
+    color: inherit;
+  }
+  body.vd-page .nav-list a[href="/app/library"]::before {
+    content: "menu_book";
+    color: inherit;
+  }
+  body.vd-page .nav-list a[href="/app/settings"]::before {
+    content: "tune";
+    color: inherit;
+  }
+  /* The user card: avatar, name, role. Sign out stays on the other pages. */
+  body.vd-page .nav-user .user-card {
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #355363;
+    border-radius: 12px;
+    background: rgb(53 83 99 / 65%);
+  }
+  body.vd-page .nav-user .user-avatar {
+    background: #d0e6f0;
+    color: #091e26;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  body.vd-page .nav-user .user-name {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  body.vd-page .nav-user .user-role {
+    color: rgb(244 248 250 / 90%);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  body.vd-page .nav-user .user-sign-out {
+    display: none;
+  }
+}

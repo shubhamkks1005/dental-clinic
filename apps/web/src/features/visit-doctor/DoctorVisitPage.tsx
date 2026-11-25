@@ -33,6 +33,8 @@ import { useVisitLines } from "./useVisitLines";
 import { VisitDocHeader } from "./VisitDocHeader";
 import "../visits/visit.css";
 import "../visits/visit-one.css";
+import "./visit-doc-fonts.css";
+import "./visit-doc-frame.css";
 import "./visit-doc-tokens.css";
 import "./visit-doc.css";
 import "./visit-doc-lines.css";
@@ -78,6 +80,11 @@ export function DoctorVisitPage() {
   const { id } = useParams<{ id: string }>();
   // A new scope per visit: what it shares ends when this visit is closed (Part S).
   const scope = useMemo(() => createRequestScope(), [id]);
+  // The design frame (sidebar, no top bar, fonts) applies to this page only.
+  useEffect(() => {
+    document.body.classList.add("vd-page");
+    return () => document.body.classList.remove("vd-page");
+  }, []);
   return (
     <RequestScopeProvider scope={scope}>
       <VisitDocLoader id={id} />
