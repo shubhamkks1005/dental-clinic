@@ -307,7 +307,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
           await approveBillDiscount(item.discount.billId, item.discount.version);
         else await rejectBillDiscount(item.discount.billId, item.discount.version);
       } else if (item.cancel) await dismissCancelRequest(item.cancel.id);
-      else hide(item.key);
+      else window.setTimeout(() => hide(item.key), 420);
       // The line slides out first (420 ms in the design), then the list is read again.
       window.setTimeout(load, 420);
     } catch (e) {

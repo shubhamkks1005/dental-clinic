@@ -171,10 +171,7 @@ export function DoctorTodayPage() {
         onOpenVisit={() => model.chair && void act.openVisit(model.chair)}
         onDone={() => void act.finishChair()}
       />
-      <div
-        className={`td-split${animating ? " is-animating" : ""}`}
-        onTransitionEnd={() => setAnimating(false)}
-      >
+      <div className={`td-split${animating ? " is-animating" : ""}`}>
         <DoctorList
           model={model}
           hiddenIds={hidden}
