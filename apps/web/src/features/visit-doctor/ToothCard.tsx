@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Textarea } from "../../ui/form";
+import type { PadButton } from "./pad-model";
 import { entryText, historyDate, oneLineHistory, toothName } from "./tooth-model";
 import { useToothHistory } from "./useToothHistory";
 
@@ -15,6 +16,14 @@ type Props = {
   refreshKey: number;
   onClose: () => void;
   onSelectTooth: (fdi: number) => void;
+  /** The marking pad (surface buttons): tapping one applies the chosen condition. */
+  pad: {
+    buttons: PadButton[];
+    colorOf: (code: string) => string | undefined;
+    onMark: (b: PadButton) => void;
+  };
+  /** A timeline row of an older visit: show the whole chart as it was then. */
+  onChartThen: (visitId: string) => void;
 };
 
 /** The tooth card (design: renderZoomedCard): who, history in one line, timeline, boxes, note. */
@@ -27,6 +36,8 @@ export function ToothCard({
   refreshKey,
   onClose,
   onSelectTooth,
+  pad,
+  onChartThen,
 }: Props) {
   const h = useToothHistory(patientId, visitId, tooth);
   const first = useRef(true);
@@ -89,6 +100,46 @@ export function ToothCard({
       )}
 
       <div className="vd-tc-block">
+        <span className="vd-tc-label">Mark surface or whole tooth</span>
+        <div className="vd-pad">
+          <div className="vd-pad-grid" aria-label="Selected tooth surfaces">
+            {([null, "B", null, "left", "O", "right", null, "L", null] as const).map((id, i) => {
+              const b = pad.buttons.find((x) => x.id === id);
+              if (!b) return <span key={i} />;
+              const color = b.code ? pad.colorOf(b.code) : undefined;
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  className={`vd-pad-btn${b.code ? " is-marked" : ""}`}
+                  style={color ? { borderColor: color, color } : undefined}
+                  disabled={b.disabled}
+                  aria-label={`${b.label} surface`}
+                  onClick={() => pad.onMark(b)}
+                >
+                  <strong>{b.label}</strong>
+                  <small>{b.sub}</small>
+                </button>
+              );
+            })}
+          </div>
+          {pad.buttons
+            .filter((b) => b.id === "W")
+            .map((b) => (
+              <button
+                key="W"
+                type="button"
+                className={`vd-pad-whole${b.code ? " is-marked" : ""}`}
+                disabled={b.disabled}
+                onClick={() => pad.onMark(b)}
+              >
+                Whole tooth <small>{b.sub}</small>
+              </button>
+            ))}
+        </div>
+      </div>
+
+      <div className="vd-tc-block">
         <span className="vd-tc-label">Tooth timeline</span>
         {h.loading ? (
           <div className="vd-skel" style={{ width: 240 }} />
@@ -101,6 +152,15 @@ export function ToothCard({
                 <span className="vd-tl-date">{e.isToday ? "Today" : historyDate(e.at)}</span>
                 <span>{entryText(e, conditionLabel)}</span>
                 {e.fromTooth && <span className="vd-tag">Baby tooth {e.fromTooth}</span>}
+                {e.visitId && !e.isToday && (
+                  <button
+                    type="button"
+                    className="vd-linkbtn"
+                    onClick={() => onChartThen(e.visitId as string)}
+                  >
+                    chart then
+                  </button>
+                )}
               </li>
             ))}
           </ul>

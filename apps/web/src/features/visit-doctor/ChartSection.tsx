@@ -17,6 +17,8 @@ import { Select } from "../../ui/form";
 import { ToothChart } from "../chart";
 import { loadChartView } from "../chart/api";
 import { affectedTeeth, chartBadge, chartSaveText } from "./chart-model";
+import { padButtons } from "./pad-model";
+import { ToothCard } from "./ToothCard";
 import { useChartMarks } from "./useChartMarks";
 
 type Props = {
@@ -32,6 +34,9 @@ type Props = {
   /** Marks were saved: the badge and the tooth card refresh. */
   onSaved: () => void;
   onBadge: (text: string) => void;
+  /** Changes when this visit saved a line or file: the tooth card reads the tooth again. */
+  refreshKey: number;
+  onClose: () => void;
 };
 
 /** Opens on hover or focus (and on click for touch); closes on leave, blur or Escape. */
@@ -220,6 +225,34 @@ export function ChartSection(p: Props) {
         </div>
       ) : (
         <div className="vd-skel" style={{ width: 320 }} />
+      )}
+
+      {p.selected !== null && (
+        <ToothCard
+          patientId={p.patientId}
+          visitId={p.visitId}
+          tooth={p.selected}
+          readOnly={!p.canEdit}
+          conditionLabel={labelOf}
+          refreshKey={p.refreshKey + m.savedKey}
+          onClose={p.onClose}
+          onSelectTooth={(t) => p.onSelect(t as FdiTooth)}
+          onChartThen={m.setAsOf}
+          pad={{
+            buttons: padButtons(
+              p.selected,
+              m.cells,
+              active,
+              readOnly,
+              (c) => conditions.find((x) => x.code === c)?.icon ?? c,
+            ),
+            colorOf: (c) => conditions.find((x) => x.code === c)?.color,
+            onMark: (b) =>
+              active &&
+              p.selected !== null &&
+              m.addMark({ toothFdi: p.selected, surface: b.surface, conditionCode: active.code }),
+          }}
+        />
       )}
 
       <div className="vd-affected">

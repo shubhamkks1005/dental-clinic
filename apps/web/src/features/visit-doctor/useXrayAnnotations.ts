@@ -64,6 +64,8 @@ export function useXrayAnnotations(fileId: string | null, canEdit: boolean) {
     version,
     addItem: (item: AnnotationItem) =>
       canEdit && change((x) => ({ ...x, items: [...x.items, item] })),
+    updateItem: (id: string, fn: (i: AnnotationItem) => AnnotationItem) =>
+      canEdit && change((x) => ({ ...x, items: x.items.map((i) => (i.id === id ? fn(i) : i)) })),
     removeItem: (id: string) =>
       canEdit && change((x) => ({ ...x, items: x.items.filter((i) => i.id !== id) })),
     setScale: (scale: FileAnnotations["scale"]) => canEdit && change((x) => ({ ...x, scale })),

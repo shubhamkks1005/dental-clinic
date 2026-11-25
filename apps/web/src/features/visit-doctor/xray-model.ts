@@ -144,3 +144,39 @@ export const redo = <T>(t: Trail<T>): Trail<T> =>
 /** Teeth tagged on the picture: add or take away one, kept sorted. */
 export const toggleTooth = (list: number[], fdi: number) =>
   (list.includes(fdi) ? list.filter((t) => t !== fdi) : [...list, fdi]).sort((a, b) => a - b);
+
+const TYPE_COLOR = {
+  pen: "#f43f5e",
+  circle: "#f59e0b",
+  arrow: "#38bdf8",
+  text: "#fde047",
+  measure: "#34d399",
+} as const;
+/** The colour of a mark (design: each tool has its own). */
+export const markColor = (m: AnnotationItem) => m.color ?? TYPE_COLOR[m.type];
+
+/** Where the small move and delete buttons of a mark sit (design: xvAnnotAnchor). */
+export function anchorOf(m: AnnotationItem): { x: number; y: number } {
+  const cap = (n: number) => Math.min(388, n);
+  const top = (n: number) => Math.max(12, n);
+  if (m.type === "circle") return { x: cap(m.cx + m.r), y: top(m.cy - m.r) };
+  if (m.type === "arrow" || m.type === "measure")
+    return { x: cap(Math.max(m.x1, m.x2)), y: top(Math.min(m.y1, m.y2)) };
+  if (m.type === "pen") {
+    const xs = m.points.map((p) => p[0]);
+    const ys = m.points.map((p) => p[1]);
+    return { x: cap(Math.max(...xs)), y: top(Math.min(...ys)) };
+  }
+  return { x: cap(m.x + m.text.length * 7), y: top(m.y - 10) };
+}
+
+/** Move a mark by (dx, dy) in viewer units, kept inside the picture. */
+export function moveMark(m: AnnotationItem, dx: number, dy: number): AnnotationItem {
+  const cx = (n: number) => Math.max(0, Math.min(ANNOTATION_W, Math.round((n + dx) * 10) / 10));
+  const cy = (n: number) => Math.max(0, Math.min(ANNOTATION_H, Math.round((n + dy) * 10) / 10));
+  if (m.type === "circle") return { ...m, cx: cx(m.cx), cy: cy(m.cy) };
+  if (m.type === "text") return { ...m, x: cx(m.x), y: cy(m.y) };
+  if (m.type === "pen")
+    return { ...m, points: m.points.map((p) => [cx(p[0]), cy(p[1])] as [number, number]) };
+  return { ...m, x1: cx(m.x1), y1: cy(m.y1), x2: cx(m.x2), y2: cy(m.y2) };
+}

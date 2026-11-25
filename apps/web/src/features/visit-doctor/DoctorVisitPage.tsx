@@ -1,4 +1,4 @@
-import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
+import { type FdiTooth, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
@@ -25,7 +25,6 @@ import { VisitNextSteps } from "../visits/VisitNextSteps";
 import { VisitConflictBanner } from "../visits/VisitConflictBanner";
 import { VisitMoreNotes } from "../visits/VisitMoreNotes";
 import { DiagProcPanel } from "./DiagProcPanel";
-import { ToothCard } from "./ToothCard";
 import { DocBar } from "./DocBar";
 import { summaryText, searchOptions } from "./lines-model";
 import { getLineUsage, getVisitPage, type LineUsage, type VisitPageData } from "./page-api";
@@ -188,10 +187,6 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const [marksKey, setMarksKey] = useState(0);
   const [badge, setBadge] = useState("");
   const canSeeClinicalFiles = permissions.includes("files.clinical");
-  const conditionLabels = useMemo(
-    () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
-    [data.conditions],
-  );
 
   const notes = useVisitNotes({
     visit,
@@ -205,7 +200,6 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
     toothHint: tooth,
     visitVersion: { get: () => notes.versionRef.current, set: notes.setVersion },
   });
-  const conditionLabel = (code: string) => conditionLabels.get(code) ?? code;
   // A line saved on this visit changes what the tooth card shows: it reads the tooth again.
   const refreshKey = (lines.savedAt ? lines.savedAt.getTime() : 0) + marksKey;
   const diagnosisOptions = useMemo(
@@ -298,21 +292,11 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 conditions={data.conditions}
                 selected={tooth}
                 onSelect={setTooth}
+                refreshKey={refreshKey}
+                onClose={() => setTooth(null)}
                 onSaved={() => setMarksKey((n) => n + 1)}
                 onBadge={setBadge}
               />
-              {tooth !== null && (
-                <ToothCard
-                  patientId={patient.id}
-                  visitId={visit.id}
-                  tooth={tooth}
-                  readOnly={readOnly}
-                  conditionLabel={conditionLabel}
-                  refreshKey={refreshKey}
-                  onClose={() => setTooth(null)}
-                  onSelectTooth={(t) => setTooth(t as FdiTooth)}
-                />
-              )}
             </div>
           </details>
 

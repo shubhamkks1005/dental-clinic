@@ -114,3 +114,66 @@
   padding: 8px;
   font-size: 13px;
 }
+
+.vd-pad {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.vd-pad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  gap: 4px;
+}
+.vd-pad-btn,
+.vd-pad-whole {
+  min-height: 44px;
+  min-width: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-card);
+  color: var(--vd-text);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition:
+    background-color 300ms,
+    border-color 300ms,
+    color 300ms;
+}
+.vd-pad-btn small,
+.vd-pad-whole small {
+  font-size: 9px;
+}
+.vd-pad-whole {
+  flex-direction: row;
+  gap: 6px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+.vd-pad-btn.is-marked,
+.vd-pad-whole.is-marked {
+  background: var(--vd-secondary-bg);
+}
+.vd-pad-btn:disabled,
+.vd-pad-whole:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.vd-linkbtn {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--vd-primary);
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+}

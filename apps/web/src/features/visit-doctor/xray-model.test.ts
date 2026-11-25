@@ -108,3 +108,26 @@ describe("teeth tags", () => {
     expect(toggleTooth([24, 36], 36)).toEqual([24]);
   });
 });
+
+describe("mark buttons and moving", () => {
+  const circle = { id: "c", type: "circle", cx: 100, cy: 100, r: 20 } as const;
+  it("anchors the buttons at the top right of each mark and colours by tool", async () => {
+    const { anchorOf, markColor } = await import("./xray-model");
+    expect(anchorOf(circle)).toEqual({ x: 120, y: 80 });
+    expect(anchorOf({ id: "a", type: "arrow", x1: 5, y1: 50, x2: 395, y2: 3 })).toEqual({
+      x: 388,
+      y: 12,
+    });
+    expect(markColor(circle)).toBe("#f59e0b");
+    expect(markColor({ ...circle, color: "#112233" })).toBe("#112233");
+  });
+  it("moves a mark and keeps it inside the picture", async () => {
+    const { moveMark } = await import("./xray-model");
+    expect(moveMark(circle, 10, -5)).toMatchObject({ cx: 110, cy: 95 });
+    expect(moveMark(circle, 999, 999)).toMatchObject({ cx: 400, cy: 300 });
+    expect(moveMark({ id: "l", type: "arrow", x1: 1, y1: 1, x2: 5, y2: 5 }, -10, 0)).toMatchObject({
+      x1: 0,
+      x2: 0,
+    });
+  });
+});

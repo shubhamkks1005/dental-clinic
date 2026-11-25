@@ -23,6 +23,7 @@ export function useChartMarks({ patientId, visitId, onSaved }: Args) {
   const [marks, setMarks] = useState<Mark[]>([]);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [savedKey, setSavedKey] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const marksRef = useRef<Mark[]>([]);
   const timer = useRef<number | undefined>(undefined);
@@ -56,6 +57,7 @@ export function useChartMarks({ patientId, visitId, onSaved }: Args) {
       setMarks(marksRef.current);
       setChart(r.chart);
       setSavedAt(new Date());
+      setSavedKey((n) => n + 1);
       onSaved();
     } catch (err) {
       setError(
@@ -88,6 +90,7 @@ export function useChartMarks({ patientId, visitId, onSaved }: Args) {
     pending: marks.length,
     saving,
     savedAt,
+    savedKey,
     error,
     addMark: (m: Mark) => setPending([...marksRef.current, m]),
     undo: () => setPending(marksRef.current.slice(0, -1)),

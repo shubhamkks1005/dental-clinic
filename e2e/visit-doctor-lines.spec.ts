@@ -292,6 +292,10 @@ test("the tooth card shows the tooth, its note and history", async ({ page }) =>
   await card.getByLabel("Clinical note for tooth 36").fill("");
   await card.getByRole("button", { name: "Save note" }).click();
   await expect(card.getByLabel("Clinical note for tooth 36")).toBeVisible();
+  // The marking pad: a tap on a surface marks it, shows Unsaved changes, then autosaves.
+  await card.getByRole("button", { name: "O surface" }).click();
+  await expect(page.getByTestId("chart-save-state")).toHaveText("Unsaved changes");
+  await expect(page.getByTestId("chart-save-state")).toContainText("Saved", { timeout: 8_000 });
   await card.getByRole("button", { name: "Close" }).click();
   await expect(card).toBeHidden();
 });
@@ -420,6 +424,14 @@ test("the x-ray viewer opens a file, draws a mark, saves it and keeps it", async
   await page.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2 + 20, { steps: 4 });
   await page.mouse.up();
   await expect(viewer.locator("svg circle")).toHaveCount(1);
+  // The mark has move and delete buttons that fade in on hover (120 ms).
+  const actions = viewer.locator(".vd-xv-actions").first();
+  await expect(actions).toHaveCSS("opacity", "0");
+  expect(await actions.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0.12s");
+  // Point at the line of the circle (its inside is empty, so only the stroke counts as the mark).
+  const ring = (await viewer.locator("svg circle").boundingBox())!;
+  await page.mouse.move(ring.x + ring.width - 1, ring.y + ring.height / 2);
+  await expect(actions).toHaveCSS("opacity", "1");
   await viewer.getByRole("button", { name: "36", exact: true }).click();
   await viewer.getByLabel("Tooth-wise annotation note").fill("Fake: apical shadow");
   await viewer.getByRole("button", { name: "Save Annotations" }).click();

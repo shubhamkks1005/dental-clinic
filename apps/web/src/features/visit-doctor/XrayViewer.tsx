@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { fileContentUrl } from "../files/api";
 import {
   makeScale,
+  moveMark,
   FRESH_ADJUST,
   FRESH_VIEW,
   clampZoom,
@@ -231,6 +232,7 @@ export function XrayViewer({ files, startId, patient, canEdit, onClose }: Props)
               onView={setView}
               onAdd={ann.addItem}
               onRemove={ann.removeItem}
+              onMove={(id, dx, dy) => ann.updateItem(id, (i) => moveMark(i, dx, dy))}
             />
           ) : (
             <div className="vd-xv-pdf">

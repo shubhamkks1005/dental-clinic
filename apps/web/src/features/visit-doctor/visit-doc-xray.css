@@ -202,3 +202,19 @@
     background: #fff;
   }
 }
+
+/* Move and delete buttons of a mark appear on hover (design: opacity 120 ms ease). */
+.vd-xv-actions {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.vd-xv-item:hover .vd-xv-actions,
+.vd-xv-actions:focus-within {
+  opacity: 1;
+}
+.vd-xv-move {
+  cursor: move;
+}
+.vd-xv-del {
+  cursor: pointer;
+}

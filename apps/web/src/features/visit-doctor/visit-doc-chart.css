@@ -147,3 +147,16 @@ button.vd-tc-box.is-sel {
     transform: none;
   }
 }
+
+/* Tooth cells lift a little on hover (design: hover:-translate-y-0.5, 150 ms). */
+.visit-doc .tooth-glyph {
+  transition: transform 150ms ease;
+}
+.visit-doc .tooth-glyph:hover {
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .visit-doc .tooth-glyph:hover {
+    transform: none;
+  }
+}

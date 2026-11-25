@@ -96,16 +96,30 @@ This manual covers everyday tasks in the clinic software. For technical problems
 - **Order updated by Priya at 10:48 AM** shows when the front desk changed the order.
 
 ### Opening a visit
-1. From the Today screen, click the current patient's name.
-2. The visit screen opens. If a visit was already started, it reopens.
-3. Fill in the chief complaint, notes, vitals, and diagnoses.
+1. From the Today screen, click **Open visit** on the patient in the chair.
+2. The visit page opens (doctor only). If a visit was already started, it reopens.
+3. The top strip always shows allergy, BP, dues and follow-up. Four cards sit below it; opening one closes the others, and the page remembers which one you had open:
+   - **1 Tooth chart**: the chart and the tooth card.
+   - **2 Diagnosis & Procedures**: search, press Enter. Pick the tooth and the surfaces on each line. **Remove** has an **Undo** that stays for 6 seconds. If a visit has no diagnosis or no procedure, press **No diagnosis for this visit** or **No procedure for this visit**.
+   - **3 Prescription & Advice**: medicines, sets and advice. The sheet on the right is the live prescription.
+   - **4 Files, Vitals & Next Visit**: open X-rays and photos in the viewer, set the next visit.
+4. **Chief Complaints** and **Clinical Findings** are in the floating boxes at the bottom left. Drag a corner to resize a box, press the minus to fold one, or the arrow to fold both into a round bubble. Press the bubble to bring them back.
+5. The right side has two tabs: **Live A4 Rx** and **History** (dues, next appointment, pending treatment, previous medicines, last visits, files). Drag the bar between the cards and the side to make it wider; double-click it to reset.
 
-> **[Screenshot placeholder: Visit screen]**
+> **[Screenshot placeholder: Visit page]**
 
 ### Dental chart
-- Click the **Chart** tab in the visit screen.
-- Click on a tooth surface to record a condition.
+- Open card **1 Tooth chart**.
+- Click a tooth surface to mark it with the condition shown in **Mark:**. Marks show at once and are saved a moment later, or press **Save**. **Undo** takes back marks that are not saved yet.
+- **Chart as of** shows the chart after an older finalised visit (read-only).
+- Click a tooth (or a block under **Affected teeth & findings**) to open its **tooth card**: the history of that tooth newest first (with **Show older**), a marking pad for the surfaces and the whole tooth, a short clinical note, files and plan. For a permanent tooth the card also shows what was done on the baby tooth it replaced.
 - Use the keyboard: arrows to move between teeth, Enter to select a surface.
+
+### X-ray viewer
+- In card 4 press a file to open it full screen. Zoom, rotate, flip, brightness, contrast, grayscale, invert and enhance do not change the saved file.
+- **Compare** shows this picture next to the previous one.
+- Tools: pen, circle, arrow, text and measure. Point at a mark to move or delete it. **Measure** shows pixels until you set the scale: draw a line of known length, type its length in mm and press **Set scale from last line**.
+- Tag the teeth on the picture and write one note, then press **Save Annotations**. If someone saved the picture meanwhile, you are told and nothing is overwritten.
 
 ### Prescriptions
 - Click the **Medicines** tab on the patient profile.
@@ -117,7 +131,7 @@ This manual covers everyday tasks in the clinic software. For technical problems
 > Note: once issued, a prescription cannot be changed. Use "Revise" for corrections.
 
 ### Finalising a visit
-1. When the visit is complete, click "Finalise visit."
+1. When the visit is complete, click "Finalise visit" in the bar at the bottom. Diagnosis and procedures show as done or missing there.
 2. Check soft warnings (empty fields, missing consent).
 3. Click "Confirm finalise."
 

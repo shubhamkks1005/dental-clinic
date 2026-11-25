@@ -6,10 +6,10 @@ import {
 } from "@clinic/shared";
 import { useRef, useState } from "react";
 import { fileContentUrl } from "../files/api";
+import { XrayMark } from "./XrayMark";
 import {
   adjustFilter,
   makeMark,
-  measureLabel,
   toViewerPoint,
   viewTransform,
   type Adjust,
@@ -32,48 +32,11 @@ type Props = {
   onView: (v: View) => void;
   onAdd: (item: AnnotationItem) => void;
   onRemove: (id: string) => void;
+  onMove: (id: string, dx: number, dy: number) => void;
 };
 
 const COLOR = "#E11D48";
 const newId = () => `m${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-
-function Mark({
-  m,
-  scale,
-  onRemove,
-}: {
-  m: AnnotationItem;
-  scale: Props["scale"];
-  onRemove?: () => void;
-}) {
-  const common = {
-    stroke: m.color ?? COLOR,
-    strokeWidth: m.width ?? 2.5,
-    fill: "none",
-    vectorEffect: "non-scaling-stroke" as const,
-  };
-  const remove = onRemove ? { onDoubleClick: onRemove, style: { cursor: "pointer" } } : {};
-  if (m.type === "pen")
-    return <polyline {...common} {...remove} points={m.points.map((p) => p.join(",")).join(" ")} />;
-  if (m.type === "circle") return <circle {...common} {...remove} cx={m.cx} cy={m.cy} r={m.r} />;
-  if (m.type === "text")
-    return (
-      <text x={m.x} y={m.y} fill={m.color ?? COLOR} fontSize="12" {...remove}>
-        {m.text}
-      </text>
-    );
-  const line = <line {...common} {...remove} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} />;
-  return (
-    <g>
-      {line}
-      {m.type === "measure" && (
-        <text x={(m.x1 + m.x2) / 2} y={(m.y1 + m.y2) / 2 - 3} fill={m.color ?? COLOR} fontSize="11">
-          {measureLabel(m, scale)}
-        </text>
-      )}
-    </g>
-  );
-}
 
 /** The picture with its marks. Pan by dragging, zoom with the wheel, draw with the chosen tool. */
 export function XrayCanvas(p: Props) {
@@ -186,14 +149,25 @@ export function XrayCanvas(p: Props) {
           aria-label="Marks"
         >
           {p.items.map((m) => (
-            <Mark
+            <XrayMark
               key={m.id}
               m={m}
               scale={p.scale}
-              onRemove={p.canEdit ? () => p.onRemove(m.id) : undefined}
+              actions={
+                p.canEdit
+                  ? {
+                      onRemove: () => p.onRemove(m.id),
+                      onMove: (dx, dy) => p.onMove(m.id, dx, dy),
+                      toViewer: (e) => {
+                        const r = box.current?.getBoundingClientRect();
+                        return r ? toViewerPoint(e.clientX, e.clientY, r) : [0, 0];
+                      },
+                    }
+                  : undefined
+              }
             />
           ))}
-          {preview && <Mark m={preview} scale={p.scale} />}
+          {preview && <XrayMark m={preview} scale={p.scale} />}
         </svg>
       </div>
     </div>
