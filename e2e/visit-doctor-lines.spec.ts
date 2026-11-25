@@ -373,3 +373,68 @@ test("the dock folds to a bubble with the design motion, and the side pane can b
   await handle.dblclick();
   expect(Math.abs(((await pane.boundingBox())?.width ?? 0) - before)).toBeLessThan(2);
 });
+
+// A 1x1 PNG: enough for the file store; the viewer scales it to the box.
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+  "base64",
+);
+
+test("the x-ray viewer opens a file, draws a mark, saves it and keeps it", async ({ page }) => {
+  test.setTimeout(150_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Xray ${stamp}`;
+  await walkIn(page, name, stamp);
+  const url = await openNewPage(page, name);
+  const visitId = url.split("/").pop() as string;
+  const read = await page.request.get(`/api/staff/visits/${visitId}/page`);
+  const patientId = ((await read.json()) as { data: { visit: { patientId: string } } }).data.visit
+    .patientId;
+  const up = await page.request.post(`/api/staff/patients/${patientId}/files`, {
+    headers: { origin: "http://localhost:8787", "x-clinic-request": "1" },
+    multipart: {
+      file: { name: "xray36.png", mimeType: "image/png", buffer: PNG },
+      kind: "iopa",
+      toothFdi: "36",
+    },
+  });
+  expect(up.status()).toBeLessThan(300);
+  await page.reload();
+  await page.locator("#vd-acc-more > summary").click();
+  await page.getByRole("button", { name: /X-ray \(IOPA\) 36/ }).click();
+
+  const viewer = page.getByRole("dialog", { name: "X-ray viewer" });
+  await expect(viewer).toBeVisible();
+  await expect(viewer).toContainText(name);
+  await expect(viewer.getByText("100%")).toBeVisible();
+  await viewer.getByTitle("Zoom In").click();
+  await expect(viewer.getByText("120%")).toBeVisible();
+
+  // Draw a circle: choose the tool, drag on the picture, save.
+  await viewer.getByRole("button", { name: "Circle", exact: true }).click();
+  const stage = viewer.locator(".vd-xv-stage");
+  const box = (await stage.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 60, box.y + box.height / 2 + 20, { steps: 4 });
+  await page.mouse.up();
+  await expect(viewer.locator("svg circle")).toHaveCount(1);
+  await viewer.getByRole("button", { name: "36", exact: true }).click();
+  await viewer.getByLabel("Tooth-wise annotation note").fill("Fake: apical shadow");
+  await viewer.getByRole("button", { name: "Save Annotations" }).click();
+  await expect(viewer.getByText("Annotations saved to visit!")).toBeVisible();
+
+  // Escape closes it; opening it again shows the saved mark, tooth tag and note.
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+  await page.getByRole("button", { name: /X-ray \(IOPA\) 36/ }).click();
+  await expect(viewer.locator("svg circle")).toHaveCount(1);
+  await expect(viewer.getByLabel("Tooth-wise annotation note")).toHaveValue("Fake: apical shadow");
+  await expect(viewer.getByRole("button", { name: "36", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  // Undo removes the mark on screen; nothing changes on the server until Save.
+  await viewer.getByRole("button", { name: "Undo" }).click();
+  await expect(viewer.locator("svg circle")).toHaveCount(1);
+});

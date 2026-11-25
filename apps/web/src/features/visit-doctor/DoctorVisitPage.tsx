@@ -1,6 +1,6 @@
 import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { createRequestScope } from "../../ui/request-scope";
 import { RequestScopeProvider, useRequestScope } from "../../ui/RequestScope";
@@ -10,6 +10,8 @@ import { VisitChartPanel } from "../chart";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "../prescriptions";
 import { ComplaintDock } from "./ComplaintDock";
+import { XrayViewer } from "./XrayViewer";
+import { fileLabel } from "./files-model";
 import { LiveRx } from "./LiveRx";
 import { usePaneResize } from "./usePaneResize";
 import { patientStripFacts } from "../visits/visit-patient-strip";
@@ -32,6 +34,7 @@ import "./visit-doc.css";
 import "./visit-doc-lines.css";
 import "./visit-doc-tooth.css";
 import "./visit-doc-dock.css";
+import "./visit-doc-xray.css";
 
 type AccId = "chart" | "diag" | "rx" | "more";
 const OPEN_KEY = (visitId: string) => `vd-open-${visitId}`;
@@ -160,6 +163,8 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const mainRef = useRef<HTMLElement>(null);
   const paneRef = useRef<HTMLElement>(null);
   const size = usePaneResize(mainRef, paneRef);
+  const [viewerId, setViewerId] = useState<string | null>(null);
+  const canSeeClinicalFiles = permissions.includes("files.clinical");
   const conditionLabels = useMemo(
     () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
     [data.conditions],
@@ -343,6 +348,25 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
               </span>
             </summary>
             <div className="vd-acc-body">
+              <div className="vd-files" role="group" aria-label="Files">
+                {page.files.length === 0 ? (
+                  <span className="vd-hint">No files yet.</span>
+                ) : (
+                  page.files.map((f) => (
+                    <button
+                      key={f.id}
+                      type="button"
+                      className="vd-chip"
+                      onClick={() => setViewerId(f.id)}
+                    >
+                      {fileLabel(f)}
+                    </button>
+                  ))
+                )}
+                <Link className="vd-chip" to={`/app/patients/${patient.id}?tab=files`}>
+                  + Add file
+                </Link>
+              </div>
               <NextVisitChips
                 value={notes.form.nextVisitNote}
                 readOnly={readOnly}
@@ -389,6 +413,15 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
           }
         />
       </main>
+      {viewerId && (
+        <XrayViewer
+          files={page.files}
+          startId={viewerId}
+          patient={{ fullName: patient.fullName, code: patient.code }}
+          canEdit={canSeeClinicalFiles && !finalised}
+          onClose={() => setViewerId(null)}
+        />
+      )}
       <ComplaintDock
         complaint={notes.form.chiefComplaint}
         findings={notes.form.examNote}

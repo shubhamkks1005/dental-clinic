@@ -490,3 +490,13 @@ button.vd-chip {
     max-height: none;
   }
 }
+
+.vd-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.vd-files a.vd-chip {
+  text-decoration: none;
+  color: var(--vd-primary);
+}
