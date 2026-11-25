@@ -28,7 +28,10 @@ Answer: "The visit is done. What does the patient take away, what do they owe, a
 3. Hand the money part to the reception desk in one tap, so the doctor does not have to take money. (Owner: "pass to reception, doctor does not take the money".)
 4. See the bill made from the visit: procedure lines, discount, total, what is already paid, what is due.
 5. When the doctor wants to, adjust the money themself: give a discount (the doctor needs no one's approval), or take the payment right here.
-6. Fix a mistake after finalising: add an addendum (clinical) or reach the bill's cancel action (money).
+6. Decide about the consultation fee: the doctor chooses, visit by visit, whether to charge it (owner: it depends on the doctor). It becomes one more line on the bill if charged.
+7. Add a short note to the bill that stays with it for the future (and the desk can read).
+8. See, beside the prescription, today's details about this patient that are NOT on the prescription (what was found and done, what comes next).
+9. Fix a mistake after finalising: add an addendum (clinical) or reach the bill's cancel action (money).
 
 Design principle (owner): least effort for the doctor. Fewest taps, no confirm dialogs, nothing that blocks. Default path = look, "Pass to reception", "Back to Today".
 
@@ -52,6 +55,9 @@ Design principle (owner): least effort for the doctor. Fewest taps, no confirm d
 | 11 | Patient's earlier balance and advance | Doctor sees if the patient already owes or has advance | `bills` dues, `payments` advance | On load | Doctor | Rupees: "Earlier due Rs 1,500", "Advance Rs 500" | None: nothing shown | SHOULD | ADDED BY AI: the visit header already shows dues, and it explains the balance |
 | 12 | Addendum entry | Correct a clinical mistake in a locked visit | `visit_addenda` | On load | Doctor | Existing addenda listed, "Add addendum" action | None: nothing listed | SHOULD | No |
 | 13 | Next waiting patient | Fast to the next person | Today queue | Live (about every 30 s while open) | Doctor | "Next: Sunita Rao, waiting 12 min" | Nobody waiting: "No one waiting." | SHOULD | ADDED BY AI: the visit design already offers "Open next waiting patient" after Finalise |
+| 15 | "Today at a glance" (alongside the prescription preview) | Doctor sees what happened and what comes next, which the sheet does not say | `visit_diagnoses` (with tooth), `visit_procedures` (tooth, surfaces, note), `plan_items` still open, next `appointments` row, follow-up date from the prescription, files added today (names only), patient's earlier dues | On load | Doctor only (clinical) | Short lists: "Diagnosis: Irreversible pulpitis (36)", "Done today: RCT started 36", "Next: RCT sitting 2, Thu 27 Nov 11:00", "Plan left: Crown 36" | Empty parts are left out; nothing at all: "Nothing else recorded for today." | SHOULD | Owner asked for it; the exact list is ADDED BY AI (question 3) |
+| 16 | Consultation fee line | Some doctors charge a consultation fee, some do not, case by case | One extra bill line with a label and an amount in paise (doctor types or picks the usual amount) | On edit | Doctor; the desk sees it as a normal bill line | "Consultation . Rs 500" | Not charged: no line (the default is "not charged" until the doctor adds it, question 2) | MUST | No (owner decision) |
+| 17 | Bill note | A short note kept with the bill for the future ("patient will pay balance on Friday", "family discount agreed") | `bills.notes` | On edit | Doctor and the desk (she can read bills), so it must carry NO health information | Short plain text, up to about 200 characters | Empty is fine | SHOULD | No (owner decision) |
 | 14 | Save and error state of this page | Doctor trusts the hand-over happened | Client state | Live | Doctor | Words: "Passed to reception", or the failure reason | Failure keeps the page and allows retry | MUST | No |
 
 ## 6. Actions catalogue
@@ -65,10 +71,12 @@ Design principle (owner): least effort for the doctor. Fewest taps, no confirm d
 | 6 | Adjust discount | Doctor | Bill is a draft (before it is issued) | Discount amount or percent with reason on the draft bill; the doctor's own approval is automatic | Totals recompute on the server; audit row | Yes before issue | No | A discount above the bill; discount after the bill is issued (locked: cancel and remake) |
 | 7 | Review bill first (do not issue yet) | Doctor | Bill lines exist | Keeps the bill as a draft | The desk does not see it as ready | Yes | No | Forgetting a draft bill for ever: it must show on the doctor's "Waiting for you" |
 | 8 | Add addendum | Doctor | Visit finalised | A new addendum row (text, reason, time, who) | Audit row | Never removed | No | Editing the finalised visit in place |
+| 10 | Add or remove the consultation fee line | Doctor | Bill is a draft | One bill line (label "Consultation", amount) added or removed | Totals recompute on the server; audit row | Yes before issue | No | A consultation line on an issued bill (locked); a line with no amount |
+| 11 | Add or edit the bill note | Doctor | Bill exists (draft or issued; the note is not money) | `bills.notes` text | Audit row; the desk sees it | Yes (editable) | No | Health information in the note (the field says so, the desk can read it) |
 | 9 | Open the full bill | Doctor | Bill exists | Nothing | Opens the Bill screen (payments, cancel) | n/a | No | n/a |
 
 ## 7. States and edge cases
-- No procedures in the visit (a consultation only): the bill part says "No billable work in this visit." Pass to reception is replaced by nothing to pass; the page shows only the prescription and Back to Today. If the clinic charges a consultation fee, that is not known: UNKNOWN (question 5).
+- No procedures in the visit (a consultation only): the doctor may add the consultation fee line and then hand over or take the payment as usual. If no fee is added, the bill part says "No billable work in this visit.", nothing to pass, and the page shows the prescription and Back to Today.
 - Prescription not issued (draft or none): the preview shows DRAFT clearly; print is disabled with the reason; the notice says the patient has no paper; the doctor can still go back to the visit's prescription (it has its own Issue).
 - Bill with a procedure that has no fee: shown as "No fee set" on the line and the hand-over still works, but the amount is flagged so the desk is not surprised.
 - Bill already handed over and the desk has taken payment: the page shows "Paid Rs 2,000 of Rs 3,700" and "Passed to reception" is replaced by status only.
@@ -121,20 +129,25 @@ The page loads once when opened. While it stays open: the desk's payment status 
 - The desk and the doctor can both act on the same bill: show the latest state in words.
 - The next step after this page is always one tap away (Back to Today).
 
-## 13. Open questions for the owner
+## 13. Owner decisions and open questions
+Decided by the owner (2026-11-25):
+- The doctor can take the payment himself OR hand it to reception: both options are on the page, one tap each.
+- Consultation fee: the doctor decides each time whether to charge it; it is one bill line.
+- A note can be added to the bill and stays with it for the future.
+- A "today's details" part sits alongside the prescription preview with what is not on the sheet.
+
 | # | Question | Why it matters | Suggested default |
 |---|---|---|---|
-| 1 | What exactly does "Pass to reception" do? | Today "Create bill" makes and issues the bill and the desk finds the patient under "Take payment". A separate "handed over" marker is new work | It issues the bill (as today) and marks it "handed to reception", so it shows on the desk's Today with the amount. Take back allowed until payment starts |
-| 2 | When is the discount given: before issuing (draft) or also after? | Issued bills are locked | Before issuing only; after issue the bill is cancelled and remade |
-| 3 | Can the doctor take the payment here too, or only adjust? | Owner said "doctor can adjust money" | Both allowed; payment is one short form |
-| 4 | Is the desk told anything else when the doctor passes the bill (a note)? | Avoid health information in a note | A short plain note for money only, no clinical words |
-| 5 | A consultation-only visit with no procedure: is there a fee? | Page has nothing to pass | UNKNOWN: ask the doctor; default "No bill" |
-| 6 | Should this page show the prescription's advice and follow-up date too? | Part of the sheet | Yes, it is on the sheet; no separate section |
-| 7 | Should Today show a patient who was passed over for a short time ("Ready to bill") on the doctor's side as well? | Doctor sees the loop closed | Yes, a small count only; no clinical details |
+| 1 | What exactly does "Pass to reception" do? | Today "Create bill" makes and issues the bill and the desk finds the patient under "Take payment". A separate "handed over" marker is new work | It issues the bill and marks it "handed to reception", so it shows on the desk's Today with the amount. Take back allowed until payment starts |
+| 2 | Consultation fee: a usual amount in Settings (so one tap adds it) or typed each time? | Saves typing | A usual amount in Settings, editable on the line; not added unless the doctor taps |
+| 3 | Which "today's details" do you want? My list: diagnosis, what was done, next appointment, plan items left, follow-up date, files added today, earlier dues | Keeps the side part short | Take the list as written; drop what you do not want |
+| 4 | Bill note: the desk can read it. Is that fine? | Privacy: no health information | Yes, with a visible line "No health details here" |
+| 5 | Discount: only before issuing? | Issued bills are locked | Before issuing only; after issue cancel and remake |
+| 6 | A visit with no procedure and no consultation fee: no bill at all? | Page has nothing to pass | No bill; the page shows the prescription and Back to Today |
 
 ## 14. Out of scope
 - The visit tabs (notes, chart, diagnosis and procedures, prescription, plan).
 - The full Bill screen, payments list, day close, refunds and bill cancel.
 - Sending the bill or prescription by WhatsApp or SMS.
 - The A5 sheet's own layout (a separate page).
-- Backend note for the builder (not for the design AI): visit to bill, issue, discount approve, payment create, addenda and print log exist today. NEW: the "handed to reception" marker and "take back"; the desk's "Ready to bill" already exists on her Today.
+- Backend note for the builder (not for the design AI): visit to bill, issue, discount approve, payment create, addenda, print log, the bill note column (`bills.notes`) and editing draft bill lines exist today. NEW: the "handed to reception" marker and "take back"; a usual consultation fee setting (small); a "today at a glance" read (diagnoses, procedures, next appointment, open plan items already have repos, one combined read keeps it under 10 queries). The desk's "Ready to bill" already exists on her Today.
