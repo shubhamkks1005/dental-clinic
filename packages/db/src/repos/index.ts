@@ -31,6 +31,7 @@ import { historyFeedRepo } from "./history-feed";
 import { historyPrintSummaryRepo } from "./history-print-summary";
 import { historySummaryRepo } from "./history-summary";
 import { pastRecordsRepo } from "./past-records";
+import { visitPageRepo } from "./visit-page";
 import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
 import { visitsGetRepo } from "./visits-get";
@@ -119,6 +120,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...visitsTimelineRepo(db, ctx),
     },
     toothEvents: toothEventsRepo(db, ctx),
+    visitPage: visitPageRepo(db, ctx),
     visitDiagnoses: visitDiagnosesRepo(db, ctx),
     visitProcedures: visitProceduresRepo(db, ctx),
     medicalHistory: medicalHistoryRepo(db, ctx),

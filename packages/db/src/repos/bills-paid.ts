@@ -18,11 +18,18 @@ export async function inChunks<T, R>(items: T[], run: (part: T[]) => Promise<R[]
  * with its total and what it has really been paid. Used by the dues list (S1.3.1).
  * Window sum "before" = allocations of the same payment that are newer than this one.
  */
-export function issuedBillPaidSql(): SQL {
+export function issuedBillPaidSql(patientId?: string): SQL {
+  // With a patient id every CTE is cut down to that patient (the visit page reads one patient only).
+  const mine = patientId ? sql`(SELECT id FROM bills WHERE patient_id = ${patientId})` : null;
+  const refundedOnly = mine
+    ? sql`AND payment_id IN (SELECT payment_id FROM payment_allocations WHERE deleted_at IS NULL AND bill_id IN ${mine})`
+    : sql``;
+  const paidOnly = mine ? sql`AND bill_id IN ${mine}` : sql``;
+  const billOnly = patientId ? sql`AND b.patient_id = ${patientId}` : sql``;
   return sql`
     WITH refunded AS (
       SELECT payment_id, SUM(amount_paise) AS r FROM refunds
-      WHERE deleted_at IS NULL GROUP BY payment_id
+      WHERE deleted_at IS NULL ${refundedOnly} GROUP BY payment_id
     ),
     ral AS (
       SELECT a.bill_id AS bill_id, a.amount_paise AS amt,
@@ -44,7 +51,7 @@ export function issuedBillPaidSql(): SQL {
     taken_by_bill AS (SELECT bill_id, SUM(t) AS t FROM taken GROUP BY bill_id),
     paid_by_bill AS (
       SELECT bill_id, SUM(amount_paise) AS paid FROM payment_allocations
-      WHERE deleted_at IS NULL GROUP BY bill_id
+      WHERE deleted_at IS NULL ${paidOnly} GROUP BY bill_id
     ),
     open_bills AS (
       SELECT b.id AS id, b.patient_id AS patient_id, b.bill_on AS bill_on,
@@ -52,7 +59,7 @@ export function issuedBillPaidSql(): SQL {
       FROM bills b
       LEFT JOIN paid_by_bill pb ON pb.bill_id = b.id
       LEFT JOIN taken_by_bill tb ON tb.bill_id = b.id
-      WHERE b.status = 'issued' AND b.deleted_at IS NULL
+      WHERE b.status = 'issued' AND b.deleted_at IS NULL ${billOnly}
     )`;
 }
 

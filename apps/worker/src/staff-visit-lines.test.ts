@@ -205,3 +205,29 @@ describe("diagnosis and procedure line routes (B3)", () => {
     expect(r.status).toBe(400);
   });
 });
+
+describe("visit page route (B5)", () => {
+  it("doctor reads the whole page in one call; receptionist gets 403", async () => {
+    const visitId = await openVisit();
+    await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/diagnoses`, {
+      freeText: "Caries",
+    });
+    const res = await call("doc@example.test", "GET", `/api/staff/visits/${visitId}/page`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      data: {
+        visit: { id: string; diagnoses: unknown[] };
+        duesPaise: number;
+        lastVisits: unknown[];
+      };
+    };
+    expect(body.data.visit.id).toBe(visitId);
+    expect(body.data.visit.diagnoses).toHaveLength(1);
+    expect(body.data.duesPaise).toBe(0);
+    expect(body.data.lastVisits).toEqual([]);
+    expect(
+      (await call("rec@example.test", "GET", `/api/staff/visits/${visitId}/page`)).status,
+    ).toBe(403);
+    expect((await call("doc@example.test", "GET", "/api/staff/visits/nope/page")).status).toBe(404);
+  });
+});

@@ -6,6 +6,7 @@ import {
   addVisitProcedure,
   finaliseVisit,
   getVisit,
+  getVisitPage,
   listDraftVisits,
   listRecentVisits,
   listVisitTimeline,
@@ -64,6 +65,12 @@ staffVisits.get("/patients/:id/visits", async (c) => {
 staffVisits.get("/visits/:id", async (c) => {
   const result = await getVisit(signedIn(c).repos, c.req.param("id"));
   return c.json(ok({ visit: result.visit }));
+});
+
+// B5: one read for the whole visit page (<= 10 queries, two round trips).
+staffVisits.get("/visits/:id/page", async (c) => {
+  const result = await getVisitPage(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok(result.page));
 });
 
 // 3.5.3: draft notes / vitals patch (no audit per save — PLAN exception).

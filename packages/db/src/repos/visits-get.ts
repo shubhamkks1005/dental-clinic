@@ -37,7 +37,7 @@ export type VisitRecent = {
   chiefComplaint: string | null;
 };
 
-const detailCols = {
+export const visitDetailCols = {
   id: visits.id,
   patientId: visits.patientId,
   appointmentId: visits.appointmentId,
@@ -77,7 +77,7 @@ export function visitsGetRepo(db: Db, ctx: Ctx) {
     async getById(visitId: string): Promise<VisitDetail> {
       assertAllowed(ctx, "clinical.view");
       const row = await db
-        .select(detailCols)
+        .select(visitDetailCols)
         .from(visits)
         .where(and(eq(visits.id, visitId), isNull(visits.deletedAt)))
         .get();

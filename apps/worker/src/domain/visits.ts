@@ -173,3 +173,9 @@ export async function restoreVisitProcedure(
   const procedure = await repos.visitProcedures.restore(lineId, parsed.value.version, visitId);
   return { ok: true as const, procedure };
 }
+
+// B5: the whole doctor visit page in one read (visit, lines, plan tag, last visits, dues, files, medicines).
+export async function getVisitPage(repos: Repos, id: string) {
+  const page = await repos.visitPage.get(id);
+  return { ok: true as const, page };
+}
