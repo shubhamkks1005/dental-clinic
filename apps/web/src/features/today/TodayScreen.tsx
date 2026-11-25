@@ -16,6 +16,8 @@ import { useTodayModel } from "./useTodayModel";
 import { WalkInDialog } from "./WalkInDialog";
 import "./today.css";
 import "./today-cards.css";
+import "./doctor/doctor-tokens.css";
+import "./desk-theme.css";
 
 // Its own chunk (S3.1): the doctor page is big and only the doctor opens it.
 const DoctorTodayPage = lazy(() =>
@@ -60,7 +62,7 @@ function DeskToday() {
     : istLongDate(serverNow);
 
   return (
-    <div className="today">
+    <div className="today today-themed today-doc">
       <header className="today-hero">
         <span className="hero-text">
           <h1>

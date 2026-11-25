@@ -1,0 +1,105 @@
+/* The desk Today follows the doctor Today theme (colours, cards, pills, buttons). Layout and
+   behaviour are unchanged. Scoped to .today-themed, so no other screen changes. */
+.today-themed .hero-text h1 {
+  font-size: 28px;
+  line-height: 36px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  color: var(--td-text);
+}
+.today-themed .hero-date {
+  color: var(--td-muted);
+}
+.today-themed .card,
+.today-themed .stat,
+.today-themed .today-list,
+.today-themed .call-list {
+  background: var(--td-card);
+  border: 1px solid var(--td-line);
+  border-radius: var(--td-radius-md);
+  box-shadow: 0 4px 14px -2px rgba(25, 28, 29, 0.06);
+}
+.today-themed .btn {
+  border-color: var(--td-line);
+  border-radius: var(--td-radius-sm);
+  color: var(--td-text);
+}
+.today-themed .btn-primary {
+  background: var(--td-primary);
+  border-color: var(--td-primary);
+  color: var(--td-on-primary);
+}
+.today-themed .btn-primary:hover:not(:disabled) {
+  background: var(--td-primary-hover);
+}
+.today-themed .today-link,
+.today-themed .follow-more a {
+  color: var(--td-primary);
+}
+.today-themed .today-row:hover {
+  background: var(--td-low);
+}
+.today-themed .today-row-next {
+  background: rgba(208, 230, 240, 0.2);
+}
+.today-themed .today-row-ready {
+  background: rgba(254, 240, 199, 0.35);
+}
+
+/* The Next patient card: the same teal as the doctor's In chair card */
+.today-themed .next-patient {
+  background: var(--td-info);
+  color: var(--td-on-primary);
+  border-radius: var(--td-radius-md);
+  box-shadow:
+    0 14px 30px -8px rgba(5, 77, 97, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.today-themed .next-label,
+.today-themed .next-patient .muted {
+  color: var(--td-on-primary-soft);
+}
+.today-themed .next-send {
+  background: #fff;
+  border-color: #fff;
+  color: var(--td-primary);
+}
+
+/* Status words in the doctor's pill colours */
+.today-themed .badge {
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.today-themed .badge-waiting {
+  background: var(--td-warning-bg);
+  color: var(--td-warning-text);
+}
+.today-themed .badge-done {
+  background: var(--td-success-bg);
+  color: var(--td-success-text);
+}
+.today-themed .badge-in-room {
+  background: var(--td-info-bg);
+  color: var(--td-info-text);
+}
+.today-themed .badge-emergency {
+  background: var(--td-error-bg);
+  color: var(--td-error-text);
+}
+.today-themed .badge-upcoming {
+  background: var(--td-container);
+  color: var(--td-muted);
+}
+.today-themed .stat-ready {
+  background: var(--td-warning-bg);
+  border-color: rgba(154, 91, 0, 0.3);
+}
+
+/* The top bar button and the empty list text match the page */
+html:has(.today-themed) .shell-top .btn-primary {
+  background: #054d61;
+  border-color: #054d61;
+}
+.today-themed .today-list > p {
+  padding: 16px 20px;
+}
