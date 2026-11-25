@@ -17,13 +17,13 @@ import { billItems, bills, patients, settings } from "../schema";
 import { nowUtcSql } from "../sql";
 import { billsGetRepo, type BillRow } from "./bills-get";
 
-function assertDraft(status: string) {
+export function assertDraft(status: string) {
   if (status !== "draft") {
     throw new InvalidError("This bill is locked. Cancel it and create a new bill instead.");
   }
 }
 
-async function gstMode(db: Db): Promise<GstMode> {
+export async function gstMode(db: Db): Promise<GstMode> {
   const row = await db
     .select({ valueJson: settings.valueJson })
     .from(settings)

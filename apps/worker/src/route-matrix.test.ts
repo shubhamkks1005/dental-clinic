@@ -273,6 +273,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/bills/:id/issue" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }
+  if (path === "/api/staff/bills/:id/discount/apply" && method === "POST") {
+    return JSON.stringify({ version: 1, discountPaise: 1000, reason: "courtesy" });
+  }
   if (path === "/api/staff/bills/:id/discount" && method === "POST") {
     return JSON.stringify({ version: 1, discountPaise: 1000, reason: "courtesy" });
   }

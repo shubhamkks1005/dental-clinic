@@ -156,6 +156,14 @@ export async function requestBillDiscount(repos: Repos, id: string, body: unknow
   return { ok: true as const, bill };
 }
 
+// Visit finished page: the doctor gives the discount on a draft in one step (no second approval).
+export async function applyDoctorBillDiscount(repos: Repos, id: string, body: unknown) {
+  const parsed = parseRequestBillDiscount(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.applyDoctorDiscount(id, parsed.value);
+  return { ok: true as const, bill };
+}
+
 export async function approveBillDiscount(repos: Repos, id: string, body: unknown) {
   const parsed = parseApproveBillDiscount(body);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };

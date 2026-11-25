@@ -25,6 +25,7 @@ import {
   recordPayment,
   recordRefund,
   reopenDay,
+  applyDoctorBillDiscount,
   requestBillDiscount,
   updateDraftBill,
 } from "../domain/bills";
@@ -118,6 +119,14 @@ staffBills.post("/bills/:id/issue", async (c) => {
 staffBills.post("/bills/:id/discount", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
   const result = await requestBillDiscount(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ bill: result.bill }));
+});
+
+// The doctor gives a discount on a draft bill in one step (bills.adjust, no second approval).
+staffBills.post("/bills/:id/discount/apply", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await applyDoctorBillDiscount(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }));
 });
