@@ -1,5 +1,5 @@
 import { statusWord } from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { copyPreviousPrescription, revisePrescription } from "./api";
 import { AddMedicineInline } from "./AddMedicineInline";
@@ -54,6 +54,9 @@ export function VisitMedicinesPanel({
   const { rx, lines, medicines, sets, locked, busy, problem, warnings } = rxState;
   const [query, setQuery] = useState("");
   const [adding, setAdding] = useState(false);
+  const [active, setActive] = useState(0);
+  const [undo, setUndo] = useState<{ text: string; before: typeof lines } | null>(null);
+  const undoTimer = useRef<number | undefined>(undefined);
   const status: RxStatus = rx == null ? "none" : rx.status === "draft" ? "draft" : "issued";
   useEffect(() => {
     onStatusChange?.(status);
@@ -86,8 +89,23 @@ export function VisitMedicinesPanel({
   });
 
   async function add(item: (typeof medicines)[number]) {
+    const before = lines;
     await rxState.addMedicine(item);
     setQuery("");
+    setActive(0);
+    // One step of Undo for 6 seconds, the same words and time as the diagnosis and procedure lines.
+    window.clearTimeout(undoTimer.current);
+    setUndo({ text: `Added: ${item.label}`, before });
+    undoTimer.current = window.setTimeout(() => setUndo(null), 6000);
+  }
+
+  async function undoAdd() {
+    if (!undo) return;
+    window.clearTimeout(undoTimer.current);
+    const prev = undo.before;
+    setUndo(null);
+    rxState.setLines(prev);
+    await rxState.saveLines(prev);
   }
 
   if (!canWrite) {
@@ -119,11 +137,20 @@ export function VisitMedicinesPanel({
           <TextInput
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setActive(0);
+            }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && filtered[0]) {
+              const shown = Math.min(filtered.length, 8);
+              if (e.key === "ArrowDown" || e.key === "ArrowUp") {
                 e.preventDefault();
-                void add(filtered[0]);
+                if (shown > 0) {
+                  setActive((a) => (a + (e.key === "ArrowDown" ? 1 : -1) + shown) % shown);
+                }
+              } else if (e.key === "Enter" && filtered[Math.min(active, shown - 1)]) {
+                e.preventDefault();
+                void add(filtered[Math.min(active, shown - 1)] as (typeof filtered)[number]);
               }
             }}
             placeholder="Search medicine (Enter to add)"
@@ -168,9 +195,14 @@ export function VisitMedicinesPanel({
 
       {!locked && (q || !compact) && (
         <ul className="rx-suggest">
-          {filtered.slice(0, 8).map((m) => (
+          {filtered.slice(0, 8).map((m, i) => (
             <li key={m.id}>
-              <button type="button" className="btn btn-quiet" onClick={() => void add(m)}>
+              <button
+                type="button"
+                className={`btn btn-quiet${i === active && q ? " is-active" : ""}`}
+                aria-selected={i === active && !!q}
+                onClick={() => void add(m)}
+              >
                 <strong>{m.label}</strong>
                 <span className="muted small">
                   {String(m.data.strength ?? "")} · {String(m.data.default_frequency ?? "")}
@@ -179,6 +211,15 @@ export function VisitMedicinesPanel({
             </li>
           ))}
         </ul>
+      )}
+
+      {undo && (
+        <div className="rx-undo" role="status">
+          <span>{undo.text}</span>
+          <button type="button" className="btn" onClick={() => void undoAdd()}>
+            Undo
+          </button>
+        </div>
       )}
 
       {!locked && q && filtered.length === 0 && !adding && (

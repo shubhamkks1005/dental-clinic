@@ -11,6 +11,8 @@ export const SETTING_HELP: Record<SettingKey, string> = {
     "Clinic name on prescriptions, bills and the sign-in page. Example: Align Dentistry.",
   "clinic.logo":
     "Storage key for the uploaded logo. Leave empty to use the tooth mark. Upload comes later.",
+  "clinic.qr_image":
+    "Your QR picture (PNG or JPEG, under 40 KB). It is printed on the prescription. Leave empty for none.",
   "clinic.timings":
     "Weekly hours, lunch, slot length and chairs. Example: Mon–Sat 10:00–19:00. Booking uses these at once.",
   "clinic.holidays":

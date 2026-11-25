@@ -1,4 +1,8 @@
 import { z } from "zod";
+
+/** 40 KB of picture is about 54,000 characters of base64 text. */
+export const QR_MAX_CHARS = 54_600;
+export const QR_SETTING_KEY = "clinic.qr_image";
 import { chartViewSchema } from "./chart-view";
 import { consentTemplatesSchema } from "./consent-templates";
 import { messageTemplatesSchema, messagingSettingsSchema } from "./messaging";
@@ -110,6 +114,13 @@ export const SETTING_SCHEMAS = {
   // 7.4.1 / 7.4.3 messaging (Phase 7). Templates DRAFT until doctor confirms.
   "messaging.settings": messagingSettingsSchema,
   "messaging.templates": messageTemplatesSchema,
+  // The doctor's QR picture for the prescription (PNG or JPEG as a data URL, at most 40 KB). It is read
+  // on its own (GET /settings/clinic.qr_image) and left out of the list of all settings: it is big.
+  "clinic.qr_image": z
+    .string({ error: "The QR picture is not valid." })
+    .max(QR_MAX_CHARS, "The QR picture is too big. Use one under 40 KB.")
+    .regex(/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/]+=*$/, "Use a PNG or JPEG picture.")
+    .nullable(),
 } as const;
 
 export type SettingKey = keyof typeof SETTING_SCHEMAS;

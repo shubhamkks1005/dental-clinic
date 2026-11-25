@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../api/client";
 import type { ClinicHeader } from "../../ui/print";
 import { clinicHeaderFromSettings } from "../print/clinic-header";
+import { getQrImage } from "../settings/api";
 import type { RxSnapshot } from "../prescriptions";
 import { medicineTitle, problemTeeth } from "./rx-model";
 
@@ -25,6 +26,12 @@ type Props = {
  */
 export function LiveRx({ snapshot, patient, visitDate, lines, onIssue }: Props) {
   const [clinic, setClinic] = useState<ClinicHeader | null>(null);
+  const [qr, setQr] = useState<string | null>(null);
+  useEffect(() => {
+    getQrImage()
+      .then((r) => setQr(r.value))
+      .catch(() => setQr(null));
+  }, []);
   useEffect(() => {
     let live = true;
     api<{ settings: Array<{ key: string; value: unknown }> }>("/api/staff/settings")
@@ -123,6 +130,7 @@ export function LiveRx({ snapshot, patient, visitDate, lines, onIssue }: Props) 
           )}
         </div>
 
+        {qr && <img className="vd-sheet-qr" src={qr} alt="QR" width={56} height={56} />}
         {clinic && clinic.timingsLines.length > 0 && (
           <div className="vd-sheet-foot">
             <strong>Consultation Timings</strong>

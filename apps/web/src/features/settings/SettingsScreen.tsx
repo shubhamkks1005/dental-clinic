@@ -15,6 +15,7 @@ import {
 } from "./catalog";
 import { SetupProgress } from "./SetupProgress";
 import { ClinicDetailsSettings } from "./ClinicDetailsSettings";
+import { QrSettings } from "./QrSettings";
 import { ConsentTemplatesSettings } from "./ConsentTemplatesSettings";
 import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { NumberSeriesSettings } from "./NumberSeriesSettings";
@@ -27,7 +28,12 @@ import { TextInput } from "../../ui/form";
 const BASE = "/app/settings";
 
 const SCREENS: Record<string, ReactNode> = {
-  clinic: <ClinicDetailsSettings />,
+  clinic: (
+    <>
+      <ClinicDetailsSettings />
+      <QrSettings />
+    </>
+  ),
   timings: <TimingsSettings />,
   billing: <BillingSettings />,
   staff: <StaffSettings />,

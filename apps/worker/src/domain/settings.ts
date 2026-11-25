@@ -2,6 +2,9 @@ import type { Repos, SettingRow, SettingValue } from "@clinic/db";
 
 // Settings store (1.5.1). Permission, the rule per key, the version check and the audit row all
 // live in the settings repository.
+/** The doctor's QR picture (data URL) or null; read on its own because it is big. */
+export const getQrImage = (repos: Repos) => repos.settings.get("clinic.qr_image");
+
 export const listSettings = (repos: Repos): Promise<SettingRow[]> => repos.settings.list();
 
 export const updateSetting = (

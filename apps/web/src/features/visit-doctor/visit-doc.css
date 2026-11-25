@@ -504,3 +504,8 @@ button.vd-chip {
 .vd-after {
   padding: 10px 24px 0;
 }
+
+.vd-sheet-qr {
+  margin: 6px 14px 0;
+  object-fit: contain;
+}

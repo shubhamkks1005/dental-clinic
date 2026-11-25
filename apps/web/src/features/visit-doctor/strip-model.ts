@@ -1,3 +1,4 @@
+import { formatRupees } from "@clinic/shared";
 import type { VisitPageData } from "./page-api";
 
 // Words of the always-visible strip under the patient name (design: header strip).
@@ -24,10 +25,8 @@ export function followUpText(f: VisitPageData["followUp"], today: string): strin
   return `Follow-up: ${days} (${due} due${finished ? " · meds finished" : ""})`;
 }
 
-const rupees = (paise: number) => `₹${Math.round(paise / 100).toLocaleString("en-IN")}`;
-
 export const duesText = (paise: number): string | null =>
-  paise > 0 ? `Dues: ${rupees(paise)} due` : null;
+  paise > 0 ? `Dues: ${formatRupees(paise)} due` : null;
 
 /** "BP: 128/82" when both numbers are saved on the visit. */
 export function bpText(v: {

@@ -248,3 +248,38 @@ describe("after read and the doctor taking payment (P7, P11)", () => {
     );
   });
 });
+
+describe("QR picture route", () => {
+  const PNG =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
+  it("both roles read it; only the doctor saves a small PNG or JPEG", async () => {
+    const empty = await call("rec@example.test", "GET", "/api/staff/clinic/qr");
+    expect(empty.status).toBe(200);
+    expect(((await json(empty)).data as { value: unknown }).value).toBeNull();
+
+    const put = await call("doc@example.test", "PUT", "/api/staff/settings/clinic.qr_image", {
+      value: PNG,
+      version: 1,
+    });
+    expect(put.status).toBe(200);
+    const got = await call("rec@example.test", "GET", "/api/staff/clinic/qr");
+    expect(((await json(got)).data as { value: string }).value).toBe(PNG);
+
+    expect(
+      (
+        await call("rec@example.test", "PUT", "/api/staff/settings/clinic.qr_image", {
+          value: PNG,
+          version: 2,
+        })
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await call("doc@example.test", "PUT", "/api/staff/settings/clinic.qr_image", {
+          value: "data:text/html;base64,PGgxPg==",
+          version: 2,
+        })
+      ).status,
+    ).toBe(400);
+  });
+});

@@ -104,6 +104,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "clinic.logo",
       "clinic.name",
       "clinic.phone",
+      "clinic.qr_image",
       "clinic.tagline",
       "clinic.timings",
       "consent.templates",

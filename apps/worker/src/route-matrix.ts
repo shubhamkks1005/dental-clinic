@@ -51,6 +51,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "settings.read" },
   },
   {
+    method: "GET",
+    path: "/api/staff/clinic/qr",
+    access: { kind: "permission", action: "settings.read" },
+  },
+  {
     method: "PUT",
     path: "/api/staff/settings/:key",
     access: { kind: "permission", action: "settings.write" },

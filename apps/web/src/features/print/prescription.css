@@ -91,3 +91,12 @@
   font-weight: 700;
   text-align: center;
 }
+
+/* The doctor's QR picture on the sheet. */
+.rx-qr {
+  width: 22mm;
+  height: 22mm;
+  object-fit: contain;
+  float: left;
+  margin-right: 4mm;
+}

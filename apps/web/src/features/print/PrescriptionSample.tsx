@@ -78,9 +78,17 @@ function Item({ label, value, strong }: { label: string; value: string; strong?:
   );
 }
 
-export function PrescriptionFooter({ doctorName }: { doctorName: string }) {
+export function PrescriptionFooter({
+  doctorName,
+  qr = null,
+}: {
+  doctorName: string;
+  /** The doctor's QR picture (data URL), printed next to the signature. */
+  qr?: string | null;
+}) {
   return (
     <>
+      {qr && <img className="rx-qr" src={qr} alt="QR" />}
       <p>
         This prescription is computer generated. Please tell the clinic if anything needs
         correction.

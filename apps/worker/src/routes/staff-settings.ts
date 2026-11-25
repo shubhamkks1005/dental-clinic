@@ -1,7 +1,13 @@
 import { fail, ok, parseRestoreSetting, parseVersionOnly } from "@clinic/shared";
 import { Hono } from "hono";
 import { listCounters } from "../domain/counters";
-import { listSettings, restoreSetting, settingHistory, updateSetting } from "../domain/settings";
+import {
+  getQrImage,
+  listSettings,
+  restoreSetting,
+  settingHistory,
+  updateSetting,
+} from "../domain/settings";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -12,6 +18,9 @@ export const staffSettings = new Hono<AppEnv>();
 staffSettings.get("/settings", async (c) =>
   c.json(ok({ settings: await listSettings(signedIn(c).repos) })),
 );
+
+/** The QR picture for the prescription (both roles print it; only the doctor changes it, with PUT /settings/clinic.qr_image). */
+staffSettings.get("/clinic/qr", async (c) => c.json(ok(await getQrImage(signedIn(c).repos))));
 
 /** 6.5.1: view-only number series (counters). */
 staffSettings.get("/counters", async (c) =>

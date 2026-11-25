@@ -6,6 +6,7 @@ import { problemText } from "../../api/problem-text";
 import { PrintLayout, printTitle } from "../../ui/print";
 import { getPrescription, type PrescriptionDto } from "../prescriptions";
 import { getPatient } from "../patients";
+import { getQrImage } from "../settings/api";
 import { clinicHeaderFromSettings, clinicRegistrationMissing } from "./clinic-header";
 import { PrescriptionFooter } from "./PrescriptionSample";
 import "./prescription.css";
@@ -22,6 +23,12 @@ export function PrintPrescriptionScreen() {
   const [duplicate, setDuplicate] = useState(false);
   const [dupDate, setDupDate] = useState("");
   const [problem, setProblem] = useState<string | null>(null);
+  const [qr, setQr] = useState<string | null>(null);
+  useEffect(() => {
+    getQrImage()
+      .then((r) => setQr(r.value))
+      .catch(() => setQr(null));
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -126,7 +133,7 @@ export function PrintPrescriptionScreen() {
           clinic={clinic}
           duplicate={duplicate}
           duplicateDate={dupDate}
-          footer={<PrescriptionFooter doctorName={clinic.doctorName} />}
+          footer={<PrescriptionFooter doctorName={clinic.doctorName} qr={qr} />}
         >
           <dl className="rx-patient">
             <div>

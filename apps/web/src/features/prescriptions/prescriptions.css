@@ -133,3 +133,20 @@
   gap: var(--s2);
   justify-content: flex-end;
 }
+
+/* Arrow keys move through the medicine search (same behaviour as diagnosis and procedure search). */
+.rx-suggest .is-active {
+  background: #d0e6f0;
+  font-weight: 600;
+}
+.rx-undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgb(5 77 97 / 40%);
+  border-radius: 6px;
+  background: #d0e6f0;
+  font-size: 12px;
+}

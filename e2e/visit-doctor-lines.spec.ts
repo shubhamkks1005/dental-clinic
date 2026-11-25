@@ -1,4 +1,4 @@
-import { openVisitFromToday } from "./doctor-helpers";
+import { openAccordion, openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Doctor visit page (docs/design/final/doctor_visit.html), Accordion 2: diagnoses and procedures.
@@ -449,4 +449,65 @@ test("the x-ray viewer opens a file, draws a mark, saves it and keeps it", async
   );
   // Nothing to undo in a fresh view: the button is off until the doctor draws again.
   await expect(viewer.getByRole("button", { name: "Undo" })).toBeDisabled();
+});
+
+test("the medicine search takes arrow keys and Enter, and Undo takes the medicine back", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Rx ${stamp}`;
+  await walkIn(page, name, stamp);
+  await openNewPage(page, name);
+  await openAccordion(page, "rx");
+  const search = page.getByPlaceholder(/Search medicine/);
+  await search.fill("a");
+  const rows = page.locator(".rx-suggest button");
+  await expect(rows.nth(1)).toBeVisible();
+  const second = (await rows.nth(1).locator("strong").textContent())!;
+  await search.press("ArrowDown");
+  await expect(rows.nth(1)).toHaveClass(/is-active/);
+  await search.press("Enter");
+  await expect(page.getByRole("region", { name: "Medicines" })).toContainText(second);
+  const toast = page.locator(".rx-undo");
+  await expect(toast).toContainText(`Added: ${second}`);
+  await toast.getByRole("button", { name: "Undo" }).click();
+  await expect(toast).toBeHidden();
+  await expect(page.getByRole("region", { name: "Medicines" }).locator("tbody tr")).toHaveCount(0);
+});
+
+test("the doctor uploads a QR picture in Settings and the live prescription shows it", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Qr ${stamp}`;
+  await walkIn(page, name, stamp);
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/app/settings/clinic");
+  const card = page.getByRole("region", { name: "Prescription QR picture" });
+  await card.locator('input[type="file"]').setInputFiles({
+    name: "qr.png",
+    mimeType: "image/png",
+    buffer: PNG,
+  });
+  await expect(card.getByAltText("Your QR picture")).toBeVisible();
+  // Too big or not a picture: one sentence, nothing saved.
+  await card.locator('input[type="file"]').setInputFiles({
+    name: "big.png",
+    mimeType: "image/png",
+    buffer: Buffer.alloc(41_000, 1),
+  });
+  await expect(card.getByRole("alert")).toContainText("under 40 KB");
+
+  await openNewPage(page, name);
+  await expect(page.getByLabel("Prescription sheet").getByAltText("QR")).toBeVisible();
+
+  // Tidy up so the other specs start without a QR.
+  await page.goto("/app/settings/clinic");
+  await page
+    .getByRole("region", { name: "Prescription QR picture" })
+    .getByRole("button", { name: "Remove" })
+    .click();
+  await expect(page.getByText("No QR picture yet.")).toBeVisible();
 });

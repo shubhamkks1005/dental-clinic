@@ -1,4 +1,4 @@
-import { formatClockTime, formatDisplayDate } from "@clinic/shared";
+import { formatClockTime, formatDisplayDate, formatRupees } from "@clinic/shared";
 import { Link } from "react-router";
 import type { ReactNode } from "react";
 import type { VisitPageData } from "./page-api";
@@ -18,8 +18,6 @@ type Props = {
     down: React.HTMLAttributes<HTMLElement>;
   };
 };
-
-const rupees = (paise: number) => `₹${Math.round(paise / 100).toLocaleString("en-IN")}`;
 
 /** Right pane: the live prescription (next step) and the patient's History from the one page read. */
 export function SidePane({ tab, onTab, page, patientId, rx, paneRef, handles }: Props) {
@@ -93,7 +91,7 @@ function HistoryBlocks({ page, patientId }: { page: VisitPageData; patientId: st
         <h3>Dues</h3>
         {page.duesPaise > 0 ? (
           <p>
-            <strong>{rupees(page.duesPaise)}</strong> is due on earlier bills.
+            <strong>{formatRupees(page.duesPaise)}</strong> is due on earlier bills.
           </p>
         ) : (
           <p className="vd-hint">Nothing due.</p>

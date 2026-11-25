@@ -44,6 +44,7 @@ describe("setting rules (1.5.1)", () => {
       "billing.gst_mode",
       "messaging.settings",
       "messaging.templates",
+      "clinic.qr_image",
     ]);
     expect(isSettingKey("clinic.name")).toBe(true);
     expect(isSettingKey("nope")).toBe(false);

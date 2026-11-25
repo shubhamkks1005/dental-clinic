@@ -23,11 +23,15 @@ export function settingsRepo(db: Db, ctx: Ctx) {
         .where(and(inArray(settings.key, SETTING_KEYS), isNull(settings.deletedAt)));
       // Q1.11 (D4): billing settings are not part of what the desk reads.
       const seeBilling = isAllowed(ctx.role, "settings.billing");
-      return rows
-        .filter((row): row is typeof row & { key: SettingKey } => isSettingKey(row.key))
-        .filter((row) => seeBilling || !row.key.startsWith("billing."))
-        .map((row) => ({ key: row.key, value: JSON.parse(row.valueJson), version: row.version }))
-        .sort((a, b) => SETTING_KEYS.indexOf(a.key) - SETTING_KEYS.indexOf(b.key));
+      return (
+        rows
+          // The QR picture is big: it has its own read (get) and stays out of the list of all settings.
+          .filter((row) => row.key !== "clinic.qr_image")
+          .filter((row): row is typeof row & { key: SettingKey } => isSettingKey(row.key))
+          .filter((row) => seeBilling || !row.key.startsWith("billing."))
+          .map((row) => ({ key: row.key, value: JSON.parse(row.valueJson), version: row.version }))
+          .sort((a, b) => SETTING_KEYS.indexOf(a.key) - SETTING_KEYS.indexOf(b.key))
+      );
     },
 
     async get(key: string): Promise<SettingValue> {

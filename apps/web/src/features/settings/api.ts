@@ -18,3 +18,8 @@ export function putSetting<T>(key: SettingKey, value: T, version: number) {
     body: { value, version },
   });
 }
+
+/** The doctor's QR picture (data URL) or null. Both roles may read it: they print the prescription. */
+export function getQrImage() {
+  return api<{ value: string | null; version: number }>("/api/staff/clinic/qr");
+}
