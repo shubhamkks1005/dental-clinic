@@ -63,6 +63,7 @@ import { billsSearchRepo } from "./bills-search";
 import { billsFromVisitRepo } from "./bills-from-visit";
 import { billsDuesListRepo } from "./bills-dues-list";
 import { billsDiscountRepo } from "./bills-discount";
+import { billsNoteRepo } from "./bills-note";
 import { billsDiscountApplyRepo } from "./bills-discount-apply";
 import { billsUpdateDraftRepo } from "./bills-update-draft";
 import { billsExportRepo } from "./bills-export";
@@ -167,6 +168,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...billsDuesListRepo(db, ctx),
       ...billsDiscountRepo(db, ctx),
       ...billsDiscountApplyRepo(db, ctx),
+      ...billsNoteRepo(db, ctx),
       ...billsUpdateDraftRepo(db, ctx),
       ...billsExportRepo(db, ctx),
     },

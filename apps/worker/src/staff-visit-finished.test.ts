@@ -158,3 +158,43 @@ describe("pass to reception route (P1, P2, P6, P10)", () => {
     expect(bad.status).toBe(400);
   });
 });
+
+describe("bill note route (P8, P9)", () => {
+  it("both roles write the note of an issued bill; a long note is 400; a cancelled bill is 400", async () => {
+    const bill = await draftBill();
+    const issued = await billOf(
+      await call("doc@example.test", "POST", `/api/staff/bills/${bill.id}/issue`, {
+        version: bill.version,
+      }),
+    );
+    const url = `/api/staff/bills/${bill.id}/note`;
+    const res = await call("rec@example.test", "PATCH", url, {
+      version: issued.version,
+      note: "Pays on Friday",
+    });
+    expect(res.status).toBe(200);
+    const noted = (await json(res)).data.bill as Bill & { notes: string };
+    expect(noted).toMatchObject({ notes: "Pays on Friday", totalPaise: issued.totalPaise });
+
+    expect(
+      (
+        await call("doc@example.test", "PATCH", url, {
+          version: noted.version,
+          note: "x".repeat(201),
+        })
+      ).status,
+    ).toBe(400);
+    expect((await call("doc@example.test", "PATCH", url, { note: "no version" })).status).toBe(400);
+
+    const cancel = await call("doc@example.test", "POST", `/api/staff/bills/${bill.id}/cancel`, {
+      version: noted.version,
+      reason: "Test",
+    });
+    expect(cancel.status).toBe(200);
+    const after = (await json(cancel)).data.bill as Bill;
+    expect(
+      (await call("doc@example.test", "PATCH", url, { version: after.version, note: "Late" }))
+        .status,
+    ).toBe(400);
+  });
+});

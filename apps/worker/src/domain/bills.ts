@@ -2,6 +2,7 @@ import { InvalidError, type Repos } from "@clinic/db";
 import {
   parseApproveBillDiscount,
   parseBillFromVisit,
+  parseBillNote,
   parseRejectBillDiscount,
   parseCloseDay,
   parseCreateBill,
@@ -174,6 +175,14 @@ export async function applyDoctorBillDiscount(repos: Repos, id: string, body: un
   const parsed = parseRequestBillDiscount(body);
   if (!parsed.ok) return { ok: false as const, message: parsed.message };
   const bill = await repos.bills.applyDoctorDiscount(id, parsed.value);
+  return { ok: true as const, bill };
+}
+
+// The note of a bill, also after it is issued (only the note changes).
+export async function setBillNote(repos: Repos, id: string, body: unknown) {
+  const parsed = parseBillNote(body);
+  if (!parsed.ok) return { ok: false as const, message: parsed.message };
+  const bill = await repos.bills.setNote(id, parsed.value);
   return { ok: true as const, bill };
 }
 
