@@ -400,15 +400,17 @@ test("the x-ray viewer opens a file, draws a mark, saves it and keeps it", async
   });
   expect(up.status()).toBeLessThan(300);
   await page.reload();
+  // The dock floats over the lower cards: fold it to its bubble, as the doctor would.
+  await page.getByRole("button", { name: "Minimize to bottom-left circle" }).click();
   await page.locator("#vd-acc-more > summary").click();
   await page.getByRole("button", { name: /X-ray \(IOPA\) 36/ }).click();
 
   const viewer = page.getByRole("dialog", { name: "X-ray viewer" });
   await expect(viewer).toBeVisible();
   await expect(viewer).toContainText(name);
-  await expect(viewer.getByText("100%")).toBeVisible();
+  await expect(viewer.locator(".vd-xv-pct")).toHaveText("100%");
   await viewer.getByTitle("Zoom In").click();
-  await expect(viewer.getByText("120%")).toBeVisible();
+  await expect(viewer.locator(".vd-xv-pct")).toHaveText("120%");
 
   // Draw a circle: choose the tool, drag on the picture, save.
   await viewer.getByRole("button", { name: "Circle", exact: true }).click();
@@ -434,7 +436,6 @@ test("the x-ray viewer opens a file, draws a mark, saves it and keeps it", async
     "aria-pressed",
     "true",
   );
-  // Undo removes the mark on screen; nothing changes on the server until Save.
-  await viewer.getByRole("button", { name: "Undo" }).click();
-  await expect(viewer.locator("svg circle")).toHaveCount(1);
+  // Nothing to undo in a fresh view: the button is off until the doctor draws again.
+  await expect(viewer.getByRole("button", { name: "Undo" })).toBeDisabled();
 });

@@ -6,7 +6,7 @@ import { createRequestScope } from "../../ui/request-scope";
 import { RequestScopeProvider, useRequestScope } from "../../ui/RequestScope";
 import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
-import { VisitChartPanel } from "../chart";
+import { ChartSection } from "./ChartSection";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "../prescriptions";
 import { ComplaintDock } from "./ComplaintDock";
@@ -35,6 +35,7 @@ import "./visit-doc-lines.css";
 import "./visit-doc-tooth.css";
 import "./visit-doc-dock.css";
 import "./visit-doc-xray.css";
+import "./visit-doc-chart.css";
 
 type AccId = "chart" | "diag" | "rx" | "more";
 const OPEN_KEY = (visitId: string) => `vd-open-${visitId}`;
@@ -164,6 +165,8 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const paneRef = useRef<HTMLElement>(null);
   const size = usePaneResize(mainRef, paneRef);
   const [viewerId, setViewerId] = useState<string | null>(null);
+  const [marksKey, setMarksKey] = useState(0);
+  const [badge, setBadge] = useState("");
   const canSeeClinicalFiles = permissions.includes("files.clinical");
   const conditionLabels = useMemo(
     () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
@@ -184,7 +187,7 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   });
   const conditionLabel = (code: string) => conditionLabels.get(code) ?? code;
   // A line saved on this visit changes what the tooth card shows: it reads the tooth again.
-  const refreshKey = lines.savedAt ? lines.savedAt.getTime() : 0;
+  const refreshKey = (lines.savedAt ? lines.savedAt.getTime() : 0) + marksKey;
   const diagnosisOptions = useMemo(
     () => searchOptions(data.diagnosisList, data.usage.diagnoses),
     [data.diagnosisList, data.usage.diagnoses],
@@ -249,17 +252,23 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 <span className="vd-acc-num">1</span>
                 <span>Tooth chart</span>
               </span>
-              <span className="vd-acc-summary">{tooth ? `Tooth ${tooth} chosen` : ""}</span>
+              <span className="vd-acc-summary">
+                {badge || (tooth ? `Tooth ${tooth} chosen` : "")}
+              </span>
             </summary>
             <div className="vd-acc-body">
-              <VisitChartPanel
+              <ChartSection
                 patientId={patient.id}
                 visitId={visit.id}
                 canEdit={!readOnly}
                 dateOfBirth={patient.dateOfBirth}
                 ageYearsAtReg={patient.ageYearsAtReg}
                 registeredOn={patient.createdAt.slice(0, 10)}
-                onFocusChange={(t) => setTooth(t)}
+                conditions={data.conditions}
+                selected={tooth}
+                onSelect={setTooth}
+                onSaved={() => setMarksKey((n) => n + 1)}
+                onBadge={setBadge}
               />
               {tooth !== null && (
                 <ToothCard
