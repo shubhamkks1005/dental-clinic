@@ -38,9 +38,14 @@ staffLists.get("/lists/:key", async (c) =>
   c.json(ok({ items: await listItemsOf(signedIn(c).repos, c.req.param("key")) })),
 );
 
+// B6: the reply also names the new item (names are unique in a list), so the visit page can use it at once.
 staffLists.post("/lists/:key", async (c) => {
-  const items = await addListItem(signedIn(c).repos, c.req.param("key"), await readBody(c));
-  return c.json(ok({ items }), 201);
+  const body = await readBody(c);
+  const items = await addListItem(signedIn(c).repos, c.req.param("key"), body);
+  const label = field(body, "label");
+  const wanted = typeof label === "string" ? label.trim().toLowerCase() : "";
+  const item = items.find((i) => i.label.toLowerCase() === wanted) ?? null;
+  return c.json(ok({ items, item }), 201);
 });
 
 staffLists.put(

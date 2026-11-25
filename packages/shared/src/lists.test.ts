@@ -138,3 +138,16 @@ describe("editable lists config (1.5.4 / 2.3.2)", () => {
     expect(visitTypeSnapshot(item, 15).durationMin).toBe(15);
   });
 });
+
+describe("procedure item from the visit page (B6)", () => {
+  it("needs a fee in whole paise but not a code", () => {
+    const schema = listItemSchema("procedures");
+    const ok = schema.safeParse({ label: "Scaling", data: { default_paise: 80000 } });
+    expect(ok.success).toBe(true);
+    expect(ok.success && ok.data.data).toEqual({ default_paise: 80000, code: "" });
+    expect(schema.safeParse({ label: "Scaling", data: {} }).success).toBe(false);
+    expect(schema.safeParse({ label: "Scaling", data: { default_paise: 12.5 } }).success).toBe(
+      false,
+    );
+  });
+});

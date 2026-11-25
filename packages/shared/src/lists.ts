@@ -194,7 +194,11 @@ const textRule = (f: TextListField) => {
     .trim()
     .max(f.max, `${f.label}: at most ${f.max} characters.`);
   if (f.optional) {
-    return z.union([base.min(1), z.literal("")]).transform((v) => v);
+    // B6: the key may be left out; the item then stores an empty text.
+    return z
+      .union([base.min(1), z.literal("")])
+      .transform((v) => v)
+      .default("") as unknown as typeof base;
   }
   return base.min(1, `Enter the ${f.label.toLowerCase()}.`);
 };

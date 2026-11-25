@@ -33,6 +33,34 @@ beforeEach(async () => {
   receptionist = await sessionCookie(env, "rec-1@example.test");
 });
 
+describe("add a procedure from the visit (B6)", () => {
+  const post = (cookie: string, body: unknown) => send("POST", "/lists/procedures", cookie, body);
+
+  it("the doctor adds name and fee without a code and gets the new item back", async () => {
+    const res = await post(doctor, {
+      label: "Visit scaling (test)",
+      data: { default_paise: 80000 },
+    });
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as { data: { item: ListItem | null; items: ListItem[] } };
+    expect(body.data.item).toMatchObject({
+      label: "Visit scaling (test)",
+      data: { default_paise: 80000 },
+    });
+    expect(body.data.items.some((i) => i.id === body.data.item?.id)).toBe(true);
+  });
+
+  it("refuses a missing fee, a fee that is not whole paise, and a receptionist", async () => {
+    expect((await post(doctor, { label: "No fee (test)", data: {} })).status).toBe(400);
+    expect(
+      (await post(doctor, { label: "Half paise (test)", data: { default_paise: 150.5 } })).status,
+    ).toBe(400);
+    expect(
+      (await post(receptionist, { label: "Desk (test)", data: { default_paise: 100 } })).status,
+    ).toBe(403);
+  });
+});
+
 describe("editable lists API (1.5.4)", () => {
   it("the doctor adds, edits, hides and moves; replies carry the fresh list", async () => {
     const added = await send("POST", "/lists/visit_types", doctor, {
