@@ -1,5 +1,8 @@
 # Handoff: doctor-visit (docs/design/final/doctor_visit.html)
 
+## START HERE (for the next AI, written 2026-11-26)
+The doctor visit page is BUILT and live on `/app/visits/:id` (folder `apps/web/src/features/visit-doctor/`, map in docs/MAP.md). Backend B1 to B16 and P1 to P5 are done. Read sections 12 (Log) and 14 below, then do only the list in section 14. Do not rebuild anything that the Log says is built. Rules that matter: never push, never deploy, never apply migrations; commit locally with explicit `git add` paths (the owner has uncommitted files: docs/DECISIONS.md, docs/PLAN.md, docs/design/handoff/INDEX.md, packages/db/src/testing/*, playwright.config.ts, apps/worker/scripts/*); files under 300 lines; fake data only; use the Write tool for files with apostrophes (Bash heredocs break); Playwright reuses a running server, so kill leftovers on port 8787 before a run.
+
 Status: BUILT. Everything in this file is built except the phone layout (owner: later) and the frame-by-frame motion probe (needs a daytime run). Migrations 0058 to 0064 are NEW: the owner applies them in order. Older specs core-loop, rx-not-issued and doctor-today fail and are left (owner: the design changed).
 Written: 2026-11-25. Plan by: design-plan. Next skill: design-apply (only after the owner answers section 7 and saves the HTML file, see 0).
 
@@ -219,13 +222,13 @@ Consequences to apply (changes from the HTML):
 - Visit page decisions of 2026-11-25 (Q1 to Q11 above) are written in docs/DECISIONS.md.
 
 ## 9. Design apply checklist
-- [ ] tokens/colours (scoped class like `.visit-doc`), icons, CSS files (no Tailwind, no CDN, no copied class names)
-- [ ] components (one per file, under 200 lines; break VisitMedicinesPanel first)
-- [ ] every motion in section 3 (dock overshoot included), measured
-- [ ] reduced motion
-- [ ] phone 360 / tablet 768 layout (not in the HTML: copy the nearest existing screen: the Q2.4 one-screen visit phone layout)
-- [ ] shared pieces from 4b applied on the other pages (and checked there)
-- [ ] docs: MAP.md, STATE.md, USER_MANUAL.md, handoff INDEX.md, final README row
+- [x] tokens/colours (scoped class like `.visit-doc`), icons, CSS files (no Tailwind, no CDN, no copied class names)
+- [x] components (one per file; VisitMedicinesPanel was NOT broken up: it only got arrow keys, Undo and a snapshot hook)
+- [ ] every motion in section 3 (dock overshoot included), measured. Built in CSS with the design values; only the dock is asserted in a test; frame sampling NOT done (see section 14, item 1)
+- [x] reduced motion (dock and bubble only fade; edit tools and tooth lift do not move)
+- PARKED (owner, 2026-11-26): phone 360 and tablet layouts are NOT part of this plan now. Do not build them until the owner asks. Only keep "no sideways scroll at 360, 768 and 1366" green (it is tested).
+- [~] shared pieces from 4b: money format and medicine-search arrows/Undo done; the live sheet is NOT the print layout (section 14, item 2); patient-profile chart not changed
+- [x] docs: MAP.md, STATE.md, USER_MANUAL.md, final README row. Not done: handoff INDEX.md (the owner has uncommitted edits in it) and docs/DECISIONS.md
 
 ## 10. Test cases (state x interaction x edge)
 | # | Case | Steps | Expect (look) | Expect (numbers) |
@@ -318,6 +321,15 @@ Test cases for this part:
 | P11 | Receptionist opens the "after" read | 403 |
 | P12 | Procedure without a fee | billing shows "No fee set" for that line; the visit page lists the name only |
 
+
+## 14. What is left (do these, in this order)
+1. **Motion probe** (daytime only: at night the walked-in patient has no Start row on Today and the probe cannot reach the visit page). Copy `.claude/skills/design-apply/motion-probe.template.ts` to `e2e/tmp-motion-doctor-visit.spec.ts`, free the chair first (see `freeChair` in e2e/visit-doctor-lines.spec.ts), sample every frame for: dock fold and unfold (300 ms, overshoot), bubble hover (150 ms), edit tools fade on a past chart (200 ms), X-ray mark buttons (120 ms), tooth lift (150 ms). Targets are in section 11. Fix what fails, write the numbers in the Log, delete the tmp spec, never commit it.
+2. **One prescription layout**: `LiveRx.tsx` is its own letterhead. PLAN U9.4 wants the print layout of `PrintPrescriptionScreen` / `ui/print` reused so print and preview cannot differ. Extract the body of the print screen into a shared component and use it in both.
+3. **docs/DECISIONS.md** and **docs/design/handoff/INDEX.md**: add one line each for this page (decisions: Q1 to Q14 are in section 7 and 8 above; budget raised to 1,210,000 raw / 358,000 gzip; QR stored as a data URL setting; one live bill per visit). Both files have other uncommitted edits by the owner: append only, commit only if the owner agrees.
+4. **Older specs** core-loop, rx-not-issued, doctor-today fail at Today steps (they were failing in the Part T gate too, see docs/STATE.md). The owner says leave them. Do not spend time on them unless asked.
+5. **Parked by the owner**: phone and tablet layout of this page.
+
+Owner actions (never do these yourself): apply migrations 0058 to 0064 in order (0063 fails if one visit has two live bills: cancel one); `git push origin main`; `pnpm deploy:staging`.
 
 ## 12. Log
 - 2026-11-26: done after the owner said to do all of it: tooth card marking pad and "chart then" link, tooth hover lift (150 ms), X-ray mark move and delete buttons (120 ms fade), shared pieces (money format through formatRupees; the medicine search now takes arrow keys and Enter and has the same 6 s Undo as diagnoses and procedures), QR picture (setting clinic.qr_image, migration 0064, GET /api/staff/clinic/qr, upload in Settings > Clinic and doctor, printed on the prescription and shown in the live sheet), docs (USER_MANUAL, STATE, MAP). Specs: e2e/visit-doctor-lines.spec.ts 11 tests, plus settings-clinic, print-regression, redesign-part5, no-silent-failures, visit-to-bill: 31 pass. Known gap against the plan: the live sheet (LiveRx.tsx) is its own layout, not the print layout of PrintPrescriptionScreen (PLAN U9.4 says one layout): joining them is a follow-up. DECISIONS.md was not touched here because it has other uncommitted edits.
