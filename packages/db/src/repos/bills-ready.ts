@@ -1,4 +1,5 @@
 import { inChunks, paidByBill } from "./bills-paid";
+import { billStateWord, isReadyToBill } from "@clinic/shared";
 import { and, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import { bills, visits } from "../schema";
@@ -55,9 +56,11 @@ export async function readyToBillByAppointment(
   for (const v of finals) {
     if (!v.appointmentId) continue;
     const bill = live.find((b) => b.visitId === v.id);
-    if (!bill) out.set(v.appointmentId, { visitId: v.id, billId: null });
-    else if (bill.status === "draft" || bill.total - (paid.get(bill.id) ?? 0) > 0)
-      out.set(v.appointmentId, { visitId: v.id, billId: bill.id });
+    const state = billStateWord(
+      bill ? { status: bill.status, totalPaise: bill.total } : null,
+      bill ? (paid.get(bill.id) ?? 0) : 0,
+    );
+    if (isReadyToBill(state)) out.set(v.appointmentId, { visitId: v.id, billId: bill?.id ?? null });
   }
   return out;
 }
