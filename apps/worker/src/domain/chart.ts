@@ -53,3 +53,14 @@ export async function addPatientToothEvents(repos: Repos, patientId: string, bod
   });
   return { ok: true as const, eventIds: ids, chart };
 }
+
+// B10: history of one tooth for the tooth card (doctor only; the repo checks clinical.view first).
+export async function getToothHistory(
+  repos: Repos,
+  patientId: string,
+  fdi: string,
+  before: string | null,
+) {
+  const history = await repos.toothHistory.get(patientId, Number(fdi), { before });
+  return { ok: true as const, history };
+}

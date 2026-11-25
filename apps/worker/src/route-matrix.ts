@@ -411,6 +411,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "clinical.view" },
   },
   {
+    method: "GET",
+    path: "/api/staff/patients/:id/teeth/:fdi/history",
+    access: { kind: "permission", action: "clinical.view" },
+  },
+  {
     method: "PUT",
     path: "/api/staff/patients/:id/teeth/:fdi/note",
     access: { kind: "permission", action: "clinical.edit" },

@@ -1,3 +1,4 @@
+import { istDate } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import app from "./index";
 import { addStaff, makeEnv, ORIGIN, sameOriginPost, sessionCookie } from "./testing/app-env";
@@ -51,10 +52,10 @@ type Json = {
 };
 const json = async (r: Response) => (await r.json()) as Json;
 
-async function openVisit() {
+async function openVisit(visitDateLocal = "2026-11-25") {
   const r = await call("doc@example.test", "POST", "/api/staff/visits", {
     patientId: "p1",
-    visitDateLocal: "2026-11-25",
+    visitDateLocal,
   });
   return (await json(r)).data.visit.id as string;
 }
@@ -339,5 +340,41 @@ describe("chart marks batch route (B9)", () => {
         })
       ).status,
     ).toBe(403);
+  });
+});
+
+describe("tooth history route (B10)", () => {
+  it("doctor reads a tooth history with a cursor; receptionist 403; bad tooth 400", async () => {
+    const visitId = await openVisit(istDate(new Date()));
+    await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/diagnoses`, {
+      freeText: "Pulpitis",
+      toothFdi: 36,
+    });
+    await call("doc@example.test", "POST", "/api/staff/patients/p1/chart/events", {
+      visitId,
+      toothFdi: 36,
+      surface: "o",
+      conditionCode: "caries",
+    });
+    const url = "/api/staff/patients/p1/teeth/36/history";
+    const res = await call("doc@example.test", "GET", url);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as {
+      data: {
+        teeth: number[];
+        entries: { kind: string; title: string; isToday: boolean }[];
+        next: string | null;
+      };
+    };
+    expect(body.data.teeth).toEqual([36]);
+    expect(body.data.entries.map((e) => e.kind).sort()).toEqual(["chart", "diagnosis"]);
+    expect(body.data.entries.every((e) => e.isToday)).toBe(true);
+    expect(body.data.next).toBeNull();
+
+    expect((await call("doc@example.test", "GET", `${url}?before=garbage`)).status).toBe(400);
+    expect(
+      (await call("doc@example.test", "GET", "/api/staff/patients/p1/teeth/19/history")).status,
+    ).toBe(400);
+    expect((await call("rec@example.test", "GET", url)).status).toBe(403);
   });
 });

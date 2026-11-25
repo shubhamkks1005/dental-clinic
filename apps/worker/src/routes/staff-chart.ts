@@ -4,6 +4,7 @@ import {
   addPatientToothEvent,
   addPatientToothEvents,
   getPatientChart,
+  getToothHistory,
   saveToothNote,
 } from "../domain/chart";
 import { signedIn } from "../http";
@@ -37,6 +38,17 @@ staffChart.post("/patients/:id/chart/events/batch", async (c) => {
   const result = await addPatientToothEvents(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ eventIds: result.eventIds, chart: result.chart }), 201);
+});
+
+// B10: what happened on one tooth (newest first, 20 per page, "Show older" by cursor).
+staffChart.get("/patients/:id/teeth/:fdi/history", async (c) => {
+  const result = await getToothHistory(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("fdi"),
+    c.req.query("before") || null,
+  );
+  return c.json(ok(result.history));
 });
 
 // B7: per-tooth clinical note (doctor only; draft visit only).
