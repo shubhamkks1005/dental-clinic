@@ -377,7 +377,7 @@ test("doctor Today: keyboard only", async ({ browser, playwright }) => {
 });
 
 // Cancel is optimistic: the row is struck through at once and leaves the list; the server catches up.
-test("doctor Today: Cancel strikes the row at once and it leaves the list", async ({
+test("doctor Today: Cancel strikes the row at once and it glides below the open rows", async ({
   browser,
   playwright,
 }) => {
@@ -395,7 +395,12 @@ test("doctor Today: Cancel strikes the row at once and it leaves the list", asyn
     .last()
     .click();
   await expect(rowOf(page, `Kiran Test ${stamp}`)).toHaveClass(/is-cancelled/, { timeout: 500 });
-  await expect(rowOf(page, `Kiran Test ${stamp}`)).toHaveCount(0, { timeout: 4000 });
+  // It glides below the open rows and stays, marked Cancelled.
+  await expect(rowOf(page, `Kiran Test ${stamp}`)).toContainText("Cancelled");
+  const order = await page.locator("li.td-row .td-name").allTextContents();
+  expect(order.findIndex((n) => n.includes("Lata"))).toBeLessThan(
+    order.findIndex((n) => n.includes("Kiran")),
+  );
   await expect(rowOf(page, `Lata Test ${stamp}`)).toBeVisible();
   await ctx.close();
   await desk.dispose();

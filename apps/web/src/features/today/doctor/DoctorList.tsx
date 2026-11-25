@@ -1,5 +1,5 @@
 import { formatClockTime, istMinutes } from "@clinic/shared";
-import { useRef, type ReactNode } from "react";
+import { useMemo, useRef, type ReactNode } from "react";
 import { icons } from "../../../ui/icons";
 import type { DoctorModel, DoctorRow as Row } from "./doctor-model";
 import { DoctorRow } from "./DoctorRow";
@@ -12,7 +12,7 @@ type Props = {
   spotlightId: string | null;
   liftedId: string | null;
   removingIds: ReadonlySet<string>;
-  cancelledIds: ReadonlySet<string>;
+  cancelledRows: ReadonlyMap<string, Row>;
   startBlocked: string | null;
   restore: ReactNode;
   onOpen: (row: Row) => void;
@@ -60,7 +60,7 @@ export function DoctorList({
   spotlightId,
   liftedId,
   removingIds,
-  cancelledIds,
+  cancelledRows,
   startBlocked,
   restore,
   onOpen,
@@ -69,7 +69,15 @@ export function DoctorList({
   onMenu,
 }: Props) {
   const listRef = useRef<HTMLUListElement>(null);
-  useFlip(listRef, model.rows.map((r) => `${r.id}:${r.kind}`).join("|"));
+  // A cancelled row stays (struck through) just above the first Done row; the server's own list
+  // drops it after the next refresh, the page keeps showing it.
+  const rows = useMemo(() => {
+    const open = model.rows.filter((r) => !cancelledRows.has(r.id));
+    const doneAt = open.findIndex((r) => r.kind === "done");
+    const at = doneAt === -1 ? open.length : doneAt;
+    return [...open.slice(0, at), ...cancelledRows.values(), ...open.slice(at)];
+  }, [model.rows, cancelledRows]);
+  useFlip(listRef, rows.map((r) => `${r.id}:${cancelledRows.has(r.id) ? "x" : r.kind}`).join("|"));
   const searching = hiddenIds.size > 0;
   const total = model.rows.length + (model.chair ? 1 : 0);
   const note = model.lastOrderChange
@@ -102,7 +110,7 @@ export function DoctorList({
           <span className="td-col-action">Action</span>
         </span>
       </div>
-      {model.rows.length === 0 ? (
+      {rows.length === 0 ? (
         <div className="td-empty-list">
           {model.chair
             ? "No one waiting. Current patient is in the chair above."
@@ -110,13 +118,13 @@ export function DoctorList({
         </div>
       ) : (
         <ul className="td-rows" ref={listRef}>
-          {model.rows.map((row, i) => (
+          {rows.map((row, i) => (
             <RowWithDivider key={row.id} divider={!searching && i === model.lunchAt} model={model}>
               <DoctorRow
                 row={row}
                 lifted={liftedId === row.id}
                 removing={removingIds.has(row.id)}
-                cancelled={cancelledIds.has(row.id)}
+                cancelled={cancelledRows.has(row.id)}
                 hidden={hiddenIds.has(row.id)}
                 spotlight={spotlightId === row.id}
                 startBlocked={startBlocked}

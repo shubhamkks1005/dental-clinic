@@ -40,8 +40,9 @@ type Deps = {
   hide: (key: string) => void;
 };
 
-const LIFT_MS = 60;
-const SETTLE_MS = 280;
+const NO_IDS: ReadonlySet<string> = new Set();
+const LIFT_MS = 170;
+const SETTLE_MS = 470;
 
 /** Everything the doctor can do on Today, with the animation and the server call for each. */
 export function useDoctorActions({ model, patch, load, hide }: Deps) {
@@ -55,8 +56,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [breakBusy, setBreakBusy] = useState(false);
-  const [cancelledIds, setCancelledIds] = useState<ReadonlySet<string>>(new Set());
-  const [removingIds, setRemovingIds] = useState<ReadonlySet<string>>(new Set());
+  const [cancelledRows, setCancelledRows] = useState<ReadonlyMap<string, DoctorRow>>(new Map());
   const [cancelRow, setCancelRow] = useState<{ row: DoctorRow; mode: "cancel" | "missed" } | null>(
     null,
   );
@@ -157,21 +157,13 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
         version: row.version,
       }).catch((e: unknown) => e);
       let undo = () => {};
-      const closeUp = window.setTimeout(() => setRemovingIds((s0) => new Set(s0).add(row.id)), 90);
-      const reopen = () => {
-        window.clearTimeout(closeUp);
-        setRemovingIds((s0) => {
-          const n = new Set(s0);
-          n.delete(row.id);
-          return n;
-        });
-      };
+      const reopen = () => undefined;
       if (card && el) {
         undo = morphToChair(
           el,
           card,
           { name: row.name, line: `${row.patientCode} · ${row.visit.split(" · ")[0]}` },
-          { onLanded: landed, onEnd: () => undefined },
+          { onLanded: () => undefined, onEnd: landed },
         );
       } else {
         landed();
@@ -236,33 +228,18 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
     }
   }
 
-  const cancelTimers = useRef(new Map<string, number[]>());
-  const clearCancel = (id: string) => {
-    cancelTimers.current.get(id)?.forEach((t) => window.clearTimeout(t));
-    cancelTimers.current.delete(id);
-    const drop = (s0: ReadonlySet<string>) => {
-      const n = new Set(s0);
-      n.delete(id);
-      return n;
-    };
-    setCancelledIds(drop);
-    setRemovingIds(drop);
-  };
-
-  /** A cancelled row: struck through at once, then it slides out; no reload, so the list does not jump. */
+  /** Cancel (the design's cancelRow): struck through, then it moves down above the Done rows and
+   * stays there, marked Cancelled, for this visit to the page. */
   function markCancelled(row: DoctorRow) {
-    setCancelledIds((s0) => new Set(s0).add(row.id));
-    const t1 = window.setTimeout(() => setRemovingIds((s0) => new Set(s0).add(row.id)), 450);
-    const t2 = window.setTimeout(() => {
-      patch((r) => ({ ...r, appointments: r.appointments.filter((a) => a.id !== row.id) }));
-      clearCancel(row.id);
-      window.setTimeout(load, 600);
-    }, 800);
-    cancelTimers.current.set(row.id, [t1, t2]);
+    setCancelledRows((m0) => new Map(m0).set(row.id, row));
   }
-  /** The server refused: the row comes back as it was. */
+  /** The server refused: the row goes back to where it was. */
   function undoCancelled(row: DoctorRow, message: string) {
-    clearCancel(row.id);
+    setCancelledRows((m0) => {
+      const n = new Map(m0);
+      n.delete(row.id);
+      return n;
+    });
     fail(new Error(message), message);
     load();
   }
@@ -332,7 +309,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
       } else if (item.cancel) await dismissCancelRequest(item.cancel.id);
       else hide(item.key);
       // The line slides out first (420 ms in the design), then the list is read again.
-      window.setTimeout(load, 250);
+      window.setTimeout(load, 420);
     } catch (e) {
       fail(e, "Could not save your answer.");
       load();
@@ -359,8 +336,8 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
     openingId,
     finishing,
     breakBusy,
-    cancelledIds,
-    removingIds,
+    cancelledRows,
+    removingIds: NO_IDS,
     markCancelled,
     undoCancelled,
     cancelRow,

@@ -181,7 +181,7 @@ export function DoctorTodayPage() {
           spotlightId={act.spotlightId}
           liftedId={act.liftedId}
           removingIds={act.removingIds}
-          cancelledIds={act.cancelledIds}
+          cancelledRows={act.cancelledRows}
           startBlocked={startBlocked}
           restore={restore}
           onOpen={(r) => void act.openVisit(r)}

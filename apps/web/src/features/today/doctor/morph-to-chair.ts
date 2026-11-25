@@ -61,13 +61,13 @@ export function morphToChair(
     ghost.style.transition = "opacity 140ms ease";
     ghost.style.opacity = "0";
     hooks.onLanded();
-  }, 300);
+  }, 500);
   const end = window.setTimeout(() => {
     ghost.remove();
     card.classList.remove("is-receiving");
     row.style.opacity = "";
     hooks.onEnd();
-  }, 390);
+  }, 640);
   return () => {
     window.clearTimeout(landed);
     window.clearTimeout(end);
