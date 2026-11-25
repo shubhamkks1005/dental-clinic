@@ -1,6 +1,6 @@
 # Handoff: doctor-visit (docs/design/final/doctor_visit.html)
 
-Status: PLANNED (owner answered Q1-Q13 in chat on 2026-11-25, see section 7 and 8; ready for design-apply after the HTML is saved)
+Status: BACKEND DONE, B1 to B10 (2026-11-25, local commits, nothing pushed). UI NOT STARTED: it waits for the owner to save the HTML as docs/design/final/doctor_visit.html (Q14). Migrations 0058, 0059, 0060 are NEW: the owner applies them.
 Written: 2026-11-25. Plan by: design-plan. Next skill: design-apply (only after the owner answers section 7 and saves the HTML file, see 0).
 
 ## 0. How to read this file
@@ -124,17 +124,38 @@ Logic to build (new read `GET /api/staff/patients/:id/teeth/:fdi/history`, docto
 Prototype problems NOT to copy: the timeline mixes "Sensitivity noted" (a note) with chart events; the "visit" link maps any "Check-up" to one fixed date; TOOTH_NOTES and TOOTH_HISTORY are hard-coded for teeth 36, 24, 46 only.
 
 ## 5. Backend work (do first, in this order)
-- [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no). Add `babyPredecessor(fdi)` and `permanentSuccessor(fdi)` (section 4c item 6) with a test table for all 20 baby teeth and all 32 permanent teeth (molars return null).
-- [ ] B2 repo: `visit-diagnoses.ts` and `visit-procedures.ts`: add `update` (tooth, surfaces, note; version-checked), `remove` (soft delete, draft only), `restore` (undo within the session). One `db.batch` each with the audit row. Validate FDI on add.
-- [ ] B3 domain + routes in `apps/worker/src/routes/staff-visits.ts` and `domain/visits.ts`: `PATCH` and `DELETE` per line; `route-matrix.ts` entries (`clinical.edit`); role tests (receptionist 403).
-- [ ] B4 migration (owner applies, never applied by the agent; next number from docs/HANDOFF.md): `visits.no_diagnosis`, `visits.no_procedure` integer 0/1 (Q2). Update `finalise-warnings.ts` and the checklist to use them.
-- [ ] B5 read: one "visit page" read that returns, in one round, visit + diagnoses + procedures + open plan items for the tag + last 3 visits (with `exam_note`, per Part U1.1) + next appointment + dues + files metadata; target <= 10 D1 queries; EXPLAIN checked (query-plan test).
-- [ ] B6 lists: confirm the doctor can add a procedure to the list from the visit (permission), return the new item; fee required to be a whole number of paise; code optional.
-- [ ] B7 (REQUIRED, Q4) per-tooth clinical note: a table `tooth_notes` (patient, tooth FDI, text, version, audit) or a column on the chart event store; doctor only (`clinical.edit`); finalised visits keep the text at the time (copy on finalise); retention rule; migration (owner applies); show in the tooth card, edit with Save.
-- [ ] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm (Q13, owner decided): the HTML 0.12 mm per px is invented and must NOT be built. The doctor first calibrates each image by entering a known length for a drawn line; the scale is stored with the annotations; without calibration the measure shows pixels only. Migration if a column is needed.
-- [ ] B10 tooth history read (section 4c): repo `tooth-history.ts` (five sources, one batch, cursor), domain, route `GET /patients/:id/teeth/:fdi/history`, route-matrix (`clinical.view`), receptionist 403 test, query-plan test, tests for: empty tooth, void visit left out, soft-deleted line left out, today's draft rows flagged, 21 rows gives a cursor, primary tooth number accepted, bad FDI 4xx.
-- [ ] B9 Save button for the chart (Q3): the chart keeps autosave; the button forces an immediate save and shows "Saved hh:mm".
+- [x] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no). Add `babyPredecessor(fdi)` and `permanentSuccessor(fdi)` (section 4c item 6) with a test table for all 20 baby teeth and all 32 permanent teeth (molars return null).
+- [x] B2 repo: `visit-diagnoses.ts` and `visit-procedures.ts`: add `update` (tooth, surfaces, note; version-checked), `remove` (soft delete, draft only), `restore` (undo within the session). One `db.batch` each with the audit row. Validate FDI on add.
+- [x] B3 domain + routes in `apps/worker/src/routes/staff-visits.ts` and `domain/visits.ts`: `PATCH` and `DELETE` per line; `route-matrix.ts` entries (`clinical.edit`); role tests (receptionist 403).
+- [x] B4 migration (owner applies, never applied by the agent; next number from docs/HANDOFF.md): `visits.no_diagnosis`, `visits.no_procedure` integer 0/1 (Q2). Update `finalise-warnings.ts` and the checklist to use them.
+- [x] B5 read: one "visit page" read that returns, in one round, visit + diagnoses + procedures + open plan items for the tag + last 3 visits (with `exam_note`, per Part U1.1) + next appointment + dues + files metadata; target <= 10 D1 queries; EXPLAIN checked (query-plan test).
+- [x] B6 lists: confirm the doctor can add a procedure to the list from the visit (permission), return the new item; fee required to be a whole number of paise; code optional.
+- [x] B7 (REQUIRED, Q4) per-tooth clinical note: a table `tooth_notes` (patient, tooth FDI, text, version, audit) or a column on the chart event store; doctor only (`clinical.edit`); finalised visits keep the text at the time (copy on finalise); retention rule; migration (owner applies); show in the tooth card, edit with Save.
+- [x] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm (Q13, owner decided): the HTML 0.12 mm per px is invented and must NOT be built. The doctor first calibrates each image by entering a known length for a drawn line; the scale is stored with the annotations; without calibration the measure shows pixels only. Migration if a column is needed.
+- [x] B10 tooth history read (section 4c): repo `tooth-history.ts` (five sources, one batch, cursor), domain, route `GET /patients/:id/teeth/:fdi/history`, route-matrix (`clinical.view`), receptionist 403 test, query-plan test, tests for: empty tooth, void visit left out, soft-deleted line left out, today's draft rows flagged, 21 rows gives a cursor, primary tooth number accepted, bad FDI 4xx.
+- [x] B9 Save button for the chart (Q3): the chart keeps autosave; the button forces an immediate save and shows "Saved hh:mm".
 Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> target 2 rounds, <= 10 queries each.
+
+### What was built (backend, 2026-11-25) and where it differs from the plan
+| Item | Commit | Result |
+|---|---|---|
+| B1 | c6e442b | `babyPredecessor`, `permanentSuccessor` in packages/shared/src/teeth.ts; `isFdiTooth` now also checked on diagnosis and procedure add and update (packages/db/src/repos/visit-line-parts.ts) |
+| B2 | 5eefaeb | repo `update`, `remove` (soft delete), `restore` for both line kinds; each is one batch with a version-checked audit row; procedures edit code is in visit-procedure-edit.ts (file size rule) |
+| B3 | d1cf693 | `PATCH`, `DELETE` (body: version), `POST .../restore` on /visits/:id/diagnoses/:lineId and /procedures/:lineId; the visit id in the URL must own the line (404 otherwise); matrix, role and 409 tests |
+| B4 | 0fbd526 | migration **0058_visit_none_flags** (visits.no_diagnosis, no_procedure); PATCH visit takes `noDiagnosis`/`noProcedure`; "none" while lines exist is refused; adding or restoring a line clears the flag (no version bump); web finalise-warnings and checklist count "none" as done |
+| B5 | 4c211f2 | `GET /api/staff/visits/:id/page`: 1 visit read + 1 batch of 9 = 10 queries, 2 round trips, query-plan tested. Returns visit with lines and addenda, open plan items, last 3 visits (with exam note), next appointment, dues, 12 newest files, medicines of the latest issued prescription. `issuedBillPaidSql(patientId)` now has a per-patient form (the dues list is unchanged) |
+| B6 | 2151229 | Doctor already had `settings.write`; fee already whole paise and required. Changed: `code` may now be left out (default empty) and `POST /lists/:key` also returns `item` (the new one) |
+| B7 | 0d9f8df | migration **0059_tooth_notes**; `PUT /patients/:id/teeth/:fdi/note` {visitId, body, version?}: only on a draft visit of that patient, empty text clears, version-checked, audited; live notes are copied into the finalise snapshot; added to docs/RETENTION.md |
+| B8 | c8119fd | migration **0060_file_annotations** (files.annotations_json, JSON, max 64 KB); `GET` and `PUT /files/:id/annotations` (files.clinical, version = the file version, 409 on a stale save, audit keeps counts only). Marks: pen, circle, arrow, text, measure, viewer box 400 x 300. `scale` {mmPerUnit, knownMm, lineUnits} must match known / units within 1 percent; without scale the screen shows pixels (`measureLength` in packages/shared) |
+| B9 | ad29904 | No server part was needed for "Save": every chart mark is already stored the moment it is posted. Added `POST /patients/:id/chart/events/batch` (max 40 marks, one batch, order kept) so autosave groups and the Save button are ONE request. The "Saved hh:mm" text is UI work |
+| B10 | d6730f4 | `GET /patients/:id/teeth/:fdi/history?before=`: 6 queries in one batch (7 for a baby tooth, which also answers "has the permanent tooth any record" as `permanentTooth`); merge, grouping and cursor are the pure function `mergeToothHistory` (packages/shared/src/tooth-history.ts). No new index: the query-plan test shows no scan. No access-log row (the chart read does not write one either) |
+
+Things the UI must know:
+- Chart entries carry `title` = the condition CODE; show the label from the conditions list (already loaded for the chart).
+- Procedure lines in the page read have `surfacesJson`; use `JSON.parse` or ask the repo list (VisitProcedureRow has `surfaces`).
+- A tooth history page can hold fewer than 20 entries when a table was cut short; "Show older" is shown whenever `next` is not null.
+- Not built (not in section 5): FDI multi-tag of an X-ray (files have one `tooth_fdi`); the "Not saved yet" row is client state.
+- The 10-query count for B5 excludes the session and permission check of the request itself.
 
 ## 6. Logic changes (frontend)
 - State: replace the prototype's globals (`state`, `rxState`, `diagProcState`) with the app's data hooks (`useVisitData`, `useVisitPrescription`, new `useVisitDiagnosesProcedures`). Server is the truth; HTML objects are demo data.
@@ -274,3 +295,4 @@ Test cases for this part:
 
 ## 12. Log
 - 2026-11-25: plan written from the pasted HTML (file not yet saved in docs/design/final/). Nothing built.
+- 2026-11-25: Phase A (backend) done, B1 to B10, one local commit each (c6e442b, 5eefaeb, d1cf693, 0fbd526, 4c211f2, 2151229, 0d9f8df, c8119fd, ad29904, d6730f4). New migrations 0058, 0059, 0060 (owner applies, never applied by the agent). UI waits for the HTML (Q14).

@@ -70,6 +70,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "settings",
       "staff_sessions",
       "tooth_events",
+      "tooth_notes",
       "users",
       "visit_addenda",
       "visit_diagnoses",
