@@ -10,7 +10,7 @@ How long each type of data is kept, and when it is deleted.
 
 | Data | Table(s) | Minimum legal | Clinic policy | Delete how |
 |------|----------|--------------|--------------|-----------|
-| Clinical records (visits, prescriptions, diagnoses, procedures, plan items, tooth events) | `visits`, `visit_diagnoses`, `visit_procedures`, `tooth_events`, `prescriptions`, `plan_items` | 3 years (DCI Code 3.3.1) | **8 years — DRAFT** (IDA recommends 8 years; clinic to confirm) | Soft delete (`deleted_at`); purge job after policy period |
+| Clinical records (visits, prescriptions, diagnoses, procedures, plan items, tooth events) | `visits`, `visit_diagnoses`, `visit_procedures`, `tooth_events`, `tooth_notes`, `prescriptions`, `plan_items` | 3 years (DCI Code 3.3.1) | **8 years — DRAFT** (IDA recommends 8 years; clinic to confirm) | Soft delete (`deleted_at`); purge job after policy period |
 | Patient demographics | `patients` | Same as clinical | Same as clinical | Soft delete; purge after clinical period |
 | Medical history versions | `medical_history` | Same as clinical | Same as clinical | Purge with patient |
 | Files (X-rays, photos, scans) | `files` + R2/B2 objects | Same as clinical | Same as clinical | Soft delete metadata; remove object from storage after period |

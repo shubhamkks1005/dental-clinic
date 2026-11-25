@@ -1,5 +1,5 @@
 import type { Repos } from "@clinic/db";
-import { parseAddToothEvent } from "@clinic/shared";
+import { parseAddToothEvent, parseSaveToothNote } from "@clinic/shared";
 
 export async function getPatientChart(
   repos: Repos,
@@ -28,4 +28,13 @@ export async function addPatientToothEvent(repos: Repos, patientId: string, body
     highlightVisitId: parsed.value.visitId,
   });
   return { ok: true as const, eventId: id, chart };
+}
+
+// B7: save, change or clear (empty text) the doctor's note on one tooth.
+export async function saveToothNote(repos: Repos, patientId: string, fdi: string, body: unknown) {
+  const parsed = parseSaveToothNote(body);
+  if (!parsed.ok) return parsed;
+  // The repo checks the permission first, then the tooth number (a bad one is a 400 there).
+  const note = await repos.toothNotes.save(patientId, Number(fdi), parsed.value);
+  return { ok: true as const, note };
 }

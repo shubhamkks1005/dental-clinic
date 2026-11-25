@@ -6,6 +6,8 @@ export type VisitSnapshot = {
   diagnoses: unknown[];
   procedures: unknown[];
   toothEvents: unknown[];
+  /** The patient's live per-tooth notes at the time of finalise (B7). */
+  toothNotes: unknown[];
   finalisedAt: string;
   finalisedBy: string;
 };

@@ -6,7 +6,14 @@ import type { Ctx } from "../context";
 import { snapshotJsonAndHash } from "../domain/visit-snapshot";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { toothEvents, visitAddenda, visitDiagnoses, visitProcedures, visits } from "../schema";
+import {
+  toothEvents,
+  toothNotes,
+  visitAddenda,
+  visitDiagnoses,
+  visitProcedures,
+  visits,
+} from "../schema";
 import { nowUtcSql } from "../sql";
 import { planSyncStatementsForFinalise } from "./plan-items-from-visit";
 // Draft field patches live in visits-patch.ts (3.5.3).
@@ -43,12 +50,23 @@ export function visitsFinaliseRepo(db: Db, ctx: Ctx) {
         .from(toothEvents)
         .where(and(eq(toothEvents.visitId, visitId), isNull(toothEvents.deletedAt)));
 
+      const notes = await db
+        .select({
+          toothFdi: toothNotes.toothFdi,
+          body: toothNotes.body,
+          version: toothNotes.version,
+        })
+        .from(toothNotes)
+        .where(and(eq(toothNotes.patientId, visit.patientId), isNull(toothNotes.deletedAt)))
+        .orderBy(asc(toothNotes.toothFdi));
+
       const finalisedAt = new Date().toISOString();
       const { json, hash } = await snapshotJsonAndHash({
         visit: { ...visit },
         diagnoses,
         procedures,
         toothEvents: events,
+        toothNotes: notes,
         finalisedAt,
         finalisedBy: ctx.userId,
       });

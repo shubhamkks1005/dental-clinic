@@ -40,3 +40,20 @@ export function parseAddToothEvent(body: unknown) {
   }
   return { ok: true as const, value: parsed.data };
 }
+
+// B7: the doctor's short note on one tooth. Empty text clears it. `version` is left out for a first note.
+export const saveToothNoteBody = z
+  .object({
+    visitId: z.string().min(1, "Open the visit first."),
+    body: z.string().max(1000, "The note is too long (at most 1000 characters)."),
+    version: z.number().int().positive().nullable().optional(),
+  })
+  .strict();
+
+export function parseSaveToothNote(body: unknown) {
+  const parsed = saveToothNoteBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the note." };
+  }
+  return { ok: true as const, value: parsed.data };
+}

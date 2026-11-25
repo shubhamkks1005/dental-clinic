@@ -57,5 +57,6 @@
   "0055_letterhead_settings.sql": "5866af97e1a9f09d39da82386f73ecb43bee339ba3272dfafd9427ec1a5c5a06",
   "0056_bill_cancel_requests.sql": "82bd4988338120da51f9e41fd245ab80337d442d3e3c1fa606422bd3833d838a",
   "0057_doctor_today_queue.sql": "2f89241e407f3a8d0f7cb9d93e1450b16355a74997c577848e924fbbfe786d3e",
-  "0058_visit_none_flags.sql": "01c9bde3afa5ff6800b46fabb463a0b6794454580cfa8630bd698e1053a33d95"
+  "0058_visit_none_flags.sql": "01c9bde3afa5ff6800b46fabb463a0b6794454580cfa8630bd698e1053a33d95",
+  "0059_tooth_notes.sql": "a4e6a490bf72ac38d1e77f3f1c19a031d7e13f7477eafb87997a4d5e7171f80c"
 }

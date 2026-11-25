@@ -12,6 +12,7 @@ export { staffSessions } from "./staff-sessions";
 export { users } from "./users";
 export { visits } from "./visits";
 export { toothEvents } from "./tooth-events";
+export { toothNotes } from "./tooth-notes";
 export { visitDiagnoses } from "./visit-diagnoses";
 export { visitProcedures } from "./visit-procedures";
 export { medicalHistory } from "./medical-history";

@@ -1,6 +1,6 @@
 import { fail, ok } from "@clinic/shared";
 import { Hono } from "hono";
-import { addPatientToothEvent, getPatientChart } from "../domain/chart";
+import { addPatientToothEvent, getPatientChart, saveToothNote } from "../domain/chart";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
@@ -24,4 +24,17 @@ staffChart.post("/patients/:id/chart/events", async (c) => {
   const result = await addPatientToothEvent(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ eventId: result.eventId, chart: result.chart }), 201);
+});
+
+// B7: per-tooth clinical note (doctor only; draft visit only).
+staffChart.put("/patients/:id/teeth/:fdi/note", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await saveToothNote(
+    signedIn(c).repos,
+    c.req.param("id"),
+    c.req.param("fdi"),
+    body,
+  );
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ note: result.note }));
 });

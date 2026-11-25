@@ -231,3 +231,36 @@ describe("visit page route (B5)", () => {
     expect((await call("doc@example.test", "GET", "/api/staff/visits/nope/page")).status).toBe(404);
   });
 });
+
+describe("tooth note route (B7)", () => {
+  it("doctor saves, changes and clears a note; receptionist 403; bad tooth 400", async () => {
+    const visitId = await openVisit();
+    const url = "/api/staff/patients/p1/teeth/36/note";
+    const saved = await call("doc@example.test", "PUT", url, { visitId, body: "Cold sensitivity" });
+    expect(saved.status).toBe(200);
+    const note = ((await saved.json()) as { data: { note: { version: number; body: string } } })
+      .data.note;
+    expect(note).toMatchObject({ body: "Cold sensitivity", version: 1 });
+
+    const stale = await call("doc@example.test", "PUT", url, { visitId, body: "x" });
+    expect(stale.status).toBe(409);
+    const cleared = await call("doc@example.test", "PUT", url, {
+      visitId,
+      body: "",
+      version: note.version,
+    });
+    expect(((await cleared.json()) as { data: { note: unknown } }).data.note).toBeNull();
+
+    expect((await call("rec@example.test", "PUT", url, { visitId, body: "Nope" })).status).toBe(
+      403,
+    );
+    expect(
+      (
+        await call("doc@example.test", "PUT", "/api/staff/patients/p1/teeth/19/note", {
+          visitId,
+          body: "x",
+        })
+      ).status,
+    ).toBe(400);
+  });
+});
