@@ -6,6 +6,7 @@ import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { patients, toothEvents, visits } from "../schema";
+import { toothEventsBatchRepo } from "./tooth-events-batch";
 import { toothEventsChartRepo } from "./tooth-events-chart";
 
 export type AddToothEventInput = {
@@ -22,6 +23,7 @@ export function toothEventsRepo(db: Db, ctx: Ctx) {
   const chart = toothEventsChartRepo(db, ctx);
   return {
     ...chart,
+    ...toothEventsBatchRepo(db, ctx),
 
     async add(input: AddToothEventInput): Promise<{ id: string }> {
       assertAllowed(ctx, "clinical.edit");

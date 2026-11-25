@@ -302,3 +302,42 @@ describe("x-ray annotation routes (B8)", () => {
     ).toBe(403);
   });
 });
+
+describe("chart marks batch route (B9)", () => {
+  it("doctor saves a group and gets the fresh chart; receptionist 403; bad mark 400", async () => {
+    const visitId = await openVisit();
+    const url = "/api/staff/patients/p1/chart/events/batch";
+    const res = await call("doc@example.test", "POST", url, {
+      visitId,
+      events: [
+        { toothFdi: 36, surface: "o", conditionCode: "caries" },
+        { toothFdi: 36, surface: "o", conditionCode: "filling" },
+      ],
+    });
+    expect(res.status).toBe(201);
+    const body = (await res.json()) as {
+      data: { eventIds: string[]; chart: { cells: { toothFdi: number; conditionCode: string }[] } };
+    };
+    expect(body.data.eventIds).toHaveLength(2);
+    expect(body.data.chart.cells).toEqual([
+      expect.objectContaining({ toothFdi: 36, conditionCode: "filling" }),
+    ]);
+
+    expect(
+      (
+        await call("doc@example.test", "POST", url, {
+          visitId,
+          events: [{ toothFdi: 19, surface: "o", conditionCode: "caries" }],
+        })
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await call("rec@example.test", "POST", url, {
+          visitId,
+          events: [{ toothFdi: 36, surface: "o", conditionCode: "caries" }],
+        })
+      ).status,
+    ).toBe(403);
+  });
+});

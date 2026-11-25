@@ -167,6 +167,12 @@ function bodyFor(method: string, path: string): string | undefined {
   if (/^\/api\/staff\/visits\/:id\/(diagnoses|procedures)\/:lineId(\/restore)?$/.test(path)) {
     return JSON.stringify(method === "PATCH" ? { version: 1, toothFdi: 36 } : { version: 1 });
   }
+  if (path === "/api/staff/patients/:id/chart/events/batch") {
+    return JSON.stringify({
+      visitId: "v1",
+      events: [{ toothFdi: 46, surface: "o", conditionCode: "filling" }],
+    });
+  }
   if (path === "/api/staff/files/:id/annotations" && method === "PUT") {
     return JSON.stringify({ version: 1, annotations: { v: 1, scale: null, items: [] } });
   }

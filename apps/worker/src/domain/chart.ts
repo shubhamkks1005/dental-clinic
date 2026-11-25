@@ -1,5 +1,5 @@
 import type { Repos } from "@clinic/db";
-import { parseAddToothEvent, parseSaveToothNote } from "@clinic/shared";
+import { parseAddToothEvent, parseAddToothEventsBatch, parseSaveToothNote } from "@clinic/shared";
 
 export async function getPatientChart(
   repos: Repos,
@@ -37,4 +37,19 @@ export async function saveToothNote(repos: Repos, patientId: string, fdi: string
   // The repo checks the permission first, then the tooth number (a bad one is a 400 there).
   const note = await repos.toothNotes.save(patientId, Number(fdi), parsed.value);
   return { ok: true as const, note };
+}
+
+// B9: save a group of chart marks in one request; the reply carries the fresh chart.
+export async function addPatientToothEvents(repos: Repos, patientId: string, body: unknown) {
+  const parsed = parseAddToothEventsBatch(body);
+  if (!parsed.ok) return parsed;
+  const { ids } = await repos.toothEvents.addMany(
+    patientId,
+    parsed.value.visitId,
+    parsed.value.events,
+  );
+  const chart = await repos.toothEvents.chartForPatient(patientId, {
+    highlightVisitId: parsed.value.visitId,
+  });
+  return { ok: true as const, eventIds: ids, chart };
 }

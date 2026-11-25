@@ -33,6 +33,32 @@ export const addToothEventBody = z
 
 export type AddToothEventBody = z.infer<typeof addToothEventBody>;
 
+/** B9: several marks in one request (autosave group or the Save button), at most 40, in order. */
+export const addToothEventsBatchBody = z
+  .object({
+    visitId: z.string().min(1, "Open a draft visit first."),
+    events: z
+      .array(
+        z
+          .object({
+            toothFdi: z.number({ error: "Pick a tooth." }).int(),
+            surface: z.string().min(1, "Pick a surface."),
+            conditionCode: z.string().trim().min(1, "Pick a condition.").max(40),
+          })
+          .strict(),
+      )
+      .max(40, "Save at most 40 chart marks at a time."),
+  })
+  .strict();
+
+export function parseAddToothEventsBatch(body: unknown) {
+  const parsed = addToothEventsBatchBody.safeParse(body);
+  if (!parsed.success) {
+    return { ok: false as const, message: parsed.error.issues[0]?.message ?? "Check the chart." };
+  }
+  return { ok: true as const, value: parsed.data };
+}
+
 export function parseAddToothEvent(body: unknown) {
   const parsed = addToothEventBody.safeParse(body);
   if (!parsed.success) {

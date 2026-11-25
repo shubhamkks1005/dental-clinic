@@ -417,6 +417,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "POST",
+    path: "/api/staff/patients/:id/chart/events/batch",
+    access: { kind: "permission", action: "clinical.edit" },
+  },
+  {
+    method: "POST",
     path: "/api/staff/patients/:id/chart/events",
     access: { kind: "permission", action: "clinical.edit" },
   },
