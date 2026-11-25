@@ -1,6 +1,6 @@
 # Handoff: doctor-visit (docs/design/final/doctor_visit.html)
 
-Status: PLANNED (owner answered Q1-Q11 in chat on 2026-11-25, see section 7 and 8; ready for design-apply after the HTML is saved)
+Status: PLANNED (owner answered Q1-Q13 in chat on 2026-11-25, see section 7 and 8; ready for design-apply after the HTML is saved)
 Written: 2026-11-25. Plan by: design-plan. Next skill: design-apply (only after the owner answers section 7 and saves the HTML file, see 0).
 
 ## 0. How to read this file
@@ -106,7 +106,7 @@ No reduced-motion rule in the HTML: keep the app's `prefers-reduced-motion` hand
 - [ ] B5 read: one "visit page" read that returns, in one round, visit + diagnoses + procedures + open plan items for the tag + last 3 visits (with `exam_note`, per Part U1.1) + next appointment + dues + files metadata; target <= 10 D1 queries; EXPLAIN checked (query-plan test).
 - [ ] B6 lists: confirm the doctor can add a procedure to the list from the visit (permission), return the new item; fee required to be a whole number of paise; code optional.
 - [ ] B7 (REQUIRED, Q4) per-tooth clinical note: a table `tooth_notes` (patient, tooth FDI, text, version, audit) or a column on the chart event store; doctor only (`clinical.edit`); finalised visits keep the text at the time (copy on finalise); retention rule; migration (owner applies); show in the tooth card, edit with Save.
-- [ ] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm needs a real scale: the HTML 0.12 mm per px is invented; use a per-image calibration (owner enters a known length) or show pixels only (ask the owner before building measure). Migration if a column is needed.
+- [ ] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm (Q13, owner decided): the HTML 0.12 mm per px is invented and must NOT be built. The doctor first calibrates each image by entering a known length for a drawn line; the scale is stored with the annotations; without calibration the measure shows pixels only. Migration if a column is needed.
 - [ ] B9 Save button for the chart (Q3): the chart keeps autosave; the button forces an immediate save and shows "Saved hh:mm".
 Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> target 2 rounds, <= 10 queries each.
 
@@ -137,9 +137,12 @@ Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> targe
 | Q9 | Diagnosis/procedure undo toast? | Hides after 6 s |
 | Q10 | Finalise with a draft prescription? | Warning plus a link that opens the prescription accordion |
 | Q11 | Procedure fee and total on the visit screen? | NO: fees only in billing |
+| Q12 | Procedure with no fee set: any sign on the visit screen? | Yes, only the words "No fee set" (no amount) |
+| Q13 | X-ray measure in mm? | Calibrate first (known length per image); pixels only until calibrated |
+| Q14 | The HTML file | Owner saves it as docs/design/final/doctor_visit.html and adds the README row (not yet done) |
 
 Consequences to apply (changes from the HTML):
-- Remove the fee text, "No fee set" amount chip and "Procedures total" from accordion 2 and from its summary line; the summary shows counts only. Open point for the owner (not yet asked): a bill line with no fee must still be noticed. Default: show a plain "No fee set" word on the line (no amount) so the bill is not silently low; tell the owner when reporting.
+- Remove the fee text, "No fee set" amount chip and "Procedures total" from accordion 2 and from its summary line; the summary shows counts only. Owner decided (Q12): a line whose fee is not set shows only the plain words "No fee set" (no amount), so the bill is not silently low.
 - The inline "Add procedure to my list" still needs a fee (the list needs it); keep the fee field there only.
 - Remove the `wholeTooth` logic: always render the five surface buttons.
 - Tooth note and X-ray annotations are in scope: see section 5 (B7, B8 are now required).
