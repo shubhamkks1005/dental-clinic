@@ -179,3 +179,9 @@ export async function getVisitPage(repos: Repos, id: string) {
   const page = await repos.visitPage.get(id);
   return { ok: true as const, page };
 }
+
+// The page after a visit: what is not on the prescription, plus where the bill stands.
+export async function getVisitAfter(repos: Repos, id: string) {
+  const after = await repos.visitAfter.get(id);
+  return { ok: true as const, after };
+}

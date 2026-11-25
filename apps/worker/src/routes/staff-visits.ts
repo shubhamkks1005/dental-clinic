@@ -6,6 +6,7 @@ import {
   addVisitProcedure,
   finaliseVisit,
   getVisit,
+  getVisitAfter,
   getVisitPage,
   listDraftVisits,
   listRecentVisits,
@@ -71,6 +72,12 @@ staffVisits.get("/visits/:id", async (c) => {
 staffVisits.get("/visits/:id/page", async (c) => {
   const result = await getVisitPage(signedIn(c).repos, c.req.param("id"));
   return c.json(ok(result.page));
+});
+
+// The page after a visit: today's details and bill state in one read (doctor only).
+staffVisits.get("/visits/:id/after", async (c) => {
+  const result = await getVisitAfter(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok(result.after));
 });
 
 // 3.5.3: draft notes / vitals patch (no audit per save — PLAN exception).

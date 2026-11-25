@@ -35,6 +35,7 @@ import { historySummaryRepo } from "./history-summary";
 import { pastRecordsRepo } from "./past-records";
 import { toothHistoryRepo } from "./tooth-history";
 import { toothNotesRepo } from "./tooth-notes";
+import { visitAfterRepo } from "./visit-after";
 import { visitPageRepo } from "./visit-page";
 import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
@@ -129,6 +130,7 @@ export function createRepos(db: Db, ctx: Ctx) {
     toothHistory: toothHistoryRepo(db, ctx),
     toothNotes: toothNotesRepo(db, ctx),
     visitPage: visitPageRepo(db, ctx),
+    visitAfter: visitAfterRepo(db, ctx),
     visitDiagnoses: { ...visitDiagnosesRepo(db, ctx), ...visitLinesUsageRepo(db, ctx) },
     visitProcedures: visitProceduresRepo(db, ctx),
     medicalHistory: medicalHistoryRepo(db, ctx),

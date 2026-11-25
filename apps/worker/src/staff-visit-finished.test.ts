@@ -198,3 +198,53 @@ describe("bill note route (P8, P9)", () => {
     ).toBe(400);
   });
 });
+
+describe("after read and the doctor taking payment (P7, P11)", () => {
+  type After = {
+    billState: string;
+    bill: { id: string; paidPaise: number; duePaise: number; billNo: string | null } | null;
+    diagnoses: unknown[];
+    procedures: unknown[];
+    earlierDuesPaise: number;
+  };
+
+  it("P7: the doctor passes, then takes the full payment on the page: state goes With reception then Paid", async () => {
+    const visitId = await finishedVisit(true);
+    await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/bill`, {
+      consultation: true,
+      consultationPaise: 30_000,
+    });
+    const open = (
+      await json(await call("doc@example.test", "GET", `/api/staff/visits/${visitId}/after`))
+    ).data as unknown as After;
+    expect(open.billState).toBe("with_reception");
+    expect(open.bill?.billNo).toMatch(/^SB-/);
+    expect(open.bill?.duePaise).toBeGreaterThan(0);
+    expect(open.procedures).toHaveLength(1);
+
+    const pay = await call("doc@example.test", "POST", "/api/staff/payments", {
+      patientId: "p1",
+      amountPaise: open.bill!.duePaise,
+      mode: "cash",
+    });
+    expect(pay.status).toBe(201);
+    const paid = (
+      await json(await call("doc@example.test", "GET", `/api/staff/visits/${visitId}/after`))
+    ).data as unknown as After;
+    expect(paid).toMatchObject({ billState: "paid", bill: { duePaise: 0 } });
+    expect(paid.earlierDuesPaise).toBe(0);
+  });
+
+  it("before any bill the state is Not billed; P11: the receptionist gets 403, an unknown visit 404", async () => {
+    const visitId = await finishedVisit(true);
+    const res = await call("doc@example.test", "GET", `/api/staff/visits/${visitId}/after`);
+    expect(res.status).toBe(200);
+    expect(((await json(res)).data as unknown as After).billState).toBe("not_billed");
+    expect(
+      (await call("rec@example.test", "GET", `/api/staff/visits/${visitId}/after`)).status,
+    ).toBe(403);
+    expect((await call("doc@example.test", "GET", "/api/staff/visits/nope/after")).status).toBe(
+      404,
+    );
+  });
+});
