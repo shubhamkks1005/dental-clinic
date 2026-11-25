@@ -131,6 +131,9 @@ The page loads once when opened. While it stays open: the desk's payment status 
 
 ## 13. Owner decisions and open questions
 Decided by the owner (2026-11-25):
+- "Pass to reception": the doctor sees that the bill is now with the desk (a shown state derived from the bill; no new marker, no take-back). The doctor can instead take the payment himself.
+- The bill note can be changed after the bill is issued.
+- Fees are not shown on the visit screen (fees live in billing).
 - The doctor can take the payment himself OR hand it to reception: both options are on the page, one tap each.
 - Consultation fee: the doctor decides each time whether to charge it; it is one bill line.
 - A note can be added to the bill and stays with it for the future.

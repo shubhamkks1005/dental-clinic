@@ -115,7 +115,7 @@ Logic to build (new read `GET /api/staff/patients/:id/teeth/:fdi/history`, docto
 3. Each timeline row carries its date (IST, day-month-year), the visit id and a flag `isToday` for the open draft. A row from a final visit links to "Chart as of" that visit (the link in the HTML is hard-coded to two fake dates: build it from `visit_id`; no link when the row has no visit).
 4. One-line history = the first 2 timeline entries from the same read (no second request). Empty tooth: "No prior treatment recorded on this tooth."
 5. Counting rule: today's unsaved chart marks are NOT in the server history until saved; the card shows them with the label "Not saved yet" (client state), so the doctor does not think they were recorded.
-6. A primary tooth and the permanent tooth that replaces it are different numbers: no merge (UNVERIFIED if the owner wants a link; not asked).
+6. Baby tooth and the permanent tooth that replaces it are LINKED (owner decided, 2026-11-25). Rule (shared pure function, packages/shared/src/teeth.ts, with tests): baby quadrants 5, 6, 7, 8 map to permanent quadrants 1, 2, 3, 4 with the same position digit for positions 1 to 5 (51 to 11, 52 to 12, 53 to 13, 54 to 14, 55 to 15; 61 to 21 ... 85 to 45). Permanent positions 6 to 8 (molars) have no baby predecessor. Viewing a permanent tooth (say 14) also reads the history of its baby tooth (54): those rows are merged by date into the same timeline and carry the tag "Baby tooth 54" (field `fromTooth`). Viewing a baby tooth does NOT pull the successor's rows but shows a small link "Permanent tooth 14" when the successor has any record, which opens that tooth's card. The one-line history uses the merged timeline. Cost: the history batch reads two tooth numbers instead of one (still about 5 queries, `IN (a, b)`); the cursor stays by date.
 7. Speed: opening the card must not wait: prefetch the history for the selected tooth when the pointer rests on or focuses a tooth (like the Part U1.3 idle prefetch); results are cached per tooth in the request scope and dropped when a new chart event, procedure, diagnosis or file for that tooth is saved. Budget: the five sources in ONE `db.batch` (about 5 queries), each limited to 20 rows; check EXPLAIN: `tooth_events` has the index, but `visit_diagnoses` and `visit_procedures` have no tooth index and reach the patient through `visits`, so the plan must check the query plan and add `(tooth_fdi, visit_id)` indexes only if EXPLAIN shows a scan (migration, owner applies).
 8. Role and privacy: doctor only; this is clinical data. No access-log change unless the existing chart read logs access (check `access-log.ts`; follow the same rule).
 9. Locked data: history of a tooth is read only everywhere except "Add file", "Add to plan" and the per-tooth note, which are allowed only on today's draft visit (same rule as other edits).
@@ -124,7 +124,7 @@ Logic to build (new read `GET /api/staff/patients/:id/teeth/:fdi/history`, docto
 Prototype problems NOT to copy: the timeline mixes "Sensitivity noted" (a note) with chart events; the "visit" link maps any "Check-up" to one fixed date; TOOTH_NOTES and TOOTH_HISTORY are hard-coded for teeth 36, 24, 46 only.
 
 ## 5. Backend work (do first, in this order)
-- [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no).
+- [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no). Add `babyPredecessor(fdi)` and `permanentSuccessor(fdi)` (section 4c item 6) with a test table for all 20 baby teeth and all 32 permanent teeth (molars return null).
 - [ ] B2 repo: `visit-diagnoses.ts` and `visit-procedures.ts`: add `update` (tooth, surfaces, note; version-checked), `remove` (soft delete, draft only), `restore` (undo within the session). One `db.batch` each with the audit row. Validate FDI on add.
 - [ ] B3 domain + routes in `apps/worker/src/routes/staff-visits.ts` and `domain/visits.ts`: `PATCH` and `DELETE` per line; `route-matrix.ts` entries (`clinical.edit`); role tests (receptionist 403).
 - [ ] B4 migration (owner applies, never applied by the agent; next number from docs/HANDOFF.md): `visits.no_diagnosis`, `visits.no_procedure` integer 0/1 (Q2). Update `finalise-warnings.ts` and the checklist to use them.
@@ -215,6 +215,9 @@ Consequences to apply (changes from the HTML):
 | 20 | Tooth history: tooth with nothing | tap a healthy tooth | "No prior treatment recorded on this tooth." | still one request |
 | 21 | Tooth history: 25 entries | tap, then "Show older" | 20 then 5 more | cursor works, no duplicates |
 | 22 | Tooth history: mark today then open card | mark a surface, do not save | row shows "Not saved yet" | not in server history until saved |
+| 24 | Tooth history: permanent tooth 14 whose baby tooth 54 has a filling | open card 14 | the 54 row is in the timeline tagged "Baby tooth 54", sorted by date | one request, tooth list [14, 54] |
+| 25 | Tooth history: molar 16 | open card | no baby rows, no link | |
+| 26 | Tooth history: baby tooth 54 with a record on 14 | open card 54 | link "Permanent tooth 14", 14's rows are NOT in this timeline | |
 | 23 | Tooth history: receptionist | call the API | 403 | |
 | 18 | First paint | open page | no animation on first paint | queries <= 10 per request |
 
@@ -223,6 +226,51 @@ Consequences to apply (changes from the HTML):
 - each transition spans >= 8 frames over its HTML duration, no 1-3 frame jump larger than 24 px;
 - no layout jump of other elements, no page scroll movement;
 - durations within +-20 percent of the HTML value.
+
+## 13. Backend plan for the page AFTER the visit (visit finished: prescription preview, bill, back to Today)
+Design for it: not drawn yet. Its brief is `docs/design/briefs/visit-finished.md` (owner decisions in section 13 of that brief). This section lists the backend so it can be built with, or right after, the visit page. Verdicts come from reading the repos on 2026-11-25.
+
+Owner decisions that shape it (chat, 2026-11-25):
+- The doctor can take the payment himself OR pass the money part to the desk. The page then just SHOWS that it is with the desk. The desk already sees every finalised visit with an unpaid bill as "Ready to bill" (`bills-ready.ts`, `readyToBillByAppointment`), so NO new "handed over" column is needed: "with reception" is derived (bill issued with a balance). Take back: not needed (a mistake is a bill cancel, which exists).
+- Consultation fee: the doctor decides each visit whether to charge; it is one bill line.
+- A bill note stays with the bill and can be edited even after the bill is issued.
+- A "today's details" side part (what is not on the prescription).
+- Discount: the doctor gives it before the bill is issued, with no second approval.
+
+| Item | App today | Verdict | Work |
+|---|---|---|---|
+| Make the bill from the visit | `POST /visits/:id/bill` (`createBillFromVisit`: draft, then issue at once unless `reviewFirst`) | EXISTS | Use `reviewFirst: true` when the doctor wants a discount or a consultation line (stays a draft), then issue; plain "Pass to reception" = create and issue as today |
+| "Pass to reception" | none; the desk "Ready to bill" is already derived | EXISTS (derived) | The page shows one of: Not billed / Draft (not passed) / With reception (issued, balance due) / Paid. One small function in `domain/bills.ts` returns this state word from bill status, paid and total (one rule in one place, also usable by the desk). No migration |
+| Doctor takes payment on this page | `POST /payments` (`bills.create`, doctor allowed), allocates to open bills | EXISTS | Reuse; mode, amount, reference; receipt print exists |
+| Discount by the doctor, before issue, no approval step | `requestDiscount` (draft only, `bills.create`) then `approveDiscount` (`bills.adjust`, doctor) | FIX FIRST | New domain function `applyDoctorDiscount(billId, amountOrPercent, reason, version)` that runs request then approve for a doctor in ONE db.batch (audit rows for both, version checked); refuses when the bill is not a draft or the discount is more than the subtotal; the receptionist path is unchanged (request only). Route `POST /bills/:id/discount/apply` (`bills.adjust`), route-matrix entry, tests |
+| Consultation fee line | draft items are edited with `updateDraft` (the client sends the whole item list; items may come from the list or have a label and a unit price) | FIX FIRST / UNVERIFIED | Check `parseUpdateDraftBill` accepts an item with no `listItemId` and an integer `unitPaise`; add the "Consultation" line without losing the procedure lines. Add a usual consultation fee setting `billing.consultation_fee_paise` (shared tunables entry, seed migration, tests; `settings.billing`, doctor) so one tap adds it; if unset the doctor types the amount |
+| Bill note | `bills.notes` column exists | FIX FIRST | Draft: part of `updateDraft` (check). Issued: new `PATCH /bills/:id/note` (`bills.create`, version-checked, up to 200 characters, audit row with old and new text; money columns untouched; cancelled bills refused). The desk can read it, so the field says "No health details"; the server does not scan the text |
+| Prescription preview and print | `PrintPrescriptionScreen`, `GET /prescriptions/:id` (`prescriptions.print`), print log | EXISTS | Reuse the same layout; `GET /visits/:id/prescriptions` finds the prescription of this visit |
+| Today's details side part | pieces exist separately: diagnoses and procedures, open plan items, next appointment, follow-up date (prescription), files, dues | NEW (one read) | `GET /visits/:id/after` (`clinical.view`, doctor only): diagnoses with tooth, procedures with tooth and surfaces (names only, no fees: owner decision), next appointment, open plan items left, follow-up date, files added this visit (names), earlier dues (paise). One `db.batch`, 8 queries or fewer, EXPLAIN checked; receptionist 403 |
+| Next waiting patient | doctor Today read ("Next") | EXISTS (UNVERIFIED which call) | Reuse the Today read through the request scope; no new endpoint |
+| Addendum | `POST /visits/:id/addenda` | EXISTS | Link only |
+| Bill cancel after pass | `POST /bills/:id/cancel` (`bills.adjust`) | EXISTS | Link to the bill screen |
+| Double tap on pass or issue | `bills-issue-concurrency.test.ts` exists | VERIFY | Re-run, and add a test that two quick "Pass" calls give one bill and one number |
+| Consultation-only visit (no procedures) | `createFromVisit` with no procedures: UNVERIFIED (may refuse or make an empty bill) | FIX FIRST | Define: with a consultation line the bill is made; with nothing billable no bill is made and the page says so |
+
+Order: (1) the shared state-word function and tests, (2) `applyDoctorDiscount`, (3) consultation fee setting and line check, (4) the note route, (5) the "after" read, (6) route-matrix, role tests, query-plan test, (7) docs (MAP, STATE). No migration except the consultation fee setting seed. Queries: the page opens with one visit/bill read and the "after" read in the same round.
+
+Test cases for this part:
+| # | Case | Expect |
+|---|---|---|
+| P1 | Pass with procedures | one bill issued, one gap-free number, state "With reception", the desk list shows the patient |
+| P2 | Pass twice quickly | one bill |
+| P3 | Doctor discount 10 percent then pass | request and approve audited, total recalculated on the server |
+| P4 | Discount after issue | 4xx, bill unchanged |
+| P5 | Receptionist calls apply-discount | 403 |
+| P6 | Consultation line added then pass | bill has procedure lines plus Consultation, total matches |
+| P7 | Doctor takes full payment on the page | bill paid, state "Paid", receipt prints |
+| P8 | Note on an issued bill | saved, money columns unchanged, audit row |
+| P9 | Note on a cancelled bill | refused |
+| P10 | No procedures, no consultation | no bill made, the page says so |
+| P11 | Receptionist opens the "after" read | 403 |
+| P12 | Procedure without a fee | billing shows "No fee set" for that line; the visit page lists the name only |
+
 
 ## 12. Log
 - 2026-11-25: plan written from the pasted HTML (file not yet saved in docs/design/final/). Nothing built.
