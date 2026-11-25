@@ -105,35 +105,49 @@ export function billsCreateRepo(db: Db, ctx: Ctx) {
         }),
       );
 
-      await db.batch([
-        db.insert(bills).values({
-          id,
-          patientId: input.patientId,
-          visitId: input.visitId ?? null,
-          billOn: input.billOn,
-          status: "draft",
-          kind: input.kind ?? "normal",
-          subtotalPaise: totals.subtotalPaise,
-          discountPaise: requestedDiscountPaise,
-          discountReason: input.discountReason ?? null,
-          discountApprovedBy: requestedDiscountPaise > 0 && approvedNow ? ctx.userId : null,
-          discountApprovedAt: requestedDiscountPaise > 0 && approvedNow ? nowUtcSql : null,
-          taxPaise: totals.taxPaise,
-          roundOffPaise: totals.roundOffPaise,
-          totalPaise: totals.totalPaise,
-          notes: input.notes ?? "",
-          createdBy: ctx.userId,
-          updatedBy: ctx.userId,
-        }),
-        ...itemInserts,
-        auditInsert(db, ctx, {
-          action: "create",
-          table: "bills",
-          rowId: id,
-          before: null,
-          after: { status: "draft", patientId: input.patientId, totalPaise: totals.totalPaise },
-        }),
-      ]);
+      try {
+        await db.batch([
+          db.insert(bills).values({
+            id,
+            patientId: input.patientId,
+            visitId: input.visitId ?? null,
+            billOn: input.billOn,
+            status: "draft",
+            kind: input.kind ?? "normal",
+            subtotalPaise: totals.subtotalPaise,
+            discountPaise: requestedDiscountPaise,
+            discountReason: input.discountReason ?? null,
+            discountApprovedBy: requestedDiscountPaise > 0 && approvedNow ? ctx.userId : null,
+            discountApprovedAt: requestedDiscountPaise > 0 && approvedNow ? nowUtcSql : null,
+            taxPaise: totals.taxPaise,
+            roundOffPaise: totals.roundOffPaise,
+            totalPaise: totals.totalPaise,
+            notes: input.notes ?? "",
+            createdBy: ctx.userId,
+            updatedBy: ctx.userId,
+          }),
+          ...itemInserts,
+          auditInsert(db, ctx, {
+            action: "create",
+            table: "bills",
+            rowId: id,
+            before: null,
+            after: { status: "draft", patientId: input.patientId, totalPaise: totals.totalPaise },
+          }),
+        ]);
+      } catch (e) {
+        // The unique index (0063): a visit has one live bill. Never a raw database error on screen.
+        if (
+          e instanceof Error &&
+          /UNIQUE/i.test(`${e.message} ${String(e.cause ?? "")}`) &&
+          input.visitId
+        ) {
+          throw new InvalidError(
+            "This visit already has a bill. Open it instead of making a second one.",
+          );
+        }
+        throw e;
+      }
 
       return getRepo.get(id);
     },

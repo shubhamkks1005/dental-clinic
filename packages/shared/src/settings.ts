@@ -63,6 +63,7 @@ export const SETTING_SCHEMAS = {
   "outreach.recall_min_months": intTunable("outreach.recall_min_months"),
   "outreach.recall_max_months": intTunable("outreach.recall_max_months"),
   "records.demand_hours": intTunable("records.demand_hours"),
+  "billing.consultation_fee_paise": intTunable("billing.consultation_fee_paise"),
   // 3.4.3: facing + display notation in one setting (storage always FDI).
   "chart.view": chartViewSchema,
   // 3.8.1: treatment consent templates (English; DRAFT until lawyer/sister confirm).

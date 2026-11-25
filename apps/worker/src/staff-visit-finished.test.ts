@@ -96,3 +96,65 @@ describe("doctor discount route (P3, P4, P5)", () => {
     );
   });
 });
+
+async function finishedVisit(withProcedure: boolean) {
+  const opened = await call("doc@example.test", "POST", "/api/staff/visits", {
+    patientId: "p1",
+    visitDateLocal: "2026-11-25",
+  });
+  const visitId = ((await opened.json()) as { data: { visit: { id: string } } }).data.visit.id;
+  if (withProcedure) {
+    await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/procedures`, {
+      listItemId: "01M83PROC02FILLING0000001",
+      toothFdi: 46,
+    });
+  }
+  const got = await call("doc@example.test", "GET", `/api/staff/visits/${visitId}`);
+  const version = ((await got.json()) as { data: { visit: { version: number } } }).data.visit
+    .version;
+  await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/finalise`, { version });
+  return visitId;
+}
+
+describe("pass to reception route (P1, P2, P6, P10)", () => {
+  it("the first tap makes and issues one bill (201), the second returns the same one (200)", async () => {
+    const visitId = await finishedVisit(true);
+    const url = `/api/staff/visits/${visitId}/bill`;
+    const first = await call("doc@example.test", "POST", url, {});
+    expect(first.status).toBe(201);
+    const a = (await json(first)).data as { bill: Bill & { billNo: string }; created: boolean };
+    expect(a).toMatchObject({ created: true, bill: { status: "issued" } });
+    const second = await call("doc@example.test", "POST", url, {});
+    expect(second.status).toBe(200);
+    const b = (await json(second)).data as { bill: Bill & { billNo: string }; created: boolean };
+    expect(b).toMatchObject({ created: false });
+    expect(b.bill.id).toBe(a.bill.id);
+    expect(b.bill.billNo).toBe(a.bill.billNo);
+    const n = sqlite.prepare("SELECT COUNT(*) AS n FROM bills WHERE visit_id = ?").get(visitId) as {
+      n: number;
+    };
+    expect(n.n).toBe(1);
+  });
+
+  it("a consultation line is added; nothing to bill is refused with a sentence", async () => {
+    const visitId = await finishedVisit(true);
+    const res = await call("doc@example.test", "POST", `/api/staff/visits/${visitId}/bill`, {
+      reviewFirst: true,
+      consultation: true,
+      consultationPaise: 30_000,
+    });
+    expect(res.status).toBe(201);
+    const bill = (await json(res)).data.bill as Bill;
+    expect(bill.status).toBe("draft");
+
+    const empty = await finishedVisit(false);
+    const none = await call("doc@example.test", "POST", `/api/staff/visits/${empty}/bill`, {});
+    expect(none.status).toBe(400);
+    expect(JSON.stringify(await none.json())).toContain("nothing to bill");
+    const bad = await call("doc@example.test", "POST", `/api/staff/visits/${empty}/bill`, {
+      consultation: true,
+      consultationPaise: "lots",
+    });
+    expect(bad.status).toBe(400);
+  });
+});

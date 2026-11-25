@@ -87,6 +87,13 @@ export const TUNABLES = {
     label: "Recall until (months)",
     help: "Recall list: last visit at most this many months ago. Example: 9.",
   },
+  "billing.consultation_fee_paise": {
+    default: 0,
+    min: 0,
+    max: 10_000_000,
+    label: "Usual consultation fee (paise)",
+    help: "One tap on the visit finished page adds this as a Consultation line on the bill. 0 means not set: the doctor types the amount each time. Example: 50000 is Rs 500.",
+  },
   "records.demand_hours": {
     default: 72,
     min: 1,

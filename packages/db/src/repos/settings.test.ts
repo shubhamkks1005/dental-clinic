@@ -105,6 +105,7 @@ describe("settings store rules (1.5.1)", () => {
       ["outreach.recall_min_months", 6, 1],
       ["outreach.recall_max_months", 9, 1],
       ["records.demand_hours", 72, 1],
+      ["billing.consultation_fee_paise", 0, 1],
       ["chart.view", { facing: "dentist", notation: "fdi" }, 1],
       ["consent.templates", expect.objectContaining({ extraction: expect.any(Object) }), 1],
       ["clinic.address", "Sample address — set in Settings", 1],

@@ -32,6 +32,7 @@ export const SETTING_HELP: Record<SettingKey, string> = {
   "outreach.recall_min_months": TUNABLES["outreach.recall_min_months"].help,
   "outreach.recall_max_months": TUNABLES["outreach.recall_max_months"].help,
   "records.demand_hours": TUNABLES["records.demand_hours"].help,
+  "billing.consultation_fee_paise": TUNABLES["billing.consultation_fee_paise"].help,
   "chart.view":
     "Chart facing and tooth labels (FDI / Universal / Palmer). Example: dentist + FDI. New charts use it at once.",
   "consent.templates":

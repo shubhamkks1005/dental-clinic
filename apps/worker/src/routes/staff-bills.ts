@@ -155,7 +155,7 @@ staffBills.post("/bills/:id/cancel", async (c) => {
 staffBills.post("/visits/:id/bill", async (c) => {
   const body: unknown = await c.req.json().catch(() => null);
   const result = await createBillFromVisit(signedIn(c).repos, c.req.param("id"), body);
-  return c.json(ok({ bill: result.bill }), 201);
+  return c.json(ok({ bill: result.bill, created: result.created }), result.created ? 201 : 200);
 });
 
 staffBills.get("/patients/:id/bills", async (c) => {

@@ -60,5 +60,7 @@
   "0058_visit_none_flags.sql": "01c9bde3afa5ff6800b46fabb463a0b6794454580cfa8630bd698e1053a33d95",
   "0059_tooth_notes.sql": "a4e6a490bf72ac38d1e77f3f1c19a031d7e13f7477eafb87997a4d5e7171f80c",
   "0060_file_annotations.sql": "756dd979feb77b164e7b443826fe47e4e6b552f228740feac1b570f6a81d53ef",
-  "0061_plan_sittings.sql": "a3a8e072a2ad7e7b27ae72464de0e55fe99d9a3fb2afde76e1e68112ed3f172f"
+  "0061_plan_sittings.sql": "a3a8e072a2ad7e7b27ae72464de0e55fe99d9a3fb2afde76e1e68112ed3f172f",
+  "0062_consultation_fee.sql": "3918d6c70672329a1666319609ecbac010196d92b26a0f09faa134380c850136",
+  "0063_bills_one_live_per_visit.sql": "dcdf241cd6057e083ece2793015b31e767cbe1c6b58cb51c3f98e1697c5f25bb"
 }

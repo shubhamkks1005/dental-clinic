@@ -25,6 +25,7 @@ describe("setting rules (1.5.1)", () => {
       "outreach.recall_min_months",
       "outreach.recall_max_months",
       "records.demand_hours",
+      "billing.consultation_fee_paise",
       "chart.view",
       "consent.templates",
       "clinic.address",

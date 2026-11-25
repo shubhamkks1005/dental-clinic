@@ -1,6 +1,7 @@
-import type { Repos } from "@clinic/db";
+import { InvalidError, type Repos } from "@clinic/db";
 import {
   parseApproveBillDiscount,
+  parseBillFromVisit,
   parseRejectBillDiscount,
   parseCloseDay,
   parseCreateBill,
@@ -74,15 +75,27 @@ export async function cancelBill(repos: Repos, id: string, body: unknown) {
 // "Review first" (reviewFirst: true) keeps it as a draft, so items or a discount can be changed.
 // The draft and the issue are two writes; if the issue fails the draft stays and can be issued.
 export async function createBillFromVisit(repos: Repos, visitId: string, body?: unknown) {
-  const reviewFirst =
-    !!body && typeof body === "object" && (body as { reviewFirst?: unknown }).reviewFirst === true;
-  const draft = await repos.bills.createFromVisit(visitId);
-  if (reviewFirst) return { ok: true as const, bill: draft };
-  const account = await repos.bills.listForPatient(draft.patientId);
-  const bill = await repos.bills.issue(draft.id, draft.version, {
-    applyAdvance: account.advancePaise > 0,
+  const parsed = parseBillFromVisit(body);
+  if (!parsed.ok) throw new InvalidError(parsed.message);
+  const { reviewFirst, consultation, consultationPaise } = parsed.value;
+  // A visit has one live bill: a second tap gets the same bill back (created: false), never a second one.
+  const { bill: draft, created } = await repos.bills.createFromVisitOnce(visitId, {
+    consultation,
+    consultationPaise,
   });
-  return { ok: true as const, bill };
+  if (reviewFirst || draft.status !== "draft") return { ok: true as const, bill: draft, created };
+  const account = await repos.bills.listForPatient(draft.patientId);
+  try {
+    const bill = await repos.bills.issue(draft.id, draft.version, {
+      applyAdvance: account.advancePaise > 0,
+    });
+    return { ok: true as const, bill, created };
+  } catch (e) {
+    // Two taps at once: the other one issued it. Same bill, same number: that is the answer.
+    const now = await repos.bills.get(draft.id);
+    if (now.status === "issued") return { ok: true as const, bill: now, created: false };
+    throw e;
+  }
 }
 
 export async function updateDraftBill(repos: Repos, id: string, body: unknown) {

@@ -80,6 +80,7 @@ export * from "./tooth-chart-api";
 export * from "./file-annotations";
 export * from "./tooth-history";
 export * from "./bill-state";
+export * from "./bill-from-visit";
 export * from "./dentition";
 export * from "./medical-history";
 export * from "./visit-strip";

@@ -1,6 +1,6 @@
 import { BILL_STATUSES, TAX_CATEGORIES } from "@clinic/shared";
 import { sql } from "drizzle-orm";
-import { check, index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { check, index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import { oneOf, standardColumns } from "./columns";
 
 const BILL_KINDS = ["normal", "opening_balance"] as const;
@@ -36,6 +36,12 @@ export const bills = sqliteTable(
     index("bills_patient_created_idx").on(t.patientId, t.createdAt),
     index("bills_period_no_idx").on(t.billPeriod, t.billNo),
     index("bills_patient_status_idx").on(t.patientId, t.status),
+    // 0063: one live bill per visit.
+    uniqueIndex("bills_visit_live_uidx")
+      .on(t.visitId)
+      .where(
+        sql`${t.visitId} IS NOT NULL AND ${t.status} != 'cancelled' AND ${t.deletedAt} IS NULL`,
+      ),
     check("bills_status_check", oneOf(t.status.name, BILL_STATUSES)),
     check("bills_kind_check", oneOf(t.kind.name, BILL_KINDS)),
     check(
