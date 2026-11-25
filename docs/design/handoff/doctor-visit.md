@@ -291,6 +291,17 @@ Owner decisions that shape it (chat, 2026-11-25):
 
 Order: (1) the shared state-word function and tests, (2) `applyDoctorDiscount`, (3) consultation fee setting and line check, (4) the note route, (5) the "after" read, (6) route-matrix, role tests, query-plan test, (7) docs (MAP, STATE). No migration except the consultation fee setting seed. Queries: the page opens with one visit/bill read and the "after" read in the same round.
 
+### Section 13 built (2026-11-25, local commits, nothing pushed)
+| Step | Commit | Result |
+|---|---|---|
+| P1 state word | 26a4e1b | `billStateWord` and `isReadyToBill` in packages/shared/src/bill-state.ts (Not billed, Draft, With reception, Paid; a cancelled bill counts as Not billed). The desk list `bills-ready.ts` now uses it: one rule |
+| P2 doctor discount | 05318a3 | `POST /api/staff/bills/:id/discount/apply` (bills.adjust = doctor): request and approve in ONE batch, two audit rows, draft only, not above the subtotal; the desk path (request only) is unchanged |
+| P3 consultation, one bill | c907492 | `POST /visits/:id/bill` body `{reviewFirst?, consultation?, consultationPaise?}`: Consultation line from the typed amount or the usual fee; nothing billable is refused with "There is nothing to bill on this visit. Add a procedure or a consultation fee."; a second tap returns the same bill (status 200, `created: false`), also two at the same time. Migration **0062_consultation_fee** (setting `billing.consultation_fee_paise`, 0 = not set, doctor only) and migration **0063_bills_one_live_per_visit** (unique index: one live bill per visit). Both are NEW: the owner applies them. If 0063 fails there are two live bills on one visit (test data): cancel one. A change you will see: a visit can no longer have two live bills; the old test that made two on one visit uses two visits now |
+| P4 note | 5639f99 | `PATCH /api/staff/bills/:id/note` {version, note <= 200}: draft or issued, cancelled refused, bumps the bill version, audit has old and new text, money columns untouched. The desk may write it too (bills.create) |
+| P5 after read | 17a3553 | `GET /api/staff/visits/:id/after`: diagnoses and procedures (names, teeth, surfaces, no fees), next appointment, open plan items with sittings done, follow-up of this visit's prescription, files added since the visit opened, earlier dues, the live bill with paid and due, and `billState`. 1 visit read + 1 batch of 8 = 9 queries, 2 round trips, query-plan tested |
+| P6 checks | each step | route-matrix entries and role tests for every new route; the matrix body helper knows them |
+| Not built | - | the doctor taking payment needs nothing new (`POST /payments` already allows the doctor, tested end to end in staff-visit-finished.test.ts); prescription of this visit: `GET /visits/:id/prescriptions` exists; next waiting patient: the UI reuses the Today read |
+
 Test cases for this part:
 | # | Case | Expect |
 |---|---|---|
@@ -313,3 +324,4 @@ Test cases for this part:
 - 2026-11-25: Phase A (backend) done, B1 to B10, one local commit each (c6e442b, 5eefaeb, d1cf693, 0fbd526, 4c211f2, 2151229, 0d9f8df, c8119fd, ad29904, d6730f4). New migrations 0058, 0059, 0060 (owner applies, never applied by the agent). UI waits for the HTML (Q14).
 - 2026-11-25: design (30) compared with B1 to B10. Built B11 to B15 (see 5c). Open for the owner: sittings rule, QR picture.
 - 2026-11-25: B16 sittings rule built (migration 0061, owner applies). QR upload left as its own task.
+- 2026-11-25: section 13 backend built, P1 to P5 (26a4e1b, 05318a3, c907492, 5639f99 17a3553). New migrations 0062 and 0063 (owner applies, never applied by the agent). Tests P1 to P12 are in apps/worker/src/domain/bills.test.ts, apps/worker/src/staff-visit-finished.test.ts, packages/db/src/repos/bills-*.test.ts and visit-after.test.ts. Next: the UI, which waits for the saved HTML.
