@@ -66,7 +66,7 @@ Design principle (owner): the least effort for the doctor. Fewest taps, no confi
 | # | Action | Who | Needs to be true first | What changes in the data | Other effects | Undo? | Confirm? | Must NEVER happen |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Search and add a medicine (type, Enter adds the first match; or pick a result) | Doctor | Prescription not locked | A draft prescription is created on the first add; a line is added with a copy (snapshot) of the medicine's name, strength, form and defaults | Search box clears; focus stays ready for the next search | Yes, remove the line while draft | No | Adding to an issued prescription; adding the same medicine twice without a notice; Enter adding a wrong item silently (the doctor must see what was added) |
-| 2 | Write a new medicine that is not in the list (type the name; strength and form optional) | Doctor | Search found nothing | The typed text becomes a normal line on this prescription (a free-text medicine with no list entry). Dose, frequency and days start as "As directed" until the doctor writes them | Audit row as for any line | Remove the line | No. It must never ask the doctor to save it to the list, and never stops them | Blocking the doctor: no required "strength", no extra form, no step to leave this panel. This panel never adds anything to the medicine list |
+| 2 | Write a new medicine that is not in the list (type the name; strength and form optional) | Doctor | Search found nothing | The typed text becomes a normal line on this prescription (a free-text medicine with no list entry). Dose, frequency and days start as "As directed" until the doctor writes them | Audit row as for any line | Remove the line | No. Saving it to the list is never required and never stops the doctor (see open question 3) | Blocking the doctor: no required "strength", no extra form, no step to leave this panel |
 | 3 | Edit dose, frequency, days on a line | Doctor | Draft | Line updated, whole prescription saved with a new version | Total recalculates; notices recalculate | Yes while draft | No | Losing typed text on a failed save |
 | 4 | Remove a line | Doctor | Draft | Line deleted from the draft | Notices recalculate | Needs a way back for a few seconds | No for one line, but a mis-tap must be recoverable | Removing from an issued prescription |
 | 5 | Apply a medicine set | Doctor | Draft | Each medicine in the set added as a line | Duplicates flagged | Remove lines | No | Adding some of a set and silently dropping the rest |
@@ -148,7 +148,7 @@ Today's screen (for context only): search box with "Enter adds the first match";
 |---|---|---|---|
 | 1 | Should Enter add the first match, or only the one the doctor moved onto with the arrow keys? | A wrong first match is a patient-safety risk | Enter adds the highlighted result (the first is highlighted); show "Added: Amoxicillin 500 mg" with Undo |
 | 2 | Medicines the doctor types freely (not in the list) have no allergy tags, so safety notices cannot see them. Fine? | Notices only work on tagged medicines | Fine: they simply produce no notice |
-| 3 | Where will the doctor later save a free-typed medicine into the list? (Owner: somewhere else, not on this page) | This page must not hold that step | UNKNOWN: a separate place, for example the medicine list showing "written on prescriptions, not in your list yet" with one tap to add. Out of this brief |
+| 3 | Should a free-typed medicine ever be saved into the doctor's list, so it is found by search next time? | Otherwise the doctor retypes it every visit | UNKNOWN: optional, never required, never a step that stops the doctor. Owner to decide if and where |
 | 4 | Should the doctor pick the dose from a few common choices per medicine (1, 1/2, 5 ml)? | Typing doses is slow | Offer the medicine's own default and a short list of usual doses; UNKNOWN which list |
 | 5 | Is there a "dispensed by dentist" option on the sheet? | The data model has it, not shown on this screen | UNKNOWN: leave it out until the owner says |
 | 6 | Show the total tablet count on the printed sheet? | Patients buy that amount | Yes, labelled "approx." |
@@ -156,7 +156,6 @@ Today's screen (for context only): search box with "Enter adds the first match";
 
 ## 14. Out of scope
 - Managing the medicine list and sets (that is Settings).
-- Saving a free-typed medicine into the doctor's list (owner: shown somewhere else, never on this panel).
 - Patient weight, and the patient name, age and allergy strip.
 - Dose calculators, interaction checks and medicine suggestions (a project rule).
 - Medicine stock, pharmacy billing and selling medicines.
