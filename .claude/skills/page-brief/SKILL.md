@@ -1,6 +1,6 @@
 ---
 name: page-brief
-description: Write a design brief for ONE page that tells a design AI (or a designer) WHAT the page must contain and WHY, never how it looks. Takes the page name plus the owner's notes ("show X, Y, Z"), then adds the data behind each item, the reason it exists, the logic and rules behind it, the states and edge cases, who sees it, and the things an expert would not forget. Output docs/design/briefs/<page>.md. Use when the owner says they must design a page and wants the design AI to get all the details.
+description: Write a design brief for ONE page that tells a design AI (or a designer) WHAT the page must contain and WHY, never how it looks. Takes the page name plus the owner's notes (show X, Y, Z), then adds the data behind each item, the reason it exists, the logic and rules behind it, the states and edge cases, who sees it, and the things an expert would not forget. Output docs/design/briefs/<page>.md. Use when the owner says they must design a page and wants the design AI to get all the details.
 ---
 
 # page-brief (what and why, not how it looks)
