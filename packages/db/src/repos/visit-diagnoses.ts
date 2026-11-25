@@ -1,11 +1,13 @@
 import { newUlid } from "@clinic/shared";
 import { and, asc, eq, isNull } from "drizzle-orm";
-import { auditInsert } from "../audit";
+import { auditInsert, auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
-import { InvalidError, NotFoundError } from "../errors";
+import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { listItems, visitDiagnoses, visits } from "../schema";
+import { nowUtcSql } from "../sql";
+import { assertTooth } from "./visit-line-parts";
 
 export type AddVisitDiagnosisInput = {
   visitId: string;
@@ -15,8 +17,14 @@ export type AddVisitDiagnosisInput = {
   toothFdi?: number | null;
 };
 
+export type UpdateVisitDiagnosisInput = {
+  /** FDI number, or null to clear the tooth. */
+  toothFdi: number | null;
+};
+
 export type VisitDiagnosisRow = {
   id: string;
+  version: number;
   visitId: string;
   listItemId: string | null;
   label: string;
@@ -32,6 +40,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
       const rows = await db
         .select({
           id: visitDiagnoses.id,
+          version: visitDiagnoses.version,
           visitId: visitDiagnoses.visitId,
           listItemId: visitDiagnoses.listItemId,
           label: visitDiagnoses.label,
@@ -46,6 +55,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
 
     async add(input: AddVisitDiagnosisInput): Promise<VisitDiagnosisRow> {
       assertAllowed(ctx, "clinical.edit");
+      assertTooth(input.toothFdi);
       const visit = await db
         .select({ id: visits.id, status: visits.status })
         .from(visits)
@@ -106,6 +116,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
       ]);
       return {
         id,
+        version: 1,
         visitId: input.visitId,
         listItemId,
         label,
@@ -113,5 +124,153 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
         sortOrder,
       };
     },
+
+    async update(lineId: string, version: number, input: UpdateVisitDiagnosisInput) {
+      assertAllowed(ctx, "clinical.edit");
+      assertTooth(input.toothFdi);
+      const line = await loadLine(db, lineId, "live");
+      if (line.version !== version) throw new ConflictError();
+      await db.batch([
+        db
+          .update(visitDiagnoses)
+          .set({
+            toothFdi: input.toothFdi,
+            version: version + 1,
+            updatedAt: nowUtcSql,
+            updatedBy: ctx.userId,
+          })
+          .where(
+            and(
+              eq(visitDiagnoses.id, lineId),
+              eq(visitDiagnoses.version, version),
+              isNull(visitDiagnoses.deletedAt),
+            ),
+          ),
+        auditInsertIfChanged(db, ctx, {
+          action: "update",
+          table: "visit_diagnoses",
+          rowId: lineId,
+          before: { toothFdi: line.toothFdi },
+          after: { toothFdi: input.toothFdi },
+        }),
+      ]);
+      return readLine(db, lineId, version + 1);
+    },
+
+    /** Soft delete (draft only). The reply carries the new version, which Undo needs. */
+    async remove(lineId: string, version: number): Promise<{ version: number }> {
+      assertAllowed(ctx, "clinical.edit");
+      const line = await loadLine(db, lineId, "live");
+      if (line.version !== version) throw new ConflictError();
+      await db.batch([
+        db
+          .update(visitDiagnoses)
+          .set({
+            deletedAt: nowUtcSql,
+            version: version + 1,
+            updatedAt: nowUtcSql,
+            updatedBy: ctx.userId,
+          })
+          .where(
+            and(
+              eq(visitDiagnoses.id, lineId),
+              eq(visitDiagnoses.version, version),
+              isNull(visitDiagnoses.deletedAt),
+            ),
+          ),
+        auditInsertIfChanged(db, ctx, {
+          action: "delete",
+          table: "visit_diagnoses",
+          rowId: lineId,
+          before: { label: line.label, toothFdi: line.toothFdi },
+        }),
+      ]);
+      await readLine(db, lineId, version + 1, true);
+      return { version: version + 1 };
+    },
+
+    /** Undo of remove: clears the soft delete (draft only). */
+    async restore(lineId: string, version: number) {
+      assertAllowed(ctx, "clinical.edit");
+      const line = await loadLine(db, lineId, "deleted");
+      if (line.version !== version) throw new ConflictError();
+      await db.batch([
+        db
+          .update(visitDiagnoses)
+          .set({
+            deletedAt: null,
+            version: version + 1,
+            updatedAt: nowUtcSql,
+            updatedBy: ctx.userId,
+          })
+          .where(and(eq(visitDiagnoses.id, lineId), eq(visitDiagnoses.version, version))),
+        auditInsertIfChanged(db, ctx, {
+          action: "restore",
+          table: "visit_diagnoses",
+          rowId: lineId,
+          after: { label: line.label, toothFdi: line.toothFdi },
+        }),
+      ]);
+      return readLine(db, lineId, version + 1);
+    },
+  };
+}
+
+// One query: the line and its visit status. "live" wants a line not yet removed; "deleted" the opposite.
+async function loadLine(db: Db, lineId: string, want: "live" | "deleted") {
+  const row = await db
+    .select({
+      id: visitDiagnoses.id,
+      version: visitDiagnoses.version,
+      label: visitDiagnoses.label,
+      toothFdi: visitDiagnoses.toothFdi,
+      deletedAt: visitDiagnoses.deletedAt,
+      visitStatus: visits.status,
+    })
+    .from(visitDiagnoses)
+    .innerJoin(visits, eq(visits.id, visitDiagnoses.visitId))
+    .where(eq(visitDiagnoses.id, lineId))
+    .get();
+  if (!row || (want === "live") !== (row.deletedAt === null)) {
+    throw new NotFoundError("That diagnosis");
+  }
+  if (row.visitStatus !== "draft") {
+    throw new InvalidError("This visit is finalised. Add an addendum instead of editing it.");
+  }
+  return row;
+}
+
+// Reads the line back after a write to confirm the version moved (a lost race throws).
+async function readLine(
+  db: Db,
+  lineId: string,
+  expectVersion: number,
+  deleted = false,
+): Promise<VisitDiagnosisRow> {
+  const row = await db
+    .select({
+      id: visitDiagnoses.id,
+      version: visitDiagnoses.version,
+      visitId: visitDiagnoses.visitId,
+      listItemId: visitDiagnoses.listItemId,
+      label: visitDiagnoses.label,
+      toothFdi: visitDiagnoses.toothFdi,
+      sortOrder: visitDiagnoses.sortOrder,
+      deletedAt: visitDiagnoses.deletedAt,
+    })
+    .from(visitDiagnoses)
+    .where(eq(visitDiagnoses.id, lineId))
+    .get();
+  if (!row || row.version !== expectVersion || (row.deletedAt !== null) !== deleted) {
+    throw new ConflictError("Could not save. Reload the visit and try again.");
+  }
+  return {
+    id: row.id,
+    version: row.version,
+    visitId: row.visitId,
+    listItemId: row.listItemId,
+    label: row.label,
+    toothFdi: row.toothFdi,
+    sortOrder: row.sortOrder,
   };
 }

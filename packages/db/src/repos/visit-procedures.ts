@@ -1,4 +1,4 @@
-import { isToothSurface, newUlid, type ToothSurface } from "@clinic/shared";
+import { newUlid, type ToothSurface } from "@clinic/shared";
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
@@ -6,6 +6,8 @@ import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { listItems, visitProcedures, visits } from "../schema";
+import { visitProcedureEditRepo } from "./visit-procedure-edit";
+import { assertSurfaces, assertTooth, parseSurfaces } from "./visit-line-parts";
 
 export type AddVisitProcedureInput = {
   visitId: string;
@@ -17,6 +19,7 @@ export type AddVisitProcedureInput = {
 
 export type VisitProcedureRow = {
   id: string;
+  version: number;
   visitId: string;
   listItemId: string | null;
   label: string;
@@ -27,24 +30,17 @@ export type VisitProcedureRow = {
   sortOrder: number;
 };
 
-function parseSurfaces(raw: string): ToothSurface[] {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((s): s is ToothSurface => typeof s === "string" && isToothSurface(s));
-  } catch {
-    return [];
-  }
-}
-
 // 3.2.3 / 3.5.4: attach a procedure from the procedures list to a draft visit.
 export function visitProceduresRepo(db: Db, ctx: Ctx) {
   return {
+    ...visitProcedureEditRepo(db, ctx),
+
     async listForVisit(visitId: string): Promise<VisitProcedureRow[]> {
       assertAllowed(ctx, "clinical.view");
       const rows = await db
         .select({
           id: visitProcedures.id,
+          version: visitProcedures.version,
           visitId: visitProcedures.visitId,
           listItemId: visitProcedures.listItemId,
           label: visitProcedures.label,
@@ -59,6 +55,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
         .orderBy(asc(visitProcedures.sortOrder), asc(visitProcedures.createdAt));
       return rows.map((r) => ({
         id: r.id,
+        version: r.version,
         visitId: r.visitId,
         listItemId: r.listItemId,
         label: r.label,
@@ -72,6 +69,8 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
 
     async add(input: AddVisitProcedureInput): Promise<VisitProcedureRow> {
       assertAllowed(ctx, "clinical.edit");
+      assertTooth(input.toothFdi);
+      assertSurfaces(input.surfaces);
       const visit = await db
         .select({ id: visits.id, status: visits.status })
         .from(visits)
@@ -146,6 +145,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
       ]);
       return {
         id,
+        version: 1,
         visitId: input.visitId,
         listItemId: item.id,
         label: item.label,
