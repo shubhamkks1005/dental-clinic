@@ -142,6 +142,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
             surfaces,
           },
         }),
+        db.update(visits).set({ noProcedure: false }).where(eq(visits.id, input.visitId)),
       ]);
       return {
         id,

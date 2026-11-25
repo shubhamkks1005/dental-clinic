@@ -14,6 +14,10 @@ describe("visitChecklist", () => {
     const items = visitChecklist(visit(0, 0), "draft");
     expect(items.map((i) => i.state)).toEqual(["warn", "warn", "warn"]);
   });
+  it("choosing none counts as done (Q2)", () => {
+    const v = { ...(visit(0, 0) as object), noDiagnosis: true, noProcedure: true } as never;
+    expect(visitChecklist(v, "none").map((i) => i.state)).toEqual(["ok", "ok", "neutral"]);
+  });
   it("no prescription is neutral, not a warning", () => {
     expect(visitChecklist(visit(1, 1), "none")[2]!.state).toBe("neutral");
   });

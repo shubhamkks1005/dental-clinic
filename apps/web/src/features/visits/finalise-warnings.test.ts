@@ -21,6 +21,8 @@ const base: VisitSummary = {
   finalisedAt: null,
   finalisedBy: null,
   snapshotHash: null,
+  noDiagnosis: false,
+  noProcedure: false,
   version: 1,
   diagnoses: [],
   procedures: [],
@@ -28,6 +30,12 @@ const base: VisitSummary = {
 };
 
 describe("finaliseWarnings (3.5.6)", () => {
+  it("does not warn when the doctor chose No diagnosis / No procedure", () => {
+    const w = finaliseWarnings({ ...base, noDiagnosis: true, noProcedure: true });
+    expect(w).not.toContain("No diagnosis is recorded yet.");
+    expect(w.some((x) => x.startsWith("No procedures are recorded"))).toBe(false);
+  });
+
   it("warns when diagnosis is missing", () => {
     expect(finaliseWarnings(base)).toContain("No diagnosis is recorded yet.");
   });

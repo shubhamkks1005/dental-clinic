@@ -95,6 +95,8 @@ export const patchVisitBody = z
     bpSystolic: z.number().int().min(50).max(300).nullable().optional(),
     bpDiastolic: z.number().int().min(20).max(200).nullable().optional(),
     pulse: z.number().int().min(20).max(250).nullable().optional(),
+    noDiagnosis: z.boolean().optional(),
+    noProcedure: z.boolean().optional(),
   })
   .strict();
 

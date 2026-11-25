@@ -4,7 +4,8 @@ export type ChecklistItem = { key: string; label: string; state: "ok" | "warn" |
 
 /** The three things the doctor checks before Finalise. Same facts as finalise-warnings.ts. */
 export function visitChecklist(
-  visit: Pick<VisitSummary, "diagnoses" | "procedures">,
+  visit: Pick<VisitSummary, "diagnoses" | "procedures"> &
+    Partial<Pick<VisitSummary, "noDiagnosis" | "noProcedure">>,
   rx: "none" | "draft" | "issued",
 ): ChecklistItem[] {
   const procs = visit.procedures.length;
@@ -12,12 +13,12 @@ export function visitChecklist(
     {
       key: "dx",
       label: visit.diagnoses.length > 0 ? "Diagnosis" : "No diagnosis",
-      state: visit.diagnoses.length > 0 ? "ok" : "warn",
+      state: visit.diagnoses.length > 0 || visit.noDiagnosis ? "ok" : "warn",
     },
     {
       key: "proc",
       label: procs > 0 ? `Procedures (${procs})` : "No procedures",
-      state: procs > 0 ? "ok" : "warn",
+      state: procs > 0 || visit.noProcedure ? "ok" : "warn",
     },
     {
       key: "rx",

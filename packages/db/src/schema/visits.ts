@@ -27,6 +27,9 @@ export const visits = sqliteTable(
     finalisedBy: text("finalised_by"),
     snapshotJson: text("snapshot_json"),
     snapshotHash: text("snapshot_hash"),
+    // The doctor chose "No diagnosis / No procedure for this visit" (0 or 1). Adding a line clears it.
+    noDiagnosis: integer("no_diagnosis", { mode: "boolean" }).notNull().default(false),
+    noProcedure: integer("no_procedure", { mode: "boolean" }).notNull().default(false),
   },
   (t) => [
     index("visits_patient_date_idx").on(t.patientId, t.visitDateLocal),
@@ -40,6 +43,8 @@ export const visits = sqliteTable(
       "visits_date_local_format",
       sql.raw(`"visit_date_local" GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'`),
     ),
+    check("visits_no_diagnosis_flag", sql.raw(`"no_diagnosis" IN (0, 1)`)),
+    check("visits_no_procedure_flag", sql.raw(`"no_procedure" IN (0, 1)`)),
     check(
       "visits_snapshot_hash_len",
       sql.raw(`("snapshot_hash" IS NULL OR length("snapshot_hash") = 64)`),

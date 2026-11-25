@@ -7,10 +7,10 @@ export function finaliseWarnings(
   opts?: { hasTreatmentConsent?: boolean; hasDraftPrescription?: boolean },
 ): string[] {
   const out: string[] = [];
-  if (visit.diagnoses.length === 0) {
+  if (visit.diagnoses.length === 0 && !visit.noDiagnosis) {
     out.push("No diagnosis is recorded yet.");
   }
-  if (visit.procedures.length === 0) {
+  if (visit.procedures.length === 0 && !visit.noProcedure) {
     out.push(
       "No procedures are recorded. The bill is made from them and they cannot be added after you finalise, so the bill will be empty.",
     );

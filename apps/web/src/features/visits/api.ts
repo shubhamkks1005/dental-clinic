@@ -55,6 +55,9 @@ export type VisitSummary = VisitOpened & {
   finalisedAt: string | null;
   finalisedBy: string | null;
   snapshotHash: string | null;
+  /** The doctor chose "No diagnosis / No procedure for this visit" (stored on the visit). */
+  noDiagnosis: boolean;
+  noProcedure: boolean;
   diagnoses: VisitDiagnosis[];
   procedures: VisitProcedure[];
   addenda: VisitAddendum[];
@@ -88,6 +91,8 @@ export type VisitPatchBody = {
   bpSystolic?: number | null;
   bpDiastolic?: number | null;
   pulse?: number | null;
+  noDiagnosis?: boolean;
+  noProcedure?: boolean;
 };
 
 export function openVisit(body: {

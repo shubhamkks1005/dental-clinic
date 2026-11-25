@@ -24,6 +24,8 @@ export type VisitDetail = {
   finalisedAt: string | null;
   finalisedBy: string | null;
   snapshotHash: string | null;
+  noDiagnosis: boolean;
+  noProcedure: boolean;
   version: number;
 };
 
@@ -54,6 +56,8 @@ const detailCols = {
   finalisedAt: visits.finalisedAt,
   finalisedBy: visits.finalisedBy,
   snapshotHash: visits.snapshotHash,
+  noDiagnosis: visits.noDiagnosis,
+  noProcedure: visits.noProcedure,
   version: visits.version,
 };
 

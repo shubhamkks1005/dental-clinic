@@ -1,10 +1,11 @@
 import type { PatchVisitInput } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, count, eq, isNull } from "drizzle-orm";
+import type { AnySQLiteColumn, SQLiteTable } from "drizzle-orm/sqlite-core";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { visits } from "../schema";
+import { visitDiagnoses, visitProcedures, visits } from "../schema";
 import { nowUtcSql } from "../sql";
 import type { VisitDetail } from "./visits-get";
 
@@ -27,6 +28,8 @@ const detailCols = {
   finalisedAt: visits.finalisedAt,
   finalisedBy: visits.finalisedBy,
   snapshotHash: visits.snapshotHash,
+  noDiagnosis: visits.noDiagnosis,
+  noProcedure: visits.noProcedure,
   version: visits.version,
 };
 
@@ -54,10 +57,37 @@ export function visitsPatchRepo(db: Db, ctx: Ctx) {
         throw new InvalidError("This visit is finalised. Add an addendum instead of editing it.");
       }
       if (visit.version !== version) throw new ConflictError();
+      // "None" is refused while lines exist (the doctor removes them first).
+      if (fields.noDiagnosis === true) {
+        const n = await countLive(
+          db,
+          visitDiagnoses,
+          visitDiagnoses.visitId,
+          visitDiagnoses.deletedAt,
+          visitId,
+        );
+        if (n > 0)
+          throw new InvalidError(
+            "This visit has a diagnosis. Remove it before choosing No diagnosis.",
+          );
+      }
+      if (fields.noProcedure === true) {
+        const n = await countLive(
+          db,
+          visitProcedures,
+          visitProcedures.visitId,
+          visitProcedures.deletedAt,
+          visitId,
+        );
+        if (n > 0)
+          throw new InvalidError(
+            "This visit has a procedure. Remove it before choosing No procedure.",
+          );
+      }
 
-      const patch: Record<string, string | number | null> = {};
+      const patch: Record<string, string | number | boolean | null> = {};
       for (const [key, value] of Object.entries(fields)) {
-        if (value !== undefined) patch[key] = value as string | number | null;
+        if (value !== undefined) patch[key] = value as string | number | boolean | null;
       }
       if (Object.keys(patch).length === 0) {
         const current = await db
@@ -88,4 +118,19 @@ export function visitsPatchRepo(db: Db, ctx: Ctx) {
       return row;
     },
   };
+}
+
+async function countLive(
+  db: Db,
+  table: SQLiteTable,
+  visitCol: AnySQLiteColumn,
+  deletedCol: AnySQLiteColumn,
+  visitId: string,
+): Promise<number> {
+  const row = await db
+    .select({ n: count() })
+    .from(table)
+    .where(and(eq(visitCol, visitId), isNull(deletedCol)))
+    .get();
+  return row?.n ?? 0;
 }

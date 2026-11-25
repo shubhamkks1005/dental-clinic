@@ -113,6 +113,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
           rowId: id,
           after: { visitId: input.visitId, label, listItemId, toothFdi: input.toothFdi ?? null },
         }),
+        db.update(visits).set({ noDiagnosis: false }).where(eq(visits.id, input.visitId)),
       ]);
       return {
         id,
@@ -215,6 +216,7 @@ export function visitDiagnosesRepo(db: Db, ctx: Ctx) {
           rowId: lineId,
           after: { label: line.label, toothFdi: line.toothFdi },
         }),
+        db.update(visits).set({ noDiagnosis: false }).where(eq(visits.id, line.visitId)),
       ]);
       return readLine(db, lineId, version + 1);
     },

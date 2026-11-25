@@ -122,6 +122,7 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
           rowId: lineId,
           after: { label: line.label, toothFdi: line.toothFdi },
         }),
+        db.update(visits).set({ noProcedure: false }).where(eq(visits.id, line.visitId)),
       ]);
       return readLine(db, lineId, version + 1, false);
     },
