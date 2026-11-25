@@ -78,3 +78,18 @@ export function chartFromEvents(events: readonly ToothEventLike[]): ChartCell[] 
     }))
     .sort((a, b) => a.toothFdi - b.toothFdi || a.surface.localeCompare(b.surface));
 }
+
+/** Permanent tooth to the baby tooth it replaces (14 to 54). Molars (positions 6 to 8) have none. */
+export function babyPredecessor(fdi: number): number | null {
+  if (!isFdiTooth(fdi) || fdi > 48) return null;
+  const quadrant = Math.floor(fdi / 10);
+  const position = fdi % 10;
+  if (position < 1 || position > 5) return null;
+  return (quadrant + 4) * 10 + position;
+}
+
+/** Baby tooth to the permanent tooth that replaces it (54 to 14). */
+export function permanentSuccessor(fdi: number): number | null {
+  if (!isFdiTooth(fdi) || fdi < 51) return null;
+  return (Math.floor(fdi / 10) - 4) * 10 + (fdi % 10);
+}

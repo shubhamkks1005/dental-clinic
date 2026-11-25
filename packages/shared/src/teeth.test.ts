@@ -4,7 +4,9 @@ import {
   FDI_ALL,
   FDI_PERMANENT,
   FDI_PRIMARY,
+  babyPredecessor,
   isFdiTooth,
+  permanentSuccessor,
   isToothSurface,
 } from "./teeth";
 
@@ -62,5 +64,31 @@ describe("teeth FDI (3.2.2)", () => {
         visitId: null,
       },
     ]);
+  });
+});
+
+describe("baby and permanent tooth link (section 4c item 6)", () => {
+  it("maps every baby tooth to its successor and back", () => {
+    for (const baby of FDI_PRIMARY) {
+      const perm = permanentSuccessor(baby);
+      expect(perm).not.toBeNull();
+      expect(perm).toBe(baby - 40);
+      expect(babyPredecessor(perm as number)).toBe(baby);
+    }
+  });
+
+  it("gives permanent molars no baby predecessor", () => {
+    for (const t of FDI_PERMANENT) {
+      const pos = t % 10;
+      if (pos >= 6) expect(babyPredecessor(t)).toBeNull();
+      else expect(babyPredecessor(t)).toBe(t + 40);
+    }
+  });
+
+  it("returns null for the wrong kind of tooth or a bad number", () => {
+    expect(permanentSuccessor(14)).toBeNull();
+    expect(babyPredecessor(54)).toBeNull();
+    expect(babyPredecessor(99)).toBeNull();
+    expect(permanentSuccessor(56)).toBeNull();
   });
 });
