@@ -12,10 +12,12 @@ import { gzipSync } from "node:zlib";
 // Each limit sits about 6% above the measured size. The total gzip limit went UP from 310,000
 // because 36 small chunks gzip worse than one file; the owner decides whether that is fine. To raise a limit, the owner decides
 // (docs/PLAN.md Part S rule 5); do not raise it just to make a build pass.
+// 2026-11-25: the owner raised the TOTAL limits (about 6% above 1,141,145 raw and 337,679 gzip) for the
+//   doctor visit page (chart, X-ray viewer, live prescription): its own lazy chunk. First load is unchanged.
 export const BUDGET = {
   // All .js files, lazy chunks included.
-  jsRawBytes: 1_095_000,
-  jsGzipBytes: 323_000,
+  jsRawBytes: 1_210_000,
+  jsGzipBytes: 358_000,
   // Only what index.html loads straight away (JS + CSS), i.e. what the sign-in page downloads.
   firstLoadRawBytes: 905_000,
   firstLoadGzipBytes: 273_000,
