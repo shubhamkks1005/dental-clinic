@@ -21,6 +21,10 @@ What the screen is, who uses it (roles), where it lives in the app (route, exist
 | Item | In HTML | App today | Verdict (EXISTS / FIX FIRST / NEW) | Detail |
 |---|---|---|---|---|
 
+## 4b. Also used on (shared pieces)
+| Piece | Other pages / files that use it | Apply there too? | Note (own final design? conflict?) |
+|---|---|---|---|
+
 ## 5. Backend work (do first, in this order)
 - [ ] B1 ... (shared rule / migration / repo / domain / route / permission / matrix / tests)
 Queries per request: before -> after. Migration number (if any): ... (the owner applies it).
@@ -40,7 +44,8 @@ State shape, optimistic updates and their rollback, refresh rules, guards, what 
 - [ ] every motion in section 3
 - [ ] reduced motion
 - [ ] phone 360 / tablet 768 layout
-- [ ] docs: MAP.md, STATE.md, USER_MANUAL.md
+- [ ] shared pieces from 4b applied on the other pages (and checked there)
+- [ ] docs: MAP.md, STATE.md, USER_MANUAL.md, handoff INDEX.md
 
 ## 10. Test cases (state x interaction x edge)
 | # | Case | Steps | Expect (look) | Expect (numbers) |

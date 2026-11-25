@@ -18,8 +18,9 @@ Hard rules (project): never push, never deploy, never apply migrations; commit l
 1. Scope the look to the page (CSS variables on one scope class, see lessons). Rebuild markup in React with the app's own class names. One component per file, small.
 2. Implement EVERY row of the motion inventory with the HTML's exact duration, delay and easing. Do not speed up, do not slow down, do not add animations the HTML does not have, do not remove ones it has. Keep reduced-motion handling unless the handoff says otherwise.
 3. Behaviour like the HTML: the screen changes at once on a click; the server answers after; on refusal the screen goes back and a plain sentence says why (see lessons: optimistic updates).
-4. Phone 360 and tablet 768 per the handoff (44 px targets, no sideways scroll).
-5. `pnpm check` green, bundle budget passes (`pnpm --filter @clinic/web build` then `pnpm bundle:budget`; put big screens in their own lazy chunk), commit, tick the checklist, Status DESIGN APPLIED.
+4. **Shared pieces**: apply section 4b. A reusable piece changed for this page is changed for every other page that uses it (same file, one rule in one place), then check those pages still look right (screenshots at 1366 and 360) and that their e2e specs still pass. If a page has its own final design that disagrees, stop and ask.
+5. Phone 360 and tablet 768 per the handoff (44 px targets, no sideways scroll).
+6. `pnpm check` green, bundle budget passes (`pnpm --filter @clinic/web build` then `pnpm bundle:budget`; put big screens in their own lazy chunk), commit, tick the checklist, Status DESIGN APPLIED.
 
 ## Phase C: measure and fix (do this yourself, do not ask the owner to test)
 1. Copy `motion-probe.template.ts` to `e2e/tmp-motion-<name>.spec.ts` (never commit tmp specs; delete when done).
@@ -29,7 +30,7 @@ Hard rules (project): never push, never deploy, never apply migrations; commit l
 5. Take screenshots at key moments (start, middle, end) for anything that looks doubtful and READ them.
 6. For every failure: find the cause (see lessons), fix it, rerun the SAME scenario until it passes. Then rerun the whole probe once more (fixes can break neighbours).
 7. Add the important cases as a normal spec `e2e/<name>.spec.ts` (functional assertions, plus "starts within N ms" where stable; avoid tight timing asserts that flake). Run it together with the older specs that touch the same screen and say honestly what still fails and why.
-8. Delete tmp specs. Update docs: MAP.md, STATE.md, HANDOFF.md ("Next task"), USER_MANUAL.md, DECISIONS.md. Handoff Status: DONE.
+8. Delete tmp specs. Update docs: MAP.md, STATE.md, HANDOFF.md ("Next task"), USER_MANUAL.md, DECISIONS.md. Handoff Status: DONE, and update the row in `docs/design/handoff/INDEX.md`.
 
 ## Final message to the owner (Hinglish, short, table)
 For each animation: HTML time, measured time, pass/fail. Then: what you could not measure (the probe cannot judge easing curves by eye; video is not readable), anything left failing, commit hashes, and what the owner must do (never run these yourself): `git push origin main`, `pnpm deploy:staging`, any migration command.
