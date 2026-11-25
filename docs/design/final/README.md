@@ -7,3 +7,4 @@ These files are web prototypes (Tailwind CDN, Google fonts, fake data). Rebuild 
 | File | Screen | Built by (docs/PLAN.md) |
 |---|---|---|
 | `doctor_today.html` | Doctor's Today page (laptop and tablet; no phone layout yet) | Part T: backend T1.x, UI T2.x |
+| `doctor_visit.html` | Doctor visit page, "Smart accordion cards" (laptop and tablet; no phone layout) | Doctor-visit handoff (docs/design/handoff/doctor-visit.md), built by design-apply |
