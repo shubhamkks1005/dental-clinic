@@ -64,7 +64,11 @@ function report(name: string, frames: Frame[], clickAt: number) {
   for (const k of keys) {
     const sel = k.split("#")[0]!;
     let prev: V | undefined;
-    let first = -1, last = -1, changes = 0, maxJump = 0, anim = false;
+    let first = -1,
+      last = -1,
+      changes = 0,
+      maxJump = 0,
+      anim = false;
     for (const f of frames) {
       const a = f.v[k];
       if (!a) continue;
@@ -132,7 +136,9 @@ test("motion probe", async ({ browser, playwright }) => {
     await new Promise((r) => setTimeout(r, LATENCY));
     await route.continue();
   });
-  console.log(`\n#### API delayed by ${LATENCY} ms. HTML timings: TODO list them from the handoff.`);
+  console.log(
+    `\n#### API delayed by ${LATENCY} ms. HTML timings: TODO list them from the handoff.`,
+  );
 
   // 3. One scenario per test case of the handoff (section 10). Repeat each interaction 3-5 times.
   await scenario(page, "example: open the menu", async (m) => {
