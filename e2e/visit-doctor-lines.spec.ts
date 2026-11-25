@@ -4,7 +4,30 @@ import { expect, test, type Page } from "@playwright/test";
 // Doctor visit page (docs/design/final/doctor_visit.html), Accordion 2: diagnoses and procedures.
 // Handoff test cases 1-8, 12-14. Fake data only.
 
+/** The scratch database is shared by every spec: free the chair before a patient is added. */
+async function freeChair(page: Page) {
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  const headers = {
+    origin: "http://localhost:8787",
+    "x-clinic-request": "1",
+    "content-type": "application/json",
+  };
+  const day = await page.request.get("/api/staff/appointments");
+  const body = (await day.json()) as {
+    data?: { appointments?: { id: string; status: string; version: number }[] };
+  };
+  for (const a of body.data?.appointments ?? []) {
+    if (a.status === "in_chair") {
+      await page.request.patch(`/api/staff/appointments/${a.id}/status`, {
+        headers,
+        data: { status: "completed", version: a.version },
+      });
+    }
+  }
+}
+
 async function walkIn(page: Page, name: string, stamp: string) {
+  await freeChair(page);
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
@@ -27,6 +50,7 @@ async function walkIn(page: Page, name: string, stamp: string) {
 /** Opens the visit from Today (so a draft exists), then goes to the new page of the same visit. */
 /** Opens Accordion 2 unless it is already open (the page remembers the open card). */
 async function openDiag(page: Page) {
+  await page.locator("details#vd-acc-diag").waitFor({ state: "attached" });
   const open = await page.locator("details#vd-acc-diag[open]").count();
   if (!open) await page.getByText("Diagnosis & Procedures", { exact: true }).click();
   await expect(page.getByRole("heading", { name: "Diagnoses" })).toBeVisible();
@@ -35,12 +59,6 @@ async function openDiag(page: Page) {
 async function openNewPage(page: Page, name: string) {
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
-  // The scratch database is shared by every spec: free the chair first.
-  const done = page.getByRole("button", { name: "Done", exact: true });
-  if (await done.count()) {
-    await done.first().click();
-    await expect(done).toHaveCount(0, { timeout: 10_000 });
-  }
   await openVisitFromToday(page, name);
   await expect(page).toHaveURL(/\/app\/visits\/[^/]+$/);
   const url = page.url();

@@ -1,6 +1,6 @@
 # Handoff: doctor-visit (docs/design/final/doctor_visit.html)
 
-Status: BACKEND DONE, B1 to B10 (2026-11-25, local commits, nothing pushed). UI NOT STARTED: it waits for the owner to save the HTML as docs/design/final/doctor_visit.html (Q14). Migrations 0058, 0059, 0060 are NEW: the owner applies them.
+Status: BACKEND DONE (B1 to B16, P1 to P5). UI IN PROGRESS: first slice built on route /app/visits/:id/new (header strip, four accordions, Diagnosis and Procedures section, History side pane, bottom bar). The old visit page at /app/visits/:id is untouched until the new one is complete. Migrations 0058 to 0063 are NEW: the owner applies them.
 Written: 2026-11-25. Plan by: design-plan. Next skill: design-apply (only after the owner answers section 7 and saves the HTML file, see 0).
 
 ## 0. How to read this file
@@ -320,6 +320,7 @@ Test cases for this part:
 
 
 ## 12. Log
+- 2026-11-25: UI slice 1 built (commits U1, U2): new folder apps/web/src/features/visit-doctor/, route visits/:id/new (lazy chunk), e2e/visit-doctor-lines.spec.ts (4 tests pass: add/undo/none/reload, 300 ms server shows the line within 250 ms, refusal rolls back, no sideways scroll at 360/768/1366). Accordions 1, 3 and 4 still host the OLD panels (chart, medicines, vitals and next visit). NOT built yet: chart look and tooth card (B10 read), Live Rx tab, complaint and findings dock, X-ray viewer (B8), phone layout beyond no-scroll, motion probe, the swap of the old route, shared pieces of 4b. Q10 link and Q9 6 s toast are done.
 - 2026-11-25: plan written from the pasted HTML (file not yet saved in docs/design/final/). Nothing built.
 - 2026-11-25: Phase A (backend) done, B1 to B10, one local commit each (c6e442b, 5eefaeb, d1cf693, 0fbd526, 4c211f2, 2151229, 0d9f8df, c8119fd, ad29904, d6730f4). New migrations 0058, 0059, 0060 (owner applies, never applied by the agent). UI waits for the HTML (Q14).
 - 2026-11-25: design (30) compared with B1 to B10. Built B11 to B15 (see 5c). Open for the owner: sittings rule, QR picture.
