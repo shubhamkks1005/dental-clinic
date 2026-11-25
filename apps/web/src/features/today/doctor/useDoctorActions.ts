@@ -40,7 +40,7 @@ type Deps = {
   hide: (key: string) => void;
 };
 
-const LIFT_MS = 100;
+const LIFT_MS = 60;
 const SETTLE_MS = 280;
 
 /** Everything the doctor can do on Today, with the animation and the server call for each. */
@@ -157,6 +157,15 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
         version: row.version,
       }).catch((e: unknown) => e);
       let undo = () => {};
+      const closeUp = window.setTimeout(() => setRemovingIds((s0) => new Set(s0).add(row.id)), 90);
+      const reopen = () => {
+        window.clearTimeout(closeUp);
+        setRemovingIds((s0) => {
+          const n = new Set(s0);
+          n.delete(row.id);
+          return n;
+        });
+      };
       if (card && el) {
         undo = morphToChair(
           el,
@@ -170,11 +179,15 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
       const result = await saved;
       if (result instanceof Error) {
         undo();
+        reopen();
         fail(result, "Could not start this patient. The list is back as it was.");
         load();
         return;
       }
-      window.setTimeout(load, 900);
+      window.setTimeout(() => {
+        reopen();
+        load();
+      }, 900);
     };
     void guard.current(run);
   }
@@ -223,24 +236,35 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
     }
   }
 
-  /** A cancelled row: struck through, then it slides out; no reload, so the list does not jump. */
+  const cancelTimers = useRef(new Map<string, number[]>());
+  const clearCancel = (id: string) => {
+    cancelTimers.current.get(id)?.forEach((t) => window.clearTimeout(t));
+    cancelTimers.current.delete(id);
+    const drop = (s0: ReadonlySet<string>) => {
+      const n = new Set(s0);
+      n.delete(id);
+      return n;
+    };
+    setCancelledIds(drop);
+    setRemovingIds(drop);
+  };
+
+  /** A cancelled row: struck through at once, then it slides out; no reload, so the list does not jump. */
   function markCancelled(row: DoctorRow) {
     setCancelledIds((s0) => new Set(s0).add(row.id));
-    window.setTimeout(() => setRemovingIds((s0) => new Set(s0).add(row.id)), 700);
-    window.setTimeout(() => {
+    const t1 = window.setTimeout(() => setRemovingIds((s0) => new Set(s0).add(row.id)), 450);
+    const t2 = window.setTimeout(() => {
       patch((r) => ({ ...r, appointments: r.appointments.filter((a) => a.id !== row.id) }));
-      setCancelledIds((s0) => {
-        const n = new Set(s0);
-        n.delete(row.id);
-        return n;
-      });
-      setRemovingIds((s0) => {
-        const n = new Set(s0);
-        n.delete(row.id);
-        return n;
-      });
+      clearCancel(row.id);
       window.setTimeout(load, 600);
-    }, 1050);
+    }, 800);
+    cancelTimers.current.set(row.id, [t1, t2]);
+  }
+  /** The server refused: the row comes back as it was. */
+  function undoCancelled(row: DoctorRow, message: string) {
+    clearCancel(row.id);
+    fail(new Error(message), message);
+    load();
   }
 
   function jump(id: string) {
@@ -338,6 +362,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
     cancelledIds,
     removingIds,
     markCancelled,
+    undoCancelled,
     cancelRow,
     setCancelRow,
     rescheduleRow,

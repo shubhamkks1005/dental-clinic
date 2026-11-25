@@ -74,7 +74,12 @@ export function useDoctorToday(canSeeRequests: boolean) {
   hasData.current = reply !== null;
   const day = istDate(now);
 
+  // Counts the screen's own changes (optimistic moves). A refresh that started before the latest
+  // change may carry older data from the server, so it must not overwrite what the doctor just did.
+  const localChanges = useRef(0);
+
   const load = useCallback(() => {
+    const startedAt = localChanges.current;
     const today = istDate(new Date());
     Promise.all([
       listDayAppointments(today),
@@ -86,10 +91,15 @@ export function useDoctorToday(canSeeRequests: boolean) {
       canSeeRequests ? listRequests("open").catch(() => []) : Promise.resolve([]),
     ])
       .then(([r, approvals, discounts, cancels, drafts, prescriptions, requests]) => {
+        setExtras({ approvals, discounts, cancels, drafts, prescriptions, requests });
+        if (localChanges.current !== startedAt) {
+          // Stale for the day list: ask again shortly, once the server has caught up.
+          window.setTimeout(load, 700);
+          return;
+        }
         setReply(r);
         setNow(new Date(r.serverNow));
         setUpdatedAt(new Date());
-        setExtras({ approvals, discounts, cancels, drafts, prescriptions, requests });
         setError(null);
       })
       .catch((e: unknown) => {
@@ -145,6 +155,7 @@ export function useDoctorToday(canSeeRequests: boolean) {
 
   /** Change the day reply in place (the optimistic move, the break the server just confirmed). */
   const patch = useCallback((fn: (r: DayAppointmentsReply) => DayAppointmentsReply) => {
+    localChanges.current += 1;
     setReply((r) => (r ? fn(r) : r));
   }, []);
 

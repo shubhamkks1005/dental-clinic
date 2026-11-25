@@ -586,3 +586,23 @@
     animation: none !important;
   }
 }
+
+/* +5 / -5: the changed numbers pop once; the bar follows quickly */
+@keyframes td-pop {
+  0% {
+    transform: scale(1.18);
+    color: var(--td-primary);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.td-pop {
+  display: inline-block;
+  animation: td-pop 260ms var(--td-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .td-pop {
+    animation: none !important;
+  }
+}

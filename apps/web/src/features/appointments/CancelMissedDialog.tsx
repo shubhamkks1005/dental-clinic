@@ -11,6 +11,10 @@ type Props = {
   patientName: string;
   appointment: { id: string; version: number };
   onClose: () => void;
+  /** The caller shows the result at once (optimistic): called before the server is asked. */
+  onStart?: () => void;
+  /** The server said no: the caller puts things back. Without it the error shows in the dialog. */
+  onFail?: (message: string) => void;
   /** `undo` is set after a cancel: put the appointment back (the toast offers it for 10 s). */
   onDone: (message: string, undo?: () => Promise<void>) => void;
 };
@@ -22,6 +26,8 @@ export function CancelMissedDialog({
   patientName,
   appointment,
   onClose,
+  onStart,
+  onFail,
   onDone,
 }: Props) {
   const [reason, setReason] = useState<CancelReasonCode>("patient_request");
@@ -42,6 +48,7 @@ export function CancelMissedDialog({
   async function submit() {
     setBusy(true);
     setError(null);
+    onStart?.();
     try {
       if (mode === "cancel") {
         const version = await cancelAppointment(appointment.id, {
@@ -58,9 +65,10 @@ export function CancelMissedDialog({
       }
       onClose();
     } catch (e) {
-      setError(
-        e instanceof ApiError ? e.message : "Could not save. Check the connection, then try again.",
-      );
+      const message =
+        e instanceof ApiError ? e.message : "Could not save. Check the connection, then try again.";
+      if (onFail) onFail(message);
+      else setError(message);
     } finally {
       setBusy(false);
     }

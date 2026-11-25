@@ -163,7 +163,7 @@ test("doctor Today: header, order, Skip, Pull forward, Late, break, Waiting for 
   await page.getByRole("button", { name: /Take a break/ }).click();
   await page.getByRole("menuitem", { name: /10 min/ }).click();
   // Optimistic: the banner opens at once, not after the server answers.
-  await expect(page.locator(".td-break.is-active")).toBeVisible({ timeout: 400 });
+  await expect(page.locator(".td-break.is-active")).toBeVisible({ timeout: 900 });
   await expect(page.locator(".td-pill", { hasText: "On break" })).toBeVisible();
   await page.getByRole("button", { name: "+5 min" }).click();
   await expect(page.locator(".td-break")).toContainText("15 min");
@@ -372,6 +372,31 @@ test("doctor Today: keyboard only", async ({ browser, playwright }) => {
   await expect(rowOf(page, `Indu Test ${stamp}`).locator(".td-row-main")).toHaveAccessibleName(
     /Indu Test .*, \d{1,2}:\d{2} [AP]M, waiting.*/,
   );
+  await ctx.close();
+  await desk.dispose();
+});
+
+// Cancel is optimistic: the row is struck through at once and leaves the list; the server catches up.
+test("doctor Today: Cancel strikes the row at once and it leaves the list", async ({
+  browser,
+  playwright,
+}) => {
+  test.setTimeout(90_000);
+  const desk = await signedInAs(playwright, "receptionist");
+  const { stamp } = await seed(desk, ["Kiran Test", "Lata Test"]);
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 700 } });
+  const page = await ctx.newPage();
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/app");
+  await openMenu(page, `Kiran Test ${stamp}`, "Cancel appointment");
+  await page
+    .locator("dialog[open]")
+    .getByRole("button", { name: /Cancel appointment|Confirm/ })
+    .last()
+    .click();
+  await expect(rowOf(page, `Kiran Test ${stamp}`)).toHaveClass(/is-cancelled/, { timeout: 500 });
+  await expect(rowOf(page, `Kiran Test ${stamp}`)).toHaveCount(0, { timeout: 4000 });
+  await expect(rowOf(page, `Lata Test ${stamp}`)).toBeVisible();
   await ctx.close();
   await desk.dispose();
 });

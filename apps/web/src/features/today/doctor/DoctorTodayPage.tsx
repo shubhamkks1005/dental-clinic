@@ -227,12 +227,16 @@ export function DoctorTodayPage() {
           patientName={act.cancelRow.row.name}
           appointment={act.cancelRow.row}
           onClose={() => act.setCancelRow(null)}
-          onDone={(text) => {
+          onStart={() => {
             const row = act.cancelRow?.row;
-            toast({ text });
             act.setCancelRow(null);
             if (row) act.markCancelled(row);
           }}
+          onFail={(message) => {
+            const row = act.cancelRow?.row;
+            if (row) act.undoCancelled(row, message);
+          }}
+          onDone={(text) => toast({ text })}
         />
       ) : null}
       {act.rescheduleRow ? (

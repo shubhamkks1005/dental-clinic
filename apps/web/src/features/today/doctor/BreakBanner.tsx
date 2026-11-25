@@ -73,7 +73,7 @@ export function BreakBanner({ current, doctorName, busy, onAdjust, onBack }: Pro
           <p className="td-break-title">
             <strong>{over ? "Break is over" : "Break mode · Relax & recharge"}</strong>
             {b ? (
-              <span className="td-pill td-break-pill">
+              <span className="td-pill td-break-pill td-pop" key={b.minutes}>
                 {b.minutes} min · {b.label}
               </span>
             ) : null}
@@ -94,7 +94,9 @@ export function BreakBanner({ current, doctorName, busy, onAdjust, onBack }: Pro
           <span className="td-clock-split" aria-hidden="true" />
           <span>
             <small>Total</small>
-            <span className="td-mono">{mmss(total)}</span>
+            <span className="td-mono td-pop" key={total}>
+              {mmss(total)}
+            </span>
           </span>
         </div>
         <button
