@@ -174,3 +174,11 @@ Backend impact: FIX FIRST: confirm `/issue` is idempotent per draft (check `pres
 
 ## 7. Next step
 Fix the design (A1 to A5 first), answer the questions above, then run design-plan on the final file. This review did not change the design or the code.
+
+## 8. Owner decisions after this review (2026-11-25)
+- Total "approx." stays as it is for now (A5 not changed yet).
+- Allergy and pregnancy notice (A1): later. Written in docs/FUTURE_IDEAS.md A2.
+- AI on the visit page and a "ask AI about this patient" (RAG): later. Written in docs/FUTURE_IDEAS.md A3.
+- Arrow keys in the medicine search (B1): to be added; prompt given to the owner for the designer.
+- History tab (C1, History part): owner says it is right; the History tab stays. The receptionist part of C1 (the right pane and role switch) still needs the owner's word.
+- Dose (A2): owner says it is editable; the reviewer could not find a dose input in file (21) (Adjust has Frequency, Days, Timing, Instruction). To be checked again with the owner.
