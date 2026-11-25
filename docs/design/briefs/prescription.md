@@ -1,9 +1,11 @@
-# Design brief: Prescription (writing a prescription on the visit)
+# Design brief: Prescription and advice tab (on the visit)
+
+SCOPE (owner): this brief is ONLY for the "Prescription and advice" tab of the visit. Medicines, their lines, advice and follow-up date live in this one tab. Other tabs of the visit (notes, chart, procedures, plan) are not designed here.
 
 Written: 2026-11-25. Source: owner's notes (medicine search, writing the prescription) + project docs + the screen as built today. Fake data only.
 
 ## Prompt for the design AI (paste this first)
-You are designing ONE page of a web app for a single dental clinic in India. Below is a brief. It says what the page must contain, why each thing is there, and the rules behind it. It does NOT say how it looks: that is your job.
+You are designing ONE tab (the "Prescription and advice" tab of a patient visit) of a web app for a single dental clinic in India. Design only this tab, not the rest of the visit screen. Below is a brief. It says what the page must contain, why each thing is there, and the rules behind it. It does NOT say how it looks: that is your job.
 - Use only the data and actions in the brief. Do not invent fields, features or numbers. Use obviously fake sample data.
 - Items marked MUST are required. SHOULD can be dropped if space is short. ADDED BY AI items are suggestions: include them only if they fit.
 - Design every state in section 7 (empty, loading, error, long text, many rows), not only the happy path.
@@ -11,7 +13,7 @@ You are designing ONE page of a web app for a single dental clinic in India. Bel
 - If something is unclear, list your assumption at the end of your answer instead of guessing silently.
 
 ## 1. Purpose
-Let the doctor write the prescription for the patient who is in the chair, by finding medicines in their own list, setting dose, frequency and days, and issuing it, in well under a minute for a normal case (about 3 medicines: search, Enter, adjust, Issue). It is a panel inside the visit, not a separate trip.
+Let the doctor write the prescription for the patient who is in the chair, by finding medicines in their own list, setting dose, frequency and days, and issuing it, in well under a minute for a normal case (about 3 medicines: search, Enter, adjust, Issue). It is the "Prescription and advice" tab inside the visit, not a separate trip. Advice and follow-up date sit in the same tab as the medicines.
 
 ## 2. Who, when, how
 | Role | Situation | Device | How often | Time pressure | Interruptions |
