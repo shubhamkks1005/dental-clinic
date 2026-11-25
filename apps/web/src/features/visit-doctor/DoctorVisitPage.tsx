@@ -1,4 +1,4 @@
-import type { FdiTooth, ListItem } from "@clinic/shared";
+import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { ApiError } from "../../api/client";
@@ -16,6 +16,7 @@ import { VisitConflictBanner } from "../visits/VisitConflictBanner";
 import { VisitMoreNotes } from "../visits/VisitMoreNotes";
 import { VisitNoteField } from "../visits/VisitNoteField";
 import { DiagProcPanel } from "./DiagProcPanel";
+import { ToothCard } from "./ToothCard";
 import { DocBar } from "./DocBar";
 import { summaryText, searchOptions } from "./lines-model";
 import { getLineUsage, getVisitPage, type LineUsage, type VisitPageData } from "./page-api";
@@ -26,6 +27,7 @@ import "../visits/visit.css";
 import "./visit-doc-tokens.css";
 import "./visit-doc.css";
 import "./visit-doc-lines.css";
+import "./visit-doc-tooth.css";
 
 type AccId = "chart" | "diag" | "rx" | "more";
 const OPEN_KEY = (visitId: string) => `vd-open-${visitId}`;
@@ -53,6 +55,7 @@ type Data = {
   diagnosisList: ListItem[];
   procedureList: ListItem[];
   phrases: ListItem[];
+  conditions: ListItem[];
   usage: LineUsage;
 };
 
@@ -83,11 +86,13 @@ function VisitDocLoader({ id }: { id: string | undefined }) {
       listOnce(scope, "diagnoses"),
       listOnce(scope, "procedures"),
       listOnce(scope, "quick_phrases").catch(() => [] as ListItem[]),
+      listOnce(scope, "conditions").catch(() => [] as ListItem[]),
       getLineUsage().catch((): LineUsage => ({ diagnoses: {}, procedures: {} })),
     ])
-      .then(async ([page, diagnosisList, procedureList, phrases, usage]) => {
+      .then(async ([page, diagnosisList, procedureList, phrases, conditions, usage]) => {
         const patient = await getPatient(page.visit.patientId);
-        if (!cancelled) setData({ page, patient, diagnosisList, procedureList, phrases, usage });
+        if (!cancelled)
+          setData({ page, patient, diagnosisList, procedureList, phrases, conditions, usage });
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -147,6 +152,10 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const [rxStatus, setRxStatus] = useState<RxStatus>("none");
   const [tab, setTab] = useState<SideTab>("history");
   const first = useMemo(() => readOpen(visit.id), [visit.id]);
+  const conditionLabels = useMemo(
+    () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
+    [data.conditions],
+  );
 
   const notes = useVisitNotes({
     visit,
@@ -160,6 +169,9 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
     toothHint: tooth,
     visitVersion: { get: () => notes.versionRef.current, set: notes.setVersion },
   });
+  const conditionLabel = (code: string) => conditionLabels.get(code) ?? code;
+  // A line saved on this visit changes what the tooth card shows: it reads the tooth again.
+  const refreshKey = lines.savedAt ? lines.savedAt.getTime() : 0;
   const diagnosisOptions = useMemo(
     () => searchOptions(data.diagnosisList, data.usage.diagnoses),
     [data.diagnosisList, data.usage.diagnoses],
@@ -227,6 +239,18 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 registeredOn={patient.createdAt.slice(0, 10)}
                 onFocusChange={(t) => setTooth(t)}
               />
+              {tooth !== null && (
+                <ToothCard
+                  patientId={patient.id}
+                  visitId={visit.id}
+                  tooth={tooth}
+                  readOnly={readOnly}
+                  conditionLabel={conditionLabel}
+                  refreshKey={refreshKey}
+                  onClose={() => setTooth(null)}
+                  onSelectTooth={(t) => setTooth(t as FdiTooth)}
+                />
+              )}
             </div>
           </details>
 

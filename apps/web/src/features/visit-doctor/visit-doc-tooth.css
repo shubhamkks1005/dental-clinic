@@ -1,0 +1,116 @@
+/* Tooth card under the chart. */
+.vd-tooth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid rgb(5 77 97 / 60%);
+  border-radius: var(--vd-radius-md);
+  background: var(--vd-card);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 10%);
+}
+.vd-tc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-tc-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+.vd-tc-line {
+  margin: 6px 0 0;
+  padding: 4px 10px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: var(--vd-radius-sm);
+  background: rgb(242 244 245 / 70%);
+  font-size: 12px;
+}
+.vd-tc-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.vd-tc-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--vd-muted);
+}
+.vd-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+.vd-timeline li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+.vd-tl-date {
+  min-width: 92px;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--vd-muted);
+}
+.vd-tc-boxes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+}
+@media (min-width: 640px) {
+  .vd-tc-boxes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.vd-tc-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: var(--vd-radius-sm);
+  background: rgb(242 244 245 / 50%);
+  font-size: 12px;
+}
+.vd-tc-notehead,
+.vd-tc-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vd-tc-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.vd-tc-actions a.vd-small-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.vd-tc-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.vd-note-area {
+  width: 100%;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-card);
+  padding: 8px;
+  font-size: 13px;
+}

@@ -274,3 +274,25 @@ test("a receptionist cannot open the new page", async ({ page }) => {
   expect(res?.status()).toBeLessThan(500);
   await expect(page.getByRole("heading", { name: "Diagnoses" })).toBeHidden();
 });
+
+test("the tooth card shows the tooth, its note and history", async ({ page }) => {
+  test.setTimeout(120_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Tooth ${stamp}`;
+  await walkIn(page, name, stamp);
+  await openNewPage(page, name);
+  await page.locator("#vd-acc-chart > summary").click();
+  // Pick tooth 36 on the chart (a surface button of that tooth).
+  await page.getByRole("button", { name: /36/ }).first().click();
+  const card = page.getByRole("region", { name: "Tooth 36" });
+  await expect(card).toContainText("36 · Lower left first molar");
+  await card.getByLabel("Clinical note for tooth 36").fill("Fake cold sensitivity");
+  await card.getByRole("button", { name: "Save note" }).click();
+  await expect(card.getByText("Fake cold sensitivity")).toBeVisible();
+  await card.getByRole("button", { name: "Edit" }).click();
+  await card.getByLabel("Clinical note for tooth 36").fill("");
+  await card.getByRole("button", { name: "Save note" }).click();
+  await expect(card.getByLabel("Clinical note for tooth 36")).toBeVisible();
+  await card.getByRole("button", { name: "Close" }).click();
+  await expect(card).toBeHidden();
+});
