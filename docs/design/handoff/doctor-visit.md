@@ -98,6 +98,31 @@ No reduced-motion rule in the HTML: keep the app's `prefers-reduced-motion` hand
 | Saving, undo toast, locked banner | notes autosave, bills, certificates | Yes, same words | |
 | Floating dock / bubble | none | no | new pattern; decide it is only on this page |
 
+## 4c. Tooth history (the tooth card): what it shows and the logic
+In the HTML (script TOOTH_HISTORY, renderZoomedCard): tapping a tooth opens a card with (a) a one-line history ("22 Nov RCT started . 08 Nov Cold sensitivity noted", the latest 2), (b) a timeline, newest first (event, surfaces, date, visit link), (c) three small boxes: Diagnosis and procedures, Files, Treatment plan for THAT tooth, (d) a per-tooth clinical note, (e) "Add file" and "Add to plan". The "Chart as of" list switches the whole chart to the state after an older finalised visit (read only).
+
+What is real in the app today: every one of these things already carries a tooth number (all check the FDI range 11-48 and 51-85): `tooth_events` (append-only; tooth, surface, condition, visit_id, noted_at, index on patient+tooth+time), `visit_diagnoses.tooth_fdi`, `visit_procedures.tooth_fdi`, `files.tooth_fdi`, `plan_items.tooth_fdi`. "Chart as of" exists (`GET /patients/:id/chart?asOfVisitId`, `tooth-events-chart.ts`: events up to that visit's finalised time). What does NOT exist: ONE read that gives the history of one tooth, and the per-tooth note (B7).
+
+Logic to build (new read `GET /api/staff/patients/:id/teeth/:fdi/history`, doctor only, `clinical.view`; receptionist 403):
+1. Input: patient, tooth FDI (validated with `isFdiTooth`), optional `before` cursor. Output newest first, at most 20 entries per call, plus `next` cursor ("Show older").
+2. Entries come from five sources, each already filtered by patient and tooth, soft-deleted rows and void visits left out:
+   - chart changes (`tooth_events`): "Deep cavity marked, O D" with the condition label and surfaces, grouped when several surfaces were set in the same visit;
+   - procedures (`visit_procedures`): "RCT started" with surfaces and its note; ONLY from final visits and from today's draft visit;
+   - diagnoses (`visit_diagnoses`): "Irreversible pulpitis";
+   - files (`files`): name and type only (X-ray, photo), opens the viewer;
+   - plan (`plan_items`): current status (Planned, In progress, Done) shown in the Treatment plan box, not as a timeline row.
+   The tooth note (B7) shows in the card, not in the timeline; its past versions are in the audit.
+3. Each timeline row carries its date (IST, day-month-year), the visit id and a flag `isToday` for the open draft. A row from a final visit links to "Chart as of" that visit (the link in the HTML is hard-coded to two fake dates: build it from `visit_id`; no link when the row has no visit).
+4. One-line history = the first 2 timeline entries from the same read (no second request). Empty tooth: "No prior treatment recorded on this tooth."
+5. Counting rule: today's unsaved chart marks are NOT in the server history until saved; the card shows them with the label "Not saved yet" (client state), so the doctor does not think they were recorded.
+6. A primary tooth and the permanent tooth that replaces it are different numbers: no merge (UNVERIFIED if the owner wants a link; not asked).
+7. Speed: opening the card must not wait: prefetch the history for the selected tooth when the pointer rests on or focuses a tooth (like the Part U1.3 idle prefetch); results are cached per tooth in the request scope and dropped when a new chart event, procedure, diagnosis or file for that tooth is saved. Budget: the five sources in ONE `db.batch` (about 5 queries), each limited to 20 rows; check EXPLAIN: `tooth_events` has the index, but `visit_diagnoses` and `visit_procedures` have no tooth index and reach the patient through `visits`, so the plan must check the query plan and add `(tooth_fdi, visit_id)` indexes only if EXPLAIN shows a scan (migration, owner applies).
+8. Role and privacy: doctor only; this is clinical data. No access-log change unless the existing chart read logs access (check `access-log.ts`; follow the same rule).
+9. Locked data: history of a tooth is read only everywhere except "Add file", "Add to plan" and the per-tooth note, which are allowed only on today's draft visit (same rule as other edits).
+10. Wording rule: event words come from the lists (condition label from `conditions.ts`, procedure and diagnosis labels copied on the line), never raw codes (`Deep`, `RCT`) on screen.
+
+Prototype problems NOT to copy: the timeline mixes "Sensitivity noted" (a note) with chart events; the "visit" link maps any "Check-up" to one fixed date; TOOTH_NOTES and TOOTH_HISTORY are hard-coded for teeth 36, 24, 46 only.
+
 ## 5. Backend work (do first, in this order)
 - [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no).
 - [ ] B2 repo: `visit-diagnoses.ts` and `visit-procedures.ts`: add `update` (tooth, surfaces, note; version-checked), `remove` (soft delete, draft only), `restore` (undo within the session). One `db.batch` each with the audit row. Validate FDI on add.
@@ -107,6 +132,7 @@ No reduced-motion rule in the HTML: keep the app's `prefers-reduced-motion` hand
 - [ ] B6 lists: confirm the doctor can add a procedure to the list from the visit (permission), return the new item; fee required to be a whole number of paise; code optional.
 - [ ] B7 (REQUIRED, Q4) per-tooth clinical note: a table `tooth_notes` (patient, tooth FDI, text, version, audit) or a column on the chart event store; doctor only (`clinical.edit`); finalised visits keep the text at the time (copy on finalise); retention rule; migration (owner applies); show in the tooth card, edit with Save.
 - [ ] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm (Q13, owner decided): the HTML 0.12 mm per px is invented and must NOT be built. The doctor first calibrates each image by entering a known length for a drawn line; the scale is stored with the annotations; without calibration the measure shows pixels only. Migration if a column is needed.
+- [ ] B10 tooth history read (section 4c): repo `tooth-history.ts` (five sources, one batch, cursor), domain, route `GET /patients/:id/teeth/:fdi/history`, route-matrix (`clinical.view`), receptionist 403 test, query-plan test, tests for: empty tooth, void visit left out, soft-deleted line left out, today's draft rows flagged, 21 rows gives a cursor, primary tooth number accepted, bad FDI 4xx.
 - [ ] B9 Save button for the chart (Q3): the chart keeps autosave; the button forces an immediate save and shows "Saved hh:mm".
 Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> target 2 rounds, <= 10 queries each.
 
@@ -185,6 +211,11 @@ Consequences to apply (changes from the HTML):
 | 15 | Keyboard only | search, arrows, Enter, Tab to tooth and surfaces | full flow | |
 | 16 | 30 prescription lines, 20 procedures | add many | stays usable, Finalise reachable | |
 | 17 | 360 / 768 / 1366 | each state | no sideways scroll, targets 44 px | |
+| 19 | Tooth history: tooth with chart events, a procedure, a diagnosis, a file in 3 visits | tap the tooth | timeline newest first, one-line history matches the first 2 rows, row link opens "Chart as of" that visit | one history request, <= 6 queries |
+| 20 | Tooth history: tooth with nothing | tap a healthy tooth | "No prior treatment recorded on this tooth." | still one request |
+| 21 | Tooth history: 25 entries | tap, then "Show older" | 20 then 5 more | cursor works, no duplicates |
+| 22 | Tooth history: mark today then open card | mark a surface, do not save | row shows "Not saved yet" | not in server history until saved |
+| 23 | Tooth history: receptionist | call the API | 403 | |
 | 18 | First paint | open page | no animation on first paint | queries <= 10 per request |
 
 ## 11. Measurement targets
