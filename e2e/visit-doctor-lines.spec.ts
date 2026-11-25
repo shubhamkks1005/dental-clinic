@@ -296,3 +296,29 @@ test("the tooth card shows the tooth, its note and history", async ({ page }) =>
   await card.getByRole("button", { name: "Close" }).click();
   await expect(card).toBeHidden();
 });
+
+test("the live prescription sheet follows the visit and takes its details from Settings", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Sheet ${stamp}`;
+  await walkIn(page, name, stamp);
+  await openNewPage(page, name);
+  const sheet = page.getByLabel("Prescription sheet");
+  await expect(sheet).toContainText(name);
+  await expect(sheet).toContainText("DRAFT");
+  await expect(sheet).toContainText("No medicines yet.");
+  // A diagnosis with a tooth appears under Problem teeth.
+  const dx = page.getByRole("combobox", { name: "Search diagnosis (or type new)" });
+  await dx.fill("Fake sheet finding");
+  await dx.press("Enter");
+  const tooth = page
+    .locator('[data-line="diagnosis"]')
+    .first()
+    .getByLabel(/Tooth number for/);
+  await tooth.fill("46");
+  await tooth.blur();
+  await expect(sheet).toContainText("Problem teeth");
+  await expect(sheet).toContainText("46: Fake sheet finding");
+});

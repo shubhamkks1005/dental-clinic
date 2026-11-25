@@ -17,9 +17,29 @@ type Props = {
   compact?: boolean;
   /** Lets the visit's Finalise bar show whether the prescription is issued. */
   onStatusChange?: (status: RxStatus) => void;
+  /** The visit page shows a live sheet of the same prescription. */
+  onSnapshot?: (snapshot: RxSnapshot) => void;
 };
 
 export type RxStatus = "none" | "draft" | "issued";
+
+/** What the live prescription preview next to the visit needs, handed out whenever it changes. */
+export type RxSnapshot = {
+  status: RxStatus;
+  rxNo: string | null;
+  lines: Array<{
+    key: string;
+    genericName: string;
+    brand: string;
+    strength: string;
+    frequency: string;
+    days: string;
+    timing: string;
+    instruction: string;
+  }>;
+  advice: string;
+  followUpOn: string;
+};
 
 /** 4.2.2–4.2.7 prescription on the visit (S05). Keyboard-first add from the doctor list. */
 export function VisitMedicinesPanel({
@@ -28,6 +48,7 @@ export function VisitMedicinesPanel({
   canWrite,
   compact = false,
   onStatusChange,
+  onSnapshot,
 }: Props) {
   const rxState = useVisitPrescription(visitId, patientId, canWrite);
   const { rx, lines, medicines, sets, locked, busy, problem, warnings } = rxState;
@@ -37,6 +58,25 @@ export function VisitMedicinesPanel({
   useEffect(() => {
     onStatusChange?.(status);
   }, [status]);
+  const { advice, followUpOn } = rxState;
+  useEffect(() => {
+    onSnapshot?.({
+      status,
+      rxNo: rx?.rxNo ?? null,
+      lines: lines.map((l) => ({
+        key: l.key,
+        genericName: l.genericName,
+        brand: l.brand ?? "",
+        strength: l.strength ?? "",
+        frequency: l.frequency,
+        days: l.days,
+        timing: l.timing,
+        instruction: l.instruction ?? "",
+      })),
+      advice,
+      followUpOn,
+    });
+  }, [status, rx?.rxNo, lines, advice, followUpOn]);
 
   const q = query.trim().toLowerCase();
   const filtered = medicines.filter((m) => {

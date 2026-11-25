@@ -333,3 +333,110 @@ button.vd-chip {
   height: 64px;
   background: var(--vd-container);
 }
+
+/* Live prescription sheet (letterhead). Clinic and doctor words come from Settings. */
+.vd-rx {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.vd-rx-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vd-sheet {
+  border: 1px solid var(--vd-line);
+  border-radius: 16px;
+  overflow: hidden;
+  font-size: 11px;
+  background: var(--vd-card);
+}
+.vd-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px 8px;
+  border-bottom: 2px solid var(--vd-primary);
+}
+.vd-sheet-clinic,
+.vd-sheet-doctor {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 10px;
+  color: var(--vd-muted);
+}
+.vd-sheet-clinic {
+  align-items: center;
+  text-align: center;
+  min-width: 46%;
+}
+.vd-sheet-clinic strong {
+  color: var(--vd-error);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.vd-sheet-clinic em {
+  color: var(--vd-success);
+}
+.vd-sheet-doctor {
+  align-items: flex-end;
+  text-align: right;
+}
+.vd-sheet-doctor strong {
+  color: var(--vd-primary);
+  font-size: 13px;
+}
+.vd-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 11.5px;
+}
+.vd-sheet-patient {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-sheet-teeth {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0;
+}
+.vd-sheet-list {
+  margin: 0;
+  padding-left: 16px;
+  color: var(--vd-muted);
+}
+.vd-sheet-meds {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-sheet-meds p,
+.vd-sheet-body p {
+  margin: 0;
+}
+.vd-sheet-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border-top: 2px solid var(--vd-primary);
+  font-size: 9.5px;
+  color: var(--vd-muted);
+}
+.vd-sheet-foot strong {
+  color: var(--vd-error);
+  font-size: 10.5px;
+}

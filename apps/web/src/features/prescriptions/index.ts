@@ -1,4 +1,4 @@
-export { VisitMedicinesPanel, type RxStatus } from "./VisitMedicinesPanel";
+export { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "./VisitMedicinesPanel";
 export {
   getPrescription,
   listVisitPrescriptions,

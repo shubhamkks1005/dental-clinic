@@ -8,7 +8,9 @@ import { UnsavedChangesGuard } from "../../ui/UnsavedChangesGuard";
 import { useMe } from "../auth";
 import { VisitChartPanel } from "../chart";
 import { getPatient, type PatientDetail } from "../patients";
-import { VisitMedicinesPanel, type RxStatus } from "../prescriptions";
+import { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "../prescriptions";
+import { LiveRx } from "./LiveRx";
+import { patientStripFacts } from "../visits/visit-patient-strip";
 import { NextVisitChips } from "../visits/NextVisitChips";
 import { useVisitNotes } from "../visits/useVisitNotes";
 import { listOnce } from "../visits/visit-prefetch";
@@ -150,7 +152,8 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const readOnly = !canEdit || finalised;
   const [tooth, setTooth] = useState<FdiTooth | null>(null);
   const [rxStatus, setRxStatus] = useState<RxStatus>("none");
-  const [tab, setTab] = useState<SideTab>("history");
+  const [tab, setTab] = useState<SideTab>("rx");
+  const [snapshot, setSnapshot] = useState<RxSnapshot | null>(null);
   const first = useMemo(() => readOpen(visit.id), [visit.id]);
   const conditionLabels = useMemo(
     () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
@@ -303,6 +306,7 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 canWrite={canWriteRx}
                 compact
                 onStatusChange={setRxStatus}
+                onSnapshot={setSnapshot}
               />
             </div>
           </details>
@@ -356,7 +360,25 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
             />
           </section>
         </div>
-        <SidePane tab={tab} onTab={setTab} page={page} patientId={patient.id} />
+        <SidePane
+          tab={tab}
+          onTab={setTab}
+          page={page}
+          patientId={patient.id}
+          rx={
+            <LiveRx
+              snapshot={snapshot}
+              patient={{
+                fullName: patient.fullName,
+                code: patient.code,
+                ageGender: patientStripFacts(patient, visit.visitDateLocal).ageGender,
+              }}
+              visitDate={visit.visitDateLocal}
+              lines={[...lines.diagnoses, ...lines.procedures]}
+              onIssue={openRx}
+            />
+          }
+        />
       </main>
       <DocBar
         visit={visit}

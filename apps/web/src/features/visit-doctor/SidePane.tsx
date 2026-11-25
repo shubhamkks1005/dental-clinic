@@ -1,5 +1,6 @@
 import { formatClockTime, formatDisplayDate } from "@clinic/shared";
 import { Link } from "react-router";
+import type { ReactNode } from "react";
 import type { VisitPageData } from "./page-api";
 
 export type SideTab = "rx" | "history";
@@ -9,18 +10,20 @@ type Props = {
   onTab: (tab: SideTab) => void;
   page: VisitPageData;
   patientId: string;
+  /** The live prescription sheet (tab 1). */
+  rx: ReactNode;
 };
 
 const rupees = (paise: number) => `₹${Math.round(paise / 100).toLocaleString("en-IN")}`;
 
 /** Right pane: the live prescription (next step) and the patient's History from the one page read. */
-export function SidePane({ tab, onTab, page, patientId }: Props) {
+export function SidePane({ tab, onTab, page, patientId, rx }: Props) {
   return (
     <aside className="vd-side" aria-label="Prescription and history">
       <div className="vd-tabs" role="tablist" aria-label="Side pane">
         {(
           [
-            ["rx", "Live Rx"],
+            ["rx", "Live A4 Rx"],
             ["history", "History"],
           ] as const
         ).map(([id, label]) => (
@@ -41,7 +44,7 @@ export function SidePane({ tab, onTab, page, patientId }: Props) {
 
       {tab === "rx" ? (
         <div className="vd-panel" role="tabpanel" id="vd-panel-rx" aria-labelledby="vd-tab-rx">
-          <p className="vd-hint">The live prescription sheet shows here once it is issued.</p>
+          {rx}
         </div>
       ) : (
         <div
