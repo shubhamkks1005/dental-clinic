@@ -1,9 +1,15 @@
 import { procedureNeedsConsentWarning } from "@clinic/shared";
-import type { VisitSummary } from "./api";
+/** Only what the warnings read, so the doctor visit page can pass its own lines. */
+export type WarningsVisit = {
+  diagnoses: readonly unknown[];
+  procedures: readonly (Record<string, unknown> & { label: string })[];
+  noDiagnosis: boolean;
+  noProcedure: boolean;
+};
 
 /** Soft warnings before finalise (3.5.6 / 3.8.2). Never block — doctor may continue. */
 export function finaliseWarnings(
-  visit: VisitSummary,
+  visit: WarningsVisit,
   opts?: { hasTreatmentConsent?: boolean; hasDraftPrescription?: boolean },
 ): string[] {
   const out: string[] = [];

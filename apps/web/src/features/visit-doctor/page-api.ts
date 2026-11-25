@@ -36,11 +36,21 @@ export type PagePlanItem = {
 export type PageVisit = {
   id: string;
   patientId: string;
+  appointmentId: string | null;
+  doctorId: string;
+  historyNote: string | null;
+  gumCondition: string | null;
+  advice: string | null;
+  nextVisitNote: string | null;
+  finalisedAt: string | null;
   status: "draft" | "final" | "void";
   visitDateLocal: string;
   version: number;
   chiefComplaint: string | null;
   examNote: string | null;
+  bpSystolic: number | null;
+  bpDiastolic: number | null;
+  pulse: number | null;
   noDiagnosis: boolean;
   noProcedure: boolean;
   diagnoses: PageDiagnosis[];
@@ -85,7 +95,12 @@ export type VisitPageData = {
       days: string;
     }[];
   } | null;
-  followUp: { state: string; label?: string; dueOn?: string | null; daysLate?: number } | null;
+  followUp: {
+    dueOn: string;
+    daysLate: number;
+    medsFinishedOn: string | null;
+    state: "upcoming" | "due_today" | "late";
+  } | null;
 };
 
 export function getVisitPage(id: string): Promise<VisitPageData> {

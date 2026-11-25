@@ -28,6 +28,10 @@ const PrintRoutes = lazy(() =>
 const SettingsScreen = lazy(() =>
   import("../features/settings/SettingsScreen").then((m) => ({ default: m.SettingsScreen })),
 );
+// The new doctor visit page (design doctor_visit.html) is built step by step on its own route until it replaces the old visit screen.
+const DoctorVisitPage = lazy(() =>
+  import("../features/visit-doctor").then((m) => ({ default: m.DoctorVisitPage })),
+);
 const LibraryScreen = lazy(() =>
   import("../features/library/LibraryScreen").then((m) => ({ default: m.LibraryScreen })),
 );
@@ -130,6 +134,14 @@ function ShellRoutes() {
               element={
                 <RequirePermission permission="clinical.view">
                   <VisitScreen />
+                </RequirePermission>
+              }
+            />
+            <Route
+              path="visits/:id/new"
+              element={
+                <RequirePermission permission="clinical.view">
+                  <DoctorVisitPage />
                 </RequirePermission>
               }
             />

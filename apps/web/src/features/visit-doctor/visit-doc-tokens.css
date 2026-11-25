@@ -1,0 +1,72 @@
+/* Doctor visit page (final design docs/design/final/doctor_visit.html): colours and sizes, scoped to
+   this page only. The app keeps its own fonts and colours everywhere else. */
+.visit-doc {
+  --vd-nav: #263f4d;
+  --vd-success: #146c43;
+  --vd-success-bg: #d1f4e0;
+  --vd-success-text: #0b462b;
+  --vd-warning: #9a5b00;
+  --vd-warning-bg: #fef0c7;
+  --vd-warning-text: #693d00;
+  --vd-info: #0f5266;
+  --vd-info-bg: #d0e6f0;
+  --vd-info-text: #003544;
+  --vd-primary: #054d61;
+  --vd-primary-hover: #0f5266;
+  --vd-on-primary: #ffffff;
+  --vd-secondary-bg: #d0e6f0;
+  --vd-error: #ba1a1a;
+  --vd-error-bg: #ffdad6;
+  --vd-error-text: #93000a;
+  --vd-surface: #f8f9fb;
+  --vd-card: #ffffff;
+  --vd-low: #f2f4f5;
+  --vd-container: #edeeef;
+  --vd-text: #191c1d;
+  --vd-muted: #40484c;
+  --vd-outline: #70787c;
+  --vd-line: #c0c8cc;
+  --vd-radius-sm: 6px;
+  --vd-radius: 8px;
+  --vd-radius-md: 12px;
+  --vd-ease: cubic-bezier(0.2, 0, 0, 1);
+  color: var(--vd-text);
+}
+
+/* Pills: words, not colour alone. Text on its own background keeps 4.5:1 (visit-doc-tokens.test.ts). */
+.vd-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.vd-pill-info {
+  background: var(--vd-info-bg);
+  color: var(--vd-info-text);
+}
+.vd-pill-warning {
+  background: var(--vd-warning-bg);
+  color: var(--vd-warning-text);
+}
+.vd-pill-success {
+  background: var(--vd-success-bg);
+  color: var(--vd-success-text);
+}
+.vd-pill-error {
+  background: var(--vd-error-bg);
+  color: var(--vd-error-text);
+}
+.vd-pill-neutral {
+  background: var(--vd-container);
+  color: var(--vd-muted);
+}
+.vd-pill-primary {
+  background: var(--vd-primary);
+  color: var(--vd-on-primary);
+}

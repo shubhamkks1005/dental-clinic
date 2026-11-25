@@ -1,10 +1,26 @@
 import { expandQuickPhrase, type ListItem } from "@clinic/shared";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { VisitSummary } from "./api";
 import { useVisitAutosave } from "./useVisitAutosave";
 import { type NotesSnapshot } from "./visit-autosave";
 
-export function notesFromVisit(v: VisitSummary): NotesSnapshot {
+/** The visit fields the notes read: another screen may hand over just these. */
+export type NotesVisit = Pick<
+  VisitSummary,
+  | "id"
+  | "version"
+  | "chiefComplaint"
+  | "historyNote"
+  | "examNote"
+  | "gumCondition"
+  | "advice"
+  | "nextVisitNote"
+  | "bpSystolic"
+  | "bpDiastolic"
+  | "pulse"
+>;
+
+export function notesFromVisit(v: NotesVisit): NotesSnapshot {
   return {
     chiefComplaint: v.chiefComplaint ?? "",
     historyNote: v.historyNote ?? "",
@@ -19,7 +35,7 @@ export function notesFromVisit(v: VisitSummary): NotesSnapshot {
 }
 
 type Args = {
-  visit: VisitSummary;
+  visit: NotesVisit;
   phrases: ListItem[];
   readOnly: boolean;
   onSaved: (visit: VisitSummary) => void;
@@ -30,6 +46,9 @@ export function useVisitNotes({ visit, phrases, readOnly, onSaved }: Args) {
   const [form, setForm] = useState(() => notesFromVisit(visit));
   const [saved, setSaved] = useState(() => notesFromVisit(visit));
   const [version, setVersion] = useState(visit.version);
+  // The doctor visit page also writes to the visit (the none choices) and must use the same version.
+  const versionRef = useRef(version);
+  versionRef.current = version;
 
   useEffect(() => {
     const snap = notesFromVisit(visit);
@@ -68,5 +87,5 @@ export function useVisitNotes({ visit, phrases, readOnly, onSaved }: Args) {
   const setPhrase = (key: keyof NotesSnapshot, raw: string) =>
     setForm((f) => ({ ...f, [key]: expandQuickPhrase(raw, phraseMap).value }));
 
-  return { form, status, dirty, setField, setPhrase };
+  return { form, status, dirty, setField, setPhrase, version, setVersion, versionRef };
 }
