@@ -1,6 +1,6 @@
 # Handoff: doctor-visit (docs/design/final/doctor_visit.html)
 
-Status: PLANNED
+Status: PLANNED (owner answered Q1-Q11 in chat on 2026-11-25, see section 7 and 8; ready for design-apply after the HTML is saved)
 Written: 2026-11-25. Plan by: design-plan. Next skill: design-apply (only after the owner answers section 7 and saves the HTML file, see 0).
 
 ## 0. How to read this file
@@ -8,7 +8,7 @@ design-apply reads ONLY this file plus the HTML. Update the status lines and the
 
 IMPORTANT (UNVERIFIED source): the owner pasted the design in chat as `doctor_visit_smart_accordions (28).html` (Tailwind CDN prototype, "Option 4: Smart Accordion Cards"). It is NOT yet saved in `docs/design/final/`. Before design-apply: the owner saves it as `docs/design/final/doctor_visit.html` and adds the row to `docs/design/final/README.md` (screen "Doctor visit page", built by Part U). This plan was written from the pasted text (markup, style, script all read), line numbers below are therefore given as "script: function name" or "markup: id", not as line numbers.
 
-Open conflict to settle first: `docs/PLAN.md` Part U9 item 8 says the page has tabs (Visit, Plan, History, Files). This design has four accordions on the left and a right pane (Live Rx | History). See question Q1.
+Layout conflict settled (Q1): the accordion design wins over the tabs in `docs/PLAN.md` Part U9 item 8. Update Part U9 item 8 when applying.
 
 ## 1. The screen in one paragraph
 The doctor's visit page (`/app/visits/:id`, opened from Today "Open visit"). Doctor only (receptionist gets the existing 403 sentence). Top: back to Today, patient header (name, age, sex, P-code) and an always-visible strip (allergy, vitals, dues, follow-up). Left: four exclusive accordions: (1) Tooth chart, (2) Diagnosis and procedures, (3) Prescription and advice, (4) Files, vitals and next visit; plus a floating frosted dock with two boxes (Chief complaints, Clinical findings) that can shrink to a round bubble at bottom left. Right: resizable pane with two tabs: "Live A4 Rx" (letterhead preview) and "History" (dues, next appointment, pending treatment, previous medications, last visits, files). Bottom sticky bar: save state, "Diagnosis done", "Procedures done" chips, text "Finalise creates bill and updates plan", and Finalise visit. Replaces today's one-screen visit (features/visits: VisitOneScreen, VisitWorkColumn, VisitStickyBar, VisitContextPanel, RecentVisitsSide) and the prescription panel (features/prescriptions/VisitMedicinesPanel).
@@ -68,7 +68,7 @@ No reduced-motion rule in the HTML: keep the app's `prefers-reduced-motion` hand
 | Complaint, findings | two dock boxes | `visits.chief_complaint`, `visits.exam_note`, `PATCH /visits/:id` (versioned autosave) | EXISTS | quick-add phrase chips from the older design were REMOVED here; Part U1 (hover previous notes, "Use this") must be placed on these two boxes |
 | Diagnosis add (list or free text, tooth) | addDiagnosisItem | `POST /visits/:id/diagnoses` (list item or free text, `toothFdi`) | FIX FIRST | tooth is NOT validated against FDI on the server (`visit-diagnoses.ts`); add `isFdiTooth` check; also dedupe not needed |
 | Diagnosis change tooth / remove / undo | updateDiagTooth, removeDiagLine, undo | none (no PATCH or DELETE route) | NEW | repo `update` and `remove` (soft delete, version check, audit, only draft), routes `PATCH` and `DELETE /visits/:id/diagnoses/:lineId`, route-matrix entries, tests. Undo of remove = restore (soft delete flag cleared) or re-add |
-| Procedure add (list only, tooth, surfaces) | addProcedureItem | `POST /visits/:id/procedures` (list item, `toothFdi`, `surfaces`, `note`) | FIX FIRST | HTML adds with NO tooth and then edits; server accepts that. `surfaces` set by the HTML to []: matches. Whole-tooth flag (`wholeTooth`) is not in `list_items` data (only `default_paise` and code): NEW list field `whole_tooth` (Q6) |
+| Procedure add (list only, tooth, surfaces) | addProcedureItem | `POST /visits/:id/procedures` (list item, `toothFdi`, `surfaces`, `note`) | FIX FIRST | HTML adds with NO tooth and then edits; server accepts that. `surfaces` set by the HTML to []: matches. Surfaces always shown (Q6 = no whole-tooth flag). |
 | Procedure change tooth, surfaces, note / remove / undo | updateProcTooth, toggleProcSurface, updateProcNote, removeProcLine | none | NEW | same as diagnosis; `PATCH` and `DELETE /visits/:id/procedures/:lineId` |
 | Procedure fee on screen, total | formatRupeesFromPaise, "Rs 3,700" | `default_paise` copied on add | EXISTS | show with the app's `formatRupees` (symbol and Indian grouping), NOT the HTML's "Rs"; total computed on the client for information only; "No fee set" chip when null |
 | Inline "Add to my list" for a procedure (name + fee) | addInlineProcedureToList | `POST /lists/procedures` (Library) | FIX FIRST | needs `settings.write`/lists permission: check the doctor may call it from the visit; code `NEW` is a placeholder (HTML) so real code must be optional; after add, line is added in one flow; if the list call fails, no line |
@@ -99,14 +99,15 @@ No reduced-motion rule in the HTML: keep the app's `prefers-reduced-motion` hand
 | Floating dock / bubble | none | no | new pattern; decide it is only on this page |
 
 ## 5. Backend work (do first, in this order)
-- [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists); add `whole_tooth` field to the procedures list definition (`packages/shared/src/lists.ts`) if Q6 is yes (seed migration + tests, tunables-guard rules).
+- [ ] B1 shared: `isFdiTooth` guard reused by diagnosis and procedure add/update (packages/shared teeth.ts exists). No `whole_tooth` field (Q6 = no).
 - [ ] B2 repo: `visit-diagnoses.ts` and `visit-procedures.ts`: add `update` (tooth, surfaces, note; version-checked), `remove` (soft delete, draft only), `restore` (undo within the session). One `db.batch` each with the audit row. Validate FDI on add.
 - [ ] B3 domain + routes in `apps/worker/src/routes/staff-visits.ts` and `domain/visits.ts`: `PATCH` and `DELETE` per line; `route-matrix.ts` entries (`clinical.edit`); role tests (receptionist 403).
 - [ ] B4 migration (owner applies, never applied by the agent; next number from docs/HANDOFF.md): `visits.no_diagnosis`, `visits.no_procedure` integer 0/1 (Q2). Update `finalise-warnings.ts` and the checklist to use them.
 - [ ] B5 read: one "visit page" read that returns, in one round, visit + diagnoses + procedures + open plan items for the tag + last 3 visits (with `exam_note`, per Part U1.1) + next appointment + dues + files metadata; target <= 10 D1 queries; EXPLAIN checked (query-plan test).
 - [ ] B6 lists: confirm the doctor can add a procedure to the list from the visit (permission), return the new item; fee required to be a whole number of paise; code optional.
-- [ ] B7 (optional, Q4) per-tooth clinical note: column or table with retention rule.
-- [ ] B8 (later, own task) X-ray annotations (store as JSON on the file, versioned, audited). Not part of the first build.
+- [ ] B7 (REQUIRED, Q4) per-tooth clinical note: a table `tooth_notes` (patient, tooth FDI, text, version, audit) or a column on the chart event store; doctor only (`clinical.edit`); finalised visits keep the text at the time (copy on finalise); retention rule; migration (owner applies); show in the tooth card, edit with Save.
+- [ ] B8 (REQUIRED, Q7) X-ray annotations: store as versioned JSON on the file row (pen, circle, arrow, text, measure; coordinates 0-400 x 0-300 of the viewer), audit row on save, doctor only (`files.clinical`), size cap. Measure in mm needs a real scale: the HTML 0.12 mm per px is invented; use a per-image calibration (owner enters a known length) or show pixels only (ask the owner before building measure). Migration if a column is needed.
+- [ ] B9 Save button for the chart (Q3): the chart keeps autosave; the button forces an immediate save and shows "Saved hh:mm".
 Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> target 2 rounds, <= 10 queries each.
 
 ## 6. Logic changes (frontend)
@@ -122,20 +123,26 @@ Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> targe
 - Print: print only the A5 sheet (print stylesheet), never the whole page.
 - Prototype bugs NOT to copy (UNVERIFIED because the page was not run; found by reading): `renderSummaryAndRx()` writes `diagChips.innerHTML` for `#diag-proc-chips`, which no longer exists in this markup, so it throws and may stop the later script (everything after the first `renderAll()`); `acc2-summary` is overwritten by the chart text until `renderDiagProcAll()` runs; unescaped text goes into HTML and into `onclick` strings (an apostrophe breaks "Add"); the hard-coded date 22 Nov for "Marked today" and the follow-up past check; fake timers for saving.
 
-## 7. New things that need the owner's answer
-| # | Question | Options | Default if no answer |
-|---|---|---|---|
-| Q1 | The page layout is accordions plus a right pane, but PLAN U9.8 says tabs (Visit, Plan, History, Files). Which wins? | accordions (this design) / tabs | This final design wins; Plan and Files live in accordion 4 / the right pane History |
-| Q2 | Store "No diagnosis / No procedure for this visit" on the visit (two columns, a migration)? | yes / client-only | yes, store it |
-| Q3 | Chart: keep the explicit Save button, or autosave like today? | save button / autosave | autosave (as built), button shows "Saved" state only |
-| Q4 | Per-tooth clinical note (in the tooth card): build now? | now / later | later (UI shows nothing until built) |
-| Q5 | Print the problem teeth on the prescription? | yes / no | no (brief); PLAN U9.3 says yes: owner decide |
-| Q6 | Add "whole tooth" to each procedure in the list (decides if surfaces show)? | yes / no (show surfaces always) | yes, default off |
-| Q7 | X-ray viewer with annotations and measure: part of this build? | now / separate task | separate task; first build opens the existing file viewer |
-| Q8 | The floating complaint/findings dock covers the lower left; on tablet and phone, where does it go? | docked under the header / bubble only | bubble only, opens as a bottom sheet |
-| Q9 | Diagnosis/procedure undo toast: auto-hide after 6 s like the prescription? | yes / stays until dismissed | 6 s |
-| Q10 | Finalise: when the prescription is still a draft, only warn (as today) or also show "Issue now"? | warn / warn + issue now | warn + a link to the prescription accordion |
-| Q11 | Fee shown on procedure lines (doctor only): confirmed (brief Q1 for diagnosis-procedures)? | yes / no | yes |
+## 7. Questions for the owner (answered in chat, 2026-11-25)
+| # | Question | Owner's answer |
+|---|---|---|
+| Q1 | Accordions or tabs? | Accordion design wins |
+| Q2 | Store "No diagnosis / No procedure for this visit" on the visit? | Yes, store it (migration) |
+| Q3 | Chart: Save button or autosave? | BOTH: autosave runs, and a Save button stays so the user feels safe (button shows the saved state; pressing it forces a save now) |
+| Q4 | Per-tooth clinical note? | Build NOW |
+| Q5 | Problem teeth on the prescription? | Yes, print them (chart of affected teeth + short list, as PLAN U9.3) |
+| Q6 | "Whole tooth" flag per procedure? | No: surfaces O M D B L are ALWAYS shown (doctor leaves empty for whole-tooth work) |
+| Q7 | X-ray viewer with annotations? | In this build (not a separate task) |
+| Q8 | Dock on tablet and phone? | Bubble only; tap opens a bottom sheet |
+| Q9 | Diagnosis/procedure undo toast? | Hides after 6 s |
+| Q10 | Finalise with a draft prescription? | Warning plus a link that opens the prescription accordion |
+| Q11 | Procedure fee and total on the visit screen? | NO: fees only in billing |
+
+Consequences to apply (changes from the HTML):
+- Remove the fee text, "No fee set" amount chip and "Procedures total" from accordion 2 and from its summary line; the summary shows counts only. Open point for the owner (not yet asked): a bill line with no fee must still be noticed. Default: show a plain "No fee set" word on the line (no amount) so the bill is not silently low; tell the owner when reporting.
+- The inline "Add procedure to my list" still needs a fee (the list needs it); keep the fee field there only.
+- Remove the `wholeTooth` logic: always render the five surface buttons.
+- Tooth note and X-ray annotations are in scope: see section 5 (B7, B8 are now required).
 
 ## 8. Decisions already taken (also in docs/DECISIONS.md)
 - Total "approx" on the prescription stays as it is (owner, 2026-11-25).
@@ -144,7 +151,7 @@ Queries per request: visit page read before 4 rounds (S3.3.1 made it 2) -> targe
 - Arrow keys in the medicine search: to be added (owner, 2026-11-25).
 - History pane (previous medications, last visits, dues): kept.
 - Procedures are chosen from the doctor's list only; diagnoses may be free text (brief).
-- Add to docs/DECISIONS.md when the owner answers Q1 and Q2.
+- Visit page decisions of 2026-11-25 (Q1 to Q11 above) are written in docs/DECISIONS.md.
 
 ## 9. Design apply checklist
 - [ ] tokens/colours (scoped class like `.visit-doc`), icons, CSS files (no Tailwind, no CDN, no copied class names)
