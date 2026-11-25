@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Select } from "../../ui/form";
 import { ToothChart } from "../chart";
 import { loadChartView } from "../chart/api";
-import { affectedTeeth, chartBadge, chartSaveText } from "./chart-model";
+import { affectedTeeth, chartBadge, chartSaveText, type Affected } from "./chart-model";
 import { padButtons } from "./pad-model";
 import { ToothCard } from "./ToothCard";
 import { useChartMarks } from "./useChartMarks";
@@ -34,6 +34,8 @@ type Props = {
   /** Marks were saved: the badge and the tooth card refresh. */
   onSaved: () => void;
   onBadge: (text: string) => void;
+  /** The teeth with marks, for the live prescription sheet. */
+  onAffected?: (teeth: Affected[]) => void;
   /** Changes when this visit saved a line or file: the tooth card reads the tooth again. */
   refreshKey: number;
   onClose: () => void;
@@ -105,6 +107,11 @@ export function ChartSection(p: Props) {
   const badge = chartBadge(affected);
   const { onBadge } = p;
   useEffect(() => onBadge(badge), [badge, onBadge]);
+  const { onAffected } = p;
+  const affectedKey = JSON.stringify(affected);
+  useEffect(() => {
+    onAffected?.(JSON.parse(affectedKey) as Affected[]);
+  }, [affectedKey, onAffected]);
   const active = conditions.find((c) => c.code === code);
 
   return (

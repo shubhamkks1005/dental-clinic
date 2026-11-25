@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import type { RxStatus } from "../prescriptions";
-import { SaveStatusChip } from "../visits/SaveStatusChip";
-import type { SaveStatus } from "../visits/visit-autosave";
+import { saveStatusLabel, type SaveStatus } from "../visits/visit-autosave";
 import { finaliseVisit } from "../visits/api";
 import { useTreatmentConsent } from "../visits/useTreatmentConsent";
 import { finaliseWarnings } from "../visits/finalise-warnings";
@@ -18,23 +17,20 @@ type Props = {
   rxStatus: RxStatus;
   /** Latest version (notes and none choices share it). */
   version: () => number;
-  onOpenRx: () => void;
   onFinalised: () => void;
 };
 
 /** Bottom bar: what is saved, what is done, and Finalise. The warnings never block (3.5.6). */
-export function DocBar({
-  visit,
-  lines,
-  notesStatus,
-  rxStatus,
-  version,
-  onOpenRx,
-  onFinalised,
-}: Props) {
+export function DocBar({ visit, lines, notesStatus, rxStatus, version, onFinalised }: Props) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState("");
+  useEffect(() => {
+    if (notesStatus === "saved") {
+      setSavedAt(new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }));
+    }
+  }, [notesStatus]);
   const hasTreatmentConsent = useTreatmentConsent(visit.patientId);
   const done = doneStates({
     diagnoses: lines.diagnoses.length,
@@ -77,18 +73,24 @@ export function DocBar({
   return (
     <div className="vd-bar" role="region" aria-label="Finish the visit">
       <div className="vd-bar-left">
-        <SaveStatusChip status={notesStatus} />
-        <span className={`vd-pill ${done.diagnosis ? "vd-pill-success" : "vd-pill-warning"}`}>
+        <span
+          className={`vd-save ${notesStatus === "saved" ? "is-saved" : "is-error"}`}
+          role="status"
+          aria-live="polite"
+        >
+          <span className="vd-icon" aria-hidden="true">
+            cloud_done
+          </span>
+          {notesStatus === "saved" && savedAt
+            ? `Saved ${savedAt.toUpperCase()}`
+            : saveStatusLabel(notesStatus)}
+        </span>
+        <span className={`vd-bar-pill ${done.diagnosis ? "vd-pill-success" : "vd-pill-warning"}`}>
           {done.diagnosis ? "Diagnosis done ✓" : "Diagnosis missing"}
         </span>
-        <span className={`vd-pill ${done.procedure ? "vd-pill-success" : "vd-pill-warning"}`}>
+        <span className={`vd-bar-pill ${done.procedure ? "vd-pill-success" : "vd-pill-warning"}`}>
           {done.procedure ? "Procedures done ✓" : "Procedures missing"}
         </span>
-        {rxDraft && !finalised && (
-          <button type="button" className="vd-chip vd-chip-warning" onClick={onOpenRx}>
-            Prescription is a draft · Open it
-          </button>
-        )}
       </div>
       <div className="vd-bar-right">
         {error && (
@@ -96,7 +98,7 @@ export function DocBar({
             {error}
           </span>
         )}
-        <span className="vd-bar-note">Finalise creates bill and updates plan</span>
+        <span className="vd-bar-note">Finalise creates bill &amp; updates plan</span>
         <button
           type="button"
           className="vd-finalise"

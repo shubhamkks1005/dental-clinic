@@ -87,7 +87,7 @@ export function ComplaintDock({ complaint, findings, readOnly, onComplaint, onFi
         tabIndex={open ? -1 : 0}
         onClick={() => setOpen(true)}
       >
-        ✎
+        <span className="vd-icon vd-bubble-icon">clinical_notes</span>
       </button>
       <div className={`vd-dock-block${open ? " is-shown" : ""}`} aria-hidden={!open}>
         {box("complaint", false)}

@@ -1,4 +1,4 @@
-import { type FdiTooth, type ListItem } from "@clinic/shared";
+import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ApiError } from "../../api/client";
@@ -9,6 +9,7 @@ import { useMe } from "../auth";
 import { ChartSection } from "./ChartSection";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "../prescriptions";
+import type { Affected } from "./chart-model";
 import { ComplaintDock } from "./ComplaintDock";
 import { XrayViewer } from "./XrayViewer";
 import { fileLabel } from "./files-model";
@@ -40,6 +41,7 @@ import "./visit-doc.css";
 import "./visit-doc-lines.css";
 import "./visit-doc-tooth.css";
 import "./visit-doc-dock.css";
+import "./visit-doc-side.css";
 import "./visit-doc-xray.css";
 import "./visit-doc-chart.css";
 
@@ -193,6 +195,11 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const [viewerId, setViewerId] = useState<string | null>(null);
   const [marksKey, setMarksKey] = useState(0);
   const [badge, setBadge] = useState("");
+  const [teeth, setTeeth] = useState<Affected[]>([]);
+  const colorOf = useMemo(() => {
+    const by = new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.color]));
+    return (code: string) => by.get(code);
+  }, [data.conditions]);
   const canSeeClinicalFiles = permissions.includes("files.clinical");
 
   const notes = useVisitNotes({
@@ -303,6 +310,7 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 onClose={() => setTooth(null)}
                 onSaved={() => setMarksKey((n) => n + 1)}
                 onBadge={setBadge}
+                onAffected={setTeeth}
               />
             </div>
           </details>
@@ -347,7 +355,16 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 <span className="vd-acc-num">3</span>
                 <span>Prescription &amp; Advice</span>
               </span>
-              <span className="vd-acc-summary">{rxWord[rxStatus]}</span>
+              {rxStatus === "none" ? (
+                <span className="vd-acc-summary">{rxWord[rxStatus]}</span>
+              ) : (
+                <span
+                  className={`vd-acc-pill ${rxStatus === "issued" ? "vd-pill-success" : "vd-pill-warning"}`}
+                >
+                  {snapshot?.lines.length ?? 0} {snapshot?.lines.length === 1 ? "med" : "meds"} ·{" "}
+                  {rxStatus === "issued" ? (snapshot?.rxNo ?? "Issued") : "Draft"}
+                </span>
+              )}
             </summary>
             <div className="vd-acc-body">
               <VisitMedicinesPanel
@@ -428,7 +445,8 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
           tab={tab}
           onTab={setTab}
           page={page}
-          patientId={patient.id}
+          onIssue={openRx}
+          onFile={setViewerId}
           rx={
             <LiveRx
               snapshot={snapshot}
@@ -437,8 +455,9 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 code: patient.code,
                 ageGender: patientStripFacts(patient, visit.visitDateLocal).ageGender,
               }}
-              lines={[...lines.diagnoses, ...lines.procedures]}
-              onIssue={openRx}
+              visitDate={visit.visitDateLocal}
+              teeth={teeth}
+              colorOf={colorOf}
             />
           }
         />
@@ -465,7 +484,6 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
         notesStatus={notes.status}
         rxStatus={rxStatus}
         version={() => notes.versionRef.current}
-        onOpenRx={openRx}
         onFinalised={onReload}
       />
     </div>

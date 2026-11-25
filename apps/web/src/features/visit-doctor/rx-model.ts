@@ -19,3 +19,20 @@ export function medicineTitle(m: { genericName: string; brand: string; strength:
   const name = m.brand ? `${m.brand} (${m.genericName})` : m.genericName;
   return m.strength ? `${name} ${m.strength}` : name;
 }
+
+/** Tablets a course needs, roughly: the doses per day ("1-0-1" is 2) times the days. "" when unknown. */
+export function totalApprox(frequency: string, days: string): string {
+  const perDay = frequency
+    .split("-")
+    .map((n) => Number(n))
+    .filter((n) => Number.isFinite(n))
+    .reduce((a, b) => a + b, 0);
+  const d = Number.parseInt(days, 10);
+  if (!perDay || !Number.isFinite(d)) return "";
+  return String(perDay * d);
+}
+
+/** "5 days" as the design writes it on the sheet. */
+export function daysWord(days: string): string {
+  return /^\d+$/.test(days.trim()) ? `${days.trim()} days` : days;
+}

@@ -312,8 +312,9 @@ test("the live prescription sheet follows the visit and takes its details from S
   await expect(sheet).toContainText(name);
   await expect(sheet).toContainText("DRAFT");
   await expect(sheet).toContainText("No medicines yet.");
-  // A diagnosis with a tooth appears under Problem teeth.
-  const dx = page.getByRole("combobox", { name: "Search diagnosis (or type new)" });
+  // The letterhead of the design: the problem teeth come from the chart marks, not from the lines.
+  await expect(sheet).toContainText("Consultation Timings");
+});
   await dx.fill("Fake sheet finding");
   await dx.press("Enter");
   const tooth = page

@@ -8,6 +8,21 @@ fonts and motion; what the design does not have must not be added.
 
 Status of each item: TODO = not applied. Ask = needs an owner answer first.
 
+
+## STATUS (updated 2026-11-26 night, after the apply session 1)
+Rule taken from the owner: exact design, what the design does not show is not built. Frame decision (owner did not answer): the
+design frame applies on the visit page only (body.vd-page, set by DoctorVisitPage); other pages are untouched.
+- DONE and compared in the browser: A1 A2 A3 A4 A5 A6 A9 A10, F1 F2 F3, J6; A8 only for card 3 (green or amber pill).
+  Commits: b99caaf (A1-A6) and the next one (A8 card 3, A9, A10, F1-F3, J6).
+- NOT DONE (next sessions, in this order): B1-B8 (tooth chart, the big one: replace the old chart view by the design tiles,
+  affected cards, tooth card, past-chart behaviour), D1-D5 + J3-J5 (prescription card: compact lines, Adjust, issued state),
+  C1-C4 + J1 J2 J7 J8 (diagnosis card details), E1 E2 (files card), H1-H4 + J9-J12 (X-ray viewer look), A8 for cards 1, 2, 4, G1.
+- Deliberate deviations kept until the owner says otherwise: G1 the Finalise confirm dialog stays (finalise cannot be undone);
+  the design Doctor | Receptionist switch is a demo and is not built; A7 the page still reopens the card used last (first open = card 1).
+- Known test debt: e2e/visit-doctor-lines.spec.ts was edited for the new sheet but was NOT run (port 8787 is the owner server).
+  The unit checks (pnpm check) pass.
+- The scratch test server for this work runs on port 8790 with a copy of the local DB in the session scratchpad. Stop it when done.
+
 ## A. Whole page (look)
 - A1 Fonts: design = Instrument Sans (body), Wix Madefor Display (headings), Spline Sans Mono (codes). Live = Inter everywhere.
 - A2 Base: design body 16 px, bg #F8F9FB, text #191C1D. Live body 14 px, text #0E1B2B.

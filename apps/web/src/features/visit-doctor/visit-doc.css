@@ -244,6 +244,14 @@ button.vd-chip-error:hover {
   font-weight: 400;
   color: var(--vd-muted);
 }
+.vd-acc-pill {
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 16px;
+}
 .vd-acc-body {
   margin-top: 12px;
   padding-top: 12px;
@@ -276,9 +284,15 @@ button.vd-chip-error:hover {
   gap: 8px;
 }
 .vd-save {
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--vd-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+.vd-save .vd-icon {
+  font-size: 16px;
 }
 .vd-save.is-saved {
   color: var(--vd-success);
@@ -286,19 +300,28 @@ button.vd-chip-error:hover {
 .vd-save.is-error {
   color: var(--vd-error);
 }
-.vd-bar-note {
+.vd-bar-pill {
+  padding: 2px 10px;
+  border-radius: 9999px;
   font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 16px;
+}
+.vd-bar-note {
   color: var(--vd-muted);
+  font-size: 11px;
 }
 .vd-finalise {
   min-height: 44px;
-  padding: 8px 18px;
+  padding: 8px 20px;
   border: 0;
   border-radius: var(--vd-radius);
   background: var(--vd-primary);
   color: var(--vd-on-primary);
   font-size: 14px;
   font-weight: 600;
+  line-height: 20px;
   cursor: pointer;
 }
 .vd-finalise:hover:not(:disabled) {
@@ -339,54 +362,6 @@ button.vd-chip-error:hover {
     overflow: hidden;
   }
 }
-.vd-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--vd-line);
-}
-.vd-tab {
-  flex: 1;
-  min-height: 44px;
-  border: 0;
-  background: transparent;
-  color: var(--vd-muted);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 3px solid transparent;
-}
-.vd-tab.is-on {
-  color: var(--vd-primary);
-  border-bottom-color: var(--vd-primary);
-}
-.vd-panel {
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  overflow-y: auto;
-  font-size: 13px;
-}
-.vd-block h3 {
-  margin: 0 0 4px;
-  font-size: 13px;
-  font-weight: 600;
-}
-.vd-block p {
-  margin: 0;
-}
-.vd-list {
-  margin: 0;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.vd-link {
-  display: inline-block;
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--vd-primary);
-}
 .vd-notes {
   display: flex;
   flex-direction: column;
@@ -403,38 +378,6 @@ button.vd-chip-error:hover {
 }
 
 /* Live prescription sheet (letterhead). Clinic and doctor words come from Settings. */
-.vd-rx {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.vd-rx-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.vd-sheet {
-  border: 1px solid var(--vd-line);
-  border-radius: 16px;
-  overflow: hidden;
-  background: var(--vd-card);
-}
-.vd-sheet-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px 14px;
-}
-.vd-sheet-scroll {
-  overflow-x: auto;
-  padding: 0 0 8px;
-  background: var(--vd-container);
-}
-.vd-sheet-scroll .print-page {
-  box-shadow: 0 1px 4px rgb(0 0 0 / 15%);
-}
 
 /* Drag handles of the side pane (laptop and wider). */
 .vd-resizer,

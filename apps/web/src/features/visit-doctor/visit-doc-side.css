@@ -1,0 +1,453 @@
+/* Right pane of the visit page (design: visit-right-pane): the tab pills, the Live A4 Rx letterhead
+   and the History cards. Sizes are the design own (11 px sheet, 12 px history). */
+.vd-side {
+  padding: 16px 16px 24px;
+  gap: 12px;
+  overflow: auto;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+}
+.vd-side-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.vd-tabs {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius);
+  background: var(--vd-low);
+}
+.vd-tab {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--vd-radius);
+  background: transparent;
+  color: var(--vd-muted);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 16px;
+  cursor: pointer;
+}
+.vd-tab.is-on {
+  background: var(--vd-card);
+  color: var(--vd-primary);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}
+.vd-issue {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--vd-radius);
+  background: var(--vd-primary);
+  color: var(--vd-on-primary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 16px;
+  cursor: pointer;
+}
+.vd-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Live A4 Rx letterhead. */
+.vd-sheet {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid var(--vd-line);
+  border-radius: 16px;
+  background: var(--vd-card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  font-size: 11px;
+}
+.vd-sheet-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px 8px;
+  border-bottom: 2px solid var(--vd-primary);
+}
+.vd-sheet-clinic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 46%;
+  text-align: center;
+}
+.vd-sheet-clinic span,
+.vd-sheet-doctor span {
+  line-height: 1.25;
+}
+.vd-sheet-logo {
+  width: auto;
+  height: 36px;
+  margin-bottom: 2px;
+  object-fit: contain;
+}
+.vd-sheet-name {
+  color: var(--vd-error);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+.vd-sheet-tag {
+  margin-top: 2px;
+  color: var(--vd-success);
+  font-size: 9px;
+  font-style: italic;
+}
+.vd-sheet-kind {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.vd-sheet-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+  color: var(--vd-muted);
+  font-size: 9.5px;
+}
+.vd-sheet-contact .vd-icon {
+  margin-right: 4px;
+  color: var(--vd-primary);
+  font-size: 11px;
+}
+.vd-sheet-doctor {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+.vd-sheet-badge {
+  margin-bottom: 2px;
+  padding: 2px 6px;
+  border-radius: var(--vd-radius-sm);
+  font-size: 9px;
+  font-weight: 600;
+}
+.vd-sheet-badge.is-draft {
+  background: var(--vd-error-bg);
+  color: var(--vd-error-text);
+}
+.vd-sheet-badge.is-issued {
+  background: var(--vd-success-bg);
+  color: var(--vd-success-text);
+  font-family: "Spline Sans Mono", monospace;
+}
+.vd-sheet-dr {
+  color: var(--vd-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.vd-sheet-q {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.vd-sheet-s {
+  margin-top: 2px;
+  font-size: 9.5px;
+}
+.vd-sheet-x {
+  margin-top: 2px;
+  color: var(--vd-muted);
+  font-size: 9px;
+}
+.vd-sheet-reg {
+  margin-top: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+.vd-sheet-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 11.5px;
+}
+.vd-sheet-body p {
+  margin: 0;
+}
+.vd-sheet-patient {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-sheet-patient > span {
+  color: var(--vd-muted);
+  font-size: 10.5px;
+}
+.vd-sheet-teeth {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.vd-sheet-teeth > strong {
+  font-size: 11px;
+}
+.vd-sheet-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.vd-sheet-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--vd-muted);
+}
+.vd-mini {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 4px 2px;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius);
+}
+.vd-mini svg {
+  stroke: var(--vd-line);
+  stroke-width: 1.2;
+}
+.vd-mini-num {
+  color: var(--vd-text);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.vd-mini-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  padding: 0 4px;
+  border: 1px solid var(--vd-primary);
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-secondary-bg);
+  color: var(--vd-primary);
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 8px;
+  line-height: 1.3;
+}
+.vd-sheet-meds {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-sheet-rx {
+  margin-right: 2px;
+  font-weight: 700;
+}
+.vd-sheet-none {
+  color: var(--vd-muted);
+}
+.vd-sheet-advice {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+}
+.vd-sheet-follow {
+  color: var(--vd-muted);
+}
+.vd-sheet-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  border-top: 2px solid var(--vd-primary);
+  font-size: 9.5px;
+}
+.vd-sheet-times {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.375;
+}
+.vd-sheet-times strong {
+  margin-bottom: 2px;
+  color: var(--vd-error);
+  font-size: 10.5px;
+}
+.vd-sheet-where {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.vd-sheet-addr {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  max-width: 155px;
+  line-height: 1.375;
+}
+.vd-sheet-addr .vd-icon {
+  margin-top: 2px;
+  color: var(--vd-primary);
+  font-size: 13px;
+}
+.vd-sheet-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 8.5px;
+}
+.vd-sheet-qr img {
+  padding: 2px;
+  border: 1px solid rgb(192 200 204 / 50%);
+  border-radius: var(--vd-radius-sm);
+  object-fit: contain;
+}
+
+/* History cards. */
+.vd-hist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+.vd-hist-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.vd-hist-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius);
+}
+.vd-hist-card.is-dues {
+  border-color: rgb(186 26 26 / 30%);
+  background: rgb(255 218 214 / 40%);
+  gap: 0;
+}
+.vd-hist-card.is-next {
+  border-color: rgb(5 77 97 / 30%);
+  background: rgb(208 230 240 / 40%);
+  gap: 0;
+}
+.vd-hist-card.is-plan {
+  border-color: rgb(5 77 97 / 40%);
+  background: rgb(208 230 240 / 25%);
+}
+.vd-hist-card.is-plain {
+  background: var(--vd-low);
+}
+.vd-hist-label {
+  font-size: 10px;
+  font-weight: 600;
+}
+.is-dues .vd-hist-label {
+  color: var(--vd-error-text);
+}
+.is-next .vd-hist-label {
+  color: var(--vd-primary);
+}
+.vd-hist-money {
+  color: var(--vd-error);
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 14px;
+}
+.vd-hist-small {
+  color: var(--vd-muted);
+  font-size: 10px;
+}
+.vd-hist-title {
+  color: var(--vd-text);
+  font-size: 11px;
+  font-weight: 600;
+}
+.is-plan .vd-hist-title {
+  color: var(--vd-primary);
+}
+.vd-hist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: var(--vd-radius);
+  background: var(--vd-card);
+}
+.vd-hist-tag {
+  padding: 2px 6px;
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-container);
+  color: var(--vd-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+.vd-hist-tag.is-warn {
+  background: var(--vd-warning-bg);
+  color: var(--vd-warning-text);
+}
+.vd-hist-list,
+.vd-hist-visit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--vd-muted);
+}
+.vd-hist-visit {
+  padding: 8px;
+  border: 1px solid rgb(192 200 204 / 70%);
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-card);
+}
+.vd-hist-visit strong,
+.vd-hist-visit em {
+  color: var(--vd-text);
+}
+.vd-hist-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.vd-hist-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--vd-line);
+  border-radius: var(--vd-radius-sm);
+  background: var(--vd-card);
+  color: var(--vd-text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.vd-hist-file.is-first {
+  border-color: rgb(5 77 97 / 40%);
+  background: var(--vd-secondary-bg);
+  color: var(--vd-primary);
+}
+.vd-hist-file .vd-icon {
+  font-size: 14px;
+}
