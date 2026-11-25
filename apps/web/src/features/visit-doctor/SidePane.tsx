@@ -12,14 +12,23 @@ type Props = {
   patientId: string;
   /** The live prescription sheet (tab 1). */
   rx: ReactNode;
+  paneRef?: React.RefObject<HTMLElement | null>;
+  handles?: {
+    corner: React.HTMLAttributes<HTMLElement>;
+    down: React.HTMLAttributes<HTMLElement>;
+  };
 };
 
 const rupees = (paise: number) => `₹${Math.round(paise / 100).toLocaleString("en-IN")}`;
 
 /** Right pane: the live prescription (next step) and the patient's History from the one page read. */
-export function SidePane({ tab, onTab, page, patientId, rx }: Props) {
+export function SidePane({ tab, onTab, page, patientId, rx, paneRef, handles }: Props) {
   return (
-    <aside className="vd-side" aria-label="Prescription and history">
+    <aside
+      className="vd-side"
+      aria-label="Prescription and history"
+      ref={paneRef as React.RefObject<HTMLElement>}
+    >
       <div className="vd-tabs" role="tablist" aria-label="Side pane">
         {(
           [
@@ -55,6 +64,20 @@ export function SidePane({ tab, onTab, page, patientId, rx }: Props) {
         >
           <HistoryBlocks page={page} patientId={patientId} />
         </div>
+      )}
+      {handles && (
+        <>
+          <div
+            className="vd-resize-bottom"
+            title="Drag vertically to resize height"
+            {...handles.down}
+          />
+          <div
+            className="vd-resize-corner"
+            title="Drag diagonally to resize width and height (double-click to reset)"
+            {...handles.corner}
+          />
+        </>
       )}
     </aside>
   );

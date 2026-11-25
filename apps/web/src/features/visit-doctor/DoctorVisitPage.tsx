@@ -1,5 +1,5 @@
 import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { createRequestScope } from "../../ui/request-scope";
@@ -9,14 +9,15 @@ import { useMe } from "../auth";
 import { VisitChartPanel } from "../chart";
 import { getPatient, type PatientDetail } from "../patients";
 import { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "../prescriptions";
+import { ComplaintDock } from "./ComplaintDock";
 import { LiveRx } from "./LiveRx";
+import { usePaneResize } from "./usePaneResize";
 import { patientStripFacts } from "../visits/visit-patient-strip";
 import { NextVisitChips } from "../visits/NextVisitChips";
 import { useVisitNotes } from "../visits/useVisitNotes";
 import { listOnce } from "../visits/visit-prefetch";
 import { VisitConflictBanner } from "../visits/VisitConflictBanner";
 import { VisitMoreNotes } from "../visits/VisitMoreNotes";
-import { VisitNoteField } from "../visits/VisitNoteField";
 import { DiagProcPanel } from "./DiagProcPanel";
 import { ToothCard } from "./ToothCard";
 import { DocBar } from "./DocBar";
@@ -30,6 +31,7 @@ import "./visit-doc-tokens.css";
 import "./visit-doc.css";
 import "./visit-doc-lines.css";
 import "./visit-doc-tooth.css";
+import "./visit-doc-dock.css";
 
 type AccId = "chart" | "diag" | "rx" | "more";
 const OPEN_KEY = (visitId: string) => `vd-open-${visitId}`;
@@ -155,6 +157,9 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   const [tab, setTab] = useState<SideTab>("rx");
   const [snapshot, setSnapshot] = useState<RxSnapshot | null>(null);
   const first = useMemo(() => readOpen(visit.id), [visit.id]);
+  const mainRef = useRef<HTMLElement>(null);
+  const paneRef = useRef<HTMLElement>(null);
+  const size = usePaneResize(mainRef, paneRef);
   const conditionLabels = useMemo(
     () => new Map(chartConditionsFromList(data.conditions).map((c) => [c.code, c.label])),
     [data.conditions],
@@ -214,7 +219,16 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
         canSeeFlags={permissions.includes("clinical.alert_flag")}
         onDues={() => setTab("history")}
       />
-      <main className="vd-main">
+      <main
+        className="vd-main"
+        ref={mainRef}
+        style={
+          {
+            "--vd-side-w": `${size.width}px`,
+            "--vd-side-h": size.height === null ? "auto" : `${size.height}px`,
+          } as React.CSSProperties
+        }
+      >
         <div className="vd-left">
           {notes.status === "conflict" ? <VisitConflictBanner form={notes.form} /> : null}
 
@@ -342,25 +356,20 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
               />
             </div>
           </details>
-
-          <section className="vd-acc vd-notes" aria-label="Complaint and findings">
-            <VisitNoteField
-              label="Chief complaint"
-              rows={2}
-              value={notes.form.chiefComplaint}
-              readOnly={readOnly}
-              onChange={(v) => notes.setPhrase("chiefComplaint", v)}
-            />
-            <VisitNoteField
-              label="Clinical findings"
-              rows={2}
-              value={notes.form.examNote}
-              readOnly={readOnly}
-              onChange={(v) => notes.setPhrase("examNote", v)}
-            />
-          </section>
+        </div>
+        <div
+          className="vd-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize prescription panel"
+          title="Drag to resize prescription panel (double-click to reset)"
+          {...size.sideways}
+        >
+          <span />
         </div>
         <SidePane
+          paneRef={paneRef}
+          handles={{ corner: size.corner, down: size.down }}
           tab={tab}
           onTab={setTab}
           page={page}
@@ -380,6 +389,13 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
           }
         />
       </main>
+      <ComplaintDock
+        complaint={notes.form.chiefComplaint}
+        findings={notes.form.examNote}
+        readOnly={readOnly}
+        onComplaint={(v) => notes.setPhrase("chiefComplaint", v)}
+        onFindings={(v) => notes.setPhrase("examNote", v)}
+      />
       <DocBar
         visit={visit}
         lines={lines}

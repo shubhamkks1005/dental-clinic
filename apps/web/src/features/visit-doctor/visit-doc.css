@@ -440,3 +440,53 @@ button.vd-chip {
   color: var(--vd-error);
   font-size: 10.5px;
 }
+
+/* Drag handles of the side pane (laptop and wider). */
+.vd-resizer,
+.vd-resize-bottom,
+.vd-resize-corner {
+  display: none;
+  touch-action: none;
+  user-select: none;
+}
+@media (min-width: 1024px) {
+  .vd-resizer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    align-self: stretch;
+    flex: none;
+    cursor: col-resize;
+  }
+  .vd-resizer span {
+    width: 4px;
+    height: 64px;
+    border-radius: 9999px;
+    background: var(--vd-line);
+    transition: background-color 150ms;
+  }
+  .vd-resizer:hover span {
+    background: var(--vd-primary);
+  }
+  .vd-resize-bottom {
+    display: block;
+    height: 12px;
+    cursor: ns-resize;
+  }
+  .vd-resize-corner {
+    display: block;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    cursor: nesw-resize;
+  }
+  .vd-side {
+    margin-left: 0;
+    width: var(--vd-side-w, 460px);
+    height: var(--vd-side-h, auto);
+    max-height: none;
+  }
+}

@@ -1,0 +1,146 @@
+/* Floating dock of Chief Complaints and Clinical Findings (design: cf-floating-dock). */
+.vd-dock {
+  position: fixed;
+  bottom: 80px;
+  left: 16px;
+  z-index: 30;
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .vd-dock {
+    left: 256px;
+  }
+}
+.vd-dock-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  transform-origin: bottom left;
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.vd-dock-block.is-shown {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.vd-dock-box {
+  resize: both;
+  overflow: auto;
+  width: 250px;
+  min-width: 200px;
+  min-height: 155px;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid rgb(5 77 97 / 45%);
+  border-radius: 16px;
+  background: rgb(208 230 240 / 85%);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 18%);
+  color: var(--vd-text);
+}
+@media (min-width: 1440px) {
+  .vd-dock-box {
+    width: 365px;
+  }
+}
+.vd-dock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgb(5 77 97 / 25%);
+  font-size: 12px;
+  font-weight: 600;
+}
+.vd-dock-tools {
+  display: inline-flex;
+  gap: 4px;
+}
+.vd-dock-btn {
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--vd-muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+.vd-dock-btn:hover {
+  color: var(--vd-primary);
+}
+.vd-dock-btn.is-solid {
+  background: var(--vd-primary);
+  color: var(--vd-on-primary);
+}
+.vd-dock-area {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+  color: var(--vd-text);
+}
+.vd-dock-area:focus {
+  outline: none;
+}
+.vd-dock-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.vd-bubble {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  border: 2px solid var(--vd-nav);
+  background: rgb(38 63 77 / 90%);
+  color: #f4f8fa;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 25%);
+  transform-origin: bottom left;
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.vd-bubble.is-shown {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.vd-bubble.is-shown:hover {
+  transform: scale(1.1);
+  transition-duration: 150ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing overshoots: the dock and bubble only fade. */
+  .vd-dock-block,
+  .vd-bubble {
+    transform: none;
+    transition: opacity 150ms linear;
+  }
+  .vd-bubble.is-shown:hover {
+    transform: none;
+  }
+}

@@ -322,3 +322,54 @@ test("the live prescription sheet follows the visit and takes its details from S
   await expect(sheet).toContainText("Problem teeth");
   await expect(sheet).toContainText("46: Fake sheet finding");
 });
+
+test("the dock folds to a bubble with the design motion, and the side pane can be resized", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const stamp = Date.now().toString().slice(-6);
+  const name = `Lines Dock ${stamp}`;
+  await walkIn(page, name, stamp);
+  await openNewPage(page, name);
+  const complaint = page.getByLabel("Chief Complaints", { exact: true });
+  await complaint.fill("Fake pain on the lower right");
+  await expect(page.getByRole("status").filter({ hasText: "Saved" }).first()).toBeVisible({
+    timeout: 10_000,
+  });
+
+  // Motion: 300 ms with the overshoot curve, scaling from the bottom-left corner.
+  const block = page.locator(".vd-dock-block");
+  const css = await block.evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { d: s.transitionDuration, f: s.transitionTimingFunction, o: s.transformOrigin };
+  });
+  expect(css.d).toContain("0.3s");
+  expect(css.f).toContain("cubic-bezier(0.34, 1.56, 0.64, 1)");
+  await page.getByRole("button", { name: "Minimize to bottom-left circle" }).click();
+  const bubble = page.getByRole("button", { name: /Expand Chief Complaints/ });
+  await expect(bubble).toHaveCSS("opacity", "1", { timeout: 2_000 });
+  await expect(block).toHaveCSS("opacity", "0");
+  await bubble.click();
+  await expect(block).toHaveCSS("opacity", "1", { timeout: 2_000 });
+  await expect(complaint).toHaveValue("Fake pain on the lower right");
+
+  // Each box folds to its title.
+  await page.getByRole("button", { name: "Minimize Clinical Findings" }).click();
+  await expect(page.getByLabel("Clinical Findings", { exact: true })).toBeHidden();
+  await page.getByRole("button", { name: "Expand Clinical Findings" }).click();
+
+  // The side pane: drag the handle to the left and it gets wider; double-click puts it back.
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const pane = page.getByLabel("Prescription and history");
+  const before = (await pane.boundingBox())?.width ?? 0;
+  const handle = page.getByRole("separator", { name: "Resize prescription panel" });
+  const box = (await handle.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x - 120, box.y + box.height / 2, { steps: 5 });
+  await page.mouse.up();
+  const wider = (await pane.boundingBox())?.width ?? 0;
+  expect(wider).toBeGreaterThan(before + 60);
+  await handle.dblclick();
+  expect(Math.abs(((await pane.boundingBox())?.width ?? 0) - before)).toBeLessThan(2);
+});
