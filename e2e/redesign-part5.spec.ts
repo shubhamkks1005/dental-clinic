@@ -1,4 +1,4 @@
-import { openVisitFromToday } from "./doctor-helpers";
+import { openAccordion, openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q2.8 Messages, Q2.11 chrome, Q2.12 Reports, Q2.13 Settings and Library. Fake data only.
@@ -154,9 +154,10 @@ test("Q2.13 inside a visit, a medicine that is not in the list can be added to i
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
   await openVisitFromToday(page, name);
-  await expect(page.getByLabel("Complaint")).toBeVisible();
+  await expect(page.getByLabel("Chief Complaints", { exact: true })).toBeVisible();
 
   const drug = `Zedtestmed ${stamp}`;
+  await openAccordion(page, "rx");
   await page.getByPlaceholder(/Search medicine/).fill(drug);
   await page.getByRole("button", { name: new RegExp(`Add .*${drug}.* to my list`) }).click();
   const add = page.getByRole("group", { name: "Add to my list" });

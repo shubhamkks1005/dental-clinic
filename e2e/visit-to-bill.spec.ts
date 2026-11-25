@@ -1,4 +1,4 @@
-import { openVisitFromToday } from "./doctor-helpers";
+import { addProcedure, openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q1.1: no dead end between Finalise and the bill. Procedures sit on the first visit tab, the
@@ -28,7 +28,7 @@ async function doctorOpensVisitOf(page: Page, name: string) {
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
   await openVisitFromToday(page, name);
-  await expect(page.getByLabel("Complaint")).toBeVisible();
+  await expect(page.getByLabel("Chief Complaints", { exact: true })).toBeVisible();
 }
 
 test("finalise with no procedure warns and Create bill says why it is off; with a procedure it works", async ({
@@ -47,7 +47,7 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
 
   // ---- Visit A: no procedure ----
   await doctorOpensVisitOf(page, a);
-  await page.getByLabel("Complaint").fill("Fake: check-up");
+  await page.getByLabel("Chief Complaints", { exact: true }).fill("Fake: check-up");
   await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
   // Q1.10: on a phone the chart scrolls inside its own card and the tooth buttons are finger-sized.
   await page.setViewportSize({ width: 360, height: 780 });
@@ -65,11 +65,9 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
 
   // ---- Visit B: procedure added on the FIRST tab, then the bill works ----
   await doctorOpensVisitOf(page, b);
-  await page.getByLabel("Complaint").fill("Fake: scaling");
+  await page.getByLabel("Chief Complaints", { exact: true }).fill("Fake: scaling");
   await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
-  const procedures = page.getByRole("group", { name: "Procedures done" });
-  await procedures.getByRole("button").first().click();
-  await expect(procedures.locator(".v1-pill.is-on")).toHaveCount(1);
+  await addProcedure(page);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await expect(dialog).not.toContainText("No procedures are recorded");
   await dialog.getByRole("button", { name: "Finalise", exact: true }).click();
@@ -90,9 +88,7 @@ test("discount request leaves the total alone until the doctor approves", async 
   const name = `Disc Test ${stamp}`;
   await walkInInChair(page, name, stamp);
   await doctorOpensVisitOf(page, name);
-  const procedures = page.getByRole("group", { name: "Procedures done" });
-  await procedures.getByRole("button").first().click();
-  await expect(procedures.locator(".v1-pill.is-on")).toHaveCount(1);
+  await addProcedure(page);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
   await page.getByRole("button", { name: "Review first" }).click();
@@ -157,9 +153,7 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   const name = `Wrong Bill ${stamp}`;
   await walkInInChair(page, name, stamp);
   await doctorOpensVisitOf(page, name);
-  const procedures = page.getByRole("group", { name: "Procedures done" });
-  await procedures.getByRole("button").first().click();
-  await expect(procedures.locator(".v1-pill.is-on")).toHaveCount(1);
+  await addProcedure(page);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
   await page.getByRole("button", { name: "Create bill" }).click();

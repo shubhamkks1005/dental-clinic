@@ -1,4 +1,4 @@
-import { openVisitFromToday } from "./doctor-helpers";
+import { addProcedure, openAccordion, openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q0.2 onward: the main clinic loop in a real browser. Fake data only.
@@ -50,8 +50,8 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.goto("/api/staff/auth/dev-login?role=doctor");
     await page.goto("/app");
     await openVisitFromToday(page, name);
-    await page.getByLabel("Complaint").fill("Wants alignment check");
-    await page.getByLabel("Findings").fill("Crowding lower anterior");
+    await page.getByLabel("Chief Complaints", { exact: true }).fill("Wants alignment check");
+    await page.getByLabel("Clinical Findings", { exact: true }).fill("Crowding lower anterior");
     await expect(page.getByText("Saved", { exact: true }).first()).toBeVisible();
 
     await page
@@ -59,9 +59,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
       .first()
       .click();
     // Q2.4: chart, procedure chips, diagnosis and medicines are all on the one Visit screen.
-    const procedures = page.getByRole("group", { name: "Procedures done" });
-    await procedures.getByRole("button").first().click();
-    await expect(procedures.locator(".v1-pill.is-on")).toHaveCount(1);
+    await addProcedure(page);
 
     await page
       .getByRole("group", { name: "Diagnosis" })
@@ -71,6 +69,7 @@ test.describe("core loop (Q0.2 to Q0.5)", () => {
     await page.getByRole("button", { name: "Add", exact: true }).click();
     await expect(page.getByRole("group", { name: "Diagnosis" })).toContainText("Crowding");
 
+    await openAccordion(page, "rx");
     await page.getByPlaceholder(/Search medicine/).fill("Amox");
     await page.getByRole("button", { name: /^Amoxicillin 500 mg/ }).click();
     await expect(page.getByRole("region", { name: "Medicines" })).toContainText("Amoxicillin");

@@ -18,6 +18,10 @@ import { patientStripFacts } from "../visits/visit-patient-strip";
 import { NextVisitChips } from "../visits/NextVisitChips";
 import { useVisitNotes } from "../visits/useVisitNotes";
 import { listOnce } from "../visits/visit-prefetch";
+import { getVisit, type VisitSummary } from "../visits/api";
+import { VisitAddenda } from "../visits/VisitAddenda";
+import { VisitFinalView } from "../visits/VisitFinalView";
+import { VisitNextSteps } from "../visits/VisitNextSteps";
 import { VisitConflictBanner } from "../visits/VisitConflictBanner";
 import { VisitMoreNotes } from "../visits/VisitMoreNotes";
 import { DiagProcPanel } from "./DiagProcPanel";
@@ -29,6 +33,7 @@ import { SidePane, type SideTab } from "./SidePane";
 import { useVisitLines } from "./useVisitLines";
 import { VisitDocHeader } from "./VisitDocHeader";
 import "../visits/visit.css";
+import "../visits/visit-one.css";
 import "./visit-doc-tokens.css";
 import "./visit-doc.css";
 import "./visit-doc-lines.css";
@@ -65,6 +70,8 @@ type Data = {
   phrases: ListItem[];
   conditions: ListItem[];
   usage: LineUsage;
+  /** A finalised visit also loads the old summary for the final view, addenda and next steps. */
+  summary: VisitSummary | null;
 };
 
 /** The doctor's visit page (design: docs/design/final/doctor_visit.html). Doctor only. */
@@ -98,9 +105,22 @@ function VisitDocLoader({ id }: { id: string | undefined }) {
       getLineUsage().catch((): LineUsage => ({ diagnoses: {}, procedures: {} })),
     ])
       .then(async ([page, diagnosisList, procedureList, phrases, conditions, usage]) => {
-        const patient = await getPatient(page.visit.patientId);
-        if (!cancelled)
-          setData({ page, patient, diagnosisList, procedureList, phrases, conditions, usage });
+        const [patient, summary] = await Promise.all([
+          getPatient(page.visit.patientId),
+          page.visit.status === "draft" ? Promise.resolve(null) : getVisit(page.visit.id),
+        ]);
+        if (!cancelled) {
+          setData({
+            page,
+            patient,
+            diagnosisList,
+            procedureList,
+            phrases,
+            conditions,
+            usage,
+            summary,
+          });
+        }
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -220,6 +240,11 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   return (
     <div className="visit-doc">
       {!readOnly && <UnsavedChangesGuard dirty={notes.dirty} />}
+      {data.summary && finalised && (
+        <div className="vd-after">
+          <VisitNextSteps visit={data.summary} canBill={permissions.includes("bills.create")} />
+        </div>
+      )}
       <VisitDocHeader
         patient={patient}
         page={page}
@@ -239,6 +264,12 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
       >
         <div className="vd-left">
           {notes.status === "conflict" ? <VisitConflictBanner form={notes.form} /> : null}
+          {data.summary && finalised && (
+            <>
+              <VisitFinalView visit={data.summary} />
+              <VisitAddenda visit={data.summary} canEdit={canEdit} onChanged={() => onReload()} />
+            </>
+          )}
 
           <details
             className="vd-acc"

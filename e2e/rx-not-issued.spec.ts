@@ -1,4 +1,4 @@
-import { openVisitFromToday } from "./doctor-helpers";
+import { openAccordion, openVisitFromToday } from "./doctor-helpers";
 import { expect, test } from "@playwright/test";
 
 // Q2.5/Q2.13 gap: a finalised visit whose prescription was written but not issued shows
@@ -30,10 +30,11 @@ test("doctor Today lists a written-but-not-issued prescription of a finalised vi
   await page.goto("/api/staff/auth/dev-login?role=doctor");
   await page.goto("/app");
   await openVisitFromToday(page, name);
-  await expect(page.getByLabel("Complaint")).toBeVisible();
-  await page.getByLabel("Complaint").fill("Fake: tooth pain");
+  await expect(page.getByLabel("Chief Complaints", { exact: true })).toBeVisible();
+  await page.getByLabel("Chief Complaints", { exact: true }).fill("Fake: tooth pain");
 
   // A medicine from the doctor's own list makes a DRAFT prescription; it is never issued.
+  await openAccordion(page, "rx");
   await page.getByPlaceholder(/Search medicine/).fill("Amox");
   await page
     .getByRole("region", { name: "Medicines" })

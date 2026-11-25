@@ -11,7 +11,6 @@ import {
 } from "../features/patients";
 import { AppointmentsScreen } from "../features/appointments";
 import { TodayScreen } from "../features/today";
-import { VisitScreen } from "../features/visits";
 import { ErrorBoundary } from "../ui/ErrorBoundary";
 import { NotFound } from "../ui/PageMessage";
 import { RequirePermission } from "../ui/RequirePermission";
@@ -28,7 +27,7 @@ const PrintRoutes = lazy(() =>
 const SettingsScreen = lazy(() =>
   import("../features/settings/SettingsScreen").then((m) => ({ default: m.SettingsScreen })),
 );
-// The new doctor visit page (design doctor_visit.html) is built step by step on its own route until it replaces the old visit screen.
+// The doctor visit page (design docs/design/final/doctor_visit.html): its own chunk.
 const DoctorVisitPage = lazy(() =>
   import("../features/visit-doctor").then((m) => ({ default: m.DoctorVisitPage })),
 );
@@ -131,14 +130,6 @@ function ShellRoutes() {
             <Route path="certificates" element={<CertificateRegisterScreen />} />
             <Route
               path="visits/:id"
-              element={
-                <RequirePermission permission="clinical.view">
-                  <VisitScreen />
-                </RequirePermission>
-              }
-            />
-            <Route
-              path="visits/:id/new"
               element={
                 <RequirePermission permission="clinical.view">
                   <DoctorVisitPage />

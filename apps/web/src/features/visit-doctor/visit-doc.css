@@ -500,3 +500,7 @@ button.vd-chip {
   text-decoration: none;
   color: var(--vd-primary);
 }
+
+.vd-after {
+  padding: 10px 24px 0;
+}

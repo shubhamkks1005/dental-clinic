@@ -54,24 +54,24 @@ test("visit opened in two tabs: the stale tab shows a banner and keeps the typed
     .or(a.getByRole("button", { name: "Open visit" }))
     .last()
     .click();
-  await expect(a.getByLabel("Complaint")).toBeVisible();
+  await expect(a.getByLabel("Chief Complaints", { exact: true })).toBeVisible();
   const visitUrl = a.url();
 
   const b = await context.newPage();
   await b.goto(visitUrl);
-  await expect(b.getByLabel("Complaint")).toBeVisible();
+  await expect(b.getByLabel("Chief Complaints", { exact: true })).toBeVisible();
 
   // Tab A saves first: the visit version moves on.
-  await a.getByLabel("Findings").fill("Written in tab A");
+  await a.getByLabel("Clinical Findings", { exact: true }).fill("Written in tab A");
   await expect(a.getByText("Saved", { exact: true }).first()).toBeVisible();
 
   // Tab B still holds the old version: its save is refused, and says so.
-  await b.getByLabel("Findings").fill("Typed in tab B");
+  await b.getByLabel("Clinical Findings", { exact: true }).fill("Typed in tab B");
   await expect(b.getByText(/changed in another tab or by someone else/)).toBeVisible({
     timeout: 20_000,
   });
   await expect(b.getByText("Not saved — changed elsewhere")).toBeVisible();
-  await expect(b.getByLabel("Findings")).toHaveValue("Typed in tab B");
+  await expect(b.getByLabel("Clinical Findings", { exact: true })).toHaveValue("Typed in tab B");
   await expect(b.getByRole("button", { name: "Copy my text" })).toBeVisible();
 
   // It stops retrying: no further save request goes out.

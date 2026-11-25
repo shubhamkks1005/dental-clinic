@@ -62,7 +62,6 @@ async function openNewPage(page: Page, name: string) {
   await openVisitFromToday(page, name);
   await expect(page).toHaveURL(/\/app\/visits\/[^/]+$/);
   const url = page.url();
-  await page.goto(`${url}/new`);
   await expect(page.getByRole("heading", { name })).toBeVisible();
   await openDiag(page);
   return url;
@@ -268,9 +267,9 @@ test("no sideways scroll at 360, 768 and 1366", async ({ page }) => {
   }
 });
 
-test("a receptionist cannot open the new page", async ({ page }) => {
+test("a receptionist cannot open the visit page", async ({ page }) => {
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
-  const res = await page.goto("/app/visits/does-not-matter/new");
+  const res = await page.goto("/app/visits/does-not-matter");
   expect(res?.status()).toBeLessThan(500);
   await expect(page.getByRole("heading", { name: "Diagnoses" })).toBeHidden();
 });
