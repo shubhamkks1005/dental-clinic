@@ -430,7 +430,6 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
                 code: patient.code,
                 ageGender: patientStripFacts(patient, visit.visitDateLocal).ageGender,
               }}
-              visitDate={visit.visitDateLocal}
               lines={[...lines.diagnoses, ...lines.procedures]}
               onIssue={openRx}
             />

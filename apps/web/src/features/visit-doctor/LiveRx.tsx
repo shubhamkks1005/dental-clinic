@@ -1,31 +1,44 @@
-import {
-  formatDisplayDate,
-  istDate,
-  MEDICINE_TIMING_LABEL,
-  type MedicineTiming,
-} from "@clinic/shared";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../../api/client";
-import type { ClinicHeader } from "../../ui/print";
+import { PrintLayout } from "../../ui/print";
 import { clinicHeaderFromSettings } from "../print/clinic-header";
-import { getQrImage } from "../settings/api";
+import { PrescriptionBody, rxItemNote } from "../print/PrescriptionBody";
+import { PrescriptionFooter } from "../print/PrescriptionSample";
 import type { RxSnapshot } from "../prescriptions";
-import { medicineTitle, problemTeeth } from "./rx-model";
+import { getQrImage } from "../settings/api";
+import { problemTeeth } from "./rx-model";
+
+// A5 is 148 mm wide: 559 px at 96 dpi.
+const A5_PX = 559;
+
+/** Scale that fits the printed sheet into the side pane (never above real size). */
+function useFitScale() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setScale(Math.min(1, el.clientWidth / A5_PX)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return { ref, scale };
+}
 
 type Props = {
   snapshot: RxSnapshot | null;
   patient: { fullName: string; code: string; ageGender: string };
-  visitDate: string;
   lines: { label: string; toothFdi: number | null }[];
   onIssue: () => void;
 };
 
 /**
- * The live sheet (design: "Live A4 Rx"). It shows the same prescription the doctor writes in
- * Accordion 3, with the clinic and doctor details from Settings (never typed here).
+ * The live sheet (design: "Live A4 Rx"). It is the print layout of the real prescription
+ * (PrintLayout + PrescriptionBody, the same pieces as PrintPrescriptionScreen), so the preview
+ * and the paper cannot differ. Clinic and doctor details come from Settings, never typed here.
  */
-export function LiveRx({ snapshot, patient, visitDate, lines, onIssue }: Props) {
-  const [clinic, setClinic] = useState<ClinicHeader | null>(null);
+export function LiveRx({ snapshot, patient, lines, onIssue }: Props) {
+  const [clinic, setClinic] = useState(clinicHeaderFromSettings([]));
   const [qr, setQr] = useState<string | null>(null);
   useEffect(() => {
     getQrImage()
@@ -42,7 +55,7 @@ export function LiveRx({ snapshot, patient, visitDate, lines, onIssue }: Props) 
     };
   }, []);
 
-  const teeth = problemTeeth(lines);
+  const fit = useFitScale();
   const draft = !snapshot || snapshot.status !== "issued";
   const badge = draft ? "DRAFT" : (snapshot?.rxNo ?? "ISSUED");
 
@@ -55,91 +68,39 @@ export function LiveRx({ snapshot, patient, visitDate, lines, onIssue }: Props) 
         </button>
       </div>
       <div className="vd-sheet" aria-label="Prescription sheet">
-        <div className="vd-sheet-head">
-          <div className="vd-sheet-clinic">
-            <strong>{clinic?.name ?? "Clinic"}</strong>
-            {clinic?.tagline && <em>{clinic.tagline}</em>}
-            {clinic?.kind && <span>{clinic.kind}</span>}
-            {clinic?.phone && <span>Phone : {clinic.phone}</span>}
-            {clinic?.email && <span>{clinic.email}</span>}
-          </div>
-          <div className="vd-sheet-doctor">
-            <span className={`vd-pill ${draft ? "vd-pill-error" : "vd-pill-success"}`}>
-              {badge}
-            </span>
-            <strong>{clinic?.doctorName}</strong>
-            {clinic?.qualifications && <span>{clinic.qualifications}</span>}
-            {clinic?.speciality && <span>{clinic.speciality}</span>}
-            {clinic?.extraLine && <span>{clinic.extraLine}</span>}
-            {clinic?.registrationNo && <span>Reg.No- {clinic.registrationNo}</span>}
+        <div className="vd-sheet-bar">
+          <span className={`vd-pill ${draft ? "vd-pill-error" : "vd-pill-success"}`}>{badge}</span>
+          <span className="vd-hint">{patient.ageGender}</span>
+        </div>
+        <div className="vd-sheet-scroll" ref={fit.ref}>
+          <div style={{ zoom: fit.scale }}>
+            <PrintLayout
+              size="A5"
+              header="print"
+              clinic={clinic}
+              footer={<PrescriptionFooter doctorName={clinic.doctorName} qr={qr} />}
+            >
+              <PrescriptionBody
+                data={{
+                  patientName: patient.fullName,
+                  patientCode: patient.code,
+                  rxNo: snapshot?.rxNo ?? null,
+                  items: (snapshot?.lines ?? []).map((m) => ({
+                    key: m.key,
+                    name: m.genericName,
+                    note: rxItemNote(m),
+                    dose: m.dose,
+                    frequency: m.frequency,
+                    days: m.days,
+                  })),
+                  advice: snapshot?.advice ?? "",
+                  followUpOn: snapshot?.followUpOn ?? "",
+                  problemTeeth: problemTeeth(lines),
+                }}
+              />
+            </PrintLayout>
           </div>
         </div>
-
-        <div className="vd-sheet-body">
-          <p className="vd-sheet-patient">
-            <strong>{patient.fullName}</strong> · {patient.ageGender} · {patient.code}
-            <span>{formatDisplayDate(visitDate || istDate(new Date()))}</span>
-          </p>
-          {teeth.length > 0 && (
-            <div>
-              <strong>Problem teeth</strong>
-              <div className="vd-sheet-teeth">
-                {teeth.map((t) => (
-                  <span key={t.fdi} className="vd-chip">
-                    {t.fdi}
-                  </span>
-                ))}
-              </div>
-              <ul className="vd-sheet-list">
-                {teeth.map((t) => (
-                  <li key={t.fdi}>
-                    {t.fdi}: {t.items.join(", ")}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="vd-sheet-meds">
-            {!snapshot || snapshot.lines.length === 0 ? (
-              <span className="vd-hint">No medicines yet.</span>
-            ) : (
-              snapshot.lines.map((m, i) => (
-                <p key={m.key}>
-                  <strong>
-                    {i + 1}. {medicineTitle(m)}
-                  </strong>
-                  <br />
-                  <span className="vd-hint">
-                    {m.frequency} · {m.days}
-                    {m.timing
-                      ? ` · ${MEDICINE_TIMING_LABEL[m.timing as MedicineTiming] ?? m.timing}`
-                      : ""}
-                    {m.instruction ? ` · ${m.instruction}` : ""}
-                  </span>
-                </p>
-              ))
-            )}
-          </div>
-          {snapshot?.advice && (
-            <p>
-              <strong>Advice:</strong> {snapshot.advice}
-            </p>
-          )}
-          {snapshot?.followUpOn && (
-            <p className="vd-hint">Follow-up: {formatDisplayDate(snapshot.followUpOn)}</p>
-          )}
-        </div>
-
-        {qr && <img className="vd-sheet-qr" src={qr} alt="QR" width={56} height={56} />}
-        {clinic && clinic.timingsLines.length > 0 && (
-          <div className="vd-sheet-foot">
-            <strong>Consultation Timings</strong>
-            {clinic.timingsLines.map((t) => (
-              <span key={t}>{t}</span>
-            ))}
-            {clinic.address && <span>{clinic.address}</span>}
-          </div>
-        )}
       </div>
     </div>
   );

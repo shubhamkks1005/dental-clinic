@@ -350,95 +350,22 @@ button.vd-chip {
   border: 1px solid var(--vd-line);
   border-radius: 16px;
   overflow: hidden;
-  font-size: 11px;
   background: var(--vd-card);
 }
-.vd-sheet-head {
+.vd-sheet-bar {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 14px 8px;
-  border-bottom: 2px solid var(--vd-primary);
-}
-.vd-sheet-clinic,
-.vd-sheet-doctor {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 10px;
-  color: var(--vd-muted);
-}
-.vd-sheet-clinic {
   align-items: center;
-  text-align: center;
-  min-width: 46%;
-}
-.vd-sheet-clinic strong {
-  color: var(--vd-error);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.vd-sheet-clinic em {
-  color: var(--vd-success);
-}
-.vd-sheet-doctor {
-  align-items: flex-end;
-  text-align: right;
-}
-.vd-sheet-doctor strong {
-  color: var(--vd-primary);
-  font-size: 13px;
-}
-.vd-sheet-body {
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: 8px;
   padding: 8px 14px;
-  font-size: 11.5px;
 }
-.vd-sheet-patient {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 4px;
-  margin: 0;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgb(192 200 204 / 60%);
+.vd-sheet-scroll {
+  overflow-x: auto;
+  padding: 0 0 8px;
+  background: var(--vd-container);
 }
-.vd-sheet-teeth {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 4px 0;
-}
-.vd-sheet-list {
-  margin: 0;
-  padding-left: 16px;
-  color: var(--vd-muted);
-}
-.vd-sheet-meds {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-top: 6px;
-  border-top: 1px solid rgb(192 200 204 / 60%);
-}
-.vd-sheet-meds p,
-.vd-sheet-body p {
-  margin: 0;
-}
-.vd-sheet-foot {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 14px;
-  border-top: 2px solid var(--vd-primary);
-  font-size: 9.5px;
-  color: var(--vd-muted);
-}
-.vd-sheet-foot strong {
-  color: var(--vd-error);
-  font-size: 10.5px;
+.vd-sheet-scroll .print-page {
+  box-shadow: 0 1px 4px rgb(0 0 0 / 15%);
 }
 
 /* Drag handles of the side pane (laptop and wider). */
@@ -503,9 +430,4 @@ button.vd-chip {
 
 .vd-after {
   padding: 10px 24px 0;
-}
-
-.vd-sheet-qr {
-  margin: 6px 14px 0;
-  object-fit: contain;
 }

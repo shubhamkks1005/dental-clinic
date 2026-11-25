@@ -32,6 +32,8 @@ export type RxSnapshot = {
     genericName: string;
     brand: string;
     strength: string;
+    form: string;
+    dose: string;
     frequency: string;
     days: string;
     timing: string;
@@ -71,6 +73,8 @@ export function VisitMedicinesPanel({
         genericName: l.genericName,
         brand: l.brand ?? "",
         strength: l.strength ?? "",
+        form: l.form ?? "",
+        dose: l.dose ?? "",
         frequency: l.frequency,
         days: l.days,
         timing: l.timing,

@@ -1,4 +1,4 @@
-import { MEDICINE_TIMING_LABEL, statusWord, type MedicineTiming } from "@clinic/shared";
+import { statusWord } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
@@ -9,8 +9,29 @@ import { getPatient } from "../patients";
 import { getQrImage } from "../settings/api";
 import { clinicHeaderFromSettings, clinicRegistrationMissing } from "./clinic-header";
 import { PrescriptionFooter } from "./PrescriptionSample";
+import { PrescriptionBody, rxItemNote, type RxBodyData } from "./PrescriptionBody";
 import "./prescription.css";
 import "./print-screen.css";
+
+function bodyData(rx: PrescriptionDto, patientName: string, patientCode: string): RxBodyData {
+  return {
+    patientName,
+    patientCode,
+    rxNo: rx.rxNo,
+    weightKg: rx.weightKg,
+    items: rx.items.map((item) => ({
+      key: item.id,
+      name: item.genericName,
+      note: rxItemNote(item),
+      dose: item.dose,
+      frequency: item.frequency,
+      days: item.days,
+    })),
+    advice: rx.advice ?? "",
+    followUpOn: rx.followUpOn ?? "",
+    revised: rx.status === "revised",
+  };
+}
 
 /** 4.3.3 real prescription print (S13). English, A5 default; duplicate mark on reprint. */
 export function PrintPrescriptionScreen() {
@@ -135,71 +156,7 @@ export function PrintPrescriptionScreen() {
           duplicateDate={dupDate}
           footer={<PrescriptionFooter doctorName={clinic.doctorName} qr={qr} />}
         >
-          <dl className="rx-patient">
-            <div>
-              <dt>Patient</dt>
-              <dd>{patientName}</dd>
-            </div>
-            <div>
-              <dt>Patient no.</dt>
-              <dd className="rx-strong">{patientCode}</dd>
-            </div>
-            <div>
-              <dt>Rx no.</dt>
-              <dd>{rx.rxNo}</dd>
-            </div>
-            {rx.weightKg != null && (
-              <div>
-                <dt>Weight</dt>
-                <dd>{rx.weightKg} kg</dd>
-              </div>
-            )}
-          </dl>
-          <section>
-            <p className="rx-mark">Rx</p>
-            <table className="rx-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Medicine</th>
-                  <th>Dose</th>
-                  <th>Frequency</th>
-                  <th>Days</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rx.items.map((item, i) => (
-                  <tr key={item.id}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <strong>{item.genericName}</strong>
-                      <span className="rx-note">
-                        {item.strength} · {item.form}
-                        {item.instruction ? ` · ${item.instruction}` : ""}
-                        {" · "}
-                        {MEDICINE_TIMING_LABEL[item.timing as MedicineTiming] ?? item.timing}
-                      </span>
-                    </td>
-                    <td>{item.dose}</td>
-                    <td>{item.frequency}</td>
-                    <td>{item.days}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-          {rx.advice && (
-            <section className="rx-advice">
-              <h3 className="rx-label">Advice</h3>
-              <p>{rx.advice}</p>
-            </section>
-          )}
-          {rx.followUpOn && (
-            <p>
-              <strong>Next visit:</strong> {rx.followUpOn}
-            </p>
-          )}
-          {rx.status === "revised" && <p className="rx-note">Revised prescription</p>}
+          <PrescriptionBody data={bodyData(rx, patientName, patientCode)} />
         </PrintLayout>
       </div>
     </main>
