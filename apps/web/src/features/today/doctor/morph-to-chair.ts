@@ -19,7 +19,7 @@ export function morphToChair(
   const from = row.getBoundingClientRect();
   const to = card.getBoundingClientRect();
   const ghost = document.createElement("div");
-  ghost.className = "td-ghost";
+  ghost.className = "today-doc td-ghost";
   ghost.setAttribute("aria-hidden", "true");
   Object.assign(ghost.style, {
     left: `${from.left}px`,

@@ -163,7 +163,7 @@ export function useDoctorActions({ model, patch, load, hide }: Deps) {
           el,
           card,
           { name: row.name, line: `${row.patientCode} · ${row.visit.split(" · ")[0]}` },
-          { onLanded: () => undefined, onEnd: landed },
+          { onLanded: landed, onEnd: () => undefined },
         );
       } else {
         landed();
