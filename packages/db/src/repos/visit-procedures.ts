@@ -15,6 +15,7 @@ export type AddVisitProcedureInput = {
   toothFdi?: number | null;
   surfaces?: ToothSurface[];
   note?: string | null;
+  moreSittings?: boolean;
 };
 
 export type VisitProcedureRow = {
@@ -26,6 +27,7 @@ export type VisitProcedureRow = {
   toothFdi: number | null;
   surfaces: ToothSurface[];
   note: string | null;
+  moreSittings: boolean;
   defaultPaise: number | null;
   sortOrder: number;
 };
@@ -47,6 +49,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
           toothFdi: visitProcedures.toothFdi,
           surfacesJson: visitProcedures.surfacesJson,
           note: visitProcedures.note,
+          moreSittings: visitProcedures.moreSittings,
           defaultPaise: visitProcedures.defaultPaise,
           sortOrder: visitProcedures.sortOrder,
         })
@@ -62,6 +65,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
         toothFdi: r.toothFdi,
         surfaces: parseSurfaces(r.surfacesJson),
         note: r.note,
+        moreSittings: r.moreSittings,
         defaultPaise: r.defaultPaise,
         sortOrder: r.sortOrder,
       }));
@@ -126,6 +130,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
           toothFdi: input.toothFdi ?? null,
           surfacesJson: JSON.stringify(surfaces),
           note,
+          moreSittings: input.moreSittings ?? false,
           defaultPaise,
           sortOrder,
           createdBy: ctx.userId,
@@ -153,6 +158,7 @@ export function visitProceduresRepo(db: Db, ctx: Ctx) {
         toothFdi: input.toothFdi ?? null,
         surfaces,
         note,
+        moreSittings: input.moreSittings ?? false,
         defaultPaise,
         sortOrder,
       };

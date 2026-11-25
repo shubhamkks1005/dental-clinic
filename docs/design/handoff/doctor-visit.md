@@ -169,8 +169,8 @@ The owner pasted a newer file (`doctor_visit_smart_accordions (30).html`) and wi
 | B15 | "Popular" diagnoses and procedures in the search; "Recently used" medicines | `GET /api/staff/library/line-usage` (counts per name in 30 days, doctor only, `repos.visitDiagnoses.diagnosisProcedureUsage30d`); medicines use the existing `/library/medicine-usage` | built |
 | - | "Chart as of" list, and the complaint and findings of an older visit | exists: visits list of the patient + `GET /visits/:id`; no change | none needed |
 | - | Letterhead tagline, qualifications, speciality, registration, extra line, email, Instagram, timings | exist in settings (`clinic.*`, `doctor.*`) | none needed |
-| - | Pending treatment "2 sittings remaining" | OPEN: `plan_items.sittings` is a total only and finalise completes an item at once. Needs an owner rule | waits for owner |
-| - | QR picture on the prescription | OPEN: only the Instagram name is stored | waits for owner |
+| B16 | Pending treatment "2 sittings remaining" | Owner: the doctor decides. Migration **0061_plan_sittings** (owner applies): `plan_items.sittings_done`, `visit_procedures.more_sittings`. Each procedure line has a yes/no "needs more sittings" (add and PATCH body `moreSittings`, default no = finished, as before). On finalise every matched plan item counts one sitting: "more sittings" keeps it In progress, otherwise Completed; an unplanned procedure with "more sittings" makes an In progress item (2 sittings, 1 done). `GET /visits/:id/page` returns `moreSittings` per line and `sittingsDone` per open plan item (left = sittings - sittingsDone). The screen needs a small "more sittings" switch on each procedure line | built |
+| - | QR picture on the prescription | Owner chose: the doctor uploads a QR image. NOT built: it needs an image upload (R2 store, file type and size check, print) and the logo has no upload yet either (`clinic.logo` is only a text setting), so both should be one separate task | waits for a task |
 
 ## 6. Logic changes (frontend)
 - State: replace the prototype's globals (`state`, `rxState`, `diagProcState`) with the app's data hooks (`useVisitData`, `useVisitPrescription`, new `useVisitDiagnosesProcedures`). Server is the truth; HTML objects are demo data.
@@ -312,3 +312,4 @@ Test cases for this part:
 - 2026-11-25: plan written from the pasted HTML (file not yet saved in docs/design/final/). Nothing built.
 - 2026-11-25: Phase A (backend) done, B1 to B10, one local commit each (c6e442b, 5eefaeb, d1cf693, 0fbd526, 4c211f2, 2151229, 0d9f8df, c8119fd, ad29904, d6730f4). New migrations 0058, 0059, 0060 (owner applies, never applied by the agent). UI waits for the HTML (Q14).
 - 2026-11-25: design (30) compared with B1 to B10. Built B11 to B15 (see 5c). Open for the owner: sittings rule, QR picture.
+- 2026-11-25: B16 sittings rule built (migration 0061, owner applies). QR upload left as its own task.

@@ -140,6 +140,8 @@ export const addVisitProcedureBody = z
     toothFdi: z.number().int().min(11).max(85).nullable().optional(),
     surfaces: z.array(surfaceSchema).max(6).optional(),
     note: z.string().trim().max(1000).nullable().optional(),
+    // The treatment is not finished: more sittings are needed (plan item stays open on finalise).
+    moreSittings: z.boolean().optional(),
   })
   .strict();
 
@@ -187,6 +189,8 @@ export const updateVisitProcedureBody = z
     toothFdi: z.number().int().min(11).max(85).nullable().optional(),
     surfaces: z.array(surfaceSchema).max(6).optional(),
     note: z.string().trim().max(1000).nullable().optional(),
+    // The treatment is not finished: more sittings are needed (plan item stays open on finalise).
+    moreSittings: z.boolean().optional(),
   })
   .strict();
 

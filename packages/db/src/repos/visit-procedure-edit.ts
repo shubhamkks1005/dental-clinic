@@ -14,6 +14,7 @@ export type UpdateVisitProcedureInput = {
   toothFdi?: number | null;
   surfaces?: ToothSurface[];
   note?: string | null;
+  moreSittings?: boolean;
 };
 
 // 3.2.3: change, remove (soft delete) and restore a procedure line on a draft visit.
@@ -39,6 +40,7 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
             ...(input.toothFdi !== undefined ? { toothFdi: input.toothFdi } : {}),
             ...(surfaces ? { surfacesJson: JSON.stringify(surfaces) } : {}),
             ...(note !== undefined ? { note } : {}),
+            ...(input.moreSittings !== undefined ? { moreSittings: input.moreSittings } : {}),
             version: version + 1,
             updatedAt: nowUtcSql,
             updatedBy: ctx.userId,
@@ -58,11 +60,13 @@ export function visitProcedureEditRepo(db: Db, ctx: Ctx) {
             toothFdi: line.toothFdi,
             surfaces: parseSurfaces(line.surfacesJson),
             note: line.note,
+            moreSittings: line.moreSittings,
           },
           after: {
             toothFdi: input.toothFdi === undefined ? line.toothFdi : input.toothFdi,
             surfaces: surfaces ?? parseSurfaces(line.surfacesJson),
             note: note === undefined ? line.note : note,
+            moreSittings: input.moreSittings ?? line.moreSittings,
           },
         }),
       ]);
@@ -139,6 +143,7 @@ async function loadLine(db: Db, lineId: string, want: "live" | "deleted", visitI
       toothFdi: visitProcedures.toothFdi,
       surfacesJson: visitProcedures.surfacesJson,
       note: visitProcedures.note,
+      moreSittings: visitProcedures.moreSittings,
       deletedAt: visitProcedures.deletedAt,
       visitStatus: visits.status,
       visitId: visitProcedures.visitId,
@@ -177,6 +182,7 @@ async function readLine(
       toothFdi: visitProcedures.toothFdi,
       surfacesJson: visitProcedures.surfacesJson,
       note: visitProcedures.note,
+      moreSittings: visitProcedures.moreSittings,
       defaultPaise: visitProcedures.defaultPaise,
       sortOrder: visitProcedures.sortOrder,
       deletedAt: visitProcedures.deletedAt,
@@ -196,6 +202,7 @@ async function readLine(
     toothFdi: row.toothFdi,
     surfaces: parseSurfaces(row.surfacesJson),
     note: row.note,
+    moreSittings: row.moreSittings,
     defaultPaise: row.defaultPaise,
     sortOrder: row.sortOrder,
   };

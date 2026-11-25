@@ -70,3 +70,76 @@ describe("plan sync on finalise (3.6.4)", () => {
     expect(scalingItem?.completedVisitId).toBe(visit.id);
   });
 });
+
+describe("plan sync: the doctor decides if more sittings are needed (design 30)", () => {
+  it("counts one sitting per visit and completes only when the doctor says finished", async () => {
+    const listed = await repos().lists.add("procedures", {
+      label: "Sync RCT (test)",
+      data: { default_paise: 400000, code: "SYNC_R" },
+    });
+    const rct = listed.find((i) => i.label === "Sync RCT (test)")!;
+    const planned = await repos().planItems.create({
+      patientId: PATIENT_ID,
+      procedureLabel: "Sync RCT (test)",
+      listItemId: rct.id,
+      estimatePaise: 400_000,
+      toothFdi: 36,
+      phase: 1,
+      sittings: 3,
+    });
+    const state = () =>
+      t.sqlite
+        .prepare(
+          "SELECT status, sittings_done AS done, completed_visit_id AS cv FROM plan_items WHERE id = ?",
+        )
+        .get(planned.id) as { status: string; done: number; cv: string | null };
+
+    const sitting = async (day: string, moreSittings: boolean) => {
+      const visit = await repos().visits.open({ patientId: PATIENT_ID, visitDateLocal: day });
+      await repos().visitProcedures.add({
+        visitId: visit.id,
+        listItemId: rct.id,
+        toothFdi: 36,
+        moreSittings,
+      });
+      await repos().visits.finalise(visit.id, { version: 1 });
+      return visit.id;
+    };
+
+    await sitting("2026-11-10", true);
+    expect(state()).toEqual({ status: "in_progress", done: 1, cv: null });
+    await sitting("2026-11-17", true);
+    expect(state()).toEqual({ status: "in_progress", done: 2, cv: null });
+    const last = await sitting("2026-11-24", false);
+    expect(state()).toEqual({ status: "completed", done: 3, cv: last });
+  });
+
+  it("can be changed on the line, and an unplanned 'more sittings' procedure makes an open item", async () => {
+    const listed = await repos().lists.add("procedures", {
+      label: "Sync crown (test)",
+      data: { default_paise: 450000, code: "SYNC_C" },
+    });
+    const crown = listed.find((i) => i.label === "Sync crown (test)")!;
+    const visit = await repos().visits.open({
+      patientId: PATIENT_ID,
+      visitDateLocal: "2026-11-22",
+    });
+    const line = await repos().visitProcedures.add({
+      visitId: visit.id,
+      listItemId: crown.id,
+      toothFdi: 46,
+    });
+    expect(line.moreSittings).toBe(false);
+    const changed = await repos().visitProcedures.update(line.id, line.version, {
+      moreSittings: true,
+    });
+    expect(changed.moreSittings).toBe(true);
+    await repos().visits.finalise(visit.id, { version: 1 });
+    const made = t.sqlite
+      .prepare(
+        "SELECT status, sittings, sittings_done AS done, completed_visit_id AS cv FROM plan_items WHERE patient_id = ? AND procedure_label = 'Sync crown (test)'",
+      )
+      .get(PATIENT_ID);
+    expect(made).toEqual({ status: "in_progress", sittings: 2, done: 1, cv: null });
+  });
+});

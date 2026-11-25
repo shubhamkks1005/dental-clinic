@@ -51,14 +51,19 @@ export async function planSyncStatementsForFinalise(
       return item.procedureLabel === proc.label;
     });
 
+    // The doctor chose per procedure line: finished (default) or "needs more sittings". Either way
+    // this visit counts as one sitting on the matching plan item.
     if (match) {
       used.add(match.id);
+      const more = proc.moreSittings;
+      const done = match.sittingsDone + 1;
       batch.push(
         db
           .update(planItems)
           .set({
-            status: "completed",
-            completedVisitId: opts.visitId,
+            status: more ? "in_progress" : "completed",
+            sittingsDone: done,
+            ...(more ? {} : { completedVisitId: opts.visitId }),
             version: match.version + 1,
             updatedAt: nowUtcSql,
             updatedBy: ctx.userId,
@@ -68,8 +73,10 @@ export async function planSyncStatementsForFinalise(
           action: "update",
           table: "plan_items",
           rowId: match.id,
-          before: { status: match.status },
-          after: { status: "completed", completedVisitId: opts.visitId },
+          before: { status: match.status, sittingsDone: match.sittingsDone },
+          after: more
+            ? { status: "in_progress", sittingsDone: done }
+            : { status: "completed", sittingsDone: done, completedVisitId: opts.visitId },
         }),
       );
     } else {
@@ -83,10 +90,11 @@ export async function planSyncStatementsForFinalise(
           procedureLabel: proc.label,
           estimatePaise: proc.defaultPaise ?? 0,
           phase: 1,
-          sittings: 1,
-          status: "completed",
+          sittings: proc.moreSittings ? 2 : 1,
+          sittingsDone: 1,
+          status: proc.moreSittings ? "in_progress" : "completed",
           createdVisitId: opts.visitId,
-          completedVisitId: opts.visitId,
+          ...(proc.moreSittings ? {} : { completedVisitId: opts.visitId }),
           createdBy: ctx.userId,
           updatedBy: ctx.userId,
         }),
@@ -97,7 +105,7 @@ export async function planSyncStatementsForFinalise(
           after: {
             patientId: opts.patientId,
             procedureLabel: proc.label,
-            status: "completed",
+            status: proc.moreSittings ? "in_progress" : "completed",
             fromVisit: opts.visitId,
           },
         }),

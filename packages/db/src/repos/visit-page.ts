@@ -47,6 +47,7 @@ export type VisitPage = {
       toothFdi: number | null;
       surfacesJson: string;
       note: string | null;
+      moreSittings: boolean;
       defaultPaise: number | null;
       sortOrder: number;
     }[];
@@ -59,6 +60,8 @@ export type VisitPage = {
     procedureLabel: string;
     status: string;
     sittings: number;
+    /** Sittings already done; left = sittings - sittingsDone (never below 0). */
+    sittingsDone: number;
   }[];
   /** Newest first, this visit left out. */
   lastVisits: {
@@ -144,6 +147,7 @@ export function visitPageRepo(db: Db, ctx: Ctx) {
               toothFdi: visitProcedures.toothFdi,
               surfacesJson: visitProcedures.surfacesJson,
               note: visitProcedures.note,
+              moreSittings: visitProcedures.moreSittings,
               defaultPaise: visitProcedures.defaultPaise,
               sortOrder: visitProcedures.sortOrder,
             })
@@ -168,6 +172,7 @@ export function visitPageRepo(db: Db, ctx: Ctx) {
               procedureLabel: planItems.procedureLabel,
               status: planItems.status,
               sittings: planItems.sittings,
+              sittingsDone: planItems.sittingsDone,
             })
             .from(planItems)
             .where(

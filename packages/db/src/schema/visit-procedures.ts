@@ -13,12 +13,15 @@ export const visitProcedures = sqliteTable(
     toothFdi: integer("tooth_fdi"),
     surfacesJson: text("surfaces_json").notNull().default("[]"),
     note: text("note"),
+    // The doctor says this treatment needs more sittings (migration 0061); finalise keeps the plan item open.
+    moreSittings: integer("more_sittings", { mode: "boolean" }).notNull().default(false),
     defaultPaise: integer("default_paise"),
     sortOrder: integer("sort_order").notNull().default(0),
   },
   (t) => [
     index("visit_procedures_visit_idx").on(t.visitId, t.sortOrder),
     check("visit_procedures_surfaces_json", sql.raw(`json_valid("surfaces_json")`)),
+    check("visit_procedures_more_sittings_flag", sql.raw(`"more_sittings" IN (0, 1)`)),
     check(
       "visit_procedures_tooth_fdi",
       sql.raw(

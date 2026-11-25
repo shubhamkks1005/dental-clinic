@@ -16,6 +16,8 @@ export const planItems = sqliteTable(
     phase: integer("phase").notNull().default(1),
     status: text("status", { enum: PLAN_ITEM_STATUSES }).notNull().default("planned"),
     sittings: integer("sittings").notNull().default(1),
+    // Sittings already done (migration 0061); "left" = sittings - sittingsDone.
+    sittingsDone: integer("sittings_done").notNull().default(0),
     toldOn: text("told_on"),
     createdVisitId: text("created_visit_id"),
     completedVisitId: text("completed_visit_id"),
@@ -26,6 +28,7 @@ export const planItems = sqliteTable(
     check("plan_items_estimate_nonneg", sql.raw(`"estimate_paise" >= 0`)),
     check("plan_items_phase_positive", sql.raw(`"phase" >= 1`)),
     check("plan_items_sittings_positive", sql.raw(`"sittings" >= 1`)),
+    check("plan_items_sittings_done_nonneg", sql.raw(`"sittings_done" >= 0`)),
     check(
       "plan_items_tooth_fdi",
       sql.raw(
