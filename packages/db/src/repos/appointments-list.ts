@@ -21,6 +21,8 @@ export type PatientAppointmentRow = {
   version: number;
   visitTypeId: string;
   updatedAt: string;
+  /** The booking's doctor: the patient tab filters by ticked doctors (owner 2026-11-26). */
+  doctorId: string | null;
 };
 
 /** Walk rescheduled_from links oldest → newest (2.3.8 history chain). */
@@ -44,6 +46,7 @@ export async function loadRescheduleChain(db: Db, tipId: string): Promise<Patien
         version: appointments.version,
         visitTypeId: appointments.visitTypeId,
         updatedAt: appointments.updatedAt,
+        doctorId: appointments.doctorId,
       })
       .from(appointments)
       .where(and(eq(appointments.id, id), isNull(appointments.deletedAt)))
@@ -238,6 +241,7 @@ export function appointmentsListRepo(db: Db, ctx: Ctx) {
           version: appointments.version,
           visitTypeId: appointments.visitTypeId,
           updatedAt: appointments.updatedAt,
+          doctorId: appointments.doctorId,
         })
         .from(appointments)
         .where(and(eq(appointments.patientId, patientId), isNull(appointments.deletedAt)))

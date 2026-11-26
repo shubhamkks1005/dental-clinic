@@ -138,6 +138,7 @@ export type PatientAppointmentRow = {
   version: number;
   visitTypeId: string;
   updatedAt: string;
+  doctorId: string | null;
 };
 
 export function listPatientAppointments(patientId: string): Promise<PatientAppointmentRow[]> {
