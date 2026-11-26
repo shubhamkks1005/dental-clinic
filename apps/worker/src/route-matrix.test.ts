@@ -42,6 +42,12 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path.includes("/lists/") && path.endsWith("/active")) {
     return JSON.stringify({ active: false, version: 1 });
   }
+  if (path.includes("/lists/") && path.endsWith("/move-to")) {
+    return JSON.stringify({ position: 1, version: 1 });
+  }
+  if (path.includes("/lists/medicines/") && path.endsWith("/hide")) {
+    return JSON.stringify({ removeFromSets: false, version: 1 });
+  }
   if (path.includes("/lists/") && path.endsWith("/move")) {
     return JSON.stringify({ direction: "up", version: 1 });
   }

@@ -136,3 +136,66 @@ describe("editable lists API (1.5.4)", () => {
     ).toBe(403);
   });
 });
+
+describe("Library routes (P2.1)", () => {
+  const post = (path: string, cookie: string, body: unknown) => send("POST", path, cookie, body);
+  const added = async (res: Response) =>
+    ((await res.json()) as { data: { item: ListItem; items: ListItem[] } }).data;
+
+  it("two same-name items: the reply names the new one", async () => {
+    const a = await added(
+      await post("/lists/medicines", doctor, { label: "Twinmed", data: { strength: "250 mg" } }),
+    );
+    const b = await added(
+      await post("/lists/medicines", doctor, { label: "Twinmed", data: { strength: "500 mg" } }),
+    );
+    expect(b.item.id).not.toBe(a.item.id);
+    expect(b.item.data.strength).toBe("500 mg");
+    expect(b.item.data.default_dose).toBe("As directed");
+  });
+
+  it("move-to: 200, 400 bad place, 409 stale, 403 receptionist", async () => {
+    for (const label of ["A (test)", "B (test)"]) {
+      await post("/lists/referral_sources", doctor, { label, data: {} });
+    }
+    const [a] = await itemsOf(await send("GET", "/lists/referral_sources", doctor));
+    if (!a) throw new Error("no item");
+    const path = `/lists/referral_sources/${a.id}/move-to`;
+    expect((await post(path, doctor, { position: 0, version: a.version })).status).toBe(400);
+    expect((await post(path, doctor, { position: 2, version: 99 })).status).toBe(409);
+    expect((await post(path, receptionist, { position: 2, version: a.version })).status).toBe(403);
+    const res = await post(path, doctor, { position: 2, version: a.version });
+    expect(res.status).toBe(200);
+    expect((await itemsOf(res)).map((i) => i.label)).toEqual(["B (test)", "A (test)"]);
+  });
+
+  it("hide a medicine and remove it from its sets; receptionist 403", async () => {
+    const m = await added(await post("/lists/medicines", doctor, { label: "Hidemed", data: {} }));
+    const n = await added(await post("/lists/medicines", doctor, { label: "Keepmed", data: {} }));
+    await post("/lists/medicine_sets", doctor, {
+      label: "Pair (test)",
+      data: { items: "Hidemed|Keepmed", item_ids: `${m.item.id}|${n.item.id}` },
+    });
+    const path = `/lists/medicines/${m.item.id}/hide`;
+    const body = { version: m.item.version, removeFromSets: true };
+    expect((await post(path, receptionist, body)).status).toBe(403);
+    expect((await post(path, doctor, { version: m.item.version })).status).toBe(400);
+    const res = await post(path, doctor, body);
+    expect(res.status).toBe(200);
+    const data = (
+      (await res.json()) as {
+        data: { items: ListItem[]; sets: ListItem[]; emptySets: string[] };
+      }
+    ).data;
+    expect(data.items.find((i) => i.id === m.item.id)?.active).toBe(false);
+    expect(data.sets.find((s) => s.label === "Pair (test)")?.data.items).toBe("Keepmed");
+    expect(data.emptySets).toEqual([]);
+  });
+
+  it("medicine usage: shape for the doctor, 403 for the receptionist", async () => {
+    const res = await send("GET", "/library/medicine-usage", doctor);
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { data: { counts: unknown } }).data.counts).toEqual({});
+    expect((await send("GET", "/library/medicine-usage", receptionist)).status).toBe(403);
+  });
+});

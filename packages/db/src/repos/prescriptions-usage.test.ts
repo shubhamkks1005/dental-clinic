@@ -41,8 +41,10 @@ beforeEach(() => {
     .run(PATIENT_ID);
 });
 
-describe("medicine usage, last 30 days (Q2.13)", () => {
-  it("counts issued prescriptions per medicine, ignores drafts and old ones", async () => {
+const otherDoctor: Ctx = { userId: "doc-b", role: "doctor", requestId: "r3" };
+
+describe("medicine usage: visits by this doctor, total and last 30 days (L13, L14)", () => {
+  it("counts issued prescriptions per medicine, ignores drafts; 31 days ago counts in total only", async () => {
     const a = await rx(["Paracetamol", "Ibuprofen"]);
     await repos().prescriptions.issue(a.id, a.version);
     const b = await rx(["paracetamol"]);
@@ -53,14 +55,37 @@ describe("medicine usage, last 30 days (Q2.13)", () => {
     t.sqlite
       .prepare("UPDATE prescriptions SET created_at = '2020-01-01T00:00:00.000Z' WHERE id = ?")
       .run(old.id);
-    expect(await repos().prescriptions.medicineUsage30d()).toEqual({
-      paracetamol: 2,
-      ibuprofen: 1,
+    expect(await repos().prescriptions.medicineUsage()).toEqual({
+      paracetamol: { total: 2, last30: 2 },
+      ibuprofen: { total: 1, last30: 1 },
+      amoxicillin: { total: 1, last30: 0 },
     });
   });
 
+  it("issued + its revision = 1", async () => {
+    const a = await rx(["Paracetamol"]);
+    const issued = await repos().prescriptions.issue(a.id, a.version);
+    const draft = await repos().prescriptions.revise(issued.id);
+    await repos().prescriptions.issue(draft.id, draft.version);
+    expect(await repos().prescriptions.medicineUsage()).toEqual({
+      paracetamol: { total: 1, last30: 1 },
+    });
+  });
+
+  it("other doctor's prescriptions are not counted", async () => {
+    const a = await createRepos(t.db, otherDoctor).prescriptions.create({
+      patientId: PATIENT_ID,
+      advice: "",
+      dentistDispensed: false,
+      dentistDispensedNote: "",
+      items: [item("Paracetamol")],
+    });
+    await createRepos(t.db, otherDoctor).prescriptions.issue(a.id, a.version);
+    expect(await repos().prescriptions.medicineUsage()).toEqual({});
+  });
+
   it("is doctor only", async () => {
-    await expect(repos(receptionist).prescriptions.medicineUsage30d()).rejects.toBeInstanceOf(
+    await expect(repos(receptionist).prescriptions.medicineUsage()).rejects.toBeInstanceOf(
       ForbiddenError,
     );
   });

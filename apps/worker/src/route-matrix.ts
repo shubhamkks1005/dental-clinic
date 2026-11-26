@@ -111,6 +111,16 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
     access: { kind: "permission", action: "settings.write" },
   },
   {
+    method: "POST",
+    path: "/api/staff/lists/:key/:id/move-to",
+    access: { kind: "permission", action: "settings.write" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/lists/medicines/:id/hide",
+    access: { kind: "permission", action: "settings.write" },
+  },
+  {
     method: "GET",
     path: "/api/staff/users",
     access: { kind: "permission", action: "staff.manage" },

@@ -92,6 +92,20 @@ describe("query-plan guard (1.2.8)", () => {
     if (!b) throw new Error("no item");
     await repos.lists.move("referral_sources", b.id, "up", b.version);
     await repos.lists.update("referral_sources", b.id, { label: "B2", data: {} }, b.version + 1);
+    // Library (P3.2.2): drag, hide with sets, usage counter.
+    const moved = await repos.lists.list("referral_sources");
+    const first = moved[0];
+    if (!first) throw new Error("no item");
+    await repos.lists.moveTo("referral_sources", first.id, 2, first.version);
+    const med = await repos.lists.addWithId("medicines", { label: "Qp med", data: {} });
+    await repos.lists.add("medicine_sets", {
+      label: "Qp set",
+      data: { items: "Qp med|Paracetamol", item_ids: med.id },
+    });
+    const m = med.items.find((i) => i.id === med.id);
+    if (!m) throw new Error("no medicine");
+    await repos.lists.hideMedicine(m.id, m.version, true);
+    await repos.prescriptions.medicineUsage();
     expect(t.ran.length).toBeGreaterThan(10);
     expect(scansIn(t.sqlite, t.ran)).toEqual([]);
   });

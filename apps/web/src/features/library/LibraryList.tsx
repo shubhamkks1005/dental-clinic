@@ -6,7 +6,7 @@ import { TextInput } from "../../ui/form";
 import { useSubmitOnce } from "../../ui/submit-guard";
 import { useToast } from "../../ui/Toast";
 import { addItem, getList, moveItem, setItemActive, updateItem } from "../lists";
-import { getMedicineUsage } from "./api";
+import { getMedicineUsage, type MedicineUsage } from "./api";
 import { LibraryDrawer, type DrawerState } from "./LibraryDrawer";
 import { LibraryRow } from "./LibraryRow";
 import { columnsFor, countFilters, filterItems, type LibraryFilter } from "./library-view";
@@ -21,7 +21,7 @@ export function LibraryList({ listKey }: { listKey: ListKey }) {
   const { run, pending } = useSubmitOnce();
   const [items, setItems] = useState<ListItem[] | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
-  const [used, setUsed] = useState<Record<string, number> | null>(null);
+  const [used, setUsed] = useState<Record<string, MedicineUsage> | null>(null);
   const [filter, setFilter] = useState<LibraryFilter>("all");
   const [query, setQuery] = useState("");
   const [reorder, setReorder] = useState(false);
@@ -150,7 +150,7 @@ export function LibraryList({ listKey }: { listKey: ListKey }) {
                 key={item.id}
                 listKey={listKey}
                 item={item}
-                used={used ? (used[item.label.toLowerCase()] ?? 0) : undefined}
+                used={used ? (used[item.label.toLowerCase()]?.last30 ?? 0) : undefined}
                 reorder={reorder}
                 first={i === 0}
                 last={i === rows.length - 1}

@@ -1,11 +1,17 @@
 import { fail, ok, parseVersionOnly } from "@clinic/shared";
 import { Hono, type Context } from "hono";
-import { addListItem, changeListItem, listItemsOf, type ListChange } from "../domain/lists";
+import {
+  addListItem,
+  changeListItem,
+  hideMedicine,
+  listItemsOf,
+  type ListChange,
+} from "../domain/lists";
 import { signedIn } from "../http";
 import type { AppEnv } from "../types";
 
 // 1.5.4 editable lists API. GET for everyone with settings.read; changes need settings.write.
-// Replies with the fresh items. Bad input 400, duplicate name 422, stale version 409.
+// Replies with the fresh items. Bad input 400, exact duplicate 422, stale version 409.
 export const staffLists = new Hono<AppEnv>();
 
 const readBody = (c: Context<AppEnv>): Promise<unknown> => c.req.json().catch(() => null);
@@ -29,9 +35,10 @@ function change(toChange: (body: unknown, version: number) => ListChange | strin
   };
 }
 
-// Library: small read-only count per medicine (doctor only), placed before the :key routes.
+// Library "You wrote this N times (M in the last 30 days)": counts per medicine name for the
+// signed-in doctor only. Placed before the :key routes.
 staffLists.get("/library/medicine-usage", async (c) =>
-  c.json(ok({ counts: await signedIn(c).repos.prescriptions.medicineUsage30d() })),
+  c.json(ok({ counts: await signedIn(c).repos.prescriptions.medicineUsage() })),
 );
 
 // Design 30: "popular" diagnoses and procedures for the visit page search (counts only, doctor only).
@@ -43,14 +50,11 @@ staffLists.get("/lists/:key", async (c) =>
   c.json(ok({ items: await listItemsOf(signedIn(c).repos, c.req.param("key")) })),
 );
 
-// B6: the reply also names the new item (names are unique in a list), so the visit page can use it at once.
+// B6: the reply also names the new item (by id: two items may share a name), so the visit page
+// can use it at once.
 staffLists.post("/lists/:key", async (c) => {
   const body = await readBody(c);
-  const items = await addListItem(signedIn(c).repos, c.req.param("key"), body);
-  const label = field(body, "label");
-  const wanted = typeof label === "string" ? label.trim().toLowerCase() : "";
-  const item = items.find((i) => i.label.toLowerCase() === wanted) ?? null;
-  return c.json(ok({ items, item }), 201);
+  return c.json(ok(await addListItem(signedIn(c).repos, c.req.param("key"), body)), 201);
 });
 
 staffLists.put(
@@ -75,3 +79,32 @@ staffLists.post(
       : "Say up or down.";
   }),
 );
+
+// Library drag and drop: a 1-based place among the active items.
+staffLists.post(
+  "/lists/:key/:id/move-to",
+  change((body, version) => {
+    const position = field(body, "position");
+    return typeof position === "number" && Number.isInteger(position) && position >= 1
+      ? { kind: "moveTo", position, version }
+      : "Pick a place in the list.";
+  }),
+);
+
+// Library Q12: hide a medicine; removeFromSets also takes it out of the sets that hold it.
+staffLists.post("/lists/medicines/:id/hide", async (c) => {
+  const body = await readBody(c);
+  const version = parseVersionOnly(body);
+  if (!version.ok) return c.json(fail("invalid", version.message), 400);
+  const remove = field(body, "removeFromSets");
+  if (typeof remove !== "boolean") {
+    return c.json(fail("invalid", "Say whether to remove it from the sets."), 400);
+  }
+  const result = await hideMedicine(
+    signedIn(c).repos,
+    c.req.param("id"),
+    version.value.version,
+    remove,
+  );
+  return c.json(ok(result));
+});
