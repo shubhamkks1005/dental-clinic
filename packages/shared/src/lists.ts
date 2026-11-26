@@ -28,6 +28,8 @@ export type TextListField = {
   optional?: boolean;
   /** Kept in the item but never shown in a form (set by the Library, not typed). */
   hidden?: boolean;
+  /** When set, the only values allowed ("" stays allowed for an optional field). */
+  oneOf?: readonly string[];
 };
 
 export type ListField = NumberListField | ColourListField | TextListField;
@@ -118,16 +120,33 @@ export const LIST_DEFS = {
     itemName: "medicine",
     help: "Doctor's own list for prescriptions. Generic name is the row name. Brand is optional. Edits never change already-issued prescriptions.",
     fields: [
+      // Library (2026-11-26): only the name is required. Empty dose, frequency, days and timing
+      // are saved as "As directed" (fillAsDirected); empty form and strength stay blank.
       { name: "brand", label: "Brand", kind: "text", max: 80, optional: true },
-      { name: "form", label: "Form", kind: "text", max: 20 },
-      { name: "strength", label: "Strength", kind: "text", max: 40 },
-      { name: "default_dose", label: "Default dose", kind: "text", max: 40 },
-      { name: "default_frequency", label: "Default frequency", kind: "text", max: 20 },
-      { name: "default_days", label: "Default days", kind: "text", max: 40 },
-      { name: "timing", label: "With food", kind: "text", max: 20 },
+      { name: "salt", label: "Generic / Salt", kind: "text", max: 120, optional: true },
+      { name: "form", label: "Form", kind: "text", max: 20, optional: true },
+      { name: "strength", label: "Strength", kind: "text", max: 40, optional: true },
+      { name: "default_dose", label: "Default dose", kind: "text", max: 40, optional: true },
+      {
+        name: "default_frequency",
+        label: "Default frequency",
+        kind: "text",
+        max: 20,
+        optional: true,
+      },
+      { name: "default_days", label: "Default days", kind: "text", max: 40, optional: true },
+      { name: "timing", label: "With food", kind: "text", max: 20, optional: true },
       { name: "instruction", label: "Instruction", kind: "text", max: 200, optional: true },
       { name: "tags", label: "Tags", kind: "text", max: 120, optional: true },
       { name: "category", label: "Category", kind: "text", max: 40, optional: true },
+      {
+        name: "combination",
+        label: "Combination",
+        kind: "text",
+        max: 3,
+        optional: true,
+        oneOf: ["yes"],
+      },
       // "yes" once the doctor added or saved it in the Library; blank means "Needs review".
       { name: "reviewed", label: "Reviewed", kind: "text", max: 3, optional: true, hidden: true },
     ],
@@ -137,7 +156,18 @@ export const LIST_DEFS = {
     title: "Medicine sets",
     itemName: "set",
     help: "One click adds several medicines to a draft prescription. Items are generic names separated by |.",
-    fields: [{ name: "items", label: "Medicines", kind: "text", max: 500 }],
+    fields: [
+      { name: "items", label: "Medicines", kind: "text", max: 500 },
+      // Q6 (2026-11-26): ids of the medicines, |-separated; names in items stay for old readers.
+      {
+        name: "item_ids",
+        label: "Medicine ids",
+        kind: "text",
+        max: 600,
+        optional: true,
+        hidden: true,
+      },
+    ],
   },
   // 3.3.1 checklist rows (DRAFT seed until 3.1.1). section groups the form.
   medical_history_items: {
@@ -172,6 +202,11 @@ export type ListItem = {
   active: boolean;
   sortOrder: number;
   version: number;
+  /** Library: who and when (names resolved by the server; seeded rows say "Starter list"). */
+  createdAt?: string;
+  createdByName?: string;
+  updatedAt?: string;
+  updatedByName?: string;
 };
 
 const numberRule = (f: NumberListField) =>
@@ -189,10 +224,14 @@ const colourRule = z
   .transform((v) => v.toUpperCase());
 
 const textRule = (f: TextListField) => {
+  const allowed = f.oneOf;
   const base = z
     .string({ error: `Enter the ${f.label.toLowerCase()}.` })
     .trim()
-    .max(f.max, `${f.label}: at most ${f.max} characters.`);
+    .max(f.max, `${f.label}: at most ${f.max} characters.`)
+    .refine((v) => !allowed || v === "" || allowed.includes(v), {
+      message: `${f.label}: use ${(allowed ?? []).join(" or ")} or leave it blank.`,
+    });
   if (f.optional) {
     // B6: the key may be left out; the item then stores an empty text.
     return z
