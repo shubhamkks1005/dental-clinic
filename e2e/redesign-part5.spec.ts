@@ -123,7 +123,10 @@ test("Q2.13 Settings has 8 items and a setup card; Library takes the lists; new 
   await expect(page.getByText("Not available for your role")).toBeVisible();
   await page.goto("/app/appointments?book=1");
   await expect(
-    page.locator("dialog[open]").getByRole("button", { name: `Chip Check ${stamp}` }),
+    // The booking popover shows it as a chip (label with its minutes).
+    page
+      .getByRole("dialog", { name: "Schedule Appointment" })
+      .getByRole("button", { name: `Chip Check ${stamp}` }),
   ).toBeVisible();
 });
 

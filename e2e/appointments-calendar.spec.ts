@@ -1,5 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
-import { bookInPopover, bookPopover, isoDate, openDay, registerPatient } from "./calendar-helpers";
+import {
+  bookInPopover,
+  bookPopover,
+  isoDate,
+  openDay,
+  registerPatient,
+  loginDeskWithDoctor,
+} from "./calendar-helpers";
 
 // Appointments calendar, final design (docs/design/final/appointments_calendar.html, handoff
 // docs/design/handoff/appointments-calendar.md section 10). Fake data only. Functional checks
@@ -27,7 +34,7 @@ test("desk: week grid, doctor filter, book from a cell with the fold into the sl
   });
   const stamp = Date.now().toString().slice(-6);
   const name = `Cal Grid ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await registerPatient(page, name, stamp);
   const day = await openDay(page, 1, "12:00");
   await page.setViewportSize({ width: 1366, height: 768 });
@@ -92,7 +99,7 @@ test("desk: week grid, doctor filter, book from a cell with the fold into the sl
 test("new patient tab: Save & Book docks the patient into Slot Selection", async ({ page }) => {
   test.setTimeout(120_000);
   const stamp = Date.now().toString().slice(-6);
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.goto("/app/appointments");
   await page.getByRole("button", { name: "Book Appointment" }).click();
@@ -118,7 +125,7 @@ test("phone keeps the day list; details open as a sheet", async ({ page }) => {
   test.setTimeout(120_000);
   const stamp = Date.now().toString().slice(-6);
   const name = `Cal Phone ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await registerPatient(page, name, stamp);
   await page
     .getByRole("link", { name: "Book appointment" })

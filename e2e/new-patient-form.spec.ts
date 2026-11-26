@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { bookPopover } from "./calendar-helpers";
 
 // Q2.9: field order, gender buttons, reminders need a number, Save and book. Fake data only.
 // SHOTS=1 saves screenshots to docs/ui-audit/screenshots/redesign/Q2.9/.
@@ -46,7 +47,8 @@ test("new patient: order, big gender buttons, reminders off without a number, sa
   if (SHOTS) await page.screenshot({ path: `${SHOTS}/PhoneNewPatient.png` });
   await page.getByRole("button", { name: "Save and book appointment" }).click();
   await expect(page).toHaveURL(/\/app\/appointments\?.*patient=/);
-  await expect(page.locator("dialog[open]")).toContainText(`Form Test ${stamp}`);
+  // The booking popover opens with the new patient already chosen.
+  await expect(bookPopover(page).getByTestId("bk-picked")).toContainText(`Form Test ${stamp}`);
 });
 
 test("new patient: after Save patient the next step is one primary button", async ({ page }) => {

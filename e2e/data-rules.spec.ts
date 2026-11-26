@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { bookInPopover } from "./calendar-helpers";
+import { bookInPopover, loginDeskWithDoctor } from "./calendar-helpers";
 
 // Q1.8: gender must be chosen, a future date of birth has its own sentence, the guardian fields
 // open by themselves for a child, a possible duplicate asks "Same person?", the profile shows the
@@ -15,7 +15,7 @@ test("new patient form rules and the next appointment", async ({ page }) => {
   const stamp = Date.now().toString().slice(-6);
   const name = `Rules Test ${stamp}`;
   const mobile = `9003${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await page.goto("/app/patients/new");
 
   // Gender has no default.

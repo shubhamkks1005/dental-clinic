@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { bookInPopover, bookPopover } from "./calendar-helpers";
+import { bookInPopover, bookPopover, loginDeskWithDoctor } from "./calendar-helpers";
 
 // Q1.5: the confirmation is due at once, the reminder waits for 17:00 the day before and shows its
 // due time, and moving the booking makes the old messages "out of date". Fake data only.
@@ -14,7 +14,7 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   });
   const stamp = Date.now().toString().slice(-6);
   const name = `Msg Test ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(name);
   await page.getByLabel("Female", { exact: true }).check();

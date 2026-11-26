@@ -67,3 +67,9 @@ export async function bookFutureSlot(page: Page): Promise<string> {
   await expect(page.locator(".cal-toast")).toContainText(/Booked for|Appointment confirmed/);
   return date;
 }
+
+/** Fresh scratch DB: the dev doctor exists only after one doctor sign-in. Then sign in the desk. */
+export async function loginDeskWithDoctor(page: Page) {
+  await page.goto("/api/staff/auth/dev-login?role=doctor");
+  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+}

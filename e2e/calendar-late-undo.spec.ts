@@ -1,7 +1,13 @@
 import { DatabaseSync } from "node:sqlite";
 import { readdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { bookFutureSlot, bookPopover, isoDate, registerPatient } from "./calendar-helpers";
+import {
+  bookFutureSlot,
+  bookPopover,
+  isoDate,
+  registerPatient,
+  loginDeskWithDoctor,
+} from "./calendar-helpers";
 
 // PA-M06: Undo for 10 seconds after cancelling, and a late entry on a closed day with a reason.
 // Design: Calendar.dc.html (toast), Book dialog. Fake data only.
@@ -22,7 +28,7 @@ test("Undo puts a just-cancelled appointment back, with an audit row", async ({ 
   test.setTimeout(120_000);
   const stamp = Date.now().toString().slice(-6);
   const name = `Undo Test ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await registerPatient(page, name, stamp);
   const date = await bookFutureSlot(page);
   await page.goto(`/app/appointments?date=${date}&view=day`);
@@ -48,7 +54,7 @@ test("late entry on a closed day needs a reason and shows on that day", async ({
   test.setTimeout(120_000);
   const stamp = Date.now().toString().slice(-6);
   const name = `Late Test ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await registerPatient(page, name, stamp);
   // The next Sunday: the clinic is closed on Sundays by default.
   let sunday = isoDate(1);

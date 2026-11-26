@@ -1,7 +1,12 @@
 import { DatabaseSync } from "node:sqlite";
 import { readdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { bookFutureSlot, bookPopover, registerPatient } from "./calendar-helpers";
+import {
+  bookFutureSlot,
+  bookPopover,
+  registerPatient,
+  loginDeskWithDoctor,
+} from "./calendar-helpers";
 
 // Q1.4: Reschedule, Cancel with a reason, Missed with a reason, blockers named on Close day.
 // Fake data only. Any 4xx/5xx from the API fails the test.
@@ -43,7 +48,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   });
   const stamp = Date.now().toString().slice(-6);
   const name = `Action Test ${stamp}`;
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await registerPatient(page, name, stamp);
   const bookedDate = await bookFutureSlot(page);
   await page.goto(`/app/appointments?date=${bookedDate}&view=day`);
@@ -64,6 +69,8 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   const dialog = page.locator("dialog[open]");
 
   // Missed is not offered yet for a future booking (the 15 minute rule).
+  // Wait for the refresh: the old booking now reads Moved.
+  await expect(page.locator(".cal-card.tone-gone", { hasText: name })).toHaveCount(1);
   const moved = page.locator(".cal-card:not(.tone-gone):not(.tone-missed)", { hasText: name });
   await expect(moved).toHaveCount(1);
   await moved.click();

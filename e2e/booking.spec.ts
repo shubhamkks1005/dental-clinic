@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { bookFutureSlot } from "./calendar-helpers";
+import { bookFutureSlot, loginDeskWithDoctor } from "./calendar-helpers";
 
 // Q0.4: booking with the optional note left empty must work (C4: "expected string, received null").
 
@@ -10,7 +10,7 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
   });
   const stamp = Date.now().toString().slice(-6);
 
-  await page.goto("/api/staff/auth/dev-login?role=receptionist");
+  await loginDeskWithDoctor(page);
   await page.goto("/app/patients/new");
   await page.getByLabel("Full name").fill(`Book Test ${stamp}`);
   await page.getByLabel("Female", { exact: true }).check();
