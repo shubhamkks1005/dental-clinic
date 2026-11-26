@@ -1,10 +1,12 @@
-import type { ListItem } from "@clinic/shared";
+import { doctorShortName, type Doctor, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { type PatientListRow } from "../patients";
 import { QuickBookPatient, VisitTypeChips } from "../appointments";
+import { listDoctors } from "../appointments/api";
+import { useMe } from "../auth";
 import { walkInAppointment } from "./api";
 import { Checkbox } from "../../ui/form";
 
@@ -15,6 +17,11 @@ type Props = {
 };
 
 export function WalkInDialog({ open, onClose, onDone }: Props) {
+  const me = useMe();
+  // Several doctors (2026-11-26): the desk says whose queue the walk-in joins; a doctor takes it.
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [doctorId, setDoctorId] = useState("");
+  const chooseDoctor = me.role !== "doctor" && doctors.length > 1;
   const [patient, setPatient] = useState<PatientListRow | null>(null);
   const [visitTypes, setVisitTypes] = useState<ListItem[]>([]);
   const [visitTypeId, setVisitTypeId] = useState("");
@@ -28,13 +35,18 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
     setVisitTypeId("");
     setEmergency(false);
     setError(null);
+    setDoctorId("");
+    if (me.role !== "doctor")
+      listDoctors()
+        .then(setDoctors)
+        .catch(() => setDoctors([]));
     getList("visit_types")
       .then((items) => setVisitTypes(items.filter((i) => i.active)))
       .catch(() => setVisitTypes([]));
-  }, [open]);
+  }, [open, me.role]);
 
   async function save() {
-    if (!patient || !visitTypeId) return;
+    if (!patient || !visitTypeId || (chooseDoctor && !doctorId)) return;
     setBusy(true);
     setError(null);
     try {
@@ -42,6 +54,7 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
         patientId: patient.id,
         visitTypeId,
         priority: emergency ? "emergency" : "normal",
+        doctorId: chooseDoctor ? doctorId : undefined,
       });
       onDone();
       onClose();
@@ -73,6 +86,25 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
             disabled={!patient}
           />
         </div>
+        {chooseDoctor ? (
+          <div>
+            <p className="field-label">Doctor</p>
+            <div className="chip-row" role="group" aria-label="Doctor">
+              {doctors.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  className={`pill${d.id === doctorId ? " pill-on" : ""}`}
+                  aria-pressed={d.id === doctorId}
+                  disabled={!patient}
+                  onClick={() => setDoctorId(d.id)}
+                >
+                  {doctorShortName(d.name)}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
         <label className="today-check">
           <Checkbox
             checked={emergency}
@@ -82,9 +114,13 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
           Emergency (may overbook)
         </label>
         {error ? <p className="field-error">{error}</p> : null}
-        {!patient || !visitTypeId ? (
+        {!patient || !visitTypeId || (chooseDoctor && !doctorId) ? (
           <p className="muted small">
-            {!patient ? "Choose a patient first." : "Choose a visit type."}
+            {!patient
+              ? "Choose a patient first."
+              : !visitTypeId
+                ? "Choose a visit type."
+                : "Choose a doctor."}
           </p>
         ) : null}
         <div className="dialog-actions">
@@ -94,7 +130,7 @@ export function WalkInDialog({ open, onClose, onDone }: Props) {
           <button
             type="button"
             className="btn btn-primary"
-            disabled={!patient || !visitTypeId || busy}
+            disabled={!patient || !visitTypeId || (chooseDoctor && !doctorId) || busy}
             onClick={() => void save()}
           >
             {busy ? "Saving…" : "Add walk-in"}

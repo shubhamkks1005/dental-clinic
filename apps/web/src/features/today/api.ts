@@ -19,6 +19,8 @@ export function walkInAppointment(body: {
   visitTypeId: string;
   priority?: "normal" | "emergency";
   complaint?: string | null;
+  /** Desk with several doctors: whose queue. */
+  doctorId?: string;
 }): Promise<void> {
   return api("/api/staff/appointments/walk-in", { method: "POST", body }).then(() => undefined);
 }
