@@ -148,7 +148,7 @@ test("dialog focus: Walk-in dialog on Today, and the Library drawer", async ({ p
   await expect(walk).toBeFocused();
 
   await login(page, "doctor", "/app/library/medicines");
-  const add = page.getByRole("button", { name: "+ Add medicine" });
+  const add = page.getByRole("button", { name: "Add medicine" });
   await add.focus();
   await page.keyboard.press("Enter");
   expect(await page.evaluate(() => !!document.activeElement?.closest("dialog[open]"))).toBe(true);

@@ -97,15 +97,15 @@ test("Q2.13 Settings has 8 items and a setup card; Library takes the lists; new 
   // Old list paths land in the Library.
   await page.goto("/app/settings/medicines");
   await expect(page).toHaveURL(/\/app\/library\/medicines/);
-  await expect(page.getByRole("navigation", { name: "Library lists" })).toBeVisible();
+  await expect(page.getByRole("tablist", { name: "Library lists" })).toBeVisible();
   await shot(page, "Q2.13/Library");
 
   // Add a visit type in the Library.
   await page.goto("/app/library/visit_types");
-  await page.getByRole("button", { name: "+ Add visit type" }).click();
+  await page.getByRole("button", { name: "Add visit type" }).click();
   const drawer = page.locator("dialog[open]");
-  await drawer.getByLabel("Name").fill(`Chip Check ${stamp}`);
-  await drawer.getByLabel(/Usual length/).fill("20");
+  await drawer.getByRole("combobox", { name: "Name" }).fill(`Chip Check ${stamp}`);
+  await drawer.getByLabel(/Usual length/).selectOption("20");
   await drawer.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText(`Chip Check ${stamp}`).first()).toBeVisible();
 
@@ -169,8 +169,9 @@ test("Q2.13 inside a visit, a medicine that is not in the list can be added to i
   // It is now in the Library list.
   await page.goto("/app/library/medicines");
   await page.getByRole("searchbox").fill(drug);
-  const added = page.locator("li.library-row", { hasText: drug });
+  const added = page.locator("[data-row-id]", { hasText: drug });
   await expect(added).toBeVisible();
-  // Added from a visit, not typed in the Library: it waits for the doctor to confirm.
-  await expect(added).toContainText("DRAFT - doctor to confirm");
+  // Added from a visit, not typed in the Library: it waits for the doctor to confirm (Confirm).
+  await expect(added).toContainText("Needs review");
+  await expect(added.getByRole("button", { name: "Confirm" })).toBeVisible();
 });
