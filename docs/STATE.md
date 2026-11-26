@@ -138,6 +138,14 @@ Owner's real hours (owner fills): Phase 0: -
 - Known: staging logs showed no errors for Library. e2e messages.spec.ts line 60 fails when the reminder is already due (time of day), not a code fault. /assets/<missing> returns index.html with immutable (S2.1.3, low).
 - Open owner decisions: cache for Phase 4 (React Query or own); S0.3.1 put the 12 speed rules into AGENTS.md.
 
+## Appointments calendar, several doctors: backend (2026-11-26, design-apply Phase A, local commits, not pushed)
+- Handoff docs/design/handoff/appointments-calendar.md (Status BACKEND DONE; Log has the numbers and 11 deviations). UI (P4-P8) is the next session.
+- Migration **0066_doctors_on_appointments** is NEW (owner applies on staging): appointments.doctor_id (old rows -> first active doctor, chair stays "1"), doctor_leaves, doctor_profiles (first doctor gets today's doctor.* letterhead), doctor_breaks/approval_requests.doctor_id, per-doctor queue index.
+- Rules now: each booking has a doctor and that doctor's own chair; any length 5-240 min; clashes allowed (only an exact repeat of patient+doctor+start is refused); a doctor sees and books only their own; leave day is a soft rule; breaks, queue order, approvals, discount/cancel requests are per doctor; duplicates = first name + mobile ("Same person?") or mobile only (quiet), never blocking.
+- New routes: /doctors, /doctor-leaves, /appointments/search, /patients/:id/last-visit, /doctor-profile/me. Prescription and certificate prints use the doctor's own letterhead. dev-login ?email= for a second doctor locally.
+- BRIDGE until the UI: the old Book dialog sends doctorId (self, or the desk's first active doctor).
+- Known: Settings screens for leave and "My prescription details" are not built yet (UI phase); without them a second doctor has no letterhead profile, so prints fall back to the old doctor.* settings.
+
 ## Library final design (2026-11-26, design-apply, local commits, not pushed)
 - Final design docs/design/final/library_align_dentistry (7).html applied with the owner's answers Q1-Q12; handoff docs/design/handoff/library.md (Status DONE, Log has the numbers and deviations).
 - Backend: exact-duplicate rule (same name allowed when another field differs), "As directed" fill on the server, who/when names on list items, move among active items only, move-to (drag), hide a medicine with its sets (Q12), usage counter per signed-in doctor by visit. Migration **0065_list_items_duplicates** is NEW (drops the unique name index, marks seeded medicines reviewed and blanks their DRAFT category, adds prescriptions_doctor_status_idx): the owner applies it on staging.

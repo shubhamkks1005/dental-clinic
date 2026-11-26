@@ -179,6 +179,19 @@ describe("breaks per doctor (P1.5.3, T37)", () => {
   });
 });
 
+describe("a break never blocks the desk (P1.5.4, T37)", () => {
+  it("the desk marks the doctor's patient arrived while the doctor is on break", async () => {
+    const a = await book(desk, "p1", "doc-a");
+    await repos(docA).breaks.startBreak({ minutes: 15 }, NOW);
+    const arrived = await repos(desk).appointments.changeStatus(
+      a.id,
+      { status: "arrived", version: a.version, cancelReason: null },
+      NOW,
+    );
+    expect(arrived.status).toBe("arrived");
+  });
+});
+
 describe("queue per doctor (P1.5.2)", () => {
   it("skipping doctor A's patient never renumbers doctor B's rows", async () => {
     const a1 = await book(desk, "p1", "doc-a", 600);
