@@ -14,6 +14,8 @@ export const approvalRequests = sqliteTable(
     ...standardColumns(),
     type: text("type", { enum: APPROVAL_TYPES }).notNull(),
     status: text("status", { enum: APPROVAL_STATUSES }).notNull().default("open"),
+    // 0066: the doctor who answers it (the booking's doctor, or chosen by the desk).
+    doctorId: text("doctor_id"),
     appointmentId: text("appointment_id"),
     patientId: text("patient_id"),
     billId: text("bill_id"),
@@ -35,6 +37,7 @@ export const approvalRequests = sqliteTable(
     check("approval_requests_urgent_bool", sql.raw(`"urgent" IN (0, 1)`)),
     index("approval_requests_status_idx").on(t.status, t.urgent, t.createdAt),
     index("approval_requests_mine_idx").on(t.createdBy, t.createdAt),
+    index("approval_requests_doctor_status_idx").on(t.doctorId, t.status),
     uniqueIndex("approval_requests_one_open_uidx")
       .on(t.type, t.appointmentId)
       .where(

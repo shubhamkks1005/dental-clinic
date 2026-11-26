@@ -7,6 +7,7 @@ import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { billCancelRequests, bills, patients } from "../schema";
 import { nowUtcSql } from "../sql";
+import { billForThisDoctor } from "./bill-doctor-filter";
 
 /** Q1.9 (D4): the receptionist asks the doctor to cancel a wrong issued bill; the doctor sees it. */
 export function billsCancelRequestRepo(db: Db, ctx: Ctx) {
@@ -74,7 +75,13 @@ export function billsCancelRequestRepo(db: Db, ctx: Ctx) {
         .from(billCancelRequests)
         .innerJoin(bills, eq(bills.id, billCancelRequests.billId))
         .innerJoin(patients, eq(patients.id, bills.patientId))
-        .where(and(eq(billCancelRequests.status, "open"), isNull(billCancelRequests.deletedAt)))
+        .where(
+          and(
+            eq(billCancelRequests.status, "open"),
+            isNull(billCancelRequests.deletedAt),
+            billForThisDoctor(ctx),
+          ),
+        )
         .orderBy(asc(billCancelRequests.createdAt))
         .limit(50)
         .all();

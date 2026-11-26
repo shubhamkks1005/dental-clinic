@@ -1,7 +1,7 @@
 import type { Timings } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
-import { testDb } from "../testing";
+import { addFakeDoctor, testDb } from "../testing";
 import { createRepos } from "./index";
 
 const doctor: Ctx = { userId: "doc-a", role: "doctor", requestId: "r1" };
@@ -36,6 +36,7 @@ const timings: Timings = {
 
 beforeEach(() => {
   t = testDb();
+  addFakeDoctor(t.sqlite);
   t.sqlite
     .prepare(
       `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
@@ -50,6 +51,7 @@ describe("listForDay (2.4.1)", () => {
       {
         patientId: PATIENT_ID,
         visitTypeId: VISIT_ID,
+        doctorId: "doc-a",
         dateLocal: "2026-11-23",
         startMin: 11 * 60,
         source: "phone",

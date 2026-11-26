@@ -19,6 +19,7 @@ How long each type of data is kept, and when it is deleted.
 | Access log | `access_log` | No minimum set | 1 year | Purge rows older than 1 year |
 | Doctor breaks (Part T) | `doctor_breaks` | — | 90 days | Purge rows older than 90 days (purge job, row limit as the others) |
 | Doctor requests (Part T) | `approval_requests` | — | Answered or dismissed requests: 1 year; refund requests are kept with billing; open ones are never purged. **DRAFT - owner / CA to confirm** | Purge job (rule in `retention.ts`) |
+| Doctor leave days (0066) | `doctor_leaves` | — | 2 years after the row was made. | Purge job (rule in `retention.ts`) |
 | Message outbox | `message_outbox` | — | 1 year | Purge finished rows older than 1 year (queued/held/sending are kept) |
 | Message attempts | `message_attempts` | — | 90 days | Purge rows older than 90 days |
 | Error log | `error_log` | — | 30 days (PLAN 9.2.5) | Purge rows older than 30 days |

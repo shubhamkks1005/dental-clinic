@@ -1,6 +1,8 @@
 import { z } from "zod";
+import { doctorIdSchema, durationMinSchema } from "./appointment-book";
 
 // 2.3.8: move to a new slot; old row becomes rescheduled and stays for history.
+// doctorId / durationMin absent = keep the old booking's doctor and length.
 export const rescheduleAppointmentSchema = z.object({
   version: z
     .number({ error: "Reload and try again." })
@@ -16,6 +18,8 @@ export const rescheduleAppointmentSchema = z.object({
     .min(0, "Start time is too early.")
     .max(1439, "Start time is too late."),
   visitTypeId: z.string().trim().min(1).max(40).optional(),
+  doctorId: doctorIdSchema.optional(),
+  durationMin: durationMinSchema.optional(),
   overrideReason: z
     .string()
     .trim()

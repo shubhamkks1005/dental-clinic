@@ -34,9 +34,9 @@ function appt(id: string, startMin: number, status = "scheduled") {
   t.sqlite
     .prepare(
       `INSERT INTO appointments (
-         id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+         id, created_by, updated_by, patient_id, doctor_id, chair_id, visit_type_id, visit_type_label,
          start_at, date_local, start_min, end_min, status, source, priority, overbook
-       ) VALUES (?, 's', 's', 'p1', '1', 'vt1', 'Consultation', ?, ?, ?, ?, ?, 'phone', 'normal', 0)`,
+       ) VALUES (?, 's', 's', 'p1', 'doc-a', '1', 'vt1', 'Consultation', ?, ?, ?, ?, ?, 'phone', 'normal', 0)`,
     )
     .run(id, startAt, DAY, startMin, startMin + 30, status);
 }

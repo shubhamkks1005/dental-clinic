@@ -24,7 +24,11 @@ export type QueueDayRow = {
   patientId: string;
 };
 
-/** One read: the whole day of the appointment `id` (index appointments_day_queue_idx). */
+/**
+ * One read: the day of the appointment `id`, for ITS doctor only (each doctor has their own queue,
+ * owner 2026-11-26; index appointments_day_queue_idx). Skip, pull forward, step out and late swap
+ * therefore never move another doctor's rows. Old rows with no doctor form one shared queue.
+ */
 export async function loadQueueDay(db: Db, id: string): Promise<QueueDayRow[]> {
   const rows = await db
     .select({
@@ -44,6 +48,7 @@ export async function loadQueueDay(db: Db, id: string): Promise<QueueDayRow[]> {
     .where(
       and(
         sql`${appointments.dateLocal} = (SELECT date_local FROM appointments WHERE id = ${id})`,
+        sql`${appointments.doctorId} IS (SELECT doctor_id FROM appointments WHERE id = ${id})`,
         isNull(appointments.deletedAt),
       ),
     )

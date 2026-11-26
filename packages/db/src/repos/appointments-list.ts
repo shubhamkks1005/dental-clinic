@@ -1,5 +1,5 @@
 import type { AppointmentPriority, AppointmentStatus } from "@clinic/shared";
-import { and, asc, desc, eq, gte, isNull, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNull, lte, or } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { NotFoundError } from "../errors";
@@ -75,6 +75,8 @@ export type DayAppointmentRow = {
   patientCode: string;
   patientName: string;
   patientMobile: string | null;
+  /** The booking's doctor (0066); null only on rows from before any doctor existed. */
+  doctorId: string | null;
   chairId: string;
   visitTypeId: string;
   visitTypeLabel: string;
@@ -107,6 +109,7 @@ const DAY_COLUMNS = {
   patientCode: patients.code,
   patientName: patients.fullName,
   patientMobile: patients.mobile,
+  doctorId: appointments.doctorId,
   chairId: appointments.chairId,
   visitTypeId: appointments.visitTypeId,
   visitTypeLabel: appointments.visitTypeLabel,
@@ -145,6 +148,16 @@ function typed(rows: RawDayRow[]): DayAppointmentRow[] {
   }));
 }
 
+/**
+ * A doctor sees only their own bookings (owner 2026-11-26); the desk sees every doctor's.
+ * Rows with no doctor (made before any doctor existed) are shown to everyone.
+ */
+export function ownBookingsOnly(ctx: Ctx) {
+  return ctx.role === "doctor"
+    ? or(eq(appointments.doctorId, ctx.userId), isNull(appointments.doctorId))
+    : undefined;
+}
+
 export function appointmentsListRepo(db: Db, ctx: Ctx) {
   return {
     async listForDay(dateLocal: string): Promise<DayAppointmentRow[]> {
@@ -153,7 +166,13 @@ export function appointmentsListRepo(db: Db, ctx: Ctx) {
         .select(DAY_COLUMNS)
         .from(appointments)
         .innerJoin(patients, eq(appointments.patientId, patients.id))
-        .where(and(eq(appointments.dateLocal, dateLocal), isNull(appointments.deletedAt)))
+        .where(
+          and(
+            eq(appointments.dateLocal, dateLocal),
+            isNull(appointments.deletedAt),
+            ownBookingsOnly(ctx),
+          ),
+        )
         .orderBy(asc(appointments.startMin), asc(appointments.createdAt))
         .all();
       return typed(rows);
@@ -182,6 +201,7 @@ export function appointmentsListRepo(db: Db, ctx: Ctx) {
             gte(appointments.dateLocal, from),
             lte(appointments.dateLocal, to),
             isNull(appointments.deletedAt),
+            ownBookingsOnly(ctx),
           ),
         )
         .orderBy(

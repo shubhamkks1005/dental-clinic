@@ -25,6 +25,8 @@ export const RETENTION_RULES: readonly Rule[] = [
   // a year; refund requests stay (they belong with billing). DRAFT: owner / CA to confirm.
   { table: "doctor_breaks", days: 90, where: "1 = 1" },
   { table: "approval_requests", days: 365, where: "status != 'open' AND type != 'refund'" },
+  // 0066: past leave days only matter for a while (the calendar shows them); kept 2 years.
+  { table: "doctor_leaves", days: 730, where: "1 = 1" },
 ];
 
 export type PurgeResult = {

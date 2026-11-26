@@ -65,6 +65,8 @@ describe("table rules (1.2.1)", () => {
       "daily_stats",
       "day_closes",
       "doctor_breaks",
+      "doctor_leaves",
+      "doctor_profiles",
       "dues_calls",
       "error_log",
       "files",

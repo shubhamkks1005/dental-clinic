@@ -7,13 +7,13 @@ import { DB_MIGRATIONS } from "../testing/paths";
 const db = migratedSqlite();
 afterAll(() => db.close());
 
-const brk = (id: string, day: string, minutes: number, ended: string | null) =>
+const brk = (id: string, day: string, minutes: number, ended: string | null, doctorId = "doc-a") =>
   db
     .prepare(
-      `INSERT INTO doctor_breaks (id, created_by, updated_by, started_at, date_local, minutes, label, ended_at)
-       VALUES (?, 's', 's', '2026-11-25T05:00:00.000Z', ?, ?, 'Break', ?)`,
+      `INSERT INTO doctor_breaks (id, created_by, updated_by, doctor_id, started_at, date_local, minutes, label, ended_at)
+       VALUES (?, 's', 's', ?, '2026-11-25T05:00:00.000Z', ?, ?, 'Break', ?)`,
     )
-    .run(id, day, minutes, ended);
+    .run(id, doctorId, day, minutes, ended);
 
 const approval = (id: string, type: string, appt: string | null, status = "open", note = "Ok") =>
   db
@@ -24,10 +24,12 @@ const approval = (id: string, type: string, appt: string | null, status = "open"
     .run(id, type, status, appt, note);
 
 describe("doctor_breaks (T1.2)", () => {
-  it("allows only one open break at a time, closed ones do not count", () => {
+  it("allows only one open break per doctor at a time, closed ones do not count", () => {
     brk("b1", "2026-11-25", 10, null);
     expect(() => brk("b2", "2026-11-25", 10, null)).toThrow();
     expect(() => brk("b3", "2026-11-25", 10, "2026-11-25T05:10:00.000Z")).not.toThrow();
+    // 0066: another doctor may be on break at the same time.
+    expect(() => brk("b6", "2026-11-25", 10, null, "doc-b")).not.toThrow();
   });
   it("keeps minutes between 5 and 120", () => {
     expect(() => brk("b4", "2026-11-24", 4, "x")).toThrow();
@@ -80,7 +82,8 @@ describe("0057 on a database that already has data", () => {
     const files = readdirSync(DB_MIGRATIONS)
       .filter((f) => f.endsWith(".sql"))
       .sort();
-    for (const file of files.filter((f) => !f.startsWith("0057"))) {
+    // Only the migrations before 0057 (later ones, such as 0066, build on it).
+    for (const file of files.filter((f) => f < "0057")) {
       old.exec(readFileSync(`${DB_MIGRATIONS}${file}`, "utf8"));
     }
     old

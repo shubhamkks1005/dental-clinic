@@ -96,4 +96,22 @@ describe("bookingRuleViolations (2.3.5)", () => {
       }).map((x) => x.code),
     ).toContain("ahead");
   });
+
+  it("doctor_leave: warns on the doctor's leave day only (owner 2026-11-26)", () => {
+    const run = (dateLocal: string) =>
+      bookingRuleViolations({
+        slot: { dateLocal, startMin: 10 * 60, endMin: 10 * 60 + 30 },
+        timings,
+        holidays: [],
+        bookAheadDays: 90,
+        now: nowMonMorning,
+        leaveDays: ["2026-11-24"],
+        doctorName: "Dr. Mehta",
+      });
+    expect(run("2026-11-24")).toContainEqual({
+      code: "doctor_leave",
+      message: "Dr. Mehta is on leave that day. Pick another day, or override with a reason.",
+    });
+    expect(run("2026-11-25").map((x) => x.code)).not.toContain("doctor_leave");
+  });
 });

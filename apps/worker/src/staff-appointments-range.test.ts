@@ -28,6 +28,8 @@ describe("GET /api/staff/appointments/range", () => {
         "currentBreak",
         "dateLocal",
         "lastOrderChange",
+        "leaves",
+        "openBreaks",
         "serverNow",
         "window",
       ]);

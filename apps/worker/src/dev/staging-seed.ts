@@ -52,6 +52,12 @@ export async function runStagingSeed(d1: D1Binding, now: Date = new Date()): Pro
 
   const ids = await seedPatients(rec, report, now);
   await seedRequests(doc, rec, ids, report);
+  // Bookings go to the first active doctor; the seed never adds a doctor (owner 2026-11-26).
+  const doctorId = (await rec.doctors.listActive())[0]?.id;
+  if (!doctorId) {
+    report.skipped.push("No active doctor: add one in Settings > Staff, then seed again.");
+    return report;
+  }
   const today = istDate(now);
   let k = 0;
   let refundDone = false;
@@ -68,6 +74,7 @@ export async function runStagingSeed(d1: D1Binding, now: Date = new Date()): Pro
         {
           patientId,
           visitTypeId: s === 0 ? TYPE_CONSULT : TYPE_FOLLOWUP,
+          doctorId,
           dateLocal: day,
           startMin: slot,
           source: "phone",

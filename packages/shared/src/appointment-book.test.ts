@@ -7,6 +7,7 @@ describe("book appointment body (2.3.4)", () => {
       parseBookAppointment({
         patientId: "p1",
         visitTypeId: "v1",
+        doctorId: "d1",
         dateLocal: "2026-11-23",
         startMin: 600,
         source: "phone",
@@ -16,6 +17,7 @@ describe("book appointment body (2.3.4)", () => {
       value: {
         patientId: "p1",
         visitTypeId: "v1",
+        doctorId: "d1",
         dateLocal: "2026-11-23",
         startMin: 600,
         source: "phone",
@@ -32,6 +34,7 @@ describe("book appointment body (2.3.4)", () => {
       parseBookAppointment({
         patientId: "p1",
         visitTypeId: "v1",
+        doctorId: "d1",
         dateLocal: "2026-11-23",
         startMin: 2000,
         source: "phone",
@@ -43,6 +46,7 @@ describe("book appointment body (2.3.4)", () => {
     const base = {
       patientId: "p1",
       visitTypeId: "v1",
+      doctorId: "d1",
       dateLocal: "2026-11-24",
       startMin: 675,
       source: "phone",
@@ -52,5 +56,36 @@ describe("book appointment body (2.3.4)", () => {
       expect(r.ok).toBe(true);
       if (r.ok) expect(r.value.complaint).toBeNull();
     }
+  });
+
+  it("takes any length 5-240 in 5-minute steps (owner 2026-11-26)", () => {
+    const base = {
+      patientId: "p1",
+      visitTypeId: "v1",
+      doctorId: "d1",
+      dateLocal: "2026-11-24",
+      startMin: 600,
+      source: "phone",
+    };
+    for (const bad of [4, 0, 245, 37, 30.5]) {
+      expect(parseBookAppointment({ ...base, durationMin: bad }).ok).toBe(false);
+    }
+    for (const good of [5, 30, 75, 240]) {
+      const r = parseBookAppointment({ ...base, durationMin: good });
+      expect(r.ok && r.value.durationMin).toBe(good);
+    }
+    const none = parseBookAppointment(base);
+    expect(none.ok && none.value.durationMin).toBeUndefined();
+  });
+
+  it("needs a doctor", () => {
+    const r = parseBookAppointment({
+      patientId: "p1",
+      visitTypeId: "v1",
+      dateLocal: "2026-11-24",
+      startMin: 600,
+      source: "phone",
+    });
+    expect(r).toEqual({ ok: false, message: "Choose a doctor." });
   });
 });

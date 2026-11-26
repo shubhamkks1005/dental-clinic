@@ -64,5 +64,6 @@
   "0062_consultation_fee.sql": "3918d6c70672329a1666319609ecbac010196d92b26a0f09faa134380c850136",
   "0063_bills_one_live_per_visit.sql": "dcdf241cd6057e083ece2793015b31e767cbe1c6b58cb51c3f98e1697c5f25bb",
   "0064_qr_image_setting.sql": "3e55f107325a358b53fa70bca35395bad84b7dc55bc165d8500759c24c9abbbd",
-  "0065_list_items_duplicates.sql": "5deeeba54babff8a53e234d2c3c5f94b7b424ec610f48e2862df333c8b522089"
+  "0065_list_items_duplicates.sql": "5deeeba54babff8a53e234d2c3c5f94b7b424ec610f48e2862df333c8b522089",
+  "0066_doctors_on_appointments.sql": "b1f01e0521156f8aaca49d0139a5b92099788f369bcb541139de0e6fd0d10df5"
 }

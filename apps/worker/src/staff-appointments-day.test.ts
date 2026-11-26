@@ -22,6 +22,8 @@ describe("GET /api/staff/appointments?date= (day list)", () => {
       "currentBreak",
       "dateLocal",
       "lastOrderChange",
+      "leaves",
+      "openBreaks",
       "serverNow",
       "window",
     ]);

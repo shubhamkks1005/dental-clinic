@@ -7,6 +7,8 @@ import { appointments } from "../schema";
 export type AppointmentInsertValues = {
   id: string;
   patientId: string;
+  /** The booking's doctor; their own chair is chairForDoctor(doctorId). */
+  doctorId: string;
   chairId: string;
   visitTypeId: string;
   visitTypeLabel: string;
@@ -47,6 +49,7 @@ function appointmentInsertCells(values: AppointmentInsertValues) {
     createdBy: values.createdBy,
     updatedBy: values.updatedBy,
     patientId: values.patientId,
+    doctorId: values.doctorId,
     chairId: values.chairId,
     visitTypeId: values.visitTypeId,
     visitTypeLabel: values.visitTypeLabel,
@@ -68,22 +71,30 @@ function appointmentInsertCells(values: AppointmentInsertValues) {
   };
 }
 
-// INSERT ... SELECT WHERE NOT EXISTS (overlap). Pair with auditInsertIfChanged (2.3.4).
-export function insertAppointmentIfFree(db: Db, values: AppointmentInsertValues) {
+/**
+ * Clashes are allowed (owner 2026-11-26), so overlap no longer refuses a booking. Only an exact
+ * repeat is refused: the same patient, doctor, day and start while that booking is still busy.
+ * This stops a double click or two desks from making two rows. A move never counts the row it
+ * moves from. Pair with auditInsertIfChanged.
+ */
+export function insertAppointmentUnlessRepeat(db: Db, values: AppointmentInsertValues) {
   const busy = APPOINTMENT_BUSY_STATUSES.map((s) => sql`${s}`);
-  const free = sql`
+  const notRepeat = sql`
     NOT EXISTS (
       SELECT 1 FROM appointments
-      WHERE chair_id = ${values.chairId}
+      WHERE patient_id = ${values.patientId}
+        AND doctor_id = ${values.doctorId}
         AND date_local = ${values.dateLocal}
+        AND start_min = ${values.startMin}
         AND deleted_at IS NULL
         AND status IN (${sql.join(busy, sql`, `)})
-        AND start_min < ${values.endMin}
-        AND end_min > ${values.startMin}
+        AND id <> ${values.rescheduledFrom ?? ""}
     )
   `;
-  return insertSelectWhere(db, appointments, appointmentInsertCells(values), free);
+  return insertSelectWhere(db, appointments, appointmentInsertCells(values), notRepeat);
 }
+
+export const REPEAT_BOOKING_MESSAGE = "This patient is already booked at that time.";
 
 // 2.3.7 emergency overbook: insert even when the chair slot overlaps a busy row.
 export function insertAppointmentAllowingOverlap(db: Db, values: AppointmentInsertValues) {

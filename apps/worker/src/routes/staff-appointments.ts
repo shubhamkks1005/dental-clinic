@@ -18,7 +18,13 @@ export const staffAppointments = new Hono<AppEnv>();
 
 staffAppointments.get("/appointments", async (c) => {
   const { repos, ctx } = signedIn(c);
-  const result = await listDayAppointments(repos, c.req.query("date"), ctx.role);
+  const result = await listDayAppointments(
+    repos,
+    c.req.query("date"),
+    ctx.role,
+    new Date(),
+    ctx.userId,
+  );
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(
     ok({
@@ -28,6 +34,8 @@ staffAppointments.get("/appointments", async (c) => {
       appointments: result.appointments,
       lastOrderChange: result.lastOrderChange,
       currentBreak: result.currentBreak,
+      openBreaks: result.openBreaks,
+      leaves: result.leaves,
     }),
   );
 });
@@ -40,6 +48,8 @@ staffAppointments.get("/appointments/range", async (c) => {
     c.req.query("from") ?? "",
     c.req.query("to") ?? "",
     ctx.role,
+    new Date(),
+    ctx.userId,
   );
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ days: result.days }));

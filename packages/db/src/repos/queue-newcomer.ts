@@ -4,16 +4,17 @@ import type { Db } from "../client";
 import { intSetting } from "./int-setting";
 
 /**
- * Where a row that just arrived goes in the doctor's saved order. When nobody has reordered the
- * day (no queue numbers) this is NULL and the old arrival-time rule applies; otherwise the row
- * goes to the back (highest number + one step). A row that already has a number keeps it.
+ * Where a row that just arrived goes in ITS doctor's saved order (each doctor has their own queue,
+ * owner 2026-11-26). When that doctor has not reordered the day (no queue numbers) this is NULL and
+ * the arrival-time rule applies; otherwise the row goes to the back (highest number + one step).
+ * A row that already has a number keeps it. Rows with no doctor share one old queue.
  */
-export function newcomerQueueOrder(dateLocal: string) {
-  return sql`(SELECT CASE WHEN count(queue_order) > 0 THEN max(queue_order) + ${QUEUE_STEP} END FROM appointments WHERE date_local = ${dateLocal} AND deleted_at IS NULL)`;
+export function newcomerQueueOrder(dateLocal: string, doctorId: string | null) {
+  return sql`(SELECT CASE WHEN count(queue_order) > 0 THEN max(queue_order) + ${QUEUE_STEP} END FROM appointments WHERE doctor_id IS ${doctorId} AND date_local = ${dateLocal} AND deleted_at IS NULL)`;
 }
 
-export const keepOrElseNewcomer = (dateLocal: string) =>
-  sql`COALESCE(queue_order, ${newcomerQueueOrder(dateLocal)})`;
+export const keepOrElseNewcomer = (dateLocal: string, doctorId: string | null) =>
+  sql`COALESCE(queue_order, ${newcomerQueueOrder(dateLocal, doctorId)})`;
 
 export function lateAfterMinutes(db: Db): Promise<number> {
   return intSetting(

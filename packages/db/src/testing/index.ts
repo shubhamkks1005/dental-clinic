@@ -5,3 +5,4 @@ export { REPO_ROOT } from "./paths";
 export { sourceFiles, type SourceFile } from "./repo-files";
 export { countingDb } from "./counting-d1";
 export { migratedSqlite, testDb } from "./test-db";
+export { addFakeDoctor, addFakeLeave } from "./fake-doctors";

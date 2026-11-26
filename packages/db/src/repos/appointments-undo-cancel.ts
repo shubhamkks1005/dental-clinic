@@ -10,8 +10,9 @@ import { appointments } from "../schema";
 /** The toast offers Undo for 10 seconds; the server allows a little longer for a slow network. */
 export const UNDO_CANCEL_SECONDS = 120;
 
-// PA-M06 Undo after cancel. Only a "just cancelled" appointment goes back to scheduled, and only
-// if its time is still free (checked in the same UPDATE). Nothing is deleted; an audit row says so.
+// PA-M06 Undo after cancel. Only a "just cancelled" appointment goes back to scheduled. Clashes are
+// allowed (owner 2026-11-26), so a time taken meanwhile does not stop it; only an exact repeat of
+// the same patient, doctor and start does (checked in the same UPDATE). Nothing is deleted.
 export function appointmentsUndoCancelRepo(db: Db, ctx: Ctx) {
   return {
     async undoCancel(id: string, version: number, now: Date = new Date()) {
@@ -48,10 +49,10 @@ export function appointmentsUndoCancelRepo(db: Db, ctx: Ctx) {
               isNull(appointments.deletedAt),
               sql`NOT EXISTS (
                 SELECT 1 FROM appointments o
-                WHERE o.id <> ${id} AND o.chair_id = ${row.chairId}
-                  AND o.date_local = ${row.dateLocal} AND o.deleted_at IS NULL
-                  AND o.status IN (${sql.join(busy, sql`, `)})
-                  AND o.start_min < ${row.endMin} AND o.end_min > ${row.startMin}
+                WHERE o.id <> ${id} AND o.patient_id = ${row.patientId}
+                  AND o.doctor_id IS ${row.doctorId}
+                  AND o.date_local = ${row.dateLocal} AND o.start_min = ${row.startMin}
+                  AND o.deleted_at IS NULL AND o.status IN (${sql.join(busy, sql`, `)})
               )`,
             ),
           ),
@@ -70,7 +71,7 @@ export function appointmentsUndoCancelRepo(db: Db, ctx: Ctx) {
         .get();
       if (!next || next.status !== "scheduled" || next.version !== row.version + 1) {
         throw new ConflictError(
-          "That time was taken or the appointment changed. Book the patient again.",
+          "The patient was booked again at that time, or the appointment changed. Reload.",
         );
       }
       return { id, status: "scheduled" as const, version: next.version };

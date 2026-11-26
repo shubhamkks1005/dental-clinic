@@ -6,6 +6,8 @@ import {
   daysBetweenOn,
   istDate,
   type AppointmentDayReply,
+  type CurrentBreak,
+  type DayLeave,
   type Role,
 } from "@clinic/shared";
 import { clinicClock } from "./appointments";
@@ -55,12 +57,39 @@ function withMarks(rows: DayRows, marks: Awaited<ReturnType<typeof loadMarks>>, 
 
 export type DayAppointmentView = ReturnType<typeof withMarks>[number];
 
+/**
+ * "Dr X on leave" per day for the whole range, and the breaks on now when today is shown: one
+ * round trip. A doctor sees only their own leave. A failed read means no leave lines, no break.
+ */
+async function loadDoctorDays(
+  repos: Repos,
+  from: string,
+  to: string,
+  today: string | null,
+  role: Role,
+  userId: string,
+) {
+  const got = await repos.doctorLeaves
+    .withOpenBreaks(from, to, today)
+    .catch(() => ({ leaves: new Map<string, DayLeave[]>(), openBreaks: [] as CurrentBreak[] }));
+  if (role === "doctor") {
+    for (const [day, list] of got.leaves) {
+      got.leaves.set(
+        day,
+        list.filter((l) => l.doctorId === userId),
+      );
+    }
+  }
+  return got;
+}
+
 /** Day view payload (2.4.1): appointments + clinic window + server clock. */
 export async function listDayAppointments(
   repos: Repos,
   dateRaw: string | undefined,
   role: Role,
   now: Date = new Date(),
+  userId = "",
 ) {
   const dateLocal = dateRaw && dateRaw.length > 0 ? dateRaw : istDate(now);
   if (!DATE_LOCAL.test(dateLocal)) {
@@ -68,10 +97,20 @@ export async function listDayAppointments(
   }
   // listForDay asserts appointments.manage first so denied roles get 403.
   const rows = await repos.appointments.listForDay(dateLocal);
-  const [marks, { timings, holidays }, extras] = await Promise.all([
+  const isToday = dateLocal === istDate(now);
+  const doctorDays = loadDoctorDays(
+    repos,
+    dateLocal,
+    dateLocal,
+    isToday ? dateLocal : null,
+    role,
+    userId,
+  );
+  const [marks, { timings, holidays }, extras, { leaves }] = await Promise.all([
     loadMarks(repos, rows, role),
     clinicClock(repos),
-    loadQueueExtras(repos, rows, dateLocal === istDate(now), dateLocal),
+    doctorDays.then((d) => loadQueueExtras(repos, rows, d.openBreaks)),
+    doctorDays,
   ]);
   return {
     ok: true as const,
@@ -80,6 +119,7 @@ export async function listDayAppointments(
     window: dayWindow(dateLocal, timings, holidays),
     appointments: withMarks(rows, marks, role),
     ...extras,
+    leaves: leaves.get(dateLocal) ?? [],
   };
 }
 
@@ -104,6 +144,7 @@ export async function listRangeAppointments(
   to: string,
   role: Role,
   now: Date = new Date(),
+  userId = "",
 ) {
   const problem = rangeProblem(from, to);
   if (problem) {
@@ -114,17 +155,20 @@ export async function listRangeAppointments(
   const rows = await repos.appointments.listForRange(from, to);
   const today = istDate(now);
   const inRange = today >= from && today <= to;
-  const [marks, { timings, holidays }, todayExtras] = await Promise.all([
+  const doctorDays = loadDoctorDays(repos, from, to, inRange ? today : null, role, userId);
+  const [marks, { timings, holidays }, todayExtras, { leaves }] = await Promise.all([
     loadMarks(repos, rows, role),
     clinicClock(repos),
     inRange
-      ? loadQueueExtras(
-          repos,
-          rows.filter((a) => a.dateLocal === today),
-          true,
-          today,
+      ? doctorDays.then((d) =>
+          loadQueueExtras(
+            repos,
+            rows.filter((a) => a.dateLocal === today),
+            d.openBreaks,
+          ),
         )
       : Promise.resolve(null),
+    doctorDays,
   ]);
   const marked = withMarks(rows, marks, role);
   const serverNow = now.toISOString();
@@ -137,6 +181,8 @@ export async function listRangeAppointments(
       appointments: marked.filter((a) => a.dateLocal === d),
       lastOrderChange: d === today ? (todayExtras?.lastOrderChange ?? null) : null,
       currentBreak: d === today ? (todayExtras?.currentBreak ?? null) : null,
+      openBreaks: d === today ? (todayExtras?.openBreaks ?? []) : [],
+      leaves: leaves.get(d) ?? [],
     });
   }
   return { ok: true as const, days };

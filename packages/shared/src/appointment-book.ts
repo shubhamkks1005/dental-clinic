@@ -1,11 +1,28 @@
 import { z } from "zod";
 import { APPOINTMENT_PRIORITIES, APPOINTMENT_SOURCES } from "./appointments";
 
-// 2.3.4 book body. Duration comes from the visit type on the server (snapshotted).
+// 2.3.4 book body. The visit type gives the default length; durationMin overrides it
+// (owner 2026-11-26: any length, 5-240 min in 5-min steps). Each booking names its doctor.
 // 2.3.5: optional overrideReason bypasses soft rules (past/closed/lunch/ahead) and sets overbook.
+/** Any length the desk types (HTML: min 5, max 240, step 5). */
+export const durationMinSchema = z
+  .number({ error: "Type the length in minutes." })
+  .int("Use whole minutes.")
+  .min(5, "At least 5 minutes.")
+  .max(240, "At most 240 minutes.")
+  .multipleOf(5, "Use steps of 5 minutes.");
+
+export const doctorIdSchema = z
+  .string({ error: "Choose a doctor." })
+  .trim()
+  .min(1, "Choose a doctor.")
+  .max(40);
+
 export const bookAppointmentSchema = z.object({
   patientId: z.string().trim().min(1, "Choose a patient.").max(40),
   visitTypeId: z.string().trim().min(1, "Choose a visit type.").max(40),
+  doctorId: doctorIdSchema,
+  durationMin: durationMinSchema.optional(),
   dateLocal: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date.")

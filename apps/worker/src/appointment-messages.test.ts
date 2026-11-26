@@ -16,6 +16,7 @@ function futureDay(n: number): string {
 beforeEach(() => {
   ({ env, sqlite } = makeEnv());
   addStaff(sqlite, { id: "rec-1", email: "rec@example.test", role: "receptionist" });
+  addStaff(sqlite, { id: "doc-a", email: "doc@example.test" });
   const ins = sqlite.prepare(
     `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, no_mobile_reason, guardian_name, guardian_mobile, status)
      VALUES (?, 'system', 'system', ?, ?, 'female', ?, ?, ?, ?, ?, 'active')`,
@@ -59,6 +60,7 @@ async function book(patientId: string, startMin: number) {
   const res = await post("/appointments", {
     patientId,
     visitTypeId: VISIT_ID,
+    doctorId: "doc-a",
     dateLocal: futureDay(3),
     startMin,
     source: "phone",

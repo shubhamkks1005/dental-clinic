@@ -7,15 +7,15 @@ import {
   visitTypeSnapshot,
   type FreeSlot,
   type Holiday,
-  type ListItem,
   type Timings,
 } from "@clinic/shared";
-import { and, eq, gte, isNull, lte } from "drizzle-orm";
+import { and, eq, gte, isNull, lte, or } from "drizzle-orm";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
-import { InvalidError, NotFoundError } from "../errors";
+import { InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, listItems } from "../schema";
+import { appointments } from "../schema";
+import { loadVisitType } from "./visit-type-load";
 
 export type SuggestSlotsOptions = {
   timings: Timings;
@@ -26,26 +26,9 @@ export type SuggestSlotsOptions = {
   limit?: number;
   /** How many days to look at, starting at fromDate (default 14; 1 = that day only). */
   searchDays?: number;
+  /** Only this doctor's own chair (each doctor has their own chair). */
+  doctorId?: string;
 };
-
-async function loadVisitType(db: Db, id: string): Promise<ListItem> {
-  const row = await db
-    .select()
-    .from(listItems)
-    .where(
-      and(eq(listItems.id, id), eq(listItems.listKey, "visit_types"), isNull(listItems.deletedAt)),
-    )
-    .get();
-  if (!row || !row.active) throw new NotFoundError("That visit type");
-  return {
-    id: row.id,
-    label: row.label,
-    data: JSON.parse(row.dataJson) as ListItem["data"],
-    active: row.active,
-    sortOrder: row.sortOrder,
-    version: row.version,
-  };
-}
 
 export function appointmentsSlotsRepo(db: Db, ctx: Ctx) {
   return {
@@ -75,6 +58,9 @@ export function appointmentsSlotsRepo(db: Db, ctx: Ctx) {
             isNull(appointments.deletedAt),
             gte(appointments.dateLocal, fromDate),
             lte(appointments.dateLocal, endDate),
+            opts.doctorId
+              ? or(eq(appointments.doctorId, opts.doctorId), isNull(appointments.doctorId))
+              : undefined,
           ),
         )
         .all();

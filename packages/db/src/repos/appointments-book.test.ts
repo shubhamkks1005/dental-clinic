@@ -2,7 +2,7 @@ import type { Timings } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
 import { ConflictError, ForbiddenError, InvalidError } from "../errors";
-import { testDb } from "../testing";
+import { addFakeDoctor, addFakeLeave, testDb } from "../testing";
 import { createRepos } from "./index";
 import type { BookAppointmentOptions } from "./appointments-book";
 
@@ -52,6 +52,7 @@ const opts = (over: Partial<BookAppointmentOptions> = {}): BookAppointmentOption
 
 beforeEach(() => {
   t = testDb();
+  addFakeDoctor(t.sqlite);
   t.sqlite
     .prepare(
       `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
@@ -63,6 +64,7 @@ beforeEach(() => {
 const bookBody = {
   patientId: PATIENT_ID,
   visitTypeId: VISIT_ID,
+  doctorId: "doc-a",
   dateLocal: "2026-11-23",
   startMin: 10 * 60,
   source: "phone" as const,
@@ -105,14 +107,67 @@ describe("book appointment overlap (2.3.4)", () => {
     expect(t.sqlite.prepare("SELECT COUNT(*) AS n FROM audit_log").get()).toEqual({ n: 1 });
   });
 
-  it("overlapping later start is refused; adjacent end-to-start is allowed", async () => {
+  it("clashes are allowed (owner 2026-11-26): overlap books; only an exact repeat is refused", async () => {
     await repos().appointments.book(bookBody, opts());
+    const overlap = await repos().appointments.book(
+      { ...bookBody, startMin: 10 * 60 + 15 },
+      opts(),
+    );
+    expect(overlap.startMin).toBe(615);
+    await expect(repos().appointments.book(bookBody, opts())).rejects.toThrow(
+      "This patient is already booked at that time.",
+    );
+    t.sqlite
+      .prepare(
+        `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
+         VALUES ('p-two', 'system', 'system', 'P-009998', 'Fake Second', 'male', 40, '+919900001112', 'active')`,
+      )
+      .run();
+    await repos().appointments.book({ ...bookBody, patientId: "p-two" }, opts());
+    expect(t.sqlite.prepare("SELECT COUNT(*) AS n FROM appointments").get()).toEqual({ n: 3 });
+  });
+
+  it("stores the doctor and the doctor's own chair", async () => {
+    const booked = await repos().appointments.book(bookBody, opts());
+    expect(booked.doctorId).toBe("doc-a");
+    expect(
+      t.sqlite.prepare("SELECT doctor_id, chair_id FROM appointments WHERE id = ?").get(booked.id),
+    ).toEqual({ doctor_id: "doc-a", chair_id: "doc:doc-a" });
+  });
+
+  it("any length: durationMin overrides the visit type's 30 minutes", async () => {
+    const booked = await repos().appointments.book({ ...bookBody, durationMin: 75 }, opts());
+    expect(booked.endMin).toBe(600 + 75);
+    const plain = await repos().appointments.book({ ...bookBody, startMin: 12 * 60 }, opts());
+    expect(plain.endMin - plain.startMin).toBe(30);
+  });
+
+  it("a doctor books only for themself; the desk books for any active doctor (owner Q3)", async () => {
+    addFakeDoctor(t.sqlite, "doc-b", "Dr. Fake Bina", "2026-02-01T00:00:00.000Z");
     await expect(
-      repos().appointments.book({ ...bookBody, startMin: 10 * 60 + 15 }, opts()),
-    ).rejects.toBeInstanceOf(ConflictError);
-    const next = await repos().appointments.book({ ...bookBody, startMin: 10 * 60 + 30 }, opts());
-    expect(next.startMin).toBe(630);
-    expect(t.sqlite.prepare("SELECT COUNT(*) AS n FROM appointments").get()).toEqual({ n: 2 });
+      repos().appointments.book({ ...bookBody, doctorId: "doc-b" }, opts()),
+    ).rejects.toThrow("You can book only for yourself.");
+    const forB = await repos(receptionist).appointments.book(
+      { ...bookBody, doctorId: "doc-b" },
+      opts(),
+    );
+    expect(forB.doctorId).toBe("doc-b");
+    await expect(
+      repos(receptionist).appointments.book({ ...bookBody, doctorId: "nobody" }, opts()),
+    ).rejects.toThrow("That doctor was not found");
+  });
+
+  it("the doctor's leave day is a soft rule (override books it)", async () => {
+    addFakeLeave(t.sqlite, "doc-a", "2026-11-24");
+    const tue = { ...bookBody, dateLocal: "2026-11-24" };
+    await expect(repos().appointments.book(tue, opts())).rejects.toThrow(
+      "Dr. Fake Asha is on leave that day.",
+    );
+    const booked = await repos().appointments.book(
+      { ...tue, overrideReason: "Doctor agreed" },
+      opts(),
+    );
+    expect(booked.overbook).toBe(true);
   });
 
   it("developer cannot book; receptionist can", async () => {

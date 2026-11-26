@@ -53,75 +53,90 @@ async function addPatient(input: {
   ]);
 }
 
-describe("patientDuplicatesRepo (2.1.7)", () => {
-  it("warns when Rahul Sharma and Rahul Sarma share a mobile", async () => {
+const probe = (fullName: string, mobile: string | null, secondary: string | null = null) =>
+  patientDuplicatesRepo(db, doctor).findWarnings({
+    fullName,
+    mobile,
+    mobileSecondary: secondary,
+    dateOfBirth: null,
+    ageYearsAtReg: 30,
+    onDate: day,
+  });
+
+describe("patientDuplicatesRepo (2.1.7, owner Q5 2026-11-26)", () => {
+  it("same first name and same mobile: first_name_mobile", async () => {
     await addPatient({
-      id: "p1",
+      id: "a",
       code: "P-000001",
-      fullName: "Rahul Sharma",
-      mobile: "+919876543210",
-      age: 34,
-    });
-    const hits = await patientDuplicatesRepo(db, doctor).findWarnings({
-      fullName: "Rahul Sarma",
-      mobile: "9876543210",
-      mobileSecondary: null,
-      dateOfBirth: null,
-      ageYearsAtReg: 34,
-      onDate: day,
-    });
-    expect(hits).toHaveLength(1);
-    expect(hits[0]?.fullName).toBe("Rahul Sharma");
-    expect(hits[0]?.reason).toBe("mobile_name");
-  });
-
-  it("warns for two brothers on the same mobile but still returns soft hits only", async () => {
-    await addPatient({
-      id: "b1",
-      code: "P-000010",
-      fullName: "Amit Kumar",
+      fullName: "Aakash Verma",
       mobile: "+919000001111",
-      age: 20,
     });
-    const hits = await patientDuplicatesRepo(db, doctor).findWarnings({
-      fullName: "Suresh Kumar",
-      mobile: "9000001111",
-      mobileSecondary: null,
-      dateOfBirth: null,
-      ageYearsAtReg: 18,
-      onDate: day,
-    });
-    expect(hits.some((h) => h.reason === "mobile_name")).toBe(true);
-    // Soft warning: callers never hard-block; this function only lists hits.
-    expect(hits.length).toBeLessThanOrEqual(3);
+    const hits = await probe("aakash K", "90000 01111");
+    expect(hits).toEqual([
+      expect.objectContaining({ id: "a", code: "P-000001", reason: "first_name_mobile" }),
+    ]);
   });
 
-  it("an exact mobile match is not cut off by three weaker name matches", async () => {
-    for (let i = 1; i <= 4; i++) {
+  it("family on one mobile: mobile_only, and same-first-name hits come first", async () => {
+    await addPatient({
+      id: "w",
+      code: "P-000002",
+      fullName: "Ritu Verma",
+      mobile: "+919000001111",
+    });
+    await addPatient({
+      id: "h",
+      code: "P-000003",
+      fullName: "Aakash Verma",
+      mobile: "+919000001111",
+    });
+    const hits = await probe("Aakash Verma", "9000001111");
+    expect(hits.map((h) => [h.id, h.reason])).toEqual([
+      ["h", "first_name_mobile"],
+      ["w", "mobile_only"],
+    ]);
+  });
+
+  it("the other mobile matches too", async () => {
+    await addPatient({
+      id: "s",
+      code: "P-000004",
+      fullName: "Sunita Rao",
+      mobile: "+919111111111",
+      secondary: "+919000004444",
+    });
+    expect((await probe("Sunita", "9000004444"))[0]?.reason).toBe("first_name_mobile");
+  });
+
+  it("same name on another mobile is no longer a match (no name+age rule)", async () => {
+    await addPatient({
+      id: "n",
+      code: "P-000005",
+      fullName: "Aakash Verma",
+      mobile: "+919000005555",
+    });
+    expect(await probe("Aakash Verma", "9000006666")).toEqual([]);
+    expect(await probe("Aakash Verma", null)).toEqual([]);
+  });
+
+  it("caps at 3 but never cuts a same-first-name hit", async () => {
+    for (let i = 0; i < 4; i++) {
       await addPatient({
-        id: `n${i}`,
-        code: `P-00010${i}`,
-        fullName: `Meena Tester${i}`,
-        mobile: `+91900000000${i}`,
+        id: `m${i}`,
+        code: `P-00001${i}`,
+        fullName: `Other${i} Shah`,
+        mobile: "+919000007777",
       });
     }
     await addPatient({
       id: "exact",
-      code: "P-000200",
-      fullName: "Meena Tester",
-      mobile: "+919123456789",
+      code: "P-000019",
+      fullName: "Kiran Shah",
+      mobile: "+919000007777",
     });
-    const hits = await patientDuplicatesRepo(db, doctor).findWarnings({
-      fullName: "Meena Tester",
-      mobile: "9123456789",
-      mobileSecondary: null,
-      dateOfBirth: null,
-      ageYearsAtReg: 30,
-      onDate: day,
-    });
-    expect(hits[0]?.id).toBe("exact");
-    expect(hits[0]?.reason).toBe("mobile_name");
-    expect(hits.length).toBeLessThanOrEqual(3);
+    const hits = await probe("Kiran", "9000007777");
+    expect(hits[0]).toMatchObject({ id: "exact", reason: "first_name_mobile" });
+    expect(hits).toHaveLength(3);
   });
 
   it("returns nothing for unrelated people", async () => {

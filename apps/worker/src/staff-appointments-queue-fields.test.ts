@@ -86,7 +86,8 @@ describe("day list: queue fields", () => {
     expect(busiest.body.data.lastOrderChange?.byName).toBe("Test receptionist");
     expect(busiest.body.data.currentBreak).not.toBeNull();
     // Server-Timing counts the session reads too. Measured 2026-11-25: before T1.7 a day list was 10; now a plain day is 9 (settings merged into one read) and the busiest case (today, with a break and an order change) is 10.
-    expect(plain.roundTrips).toBeLessThanOrEqual(9);
+    // 2026-11-26 (0066): the leave days are read on every day (batched with the breaks on today), so a plain day is 10 too.
+    expect(plain.roundTrips).toBeLessThanOrEqual(10);
     expect(busiest.roundTrips).toBeLessThanOrEqual(10);
   });
 

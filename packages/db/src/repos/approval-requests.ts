@@ -5,13 +5,14 @@ import {
   type ApprovalType,
   type CreateApprovalInput,
 } from "@clinic/shared";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, or, sql } from "drizzle-orm";
 import { auditInsert, auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
-import { ConflictError, NotFoundError } from "../errors";
+import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, approvalRequests as ar, bills, patients, users } from "../schema";
+import { appointments, approvalRequests as ar, bills, patients, users, visits } from "../schema";
+import { doctorsRepo } from "./doctors";
 
 const CLOSED = "This request is already closed.";
 const OPEN_LIST_LIMIT = 50;
@@ -26,6 +27,7 @@ const selectItem = (db: Db) =>
       appointmentId: ar.appointmentId,
       patientId: ar.patientId,
       billId: ar.billId,
+      doctorId: ar.doctorId,
       patientName: patients.fullName,
       patientCode: patients.code,
       note: ar.note,
@@ -56,15 +58,33 @@ const toItem = (
 export function approvalRequestsRepo(db: Db, ctx: Ctx) {
   async function loadOpen(id: string, version: number) {
     const row = await db
-      .select({ id: ar.id, status: ar.status, version: ar.version, createdBy: ar.createdBy })
+      .select({
+        id: ar.id,
+        status: ar.status,
+        version: ar.version,
+        createdBy: ar.createdBy,
+        doctorId: ar.doctorId,
+      })
       .from(ar)
       .where(and(eq(ar.id, id), isNull(ar.deletedAt)))
       .get();
-    if (!row) throw new NotFoundError("That request");
+    // A doctor answers only requests sent to them (old rows with no doctor: anyone).
+    const notMine = ctx.role === "doctor" && row?.doctorId != null && row.doctorId !== ctx.userId;
+    if (!row || notMine) throw new NotFoundError("That request");
     if (row.status !== "open") throw new ConflictError(CLOSED);
     if (row.version !== version)
       throw new ConflictError("The request changed. Reload and try again.");
     return row;
+  }
+
+  /** A doctor sees requests sent to them, plus old ones that name no doctor. */
+  const forThisDoctor = () =>
+    ctx.role === "doctor" ? or(eq(ar.doctorId, ctx.userId), isNull(ar.doctorId)) : undefined;
+
+  async function onlyDoctorId(): Promise<string> {
+    const active = await doctorsRepo(db, ctx).listActive();
+    if (active.length === 1) return active[0]!.id;
+    throw new InvalidError("Choose the doctor to ask.");
   }
 
   // Closes an open request (answer or dismiss) in one batch with its audit row.
@@ -108,24 +128,31 @@ export function approvalRequestsRepo(db: Db, ctx: Ctx) {
     async createApproval(input: CreateApprovalInput): Promise<{ id: string }> {
       assertAllowed(ctx, "approvals.request");
       // The patient is filled in from the appointment or the bill, so the list needs no extra reads.
+      // The request goes to the patient's doctor (owner 2026-11-26): the booking's or the bill's
+      // visit doctor; with neither, the desk chooses (or the only active doctor is used).
       let patientId = input.patientId ?? null;
+      let doctorId: string | null = null;
       if (input.appointmentId) {
         const appt = await db
-          .select({ patientId: appointments.patientId })
+          .select({ patientId: appointments.patientId, doctorId: appointments.doctorId })
           .from(appointments)
           .where(and(eq(appointments.id, input.appointmentId), isNull(appointments.deletedAt)))
           .get();
         if (!appt) throw new NotFoundError("That appointment");
         patientId = patientId ?? appt.patientId;
+        doctorId = appt.doctorId;
       } else if (input.billId) {
         const bill = await db
-          .select({ patientId: bills.patientId })
+          .select({ patientId: bills.patientId, doctorId: visits.doctorId })
           .from(bills)
+          .leftJoin(visits, eq(visits.id, bills.visitId))
           .where(and(eq(bills.id, input.billId), isNull(bills.deletedAt)))
           .get();
         if (!bill) throw new NotFoundError("That bill");
         patientId = patientId ?? bill.patientId;
+        doctorId = bill.doctorId;
       }
+      doctorId = input.doctorId ?? doctorId ?? (await onlyDoctorId());
       const id = newUlid();
       try {
         await db.batch([
@@ -136,6 +163,7 @@ export function approvalRequestsRepo(db: Db, ctx: Ctx) {
             appointmentId: input.appointmentId ?? null,
             patientId,
             billId: input.billId ?? null,
+            doctorId,
             note: input.note,
             detail: input.detail ?? null,
             urgent: input.urgent,
@@ -149,6 +177,7 @@ export function approvalRequestsRepo(db: Db, ctx: Ctx) {
             after: {
               type: input.type,
               appointmentId: input.appointmentId ?? null,
+              doctorId,
               urgent: input.urgent,
             },
           }),
@@ -166,7 +195,7 @@ export function approvalRequestsRepo(db: Db, ctx: Ctx) {
     async listOpenApprovals(): Promise<ApprovalItem[]> {
       assertAllowed(ctx, "approvals.answer");
       const rows = await selectItem(db)
-        .where(and(eq(ar.status, "open"), isNull(ar.deletedAt)))
+        .where(and(eq(ar.status, "open"), isNull(ar.deletedAt), forThisDoctor()))
         .orderBy(desc(ar.urgent), asc(ar.createdAt))
         .limit(OPEN_LIST_LIMIT)
         .all();

@@ -1,26 +1,32 @@
 import {
   bookingRuleViolations,
-  DEFAULT_CHAIR_ID,
+  chairForDoctor,
   istLocalToUtc,
   newUlid,
   visitTypeSnapshot,
   type BookAppointmentInput,
   type Holiday,
-  type ListItem,
   type Timings,
 } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
-import { ConflictError, InvalidError, NotFoundError } from "../errors";
+import { ConflictError, InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, listItems, patients } from "../schema";
-import { insertAppointmentIfFree, type AppointmentInsertValues } from "./appointment-insert";
+import { appointments } from "../schema";
+import {
+  insertAppointmentUnlessRepeat,
+  REPEAT_BOOKING_MESSAGE,
+  type AppointmentInsertValues,
+} from "./appointment-insert";
+import { requireBookingDoctor } from "./doctors";
+import { loadVisitType, requireBookablePatient } from "./visit-type-load";
 
 export type BookedAppointment = {
   id: string;
   patientId: string;
+  doctorId: string;
   visitTypeLabel: string;
   dateLocal: string;
   startMin: number;
@@ -38,38 +44,8 @@ export type BookAppointmentOptions = {
   now: Date;
 };
 
-async function loadVisitType(db: Db, id: string): Promise<ListItem> {
-  const row = await db
-    .select()
-    .from(listItems)
-    .where(
-      and(eq(listItems.id, id), eq(listItems.listKey, "visit_types"), isNull(listItems.deletedAt)),
-    )
-    .get();
-  if (!row || !row.active) throw new NotFoundError("That visit type");
-  return {
-    id: row.id,
-    label: row.label,
-    data: JSON.parse(row.dataJson) as ListItem["data"],
-    active: row.active,
-    sortOrder: row.sortOrder,
-    version: row.version,
-  };
-}
-
-async function requirePatient(db: Db, id: string) {
-  const row = await db
-    .select({ id: patients.id, status: patients.status })
-    .from(patients)
-    .where(and(eq(patients.id, id), isNull(patients.deletedAt)))
-    .get();
-  if (!row) throw new NotFoundError("That patient");
-  if (row.status !== "active") {
-    throw new InvalidError("This patient is archived. Restore them before booking.");
-  }
-}
-
-// 2.3.4 overlap race + 2.3.5 soft rules (past/closed/lunch/ahead) with override → overbook.
+// 2.3.4 + 2.3.5 soft rules (past/closed/lunch/ahead/doctor leave) with override → overbook.
+// Clashes are allowed (owner 2026-11-26); only an exact repeat booking is refused.
 export function appointmentsBookRepo(db: Db, ctx: Ctx) {
   return {
     async book(
@@ -77,10 +53,12 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
       opts: BookAppointmentOptions,
     ): Promise<BookedAppointment> {
       assertAllowed(ctx, "appointments.manage");
-      await requirePatient(db, input.patientId);
+      const doctor = await requireBookingDoctor(db, ctx, input.doctorId, input.dateLocal);
+      await requireBookablePatient(db, input.patientId);
       const visit = await loadVisitType(db, input.visitTypeId);
       const snap = visitTypeSnapshot(visit, opts.timings.slotMinutes);
-      const endMin = input.startMin + snap.durationMin;
+      const durationMin = input.durationMin ?? snap.durationMin;
+      const endMin = input.startMin + durationMin;
       if (endMin > 1440) {
         throw new InvalidError("That visit does not fit on this day. Pick an earlier time.");
       }
@@ -91,6 +69,8 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
         holidays: opts.holidays,
         bookAheadDays: opts.bookAheadDays,
         now: opts.now,
+        leaveDays: doctor.onLeave ? [input.dateLocal] : [],
+        doctorName: doctor.name,
       });
       const overrideReason = input.overrideReason ?? null;
       if (violations.length > 0 && !overrideReason) {
@@ -102,7 +82,8 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
       const values: AppointmentInsertValues = {
         id,
         patientId: input.patientId,
-        chairId: DEFAULT_CHAIR_ID,
+        doctorId: doctor.id,
+        chairId: chairForDoctor(doctor.id),
         visitTypeId: snap.visitTypeId,
         visitTypeLabel: snap.visitTypeLabel,
         startAt: istLocalToUtc(input.dateLocal, input.startMin).toISOString(),
@@ -120,9 +101,11 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
 
       const after: Record<string, unknown> = {
         patientId: values.patientId,
+        doctorId: values.doctorId,
         dateLocal: values.dateLocal,
         startMin: values.startMin,
         endMin: values.endMin,
+        durationMin,
         visitTypeLabel: values.visitTypeLabel,
         source: values.source,
         overbook: values.overbook,
@@ -133,7 +116,7 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
       }
 
       await db.batch([
-        insertAppointmentIfFree(db, values),
+        insertAppointmentUnlessRepeat(db, values),
         auditInsertIfChanged(db, ctx, {
           action: "create",
           table: "appointments",
@@ -146,6 +129,7 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
         .select({
           id: appointments.id,
           patientId: appointments.patientId,
+          doctorId: appointments.doctorId,
           visitTypeLabel: appointments.visitTypeLabel,
           dateLocal: appointments.dateLocal,
           startMin: appointments.startMin,
@@ -159,11 +143,12 @@ export function appointmentsBookRepo(db: Db, ctx: Ctx) {
         .where(eq(appointments.id, id))
         .get();
       if (!row || row.status !== "scheduled") {
-        throw new ConflictError("That time was just taken. Pick another slot from the fresh list.");
+        throw new ConflictError(REPEAT_BOOKING_MESSAGE);
       }
       return {
         id: row.id,
         patientId: row.patientId,
+        doctorId: row.doctorId ?? doctor.id,
         visitTypeLabel: row.visitTypeLabel,
         dateLocal: row.dateLocal,
         startMin: row.startMin,

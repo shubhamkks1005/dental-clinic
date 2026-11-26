@@ -10,6 +10,8 @@ export const appointments = sqliteTable(
   {
     ...standardColumns(),
     patientId: text("patient_id").notNull(),
+    // Several doctors (0066): the booking's doctor; null only on rows made before any doctor existed.
+    doctorId: text("doctor_id"),
     chairId: text("chair_id").notNull(),
     // Copied at booking so later visit-type edits do not rewrite history (2.3.2).
     visitTypeId: text("visit_type_id").notNull(),
@@ -40,7 +42,8 @@ export const appointments = sqliteTable(
     index("appointments_chair_day_start_idx").on(t.chairId, t.dateLocal, t.startMin),
     index("appointments_patient_day_idx").on(t.patientId, t.dateLocal),
     index("appointments_day_status_idx").on(t.dateLocal, t.status),
-    index("appointments_day_queue_idx").on(t.dateLocal, t.queueOrder),
+    index("appointments_doctor_day_start_idx").on(t.doctorId, t.dateLocal, t.startMin),
+    index("appointments_day_queue_idx").on(t.doctorId, t.dateLocal, t.queueOrder),
     check("appointments_skip_count_min", sql.raw(`"skip_count" >= 0`)),
     check("appointments_status_check", oneOf(t.status.name, APPOINTMENT_STATUSES)),
     check("appointments_source_check", oneOf(t.source.name, APPOINTMENT_SOURCES)),

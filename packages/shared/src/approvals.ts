@@ -33,6 +33,8 @@ export const createApprovalSchema = z
     appointmentId: id.optional(),
     patientId: id.optional(),
     billId: id.optional(),
+    /** Several doctors (0066): who answers. Taken from the booking or bill when there is one. */
+    doctorId: id.optional(),
     note: z
       .string({ error: "Write a short note for the doctor." })
       .trim()
@@ -62,6 +64,8 @@ export type ApprovalItem = {
   appointmentId: string | null;
   patientId: string | null;
   billId: string | null;
+  /** The doctor who answers it (0066); null on requests made before several doctors. */
+  doctorId: string | null;
   patientName: string | null;
   patientCode: string | null;
   note: string;

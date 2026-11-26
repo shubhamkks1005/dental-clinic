@@ -1,7 +1,7 @@
 import { addIstDays, istDate, istLocalToUtc } from "./time";
 import { dayKeyOf, isHolidayOn, toMinutes, type Holiday, type Timings } from "./timings";
 
-export type BookingRuleCode = "past" | "closed" | "lunch" | "ahead";
+export type BookingRuleCode = "past" | "closed" | "lunch" | "ahead" | "doctor_leave";
 
 export type BookingRuleViolation = {
   code: BookingRuleCode;
@@ -50,6 +50,9 @@ export function bookingRuleViolations(input: {
   holidays: Holiday[];
   bookAheadDays: number;
   now: Date;
+  /** Leave days of the booking's doctor (owner 2026-11-26: soft rule, overridable). */
+  leaveDays?: readonly string[];
+  doctorName?: string;
 }): BookingRuleViolation[] {
   const { slot, timings, holidays, bookAheadDays, now } = input;
   const out: BookingRuleViolation[] = [];
@@ -82,6 +85,14 @@ export function bookingRuleViolations(input: {
     out.push({
       code: "ahead",
       message: `Bookings may only go ${bookAheadDays} days ahead. Pick an earlier day, or override with a reason.`,
+    });
+  }
+
+  if (input.leaveDays?.includes(slot.dateLocal)) {
+    const who = input.doctorName?.trim() || "The doctor";
+    out.push({
+      code: "doctor_leave",
+      message: `${who} is on leave that day. Pick another day, or override with a reason.`,
     });
   }
 

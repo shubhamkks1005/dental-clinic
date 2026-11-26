@@ -1,7 +1,7 @@
 import { sortWaitingQueue, type Timings } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
-import { testDb } from "../testing";
+import { addFakeDoctor, testDb } from "../testing";
 import { createRepos } from "./index";
 
 const doctor: Ctx = { userId: "doc-a", role: "doctor", requestId: "r1" };
@@ -39,6 +39,7 @@ const now = new Date("2026-11-23T04:35:00.000Z");
 
 beforeEach(() => {
   t = testDb();
+  addFakeDoctor(t.sqlite);
   for (const [id, code] of [
     ["p1", "P-000001"],
     ["p2", "P-000002"],
@@ -100,10 +101,10 @@ describe("walk-in and emergency (2.3.7)", () => {
     t.sqlite
       .prepare(
         `INSERT INTO appointments (
-           id, created_by, updated_by, patient_id, chair_id, visit_type_id, visit_type_label,
+           id, created_by, updated_by, patient_id, doctor_id, chair_id, visit_type_id, visit_type_label,
            start_at, date_local, start_min, end_min, status, source, priority, overbook
          ) VALUES (
-           'block', 'system', 'system', 'p1', '1', 'vt', 'Block',
+           'block', 'system', 'system', 'p1', 'doc-a', '1', 'vt', 'Block',
            '2026-11-23T04:30:00.000Z', '2026-11-23', 600, 1140, 'scheduled', 'phone', 'normal', 0
          )`,
       )

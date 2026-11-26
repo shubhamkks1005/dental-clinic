@@ -15,6 +15,7 @@ import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
 import { billItems, bills, patients, settings } from "../schema";
 import { nowUtcSql } from "../sql";
+import { billForThisDoctor } from "./bill-doctor-filter";
 import { billsGetRepo, type BillRow } from "./bills-get";
 
 export function assertDraft(status: string) {
@@ -61,6 +62,7 @@ export function billsDiscountRepo(db: Db, ctx: Ctx) {
             isNull(bills.deletedAt),
             sql`${bills.discountPaise} > 0`,
             isNull(bills.discountApprovedBy),
+            billForThisDoctor(ctx),
           ),
         )
         .orderBy(asc(bills.updatedAt))

@@ -1,5 +1,6 @@
 import { clinicWorkingIntervals } from "./booking-rules";
 import type { CurrentBreak } from "./breaks";
+import type { DayLeave } from "./doctor";
 import type { Holiday, Timings } from "./timings";
 
 export type DayWindow = {
@@ -24,6 +25,10 @@ export type AppointmentDayReply<A> = {
   lastOrderChange: LastOrderChange | null;
   /** The doctor's break that is on now, or null. In a week range: today only. */
   currentBreak: CurrentBreak | null;
+  /** Every break on now (a doctor: own; the desk: each doctor's). In a week range: today only. */
+  openBreaks: CurrentBreak[];
+  /** Doctors on leave that day ("Dr X on leave"; a doctor sees only their own). */
+  leaves: DayLeave[];
 };
 
 /** S3.2.2: GET /appointments/range replies with the days in order, from first to last. */

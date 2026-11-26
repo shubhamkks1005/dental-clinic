@@ -5,6 +5,7 @@ import {
   APPOINTMENT_SOURCES,
   APPOINTMENT_STATUSES,
   appointmentHoldsChair,
+  chairForDoctor,
   DEFAULT_CHAIR_ID,
 } from "./appointments";
 
@@ -31,5 +32,13 @@ describe("appointment enums (2.3.1)", () => {
     ]);
     expect(appointmentHoldsChair("scheduled")).toBe(true);
     expect(appointmentHoldsChair("cancelled")).toBe(false);
+  });
+});
+
+describe("chairForDoctor (owner 2026-11-26: each doctor has their own chair)", () => {
+  it("gives each doctor a distinct chair id, never the old shared one", () => {
+    expect(chairForDoctor("u1")).toBe("doc:u1");
+    expect(chairForDoctor("u1")).not.toBe(chairForDoctor("u2"));
+    expect(chairForDoctor("u1")).not.toBe(DEFAULT_CHAIR_ID);
   });
 });

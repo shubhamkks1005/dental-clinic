@@ -105,7 +105,7 @@ export function appointmentsStatusRepo(db: Db, ctx: Ctx) {
             cancelReason,
             ...stamp,
             ...(lateAt ? { lateAt } : {}),
-            ...(arrives ? { queueOrder: keepOrElseNewcomer(row.dateLocal) } : {}),
+            ...(arrives ? { queueOrder: keepOrElseNewcomer(row.dateLocal, row.doctorId) } : {}),
           })
           .where(
             and(

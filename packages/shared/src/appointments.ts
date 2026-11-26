@@ -19,8 +19,13 @@ export type AppointmentSource = (typeof APPOINTMENT_SOURCES)[number];
 export const APPOINTMENT_PRIORITIES = ["normal", "emergency"] as const;
 export type AppointmentPriority = (typeof APPOINTMENT_PRIORITIES)[number];
 
-// One chair for now; UI hides chair_id (PLAN 2.3.1). Timings.chairs is the count.
+// Rows booked before several doctors (2026-11-26) keep chair "1"; the UI never shows chair ids.
 export const DEFAULT_CHAIR_ID = "1";
+
+/** Each doctor works in their own chair (owner 2026-11-26), so the chair id follows the doctor. */
+export function chairForDoctor(doctorId: string): string {
+  return `doc:${doctorId}`;
+}
 
 // These statuses still hold the chair for overlap / free-slot math (2.3.3, 2.3.4).
 export const APPOINTMENT_BUSY_STATUSES = [

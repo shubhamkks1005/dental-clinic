@@ -1,13 +1,12 @@
 import {
   bookingRuleViolations,
-  DEFAULT_CHAIR_ID,
+  chairForDoctor,
   isAllowedStatusTransition,
   istLocalToUtc,
   newUlid,
   visitTypeSnapshot,
   type AppointmentStatus,
   type Holiday,
-  type ListItem,
   type RescheduleAppointmentInput,
   type Timings,
 } from "@clinic/shared";
@@ -17,8 +16,14 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { ConflictError, InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, listItems } from "../schema";
-import { insertAppointmentIfFree, type AppointmentInsertValues } from "./appointment-insert";
+import { appointments } from "../schema";
+import {
+  insertAppointmentUnlessRepeat,
+  REPEAT_BOOKING_MESSAGE,
+  type AppointmentInsertValues,
+} from "./appointment-insert";
+import { requireBookingDoctor } from "./doctors";
+import { loadVisitType } from "./visit-type-load";
 
 export type RescheduleOptions = {
   timings: Timings;
@@ -27,26 +32,8 @@ export type RescheduleOptions = {
   now: Date;
 };
 
-async function loadVisitType(db: Db, id: string): Promise<ListItem> {
-  const row = await db
-    .select()
-    .from(listItems)
-    .where(
-      and(eq(listItems.id, id), eq(listItems.listKey, "visit_types"), isNull(listItems.deletedAt)),
-    )
-    .get();
-  if (!row || !row.active) throw new NotFoundError("That visit type");
-  return {
-    id: row.id,
-    label: row.label,
-    data: JSON.parse(row.dataJson) as ListItem["data"],
-    active: row.active,
-    sortOrder: row.sortOrder,
-    version: row.version,
-  };
-}
-
 // 2.3.8: new row linked via rescheduled_from; old status = rescheduled (never deleted).
+// Doctor and length stay as they were unless the move changes them (owner 2026-11-26).
 export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
   return {
     async reschedule(id: string, input: RescheduleAppointmentInput, opts: RescheduleOptions) {
@@ -62,10 +49,17 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
         throw new ConflictError("That appointment cannot be rescheduled from its current status.");
       }
 
+      const doctorId =
+        input.doctorId ?? old.doctorId ?? (ctx.role === "doctor" ? ctx.userId : null);
+      if (!doctorId) throw new InvalidError("Choose a doctor.");
+      const doctor = await requireBookingDoctor(db, ctx, doctorId, input.dateLocal);
       const visitTypeId = input.visitTypeId ?? old.visitTypeId;
       const visit = await loadVisitType(db, visitTypeId);
       const snap = visitTypeSnapshot(visit, opts.timings.slotMinutes);
-      const endMin = input.startMin + snap.durationMin;
+      const sameType = visitTypeId === old.visitTypeId;
+      const durationMin =
+        input.durationMin ?? (sameType ? old.endMin - old.startMin : snap.durationMin);
+      const endMin = input.startMin + durationMin;
       if (endMin > 1440) {
         throw new InvalidError("That visit does not fit on this day. Pick an earlier time.");
       }
@@ -76,6 +70,8 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
         holidays: opts.holidays,
         bookAheadDays: opts.bookAheadDays,
         now: opts.now,
+        leaveDays: doctor.onLeave ? [input.dateLocal] : [],
+        doctorName: doctor.name,
       });
       const overrideReason = input.overrideReason ?? null;
       if (violations.length > 0 && !overrideReason) {
@@ -88,7 +84,8 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
       const values: AppointmentInsertValues = {
         id: newId,
         patientId: old.patientId,
-        chairId: DEFAULT_CHAIR_ID,
+        doctorId: doctor.id,
+        chairId: chairForDoctor(doctor.id),
         visitTypeId: snap.visitTypeId,
         visitTypeLabel: snap.visitTypeLabel,
         startAt: istLocalToUtc(input.dateLocal, input.startMin).toISOString(),
@@ -105,18 +102,20 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
         updatedBy: ctx.userId,
       };
 
-      // Insert new (overlap-gated) then mark old rescheduled only if new row exists.
+      // Insert new (refused only as an exact repeat) then mark old rescheduled only if it exists.
       await db.batch([
-        insertAppointmentIfFree(db, values),
+        insertAppointmentUnlessRepeat(db, values),
         auditInsertIfChanged(db, ctx, {
           action: "create",
           table: "appointments",
           rowId: newId,
           after: {
             patientId: values.patientId,
+            doctorId: values.doctorId,
             dateLocal: values.dateLocal,
             startMin: values.startMin,
             endMin: values.endMin,
+            durationMin,
             rescheduledFrom: id,
             overbook,
             ...(overbook && overrideReason
@@ -130,6 +129,7 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
         .select({
           id: appointments.id,
           patientId: appointments.patientId,
+          doctorId: appointments.doctorId,
           visitTypeLabel: appointments.visitTypeLabel,
           dateLocal: appointments.dateLocal,
           startMin: appointments.startMin,
@@ -144,7 +144,7 @@ export function appointmentsRescheduleRepo(db: Db, ctx: Ctx) {
         .where(eq(appointments.id, newId))
         .get();
       if (!created || created.status !== "scheduled") {
-        throw new ConflictError("That time was just taken. Pick another slot from the fresh list.");
+        throw new ConflictError(REPEAT_BOOKING_MESSAGE);
       }
 
       await db.batch([

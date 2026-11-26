@@ -1,7 +1,7 @@
 import type { Timings } from "@clinic/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Ctx } from "../context";
-import { testDb } from "../testing";
+import { addFakeDoctor, testDb } from "../testing";
 import { createRepos } from "./index";
 
 const doctor: Ctx = { userId: "doc-a", role: "doctor", requestId: "r1" };
@@ -38,6 +38,7 @@ const opts = { timings, holidays: [] as [], bookAheadDays: 90, now };
 
 beforeEach(() => {
   t = testDb();
+  addFakeDoctor(t.sqlite);
   t.sqlite
     .prepare(
       `INSERT INTO patients (id, created_by, updated_by, code, full_name, gender, age_years_at_reg, mobile, status)
@@ -52,6 +53,7 @@ describe("reschedule and cancel (2.3.8)", () => {
       {
         patientId: PATIENT_ID,
         visitTypeId: VISIT_ID,
+        doctorId: "doc-a",
         dateLocal: "2026-11-23",
         startMin: 10 * 60,
         source: "phone",
@@ -99,6 +101,7 @@ describe("reschedule and cancel (2.3.8)", () => {
       {
         patientId: PATIENT_ID,
         visitTypeId: VISIT_ID,
+        doctorId: "doc-a",
         dateLocal: "2026-11-23",
         startMin: 10 * 60,
         source: "phone",

@@ -102,6 +102,7 @@ function bodyFor(method: string, path: string): string | undefined {
     return JSON.stringify({
       patientId: "p1",
       visitTypeId: "01M83VTYPE01CONSULT000001",
+      doctorId: "doc-a",
       dateLocal: "2026-11-23",
       startMin: 600,
       source: "phone",

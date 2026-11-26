@@ -1,6 +1,6 @@
 import {
+  chairForDoctor,
   clinicWorkingIntervals,
-  DEFAULT_CHAIR_ID,
   findFreeSlots,
   istDate,
   istLocalToUtc,
@@ -9,22 +9,23 @@ import {
   slotSearchEarliest,
   visitTypeSnapshot,
   type Holiday,
-  type ListItem,
   type Timings,
   type WalkInAppointmentInput,
 } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import { auditInsertIfChanged } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
-import { ConflictError, InvalidError, NotFoundError } from "../errors";
+import { ConflictError, InvalidError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { appointments, listItems, patients } from "../schema";
+import { appointments } from "../schema";
 import {
   insertAppointmentAllowingOverlap,
-  insertAppointmentIfFree,
+  insertAppointmentUnlessRepeat,
   type AppointmentInsertValues,
 } from "./appointment-insert";
+import { doctorsRepo, requireBookingDoctor } from "./doctors";
+import { loadVisitType, requireBookablePatient } from "./visit-type-load";
 import { newcomerQueueOrder } from "./queue-newcomer";
 import { markFirstArrivedBatch } from "./patient-first-arrived";
 
@@ -49,38 +50,8 @@ export type WalkInOptions = {
   now: Date;
 };
 
-async function loadVisitType(db: Db, id: string): Promise<ListItem> {
-  const row = await db
-    .select()
-    .from(listItems)
-    .where(
-      and(eq(listItems.id, id), eq(listItems.listKey, "visit_types"), isNull(listItems.deletedAt)),
-    )
-    .get();
-  if (!row || !row.active) throw new NotFoundError("That visit type");
-  return {
-    id: row.id,
-    label: row.label,
-    data: JSON.parse(row.dataJson) as ListItem["data"],
-    active: row.active,
-    sortOrder: row.sortOrder,
-    version: row.version,
-  };
-}
-
-async function requirePatient(db: Db, id: string) {
-  const row = await db
-    .select({ id: patients.id, status: patients.status })
-    .from(patients)
-    .where(and(eq(patients.id, id), isNull(patients.deletedAt)))
-    .get();
-  if (!row) throw new NotFoundError("That patient");
-  if (row.status !== "active") {
-    throw new InvalidError("This patient is archived. Restore them before booking.");
-  }
-}
-
-async function loadBusyToday(db: Db, day: string) {
+/** That doctor's own chair today (old rows with no doctor count for everyone). */
+async function loadBusyToday(db: Db, day: string, doctorId: string) {
   return db
     .select({
       dateLocal: appointments.dateLocal,
@@ -89,8 +60,23 @@ async function loadBusyToday(db: Db, day: string) {
       status: appointments.status,
     })
     .from(appointments)
-    .where(and(isNull(appointments.deletedAt), eq(appointments.dateLocal, day)))
+    .where(
+      and(
+        isNull(appointments.deletedAt),
+        eq(appointments.dateLocal, day),
+        or(eq(appointments.doctorId, doctorId), isNull(appointments.doctorId)),
+      ),
+    )
     .all();
+}
+
+/** Walk-in without a chosen doctor: a doctor takes it themself; the desk gets the only doctor. */
+async function walkInDoctorId(db: Db, ctx: Ctx, chosen: string | undefined): Promise<string> {
+  if (chosen) return chosen;
+  if (ctx.role === "doctor") return ctx.userId;
+  const active = await doctorsRepo(db, ctx).listActive();
+  if (active.length === 1) return active[0]!.id;
+  throw new InvalidError("Choose a doctor.");
 }
 
 function emergencySlot(
@@ -104,17 +90,20 @@ function emergencySlot(
   return { dateLocal, startMin, endMin: startMin + durationMin };
 }
 
-// 2.3.7: walk-in = soonest free slot today as arrived; emergency may overbook the chair.
+// 2.3.7: walk-in = soonest free slot today in the doctor's own chair, as arrived; emergency may
+// overbook that chair.
 export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
   return {
     async walkIn(input: WalkInAppointmentInput, opts: WalkInOptions): Promise<WalkInAppointment> {
       assertAllowed(ctx, "appointments.manage");
-      await requirePatient(db, input.patientId);
+      const today = istDate(opts.now);
+      const doctorId = await walkInDoctorId(db, ctx, input.doctorId);
+      const doctor = await requireBookingDoctor(db, ctx, doctorId, today);
+      await requireBookablePatient(db, input.patientId);
       const visit = await loadVisitType(db, input.visitTypeId);
       const snap = visitTypeSnapshot(visit, opts.timings.slotMinutes);
       const emergency = (input.priority ?? "normal") === "emergency";
-      const today = istDate(opts.now);
-      const busy = await loadBusyToday(db, today);
+      const busy = await loadBusyToday(db, today, doctor.id);
       const slots = findFreeSlots({
         timings: opts.timings,
         holidays: opts.holidays,
@@ -158,7 +147,8 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
       const values: AppointmentInsertValues = {
         id,
         patientId: input.patientId,
-        chairId: DEFAULT_CHAIR_ID,
+        doctorId: doctor.id,
+        chairId: chairForDoctor(doctor.id),
         visitTypeId: snap.visitTypeId,
         visitTypeLabel: snap.visitTypeLabel,
         startAt: istLocalToUtc(dateLocal, startMin).toISOString(),
@@ -171,7 +161,7 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
         overbook,
         complaint: input.complaint ?? null,
         arrivedAt: nowIso,
-        queueOrder: newcomerQueueOrder(dateLocal),
+        queueOrder: newcomerQueueOrder(dateLocal, doctor.id),
         createdBy: ctx.userId,
         updatedBy: ctx.userId,
       };
@@ -179,13 +169,14 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
       await db.batch([
         overbook
           ? insertAppointmentAllowingOverlap(db, values)
-          : insertAppointmentIfFree(db, values),
+          : insertAppointmentUnlessRepeat(db, values),
         auditInsertIfChanged(db, ctx, {
           action: "create",
           table: "appointments",
           rowId: id,
           after: {
             patientId: values.patientId,
+            doctorId: values.doctorId,
             source: "walk_in",
             priority: values.priority,
             status: "arrived",
@@ -222,7 +213,7 @@ export function appointmentsWalkInRepo(db: Db, ctx: Ctx) {
         throw new ConflictError(
           overbook
             ? "Could not add this emergency walk-in. Try again."
-            : "That time was just taken. Try again or mark as emergency.",
+            : "This patient is already booked at that time.",
         );
       }
       return {

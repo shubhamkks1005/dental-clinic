@@ -44,6 +44,9 @@ export type CurrentBreak = {
   minutes: number;
   label: string;
   version: number;
+  /** Several doctors (0066): whose break it is. The desk sees "Dr X is on break". */
+  doctorId?: string | null;
+  doctorName?: string | null;
 };
 
 export function breakEndsAt(b: Pick<CurrentBreak, "startedAt" | "minutes">): Date {
