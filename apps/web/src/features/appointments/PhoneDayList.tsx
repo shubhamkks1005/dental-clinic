@@ -1,4 +1,5 @@
-import { formatClockTime, formatDuration, type DayWindow } from "@clinic/shared";
+import { formatClockTime, formatDuration, type DayWindow, type Doctor } from "@clinic/shared";
+import { DoctorBadge } from "../../ui/DoctorBadge";
 import { useState } from "react";
 import { StatusLabel } from "../../ui/StatusLabel";
 import { kindOf } from "./appointment-kinds";
@@ -8,13 +9,17 @@ import { DayDetails } from "./DayDetails";
 type Props = {
   window: DayWindow;
   appointments: DayAppointment[];
+  /** Desk: each row shows its doctor (a doctor sees only their own). */
+  doctorsById?: Map<string, Doctor> | null;
   onChanged: () => void;
 };
 
 const GONE = ["cancelled", "no_show", "rescheduled"];
 
 // PhoneCalendar.dc.html: the day as a list with full names, no grid.
-export function PhoneDayList({ window, appointments, onChanged }: Props) {
+export function PhoneDayList({ window, appointments, doctorsById = null, onChanged }: Props) {
+  const doctorOf = (a: DayAppointment) =>
+    a.doctorId && doctorsById ? (doctorsById.get(a.doctorId) ?? null) : null;
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = appointments.find((a) => a.id === selectedId) ?? null;
   // A closed day can still hold late entries (PA-M06): the list shows them under the notice.
@@ -44,6 +49,7 @@ export function PhoneDayList({ window, appointments, onChanged }: Props) {
                 <span className="phone-day-who">
                   <strong>{a.patientName}</strong>
                   <span className="small muted">{a.visitTypeLabel}</span>
+                  <DoctorBadge doctor={doctorOf(a)} />
                 </span>
                 <StatusLabel kind="appointment" value={a.status} />
               </button>
@@ -52,7 +58,12 @@ export function PhoneDayList({ window, appointments, onChanged }: Props) {
         </ul>
       )}
       <div className={selected ? "day-details-sheet" : undefined}>
-        <DayDetails row={selected} onClose={() => setSelectedId(null)} onChanged={onChanged} />
+        <DayDetails
+          row={selected}
+          doctor={selected ? doctorOf(selected) : null}
+          onClose={() => setSelectedId(null)}
+          onChanged={onChanged}
+        />
       </div>
     </div>
   );

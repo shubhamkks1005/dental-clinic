@@ -1,0 +1,270 @@
+/* Calendar grid (HTML 250-470): day heads, time column, hour cells, now line, lunch band,
+   live preview block (HTML 102-113) and the active cell (HTML 95-100). Cards: cal-card.css. */
+.cal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.cal-layout.has-details {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+.cal-week {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 8px;
+  background: var(--cal-surface-lowest);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+.cal-grid-scroll {
+  max-height: calc(100vh - 270px);
+  overflow: auto;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: 88px repeat(var(--cal-cols), minmax(0, 1fr));
+}
+.cal-grid.is-week {
+  min-width: 980px;
+}
+.cal-heads {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: contents;
+}
+.cal-dayhead,
+.cal-timehead {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--cal-outline-variant);
+  border-left: 1px solid var(--cal-outline-variant);
+  background: #f5f6f7;
+  text-align: center;
+}
+.cal-timehead {
+  border-left: 0;
+  color: var(--cal-on-surface-variant);
+  font:
+    500 11px "Spline Sans Mono",
+    monospace;
+}
+.cal-dayhead-wd {
+  color: var(--cal-on-surface-variant);
+  font-size: 12px;
+}
+.cal-dayhead-date {
+  font:
+    700 16px/1.3 "Wix Madefor Display",
+    sans-serif;
+}
+.cal-pill {
+  margin-top: 2px;
+  padding: 0 8px;
+  border-radius: 9999px;
+  background: var(--cal-secondary-container);
+  color: var(--cal-primary);
+  font:
+    600 11px "Spline Sans Mono",
+    monospace;
+}
+.cal-dayhead.is-today {
+  border-top: 2px solid var(--cal-primary);
+  background: #e0edf3;
+}
+.cal-dayhead.is-today .cal-dayhead-wd,
+.cal-dayhead.is-today .cal-dayhead-date {
+  color: var(--cal-primary);
+  font-weight: 700;
+}
+.cal-dayhead.is-today .cal-pill {
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+}
+.cal-today-tag {
+  margin-left: 4px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+  font:
+    600 9px "Spline Sans Mono",
+    monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cal-dayhead.is-closed {
+  border-top: 2px solid var(--cal-outline);
+  background: #ebecee;
+}
+.cal-dayhead.is-closed .cal-dayhead-date {
+  color: var(--cal-on-surface-variant);
+  font-weight: 600;
+}
+.cal-dayhead.is-closed .cal-pill {
+  background: var(--cal-outline-variant);
+  color: var(--cal-on-surface-variant);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.cal-leave {
+  margin-top: 2px;
+  color: var(--cal-warning);
+  font-size: 10px;
+  font-weight: 600;
+}
+.cal-hours {
+  display: flex;
+  flex-direction: column;
+}
+.cal-hour-label {
+  display: flex;
+  justify-content: center;
+  height: var(--cal-hour);
+  padding: 8px;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+  background: rgb(242 244 245 / 20%);
+  color: var(--cal-on-surface-variant);
+  font:
+    400 11px "Spline Sans Mono",
+    monospace;
+  box-sizing: border-box;
+}
+.cal-col {
+  position: relative;
+  border-left: 1px solid rgb(192 200 204 / 60%);
+}
+.cal-col.is-today {
+  background: rgb(208 230 240 / 20%);
+}
+.cal-cell {
+  display: block;
+  width: 100%;
+  height: var(--cal-hour);
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--cal-hover);
+}
+.cal-cell:hover {
+  background: rgb(208 230 240 / 20%);
+}
+.cal-col.is-today .cal-cell:hover {
+  background: rgb(208 230 240 / 30%);
+}
+.cal-cell:disabled {
+  cursor: default;
+}
+.cal-cell:disabled:hover {
+  background: transparent;
+}
+.cal-cell.is-closed,
+.cal-cell.is-off {
+  background: rgb(231 232 234 / 40%);
+  color: var(--cal-outline);
+  font-size: 11px;
+}
+.cal-cell.is-closed:hover,
+.cal-cell.is-off:hover {
+  background: rgb(231 232 234 / 40%);
+}
+/* M4: the clicked cell (instant). */
+.cal-cell.is-active {
+  outline: 2px dashed var(--cal-primary);
+  outline-offset: -2px;
+  background: rgb(208 230 240 / 40%);
+}
+/* Now line (HTML 333-336). */
+.cal-now {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  border-top: 2px solid var(--cal-error);
+  pointer-events: none;
+}
+.cal-now-dot {
+  width: 8px;
+  height: 8px;
+  margin: -5px 0 0 -4px;
+  border-radius: 9999px;
+  background: var(--cal-error);
+}
+.cal-now-label {
+  margin: -3px 0 0 4px;
+  padding: 0 4px;
+  border-radius: 2px;
+  background: var(--cal-error);
+  color: var(--cal-on-error);
+  font:
+    600 9px "Spline Sans Mono",
+    monospace;
+}
+/* Lunch band (HTML 383-391). */
+.cal-lunch {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(231 232 234 / 30%);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgb(5 77 97 / 3%) 8px,
+    rgb(5 77 97 / 3%) 16px
+  );
+  pointer-events: none;
+}
+.cal-lunch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border: 1px solid rgb(192 200 204 / 80%);
+  border-radius: 9999px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface-variant);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 3%);
+}
+.cal-lunch-pill .cal-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--cal-secondary);
+}
+.cal-grid-empty {
+  padding: 24px;
+  color: var(--cal-on-surface-variant);
+  text-align: center;
+}
+/* Skeleton (P7.2.1). */
+.cal-skel {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--cal-surface-container);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cal-scope *,
+  .cal-scope *::before,
+  .cal-scope *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,91 @@
+/* Calendar search (P5.13; look of the doctor Today search). */
+.cal-search {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+}
+.cal-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  color: var(--cal-outline);
+  transform: translateY(-50%);
+}
+.cal-search-input {
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 36px 6px 34px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 6px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface);
+  font:
+    400 13px "Instrument Sans",
+    sans-serif;
+  box-sizing: border-box;
+}
+.cal-kbd {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  padding: 0 6px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  color: var(--cal-on-surface-variant);
+  font:
+    500 11px "Spline Sans Mono",
+    monospace;
+  transform: translateY(-50%);
+}
+.cal-search-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  width: 440px;
+  max-width: 90vw;
+  overflow: hidden;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 12px;
+  background: var(--cal-surface-lowest);
+  box-shadow: 0 18px 40px -8px rgb(25 28 29 / 22%);
+}
+.cal-search-pop ul {
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.cal-search-pop li + li {
+  border-top: 1px solid var(--cal-surface-container);
+}
+.cal-search-pop button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cal-search-pop button.is-active,
+.cal-search-pop button:hover {
+  background: rgb(208 230 240 / 45%);
+}
+.cal-search-name {
+  font-weight: 600;
+}
+.cal-search-sub {
+  color: var(--cal-on-surface-variant);
+  font-size: 12px;
+}
+.cal-search-empty {
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--cal-on-surface-variant);
+}

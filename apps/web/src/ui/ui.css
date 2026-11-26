@@ -132,3 +132,14 @@ html[data-offline] a[href^="/app"] {
 .badge-struck {
   text-decoration: line-through;
 }
+
+/* A button that looks like a link (was in the old calendar CSS; settings and the day list use it). */
+.link-button {
+  border: 0;
+  background: none;
+  padding: 0 var(--s2);
+  min-height: 44px;
+  color: var(--brand, #1e4fa3);
+  font-weight: 600;
+  cursor: pointer;
+}

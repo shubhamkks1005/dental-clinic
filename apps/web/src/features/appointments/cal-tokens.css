@@ -1,0 +1,70 @@
+/* Appointments calendar final design (docs/design/final/appointments_calendar.html). Tokens from
+   HTML 13-60, scoped to .cal-scope: the page, and every portal it opens (popover, flyer, toast),
+   so CSS variables stay defined there (lessons: tokens out of scope drop the transition). */
+.cal-scope {
+  --cal-nav-surface: #263f4d;
+  --cal-on-nav-surface: #f4f8fa;
+  --cal-success: #146c43;
+  --cal-on-success: #fff;
+  --cal-success-container: #d1f4e0;
+  --cal-on-success-container: #0b462b;
+  --cal-warning: #9a5b00;
+  --cal-on-warning: #fff;
+  --cal-warning-container: #fef0c7;
+  --cal-primary: #054d61;
+  --cal-on-primary: #fff;
+  --cal-primary-container: #0f5266;
+  --cal-on-primary-container: #b9eaff;
+  --cal-secondary: #4d616a;
+  --cal-secondary-container: #d0e6f0;
+  --cal-error: #ba1a1a;
+  --cal-on-error: #fff;
+  --cal-error-container: #ffdad6;
+  --cal-on-error-container: #93000a;
+  --cal-surface: #f8f9fb;
+  --cal-surface-lowest: #fff;
+  --cal-surface-low: #f2f4f5;
+  --cal-surface-container: #edeeef;
+  --cal-surface-high: #e7e8ea;
+  --cal-on-surface: #191c1d;
+  --cal-on-surface-variant: #40484c;
+  --cal-outline: #70787c;
+  --cal-outline-variant: #c0c8cc;
+  --cal-hover: 150ms ease;
+  --cal-pop-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --cal-std-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --cal-hour: 64px;
+  color: var(--cal-on-surface);
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.cal-scope :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--cal-primary);
+  outline-offset: 2px;
+}
+.cal-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: currentColor;
+  vertical-align: middle;
+}
+.cal-mono {
+  font-family: "Spline Sans Mono", monospace;
+}
+.cal-headline {
+  font-family: "Wix Madefor Display", sans-serif;
+}
+/* Custom scrollbar (HTML 78-80). */
+.cal-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.cal-scroll::-webkit-scrollbar-thumb {
+  background: rgb(5 77 97 / 20%);
+  border-radius: 9999px;
+}
+.cal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}

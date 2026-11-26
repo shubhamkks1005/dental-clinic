@@ -1,260 +1,252 @@
-import { addIstDays, istDate } from "@clinic/shared";
+import { addIstDays, istDate, istMinutes, type AppointmentSearchHit } from "@clinic/shared";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { refreshFailure } from "../../ui/refresh-fail";
-import { useSearchParams } from "react-router";
-import { ApiError } from "../../api/client";
-import { useToast } from "../../ui/Toast";
-import { useVisibleInterval } from "../../ui/useVisibleInterval";
-import { AUTO_REFRESH_MS } from "../../ui/visible-interval";
-import { listDayAppointments, type DayAppointmentsReply, type SuggestedSlot } from "./api";
-import { bookedMessage } from "./booked-message";
-import { DateStrip } from "./DateStrip";
-import { DayView } from "./DayView";
-import { PhoneDayList } from "./PhoneDayList";
-import { QuickBookDialog } from "./QuickBookDialog";
-import { useWeek, weekDays } from "./useWeek";
-import { WeekView, weekBooked } from "./WeekView";
-import { formatDate, plural } from "@clinic/shared";
+import { useOnline } from "../../ui/use-online";
 import { useWide } from "../../ui/use-wide";
-import "./day-view.css";
-import "./week-view.css";
-import { TextInput } from "../../ui/form";
+import { useMe } from "../auth";
+import type { DayAppointment, DayAppointmentsReply } from "./api";
+import { BookPopover } from "./book/BookPopover";
+import { sideForColumn } from "./book/place-popover";
+import type { BookRequest } from "./book/useBookDraft";
+import type { Anchor } from "./book/usePopoverPlace";
+import { CalendarBody } from "./CalendarBody";
+import type { CellPick } from "./CalColumn";
+import { CalHeader } from "./CalHeader";
+import { CalSearch } from "./CalSearch";
+import { DoctorFilter } from "./DoctorFilter";
+import { nextOpenStart } from "./cal-geometry";
+import type { PreviewDraft } from "./SlotPreview";
+import { useCalendarData } from "./useCalendarData";
+import { useCalendarUrl } from "./useCalendarUrl";
+import { weekDays } from "./useWeek";
+import "../../styles/design-fonts.css";
+import "./cal-tokens.css";
+import "./cal-page.css";
+import "./cal-filter.css";
+import "./cal-search.css";
+import "./cal-grid.css";
+import "./cal-card.css";
+import "./phone-day.css";
 
-function validDate(raw: string | null): string | null {
-  if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
-  return raw;
-}
+const GONE = ["cancelled", "no_show", "rescheduled"];
+const nextFrame = () =>
+  new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
 
-function parseBookMin(raw: string | null): number | undefined {
-  if (raw === null || raw === "") return undefined;
-  const n = Number(raw);
-  return Number.isInteger(n) && n >= 0 && n < 1440 ? n : undefined;
-}
-
-// S08 Appointments — day view (2.4.1) + quick-book (2.4.2 / S07).
+// Appointments calendar (docs/design/final/appointments_calendar.html; handoff P4-P7).
 export function AppointmentsScreen() {
-  const [params, setParams] = useSearchParams();
-  const toast = useToast();
-  const today = istDate(new Date());
-  const dateLocal = validDate(params.get("date")) ?? today;
-  const bookMin = parseBookMin(params.get("book"));
-  const patientId = params.get("patient") || undefined;
-  const wantBook = bookMin !== undefined || Boolean(patientId) || params.get("book") === "1";
-
-  const [data, setData] = useState<DayAppointmentsReply | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [bookOpen, setBookOpen] = useState(wantBook);
-  const [tick, setTick] = useState(0);
+  const me = useMe();
+  const url = useCalendarUrl();
+  const online = useOnline();
+  const doctorView = me.role === "doctor";
   const laptop = useWide(1024);
   const tablet = useWide(768);
-  // Week grid needs room: laptop only. Phone and tablet use the day.
-  const week = laptop && params.get("view") !== "day";
-  const weekData = useWeek(week, dateLocal, tick);
-
-  const prefill = useMemo(
-    () => ({ dateLocal, startMin: bookMin, patientId }),
-    [dateLocal, bookMin, patientId],
-  );
-
-  // Old data counts only if it is for the date on screen.
-  const hasDay = useRef(false);
-  hasDay.current = data?.dateLocal === dateLocal;
-
-  // Week mode: the week's 7 requests already hold this day, so no separate day request.
-  const load = useCallback(() => {
-    if (week) return;
-    listDayAppointments(dateLocal)
-      .then((next) => {
-        setData(next);
-        setError(null);
-      })
-      .catch((e) => {
-        const fail = refreshFailure(
-          hasDay.current,
-          e instanceof ApiError
-            ? e.message
-            : "Could not load the day. Check the connection, then try again.",
-        );
-        if (!fail.keepData) setData(null);
-        setError(fail.error);
-      });
-  }, [dateLocal, week]);
+  const week = laptop && url.view !== "day";
+  const shown = useMemo(() => (week ? weekDays(url.date) : [url.date]), [week, url.date]);
+  const data = useCalendarData(shown[0]!, shown[shown.length - 1]!);
+  const [req, setReq] = useState<{ key: number; r: BookRequest } | null>(null);
+  const [preview, setPreview] = useState<PreviewDraft | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [dockedId, setDockedId] = useState<string | null>(null);
+  const [openAfterLoad, setOpenAfterLoad] = useState<string | null>(null);
+  const [clock, setClock] = useState(() => Date.now());
+  const keySeq = useRef(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
-
-  useVisibleInterval(load, AUTO_REFRESH_MS);
-  useVisibleInterval(() => setTick((t) => t + 1), AUTO_REFRESH_MS);
-
+    document.body.classList.add("cal-body");
+    return () => document.body.classList.remove("cal-body");
+  }, []);
   useEffect(() => {
-    if (wantBook) setBookOpen(true);
-  }, [wantBook]);
+    const id = window.setInterval(() => setClock(Date.now()), 60_000);
+    return () => window.clearInterval(id);
+  }, []);
 
-  // Functional updates: the book dialog sets the date and then closes in the same tick, and the
-  // close must not bring back the old date.
-  function setDate(next: string) {
-    setParams(
-      (prev) => {
-        const nextParams = new URLSearchParams(prev);
-        nextParams.set("date", next);
-        return nextParams;
-      },
-      { replace: true },
-    );
-  }
+  // "Now" from the server's clock plus the time since the reply (P5.6.1).
+  const serverNow = data.days?.[0]?.serverNow;
+  const skew = useMemo(() => (serverNow ? Date.parse(serverNow) - Date.now() : 0), [serverNow]);
+  const nowDate = new Date(clock + skew);
+  const now = { date: istDate(nowDate), min: istMinutes(nowDate) };
 
-  function clearBookParams() {
-    setParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        next.delete("book");
-        next.delete("patient");
-        return next;
-      },
-      { replace: true },
-    );
-  }
-
-  function onBooked(slot: SuggestedSlot) {
-    // The booking may be on another day: go there so it is on screen, and say where it went.
-    if (slot.dateLocal === dateLocal) {
-      load();
-      setTick((t) => t + 1);
-    } else setDate(slot.dateLocal);
-    toast({ text: bookedMessage(slot.dateLocal, slot.startMin) });
-  }
-
-  const changed = () => {
-    load();
-    setTick((t) => t + 1);
-  };
-  const step = week ? 7 : 1;
-  const unit = week ? "week" : "day";
-  const days = weekDays(dateLocal);
-  const booked = week && weekData.days ? weekBooked(weekData.days) : null;
-  const dayLive = data?.appointments.filter(
-    (a) => a.status !== "cancelled" && a.status !== "no_show" && a.status !== "rescheduled",
+  const allIds = data.doctors.map((d) => d.id);
+  const chosen = useMemo(() => new Set(url.doctors ?? allIds), [url.doctors, allIds.join(",")]);
+  const doctorsById = useMemo(() => new Map(data.doctors.map((d) => [d.id, d])), [data.doctors]);
+  const rowsOf = useCallback(
+    (d: DayAppointmentsReply) =>
+      doctorView
+        ? d.appointments
+        : d.appointments.filter((a) => !a.doctorId || chosen.has(a.doctorId)),
+    [doctorView, chosen],
   );
-  const title = week
-    ? `${formatDate(days[0] as string)} to ${formatDate(days[5] as string)}`
-    : formatDate(dateLocal);
-  const summary = week
-    ? booked !== null && `${plural(booked, "appointment")} this week`
-    : data && !data.window.closed && `${dayLive?.length ?? 0} booked`;
-  function openBook(startMin?: number) {
-    const next = new URLSearchParams(params);
-    next.set("date", dateLocal);
-    next.set("book", startMin === undefined ? "1" : String(startMin));
-    setParams(next, { replace: true });
-    setBookOpen(true);
+  const leavesOf = useCallback(
+    (d: DayAppointmentsReply) =>
+      (d.leaves ?? []).filter((l) => doctorView || chosen.has(l.doctorId)).map((l) => l.doctorName),
+    [doctorView, chosen],
+  );
+  const booked = data.days
+    ? data.days.reduce((n, d) => n + rowsOf(d).filter((a) => !GONE.includes(a.status)).length, 0)
+    : null;
+  const onlyDoctor = !doctorView && chosen.size === 1 ? [...chosen][0] : undefined;
+
+  function open(r: Omit<BookRequest, "mode">) {
+    if (!online) return;
+    keySeq.current += 1;
+    setReq({ key: keySeq.current, r: { mode: "book", doctorId: onlyDoctor, ...r } });
   }
-  function setView(view: "day" | "week") {
-    const next = new URLSearchParams(params);
-    next.set("view", view);
-    setParams(next, { replace: true });
+
+  // Links from other pages (?book=1&patient=..., ?book=<minute>).
+  const book = url.book;
+  useEffect(() => {
+    if (!book || req) return;
+    open({
+      anchor: null,
+      side: "auto",
+      dateLocal: url.date,
+      startMin: book.startMin ?? Math.ceil(istMinutes(new Date()) / 15) * 15,
+      patientId: book.patientId,
+    });
+    // Opens once per link; the popover's close clears the link.
+  }, [book?.patientId, book?.startMin]);
+
+  function onPick(pick: CellPick) {
+    setSelectedId(null);
+    const cols = shown.length;
+    const index = shown.indexOf(pick.dateLocal);
+    open({
+      anchor: pick.cell,
+      side: sideForColumn(index, cols),
+      dateLocal: pick.dateLocal,
+      startMin: pick.startMin,
+    });
   }
+
+  function onHeaderBook() {
+    const next = data.days
+      ? nextOpenStart(
+          data.days.map((d) => d.window),
+          now,
+        )
+      : null;
+    open({
+      anchor: null,
+      side: "auto",
+      dateLocal: next?.dateLocal ?? url.date,
+      startMin: next?.startMin ?? 9 * 60,
+    });
+  }
+
+  const onRetarget = useCallback(
+    (dateLocal: string, startMin: number): Anchor | null => {
+      const el = document.querySelector<HTMLElement>(
+        `[data-cell="${dateLocal}|${Math.floor(startMin / 60) * 60}"]`,
+      );
+      if (!el || !laptop) return null;
+      return { el, side: sideForColumn(shown.indexOf(dateLocal), shown.length) };
+    },
+    [shown, laptop],
+  );
+
+  async function onBooked(row: DayAppointment): Promise<HTMLElement | null> {
+    if (!shown.includes(row.dateLocal) || !data.days) {
+      url.setDate(row.dateLocal);
+      return null;
+    }
+    data.insertRow(row);
+    setDockedId(row.id);
+    window.setTimeout(() => setDockedId(null), 700);
+    await nextFrame();
+    return document.querySelector<HTMLElement>(`.cal-card[data-row-id="${row.id}"]`);
+  }
+
+  function onJump(hit: AppointmentSearchHit) {
+    url.setDate(hit.dateLocal);
+    setOpenAfterLoad(hit.id);
+  }
+  useEffect(() => {
+    if (!openAfterLoad || !data.days) return;
+    if (data.days.some((d) => d.appointments.some((a) => a.id === openAfterLoad))) {
+      setSelectedId(openAfterLoad);
+      setOpenAfterLoad(null);
+    }
+  }, [openAfterLoad, data.days]);
+
+  const printDay = shown.includes(url.today) ? url.today : shown[0]!;
+  const active = preview
+    ? { dateLocal: preview.dateLocal, hour: Math.floor(preview.startMin / 60) * 60 }
+    : null;
 
   return (
-    <div className="appointments-page">
-      <header className="appointments-head">
-        <div>
-          <h1>Appointments</h1>
-          <p className="muted small">
-            <strong>{title}</strong>
-            {summary ? ` · ${summary}` : ""}
-          </p>
-        </div>
-        <div className="appointments-date-nav">
-          {laptop ? (
-            <div className="view-toggle" role="group" aria-label="View">
-              <button type="button" aria-pressed={!week} onClick={() => setView("day")}>
-                Day
-              </button>
-              <button type="button" aria-pressed={week} onClick={() => setView("week")}>
-                Week
-              </button>
-            </div>
-          ) : null}
-          <button
-            type="button"
-            className="btn"
-            aria-label={`Previous ${unit}`}
-            onClick={() => setDate(addIstDays(dateLocal, -step))}
-          >
-            Previous
-          </button>
-          <label className="appointments-date">
-            <span className="sr-only">Date</span>
-            <TextInput
-              type="date"
-              value={dateLocal}
-              onChange={(e) => {
-                if (e.target.value) setDate(e.target.value);
-              }}
+    <div className="cal-scope cal-page">
+      <CalHeader
+        week={week}
+        first={shown[0]!}
+        last={shown[shown.length - 1]!}
+        booked={booked}
+        doctorView={doctorView}
+        date={url.date}
+        canToggle={laptop}
+        printHref={`/app/print/day?date=${printDay}`}
+        search={
+          tablet ? (
+            <CalSearch
+              doctorIds={doctorView ? [] : [...chosen]}
+              showDoctor={!doctorView}
+              onJump={onJump}
             />
-          </label>
-          <button
-            type="button"
-            className="btn"
-            aria-label={`Next ${unit}`}
-            onClick={() => setDate(addIstDays(dateLocal, step))}
-          >
-            Next
-          </button>
-          <button type="button" className="btn" onClick={() => setDate(today)}>
-            Today
-          </button>
-          <button type="button" className="btn btn-primary" onClick={() => openBook()}>
-            Book appointment
-          </button>
-        </div>
-      </header>
-
-      {!tablet ? <DateStrip days={days} selected={dateLocal} onPick={setDate} label="Day" /> : null}
-      {error || weekData.error ? (
-        <p className="field-error">{week ? weekData.error : error}</p>
-      ) : null}
-      {week ? (
-        weekData.days ? (
-          <WeekView
-            days={weekData.days}
-            today={today}
-            onOpenDay={(d) => {
-              const next = new URLSearchParams(params);
-              next.set("date", d);
-              next.set("view", "day");
-              setParams(next, { replace: true });
-            }}
-            onChanged={changed}
-          />
-        ) : weekData.error ? null : (
-          <p className="muted">Loading…</p>
-        )
-      ) : !data && !error ? (
-        <p className="muted">Loading…</p>
-      ) : data && tablet ? (
-        <DayView
-          dateLocal={data.dateLocal}
-          window={data.window}
-          appointments={data.appointments}
-          serverNow={data.serverNow}
-          onEmptySlot={openBook}
-          onChanged={changed}
-        />
-      ) : data ? (
-        <PhoneDayList window={data.window} appointments={data.appointments} onChanged={changed} />
-      ) : null}
-
-      <QuickBookDialog
-        open={bookOpen}
-        prefill={prefill}
-        onClose={() => {
-          setBookOpen(false);
-          clearBookParams();
-        }}
-        onBooked={onBooked}
+          ) : null
+        }
+        filter={
+          doctorView ? null : (
+            <DoctorFilter
+              doctors={data.doctors}
+              chosen={chosen}
+              onChange={(next) => url.setDoctors(next.size === allIds.length ? null : [...next])}
+            />
+          )
+        }
+        onStep={(dir) => url.setDate(addIstDays(url.date, dir * (week ? 7 : 1)))}
+        onToday={() => url.setDate(url.today)}
+        onDate={url.setDate}
+        onView={(v) => url.setView(v)}
+        onBook={onHeaderBook}
+        bookDisabled={!online}
       />
+      <CalendarBody
+        data={data}
+        shown={shown}
+        week={week}
+        laptop={laptop}
+        tablet={tablet}
+        now={now}
+        rowsOf={rowsOf}
+        leavesOf={leavesOf}
+        doctorsById={doctorView ? null : doctorsById}
+        noDoctor={!doctorView && chosen.size === 0 && data.doctors.length > 0}
+        empty={booked === 0}
+        active={req ? active : null}
+        preview={req ? preview : null}
+        selectedId={selectedId}
+        dockedId={dockedId}
+        onSelect={setSelectedId}
+        onPick={onPick}
+        onMore={(d) => url.setView("day", d)}
+        onDate={url.setDate}
+        onShowAll={() => url.setDoctors(null)}
+        onBook={onHeaderBook}
+      />
+      {req ? (
+        <BookPopover
+          key={req.key}
+          request={req.r}
+          doctors={data.doctors}
+          onDraft={setPreview}
+          onRetarget={onRetarget}
+          onBooked={onBooked}
+          onReload={data.reload}
+          onClose={() => {
+            setReq(null);
+            setPreview(null);
+            if (url.book) url.clearBook();
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,0 +1,129 @@
+/* Phone (parked, Q6): kind colours, date strip, the day as a list, details bottom sheet. Kept from
+   the old calendar CSS when the final design replaced the week and day grids. */
+.kind-clean {
+  --k-bg: #e3f6e8;
+  --k-bar: #2e9e57;
+  --k-fg: #14532d;
+}
+.kind-consult {
+  --k-bg: #e0e7ff;
+  --k-bar: #1e4fa3;
+  --k-fg: #1e3a8a;
+}
+.kind-rct {
+  --k-bg: #d8f0ee;
+  --k-bar: #0b7a75;
+  --k-fg: #115e59;
+}
+.kind-ext {
+  --k-bg: #fef3c7;
+  --k-bar: #d58a1a;
+  --k-fg: #78350f;
+}
+.kind-ortho {
+  --k-bg: #ede4fb;
+  --k-bar: #7c3aed;
+  --k-fg: #5b21b6;
+}
+.kind-emer {
+  --k-bg: #ffe4d6;
+  --k-bar: #d9622b;
+  --k-fg: #9a3412;
+}
+.date-strip {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.date-strip-day {
+  flex: 1 0 48px;
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: #fff;
+  color: var(--navy, #0f2a5c);
+  cursor: pointer;
+}
+.date-strip-on {
+  background: var(--navy, #0f2a5c);
+  border-color: var(--navy, #0f2a5c);
+  color: #fff;
+}
+
+.phone-day {
+  display: grid;
+  gap: var(--s3);
+}
+.phone-day-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--s2);
+}
+.phone-day-row {
+  width: 100%;
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: 64px 4px 1fr auto;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s3);
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  cursor: pointer;
+}
+.phone-day-time,
+.phone-day-who {
+  display: grid;
+}
+.phone-day-bar {
+  align-self: stretch;
+  border-radius: 2px;
+  background: var(--k-bar);
+}
+.phone-day-free {
+  margin: 0;
+}
+.day-details-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  max-height: 75vh;
+  overflow: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -8px 24px rgba(15, 42, 92, 0.18);
+}
+.day-details-sheet .cal-details {
+  border-radius: 16px 16px 0 0;
+}
+
+@media (min-width: 1024px) {
+  .day-details-sheet {
+    position: static;
+    box-shadow: none;
+    max-height: none;
+  }
+}
+
+.date-strip {
+  background:
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 24px 100% no-repeat local,
+    linear-gradient(to left, rgb(15 42 92 / 14%), transparent) right / 8px 100% no-repeat scroll;
+}
+
+.day-card-muted {
+  opacity: 0.55;
+  cursor: default;
+}
+.phone-day-who .doctor-badge {
+  justify-self: start;
+}

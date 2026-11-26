@@ -6,7 +6,7 @@ export {
   type DayAppointmentsReply,
 } from "./api";
 export { CancelMissedDialog } from "./CancelMissedDialog";
-export { QuickBookDialog } from "./QuickBookDialog";
+export { LazyBookPopover } from "./book/LazyBookPopover";
 export { QuickBookPatient } from "./QuickBookPatient";
 export { AppointmentActions, type ActionableAppointment } from "./AppointmentActions";
 export { VisitTypeChips } from "./BookPickers";

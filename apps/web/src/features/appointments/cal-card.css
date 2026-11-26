@@ -1,0 +1,287 @@
+/* Booking cards (HTML 315-424), the live preview block (HTML 102-113) and the just-booked pulse
+   (HTML 115-122). Cards sit absolutely in their day column, by minutes (L4). */
+.cal-card {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2px;
+  overflow: hidden;
+  padding: 6px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  background: var(--cal-surface-low);
+  color: var(--cal-on-surface);
+  font:
+    400 11px/1.3 "Instrument Sans",
+    sans-serif;
+  text-align: left;
+  box-shadow: 0 1px 1px rgb(0 0 0 / 3%);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.cal-card:hover {
+  border-color: var(--cal-primary);
+}
+.cal-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+}
+.cal-card-name {
+  overflow: hidden;
+  min-width: 0;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-card-time {
+  flex: none;
+  color: var(--cal-outline);
+  font:
+    400 9px "Spline Sans Mono",
+    monospace;
+}
+.cal-card-visit {
+  overflow: hidden;
+  min-width: 0;
+  color: var(--cal-primary);
+  font-size: 10px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-card-code {
+  color: var(--cal-primary);
+  font:
+    600 10px "Spline Sans Mono",
+    monospace;
+}
+.cal-card-status {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--cal-secondary-container);
+  color: var(--cal-primary);
+  font-size: 9px;
+  font-weight: 600;
+}
+.cal-card-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.cal-card-marks .cal-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--cal-error);
+}
+.cal-card-due {
+  color: var(--cal-warning);
+  font-size: 10px;
+  font-weight: 700;
+}
+.cal-badge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--doc-bg);
+  color: var(--doc-fg);
+  font:
+    700 9px "Spline Sans Mono",
+    monospace;
+}
+.cal-badge .cal-dot {
+  width: 6px;
+  height: 6px;
+}
+/* Tones. */
+.cal-card.tone-confirmed {
+  border-color: rgb(5 77 97 / 50%);
+  background: var(--cal-surface-lowest);
+}
+.cal-card.tone-done {
+  border-color: rgb(20 108 67 / 40%);
+  background: rgb(209 244 224 / 40%);
+}
+.cal-card.tone-done .cal-card-status {
+  border-radius: 4px;
+  background: var(--cal-success);
+  color: var(--cal-on-success);
+}
+.cal-card.tone-chair {
+  padding: 8px;
+  border: 2px solid var(--cal-warning);
+  border-radius: 6px;
+  background: rgb(254 240 199 / 40%);
+  box-shadow:
+    0 0 0 2px rgb(154 91 0 / 20%),
+    0 1px 2px rgb(0 0 0 / 5%);
+}
+.cal-card.tone-chair .cal-card-status {
+  background: var(--cal-warning);
+  color: var(--cal-on-warning);
+  font-size: 10px;
+  font-weight: 700;
+}
+.cal-card.tone-emergency {
+  border-color: rgb(186 26 26 / 40%);
+  border-left: 2px solid var(--cal-error);
+  background: rgb(255 218 214 / 40%);
+  color: var(--cal-on-error-container);
+}
+.cal-card.tone-emergency .cal-card-name,
+.cal-card.tone-emergency .cal-card-visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cal-error);
+}
+.cal-card.tone-emergency .cal-icon {
+  width: 12px;
+  height: 12px;
+}
+.cal-card.tone-gone {
+  z-index: 1;
+  border-color: rgb(192 200 204 / 60%);
+  background: rgb(242 244 245 / 50%);
+  opacity: 0.6;
+  box-shadow: none;
+}
+.cal-card.tone-gone .cal-card-name {
+  color: var(--cal-on-surface-variant);
+  font-weight: 400;
+  text-decoration: line-through;
+}
+.cal-card.tone-gone .cal-card-status {
+  padding: 0;
+  background: none;
+  color: var(--cal-outline);
+  font-size: 10px;
+  font-weight: 400;
+}
+.cal-card.tone-missed {
+  background: rgb(242 244 245 / 70%);
+  opacity: 0.8;
+}
+.cal-card.tone-missed .cal-card-status {
+  padding: 0;
+  background: none;
+  color: var(--cal-on-surface-variant);
+  font-size: 10px;
+  font-weight: 400;
+}
+.cal-card.is-tiny {
+  flex-direction: row;
+  align-items: center;
+  padding: 2px 6px;
+}
+.cal-card.is-selected {
+  outline: 2px dashed var(--cal-primary);
+  outline-offset: 1px;
+}
+.cal-more {
+  position: absolute;
+  z-index: 3;
+  padding: 0 4px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-primary);
+  font:
+    600 10px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+}
+/* M9: the just-booked card (HTML 115-122). */
+@keyframes cal-dock-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(5 77 97 / 50%);
+    transform: scale(0.96);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(5 77 97 / 0%);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(5 77 97 / 0%);
+    transform: scale(1);
+  }
+}
+.cal-card.cal-card-docked {
+  border-color: rgb(5 77 97 / 70%);
+  background: var(--cal-surface-lowest);
+  animation: cal-dock-pulse 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Live preview block (P5.4.4; HTML 102-113, markup missing in the HTML: L2). */
+@keyframes cal-live-glow {
+  0%,
+  100% {
+    border-color: #054d61;
+    box-shadow: 0 0 0 0 rgb(5 77 97 / 20%);
+  }
+  50% {
+    border-color: #0f5266;
+    box-shadow: 0 0 0 4px rgb(5 77 97 / 12%);
+  }
+}
+.cal-preview {
+  position: absolute;
+  right: 4px;
+  left: 4px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  padding: 4px 6px;
+  border: 2px solid var(--cal-primary);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 92%);
+  font-size: 10px;
+  pointer-events: none;
+  box-sizing: border-box;
+  transition:
+    height 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease,
+    border-color 0.2s ease;
+  animation: cal-live-glow 2s infinite ease-in-out;
+}
+.cal-preview-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+.cal-preview-name {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-preview-dur {
+  flex: none;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+  font:
+    600 9px "Spline Sans Mono",
+    monospace;
+}
+.cal-preview-visit {
+  color: var(--cal-primary);
+  font-weight: 600;
+}
+.cal-preview-range {
+  color: var(--cal-on-surface-variant);
+  font:
+    400 9px "Spline Sans Mono",
+    monospace;
+}

@@ -1,0 +1,120 @@
+/* Booking details panel (P5.9.1): the calendar's look, header like the popover header. Laptop:
+   to the right of the grid; tablet and phone: a bottom sheet (.day-details-sheet). */
+.cal-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 12px;
+  background: var(--cal-surface-lowest);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+}
+@media (min-width: 1024px) {
+  .cal-layout .cal-details {
+    position: sticky;
+    top: 140px;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+  }
+}
+.cal-details-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+  border-bottom: 1px solid rgb(192 200 204 / 60%);
+  background: rgb(242 244 245 / 60%);
+}
+.cal-details-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.cal-details-who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+.cal-details-who h2 {
+  margin: 0;
+  overflow: hidden;
+  font:
+    700 15px/1.25 "Wix Madefor Display",
+    sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-details-dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 14px;
+  font:
+    400 13px "Instrument Sans",
+    sans-serif;
+}
+.cal-details-dl div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 8px;
+}
+.cal-details-dl dt {
+  color: var(--cal-on-surface-variant);
+  font-size: 12px;
+  font-weight: 600;
+}
+.cal-details-dl dd {
+  margin: 0;
+}
+.cal-details-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.cal-details-marks .cal-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--cal-error);
+}
+.cal-details-last {
+  margin: 0 14px 12px;
+  color: var(--cal-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.cal-details-last .cal-skel {
+  display: block;
+  width: 70%;
+}
+.cal-details-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px 14px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+  background: var(--cal-surface-low);
+}
+.cal-details-actions .btn,
+.cal-details-actions .bk-btn {
+  justify-content: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+.cal-details-actions .btn-primary {
+  border-color: var(--cal-primary);
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+}
+.cal-details-actions .day-details-cancel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cal-details-actions .day-details-cancel p {
+  margin: 4px 0 0;
+  color: var(--cal-on-surface-variant);
+  font-size: 12px;
+}

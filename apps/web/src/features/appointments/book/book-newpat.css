@@ -1,0 +1,195 @@
+/* Booking popover: + New Patient tab (HTML 647-776), M15 highlight, M23 chevron. */
+.bk-newpat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+.bk-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: 4px;
+  background: var(--cal-surface-low);
+  font-size: 11px;
+}
+.bk-topbar-note {
+  color: var(--cal-on-surface-variant);
+  font-weight: 600;
+}
+.bk-new-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cal-success);
+  font-size: 10px;
+  font-weight: 600;
+}
+.bk-new-dot span {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--cal-success);
+}
+.bk-primary {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: 8px;
+  background: var(--cal-surface-lowest);
+}
+/* The app's form fields, made compact inside the popover. */
+.bk-newpat .field-label,
+.bk-newpat label > span:first-child {
+  font-size: 11px;
+  font-weight: 700;
+}
+.bk-newpat .input {
+  min-height: 34px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.bk-newpat .new-patient-age-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.bk-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cal-on-surface-variant);
+  font-size: 11px;
+}
+.bk-seg {
+  display: flex;
+  gap: 6px;
+}
+.bk-seg-item {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 6px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  background: var(--cal-surface-lowest);
+  font-size: 11px;
+  cursor: pointer;
+}
+.bk-seg-item:hover {
+  border-color: var(--cal-primary);
+}
+.bk-guardian {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgb(154 91 0 / 40%);
+  border-radius: 8px;
+  background: rgb(254 240 199 / 20%);
+}
+.bk-guardian legend {
+  float: left;
+  grid-column: 1 / -1;
+}
+.bk-guardian legend .cal-icon {
+  color: var(--cal-warning);
+}
+.bk-details {
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 8px;
+  background: var(--cal-surface-lowest);
+  font-size: 11px;
+}
+.bk-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--cal-primary);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+  transition: background-color var(--cal-hover);
+}
+.bk-details summary::-webkit-details-marker {
+  display: none;
+}
+.bk-details summary:hover {
+  background: rgb(208 230 240 / 20%);
+}
+.bk-chevron {
+  color: var(--cal-secondary);
+  transition: transform 150ms ease;
+}
+.bk-details[open] .bk-chevron {
+  transform: rotate(180deg);
+}
+.bk-details-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px 10px 10px;
+  border-top: 1px solid rgb(192 200 204 / 60%);
+}
+.bk-consents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.bk-quiet {
+  margin: 0;
+  color: var(--cal-on-surface-variant);
+  font-size: 11px;
+}
+.bk-same {
+  padding: 10px;
+  border: 1px solid rgb(154 91 0 / 40%);
+  border-radius: 8px;
+  background: rgb(254 240 199 / 40%);
+}
+.bk-same.is-asking {
+  border-width: 2px;
+}
+.bk-same p {
+  margin: 0 0 8px;
+}
+/* M15 (HTML 82-87). */
+.cal-input-highlight {
+  border-color: #054d61 !important;
+  box-shadow:
+    0 0 0 2px rgb(5 77 97 / 45%),
+    0 0 12px rgb(5 77 97 / 25%) !important;
+  transition: all 0.35s ease;
+}
+@media (max-width: 520px) {
+  .bk-adjust-grid,
+  .bk-primary,
+  .bk-guardian,
+  .bk-details-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Compact checkboxes and radios inside the popover (HTML 670, 688). */
+.cal-scope label.bk-check,
+.cal-scope label.bk-seg-item,
+.cal-scope label.bk-doctor {
+  min-height: 32px;
+  gap: 4px;
+}
+.cal-scope .bk-check input[type="checkbox"],
+.cal-scope .bk-seg-item input[type="radio"] {
+  width: 14px;
+  height: 14px;
+}

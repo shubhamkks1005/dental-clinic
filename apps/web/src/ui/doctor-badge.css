@@ -1,0 +1,30 @@
+/* Doctor badge (calendar HTML 315): short name + dot in the doctor's fixed colour pair. */
+.doctor-badge {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--doc-bg);
+  color: var(--doc-fg);
+  font:
+    700 9px/1.6 "Spline Sans Mono",
+    ui-monospace,
+    monospace;
+  white-space: nowrap;
+}
+.doctor-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--doc-fg);
+}
+.doctor-badge.is-large {
+  padding: 1px 6px;
+  font-size: 11px;
+}
+.doctor-badge.is-large .doctor-badge-dot {
+  width: 8px;
+  height: 8px;
+}

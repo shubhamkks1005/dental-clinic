@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { icons } from "../../../ui/icons";
 import { useMe } from "../../auth";
-import { CancelMissedDialog, QuickBookDialog } from "../../appointments";
+import { CancelMissedDialog, LazyBookPopover } from "../../appointments";
 import { useToast } from "../../../ui/Toast";
 import { shortName } from "../../../ui/names";
-import { istDate, formatClockTime } from "@clinic/shared";
+import { istDate } from "@clinic/shared";
 import { BreakBanner } from "./BreakBanner";
 import { ChairCard } from "./ChairCard";
 import { BreakWarning, ConfirmSheet, LateSheet } from "./DoctorDialogs";
@@ -237,20 +237,23 @@ export function DoctorTodayPage() {
         />
       ) : null}
       {act.rescheduleRow ? (
-        <QuickBookDialog
-          open
-          prefill={{
+        <LazyBookPopover
+          request={{
+            mode: "move",
+            anchor: null,
+            side: "auto",
             dateLocal: istDate(new Date()),
+            startMin: act.rescheduleRow.startMin,
             patientId: act.rescheduleRow.patientId,
             visitTypeId: act.rescheduleRow.visitTypeId,
+            move: { id: act.rescheduleRow.id, version: act.rescheduleRow.version },
           }}
-          reschedule={{ id: act.rescheduleRow.id, version: act.rescheduleRow.version }}
           onClose={() => act.setRescheduleRow(null)}
-          onBooked={(slot) => {
-            toast({ text: `Moved to ${slot.dateLocal}, ${formatClockTime(slot.startMin)}` });
-            act.setRescheduleRow(null);
+          onBooked={() => {
             data.load();
+            return null;
           }}
+          onReload={data.load}
         />
       ) : null}
     </div>

@@ -1,0 +1,293 @@
+/* Booking popover fields (HTML 547-776): labels, compact inputs, chips, doctor radios, time
+   adjuster, the docked patient box, new-patient tab, buttons, M15 highlight, M23 chevron. */
+.bk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.bk-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.bk-label {
+  padding: 0;
+  color: var(--cal-on-surface);
+  font:
+    700 11px "Instrument Sans",
+    sans-serif;
+}
+.bk-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.bk-label-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.bk-label-icon .cal-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--cal-primary);
+}
+.bk-req {
+  color: var(--cal-error);
+}
+.bk-text-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cal-primary);
+  font:
+    600 11px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+}
+.bk-text-link:hover {
+  text-decoration: underline;
+}
+.bk-input {
+  width: 100%;
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 6px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface);
+  font:
+    500 12px "Instrument Sans",
+    sans-serif;
+  box-sizing: border-box;
+}
+.bk-input:focus {
+  border-color: var(--cal-primary);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--cal-primary);
+}
+.bk-input-sm {
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.bk-textarea {
+  min-height: 0;
+  padding: 6px;
+  font-size: 11px;
+  font-weight: 400;
+  resize: vertical;
+}
+.bk-search {
+  position: relative;
+}
+.bk-search-icon {
+  position: absolute;
+  top: 17px;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+  color: var(--cal-primary);
+  transform: translateY(-50%);
+}
+.bk-search-input {
+  padding-left: 32px;
+}
+.bk-results {
+  margin: 4px 0 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 6px;
+  list-style: none;
+}
+.bk-results button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  background: var(--cal-surface-lowest);
+  font:
+    400 12px "Instrument Sans",
+    sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.bk-results button:hover {
+  background: rgb(208 230 240 / 45%);
+}
+.bk-result-sub,
+.bk-hint {
+  color: var(--cal-on-surface-variant);
+  font-size: 11px;
+}
+.bk-hint {
+  margin: 4px 0 0;
+}
+.bk-picked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border: 1px solid rgb(5 77 97 / 40%);
+  border-radius: 8px;
+  background: rgb(208 230 240 / 30%);
+  transition: all 300ms ease;
+}
+.bk-picked-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.bk-picked-who {
+  min-width: 0;
+}
+.bk-picked-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bk-picked-name {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-picked-mobile {
+  display: block;
+  color: var(--cal-on-surface-variant);
+  font:
+    400 10px "Spline Sans Mono",
+    monospace;
+}
+.bk-change {
+  padding: 2px 8px;
+  border: 0;
+  background: none;
+  color: var(--cal-primary);
+  font:
+    600 11px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+  transition: color var(--cal-hover);
+}
+.bk-change:hover {
+  color: var(--cal-error);
+}
+.cal-initials {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+.cal-initials-lg {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+.cal-code-chip {
+  padding: 0 6px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-primary);
+  font:
+    600 10px "Spline Sans Mono",
+    monospace;
+}
+.bk-doctors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.bk-doctor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 6px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 8px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--cal-hover);
+}
+.bk-doctor:hover {
+  border-color: var(--doc-fg);
+}
+.bk-doctor.is-on {
+  border: 2px solid var(--cal-primary);
+  background: rgb(208 230 240 / 40%);
+  color: var(--cal-primary);
+  font-weight: 600;
+}
+.bk-doctor:has(input:focus-visible) {
+  outline: 2px solid var(--cal-primary);
+  outline-offset: 2px;
+}
+.bk-doctor-dot {
+  width: 10px;
+  height: 10px;
+}
+.bk-doctor-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bk-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.bk-chip,
+.bk-pill {
+  padding: 2px 8px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 9999px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface);
+  font:
+    500 11px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+  transition: all var(--cal-hover);
+}
+.bk-pill {
+  border-radius: 4px;
+  font-size: 10px;
+}
+.bk-chip:hover,
+.bk-pill:hover {
+  border-color: var(--cal-primary);
+}
+.bk-chip.is-on,
+.bk-pill.is-on {
+  border-color: var(--cal-primary);
+  background: var(--cal-secondary-container);
+  color: var(--cal-primary);
+  font-weight: 600;
+}
+.bk-pill.is-on {
+  font-weight: 700;
+}
+.bk-chip:disabled {
+  cursor: default;
+  opacity: 0.6;
+}

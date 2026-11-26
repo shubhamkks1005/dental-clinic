@@ -1,9 +1,8 @@
-import { formatClockTime, istDate } from "@clinic/shared";
+import { istDate, istMinutes } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { formatDate, formatMoney } from "../../ui/format";
-import { useToast } from "../../ui/Toast";
-import { QuickBookDialog } from "../appointments";
+import { formatMoney } from "../../ui/format";
+import { LazyBookPopover } from "../appointments";
 import { listDues, type DuesRow } from "../billing";
 import type { TodayModel } from "./buildTodayModel";
 
@@ -19,7 +18,6 @@ export function FollowUpList({
   items: TodayModel["callList"];
   onChanged: () => void;
 }) {
-  const toast = useToast();
   const [dues, setDues] = useState<DuesRow[]>([]);
   const [rebook, setRebook] = useState<Missed | null>(null);
 
@@ -70,19 +68,20 @@ export function FollowUpList({
         </p>
       ) : null}
       {rebook ? (
-        <QuickBookDialog
-          open
-          prefill={{
+        <LazyBookPopover
+          request={{
+            mode: "book",
+            anchor: null,
+            side: "auto",
             dateLocal: istDate(new Date()),
+            startMin: Math.ceil(istMinutes(new Date()) / 15) * 15,
             patientId: rebook.patientId,
             visitTypeId: rebook.visitTypeId,
           }}
           onClose={() => setRebook(null)}
-          onBooked={(slot) => {
-            toast({
-              text: `Booked for ${formatDate(slot.dateLocal)}, ${formatClockTime(slot.startMin)}`,
-            });
+          onBooked={() => {
             onChanged();
+            return null;
           }}
         />
       ) : null}

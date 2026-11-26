@@ -5,9 +5,11 @@ import type {
   AppointmentStatus,
   CancelReasonCode,
   DayWindow,
+  DayLeave,
   Doctor,
+  AppointmentSearchHit,
 } from "@clinic/shared";
-import { api, ApiError } from "../../api/client";
+import { api } from "../../api/client";
 
 export type DayAppointment = {
   id: string;
@@ -30,6 +32,8 @@ export type DayAppointment = {
   endedAt: string | null;
   updatedAt: string;
   version: number;
+  /** Several doctors (2026-11-26); null on old rows. */
+  doctorId?: string | null;
   /** 3.3.2 icon-only; never clinical labels. */
   alertFlags?: { hasAlert: boolean; hasRestricted: boolean };
   /** 5.3.4: unpaid balance mark; duePaise only for receptionist. */
@@ -52,6 +56,9 @@ export type DayAppointmentsReply = {
   appointments: DayAppointment[];
   lastOrderChange?: LastOrderChange | null;
   currentBreak?: CurrentBreak | null;
+  openBreaks?: CurrentBreak[];
+  /** Doctors on leave that day (a doctor sees only their own). */
+  leaves?: DayLeave[];
 };
 
 export function listDayAppointments(dateLocal: string): Promise<DayAppointmentsReply> {
@@ -68,7 +75,14 @@ export function listAppointmentRange(from: string, to: string): Promise<DayAppoi
 
 export function rescheduleAppointment(
   id: string,
-  body: { version: number; dateLocal: string; startMin: number; overrideReason?: string },
+  body: {
+    version: number;
+    dateLocal: string;
+    startMin: number;
+    doctorId?: string;
+    durationMin?: number;
+    overrideReason?: string;
+  },
 ): Promise<{ appointment: DayAppointment }> {
   return api(`/api/staff/appointments/${encodeURIComponent(id)}/reschedule`, {
     method: "POST",
@@ -99,21 +113,27 @@ export function listDoctors() {
   return api<{ doctors: Doctor[] }>("/api/staff/doctors").then((r) => r.doctors);
 }
 
-/**
- * BRIDGE until the calendar popover's "Assign Doctor" (handoff P5.7.4): a doctor books for
- * themself; the desk books for the first active doctor.
- */
-export async function defaultDoctorId(me: { id: string; role: string }): Promise<string> {
-  if (me.role === "doctor") return me.id;
-  const [first] = await listDoctors();
-  if (!first) throw new ApiError(400, "invalid", "No active doctor. Add one in Settings > Staff.");
-  return first.id;
+/** Calendar search (Q7): coming bookings of the chosen doctors (a doctor: own only). */
+export function searchAppointments(q: string, doctorIds: string[]) {
+  const p = new URLSearchParams({ q });
+  if (doctorIds.length) p.set("doctors", doctorIds.join(","));
+  return api<{ hits: AppointmentSearchHit[] }>(`/api/staff/appointments/search?${p}`).then(
+    (r) => r.hits,
+  );
+}
+
+/** Doctor only: the patient's latest finished visit, or null for a first visit. */
+export function getLastVisit(patientId: string) {
+  return api<{ lastVisit: { dateLocal: string; procedures: string[] } | null }>(
+    `/api/staff/patients/${encodeURIComponent(patientId)}/last-visit`,
+  ).then((r) => r.lastVisit);
 }
 
 export function bookAppointment(body: {
   patientId: string;
   visitTypeId: string;
   doctorId: string;
+  durationMin?: number;
   dateLocal: string;
   startMin: number;
   source: "phone";

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { listPatients, type PatientListRow } from "../patients";
 import { TextInput } from "../../ui/form";
+import "./quick-book.css";
 
 type Props = {
   selected: PatientListRow | null;

@@ -1,0 +1,137 @@
+/* Booking popover: time adjuster (HTML 587-639), new-patient tab (647-776), buttons (780-801),
+   messages, M15 input highlight (82-87) and M23 chevron (751). */
+.bk-adjuster {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgb(192 200 204 / 80%);
+  border-radius: 8px;
+  background: rgb(242 244 245 / 40%);
+}
+.bk-range {
+  padding: 2px 6px;
+  border: 1px solid rgb(192 200 204 / 60%);
+  border-radius: 4px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-primary);
+  font:
+    700 10px "Spline Sans Mono",
+    monospace;
+}
+.bk-adjust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.bk-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--cal-on-surface-variant);
+  font-size: 10px;
+  font-weight: 600;
+}
+.bk-any {
+  color: var(--cal-primary);
+  font:
+    500 9px "Spline Sans Mono",
+    monospace;
+}
+.bk-suffix-wrap {
+  position: relative;
+  display: block;
+}
+.bk-suffix-wrap .bk-input {
+  padding-right: 36px;
+}
+.bk-suffix {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  color: var(--cal-on-surface-variant);
+  font-size: 10px;
+  font-weight: 500;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.bk-quick {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.bk-quick-label {
+  color: var(--cal-on-surface-variant);
+  font-size: 10px;
+  font-weight: 500;
+}
+.bk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--cal-outline-variant);
+  border-radius: 4px;
+  background: var(--cal-surface-lowest);
+  color: var(--cal-on-surface);
+  font:
+    500 12px "Instrument Sans",
+    sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.bk-btn:hover {
+  background: var(--cal-surface);
+}
+.bk-btn-quiet {
+  background: var(--cal-surface-low);
+  font-size: 11px;
+}
+.bk-btn-primary {
+  padding: 6px 14px;
+  border-color: var(--cal-primary);
+  border-radius: 6px;
+  background: var(--cal-primary);
+  color: var(--cal-on-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+}
+.bk-btn-primary:hover {
+  background: rgb(5 77 97 / 90%);
+}
+.bk-btn-primary .cal-icon {
+  width: 16px;
+  height: 16px;
+}
+.bk-btn-danger {
+  border-color: var(--cal-error);
+  color: var(--cal-error);
+}
+.bk-press:active {
+  transform: scale(0.95);
+}
+.bk-btn:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+.bk-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgb(255 218 214 / 50%);
+  color: var(--cal-on-error-container);
+  font-size: 12px;
+}
+.bk-error p {
+  flex: 1 1 200px;
+  margin: 0;
+}
+.bk-same-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

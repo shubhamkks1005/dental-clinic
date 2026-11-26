@@ -1,16 +1,15 @@
 import {
-  formatClockTime,
   istDate,
+  istMinutes,
   isAllowedStatusTransition,
   statusTransitionBlockReason,
   type AppointmentStatus,
 } from "@clinic/shared";
 import { useState, type ReactNode } from "react";
-import { formatDate } from "../../ui/format";
 import { Menu, type MenuItem } from "../../ui/Menu";
 import { useToast } from "../../ui/Toast";
 import { CancelMissedDialog } from "./CancelMissedDialog";
-import { QuickBookDialog } from "./QuickBookDialog";
+import { LazyBookPopover } from "./book/LazyBookPopover";
 
 export type ActionableAppointment = {
   id: string;
@@ -21,6 +20,11 @@ export type ActionableAppointment = {
   version: number;
   startAt: string;
   updatedAt: string;
+  /** Move mode keeps the doctor and the length (P5.7.11); old callers may leave them out. */
+  dateLocal?: string;
+  startMin?: number;
+  endMin?: number;
+  doctorId?: string | null;
 };
 
 type Props = {
@@ -133,22 +137,31 @@ export function AppointmentActions({
           onChanged();
         }}
       />
-      <QuickBookDialog
-        open={dialog === "reschedule"}
-        prefill={{
-          dateLocal: istDate(new Date()),
-          patientId: row.patientId,
-          visitTypeId: row.visitTypeId,
-        }}
-        reschedule={{ id: row.id, version: row.version }}
-        onClose={() => setDialog(null)}
-        onBooked={(slot) => {
-          toast({
-            text: `Moved to ${formatDate(slot.dateLocal)}, ${formatClockTime(slot.startMin)}`,
-          });
-          onChanged();
-        }}
-      />
+      {dialog === "reschedule" ? (
+        <LazyBookPopover
+          request={{
+            mode: "move",
+            anchor: null,
+            side: "auto",
+            dateLocal: row.dateLocal ?? istDate(new Date()),
+            startMin: row.startMin ?? Math.ceil(istMinutes(new Date()) / 15) * 15,
+            patientId: row.patientId,
+            visitTypeId: row.visitTypeId,
+            doctorId: row.doctorId ?? undefined,
+            durationMin:
+              row.startMin !== undefined && row.endMin !== undefined
+                ? row.endMin - row.startMin
+                : undefined,
+            move: { id: row.id, version: row.version },
+          }}
+          onBooked={() => {
+            onChanged();
+            return null;
+          }}
+          onReload={onChanged}
+          onClose={() => setDialog(null)}
+        />
+      ) : null}
     </>
   );
 }
