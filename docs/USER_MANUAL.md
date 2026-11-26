@@ -160,6 +160,17 @@ This manual covers everyday tasks in the clinic software. For technical problems
 
 ---
 
+### Library (your lists)
+- **Library** in the sidebar (doctor only) holds your lists: Medicines, Medicine sets, Procedures and fees, Visit types, Diagnoses, Quick phrases, and under **More** the tooth conditions, allergens, referral sources and the medical history checklist.
+- **Add <item>** (top right) opens a form. Only the name is needed. For a medicine, an empty dose, frequency, days or food timing is saved as "As directed"; form and strength stay empty. Suggestions under the name show only while you type, and fill the name only. **Save and add another** keeps the form open.
+- The same name can be saved twice when something else differs (for example two strengths). The exact same item twice is refused: "This is already in your list."
+- **Needs review** marks a medicine added from a visit with "Add to my list". **Confirm** opens it filled in; **Save** marks it reviewed.
+- Click a card to see more (a medicine: salt, brand, timing, days; other lists: who added it and when). **Edit** shows who added and last changed it. Past prescriptions, bills and visits keep their own copy.
+- **Hide** takes an item out of the choices; nothing is deleted. **Show again** brings it back (filter **Hidden**). Hiding a medicine that is in medicine sets asks first: **Remove from sets and hide** (recommended) or **Hide only** (those sets stop showing in visits until you edit them).
+- **Medicine sets** are made from your active medicines (search, then +). A set that holds a hidden medicine says "Not offered in visits until fixed"; edit it and remove that medicine.
+- **Reorder** sets your order: arrows (or drag with a mouse). Sorting A to Z or Z to A is for viewing only; switch back to Custom order to reorder.
+- Each medicine shows "You wrote this N times (M in the last 30 days)": your own issued prescriptions, one per visit.
+
 ## Common tasks — both roles
 
 ### Search for a patient

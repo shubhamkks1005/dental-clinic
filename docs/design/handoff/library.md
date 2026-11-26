@@ -1,6 +1,6 @@
 # Handoff: library (docs/design/final/library_align_dentistry (7).html)
 
-Status: BACKEND DONE (P1-P3, 2026-11-26, design-apply). UI phases P4-P8 next.
+Status: DONE (2026-11-26, design-apply): backend P1-P3, UI P4-P7, measured P8. Open: P7.1.2 (phone bottom sheet and "‹ More" link not built) and P7.3.5 (other pickers unchanged); see Log.
 Written: 2026-11-25, re-checked and rebuilt 2026-11-26. Plan by: design-plan. Next skill: design-apply.
 
 ## 0. How to read this file
@@ -189,118 +189,118 @@ Goal: prove the backend before any UI, and keep each request at 10 queries or fe
 Goal: the Library page wears the design's look inside a `.library-doc` scope, with no CDN and no new dependency.
 
 #### P4.1 Fonts, icons, tokens
-- [ ] P4.1.1 Move the four `@font-face` rules and `.vd-icon` from `apps/web/src/features/visit-doctor/visit-doc-fonts.css` into `apps/web/src/styles/design-fonts.css` (rename the class `.design-icon`, keep `.vd-icon` as an alias so the visit page is untouched); import it from `DoctorVisitPage.tsx` and `LibraryScreen.tsx`. Why: 4b fonts row, HTML 154-157. Check: visit page screenshot unchanged; Library shows Instrument Sans.
-- [ ] P4.1.2 `apps/web/public/fonts/MaterialSymbols.woff2` is a subset with the visit page's glyphs only (8 KB). Re-subset to ALSO include: search, add, close, check_circle, tune, expand_more, swap_vert, arrow_upward, arrow_downward, drag_indicator, save. Which glyphs it holds now is UNVERIFIED (check with fonttools `pyftsubset` / `ttx` before and after). Why: HTML 211-1019 icons. Check: every Library icon renders, none shows its name as text.
-- [ ] P4.1.3 New `apps/web/src/features/library/library-doc.css`: on `.library-doc` (and on the modal, banner and suggestion list via the same class) define tokens copied from HTML 13-61: `--ld-primary #054D61`, `--ld-on-primary #FFFFFF`, `--ld-primary-container #0F5266`, `--ld-secondary-container #D0E6F0`, `--ld-on-secondary-container #091E26`, `--ld-success #146C43`, `--ld-success-container #D1F4E0`, `--ld-on-success-container #0B462B`, `--ld-warning #9A5B00`, `--ld-warning-container #FEF0C7`, `--ld-on-warning-container #693D00`, `--ld-info #0F5266`, `--ld-info-container #D0E6F0`, `--ld-on-info-container #003544`, `--ld-error #BA1A1A`, `--ld-surface #F8F9FB`, `--ld-surface-lowest #FFFFFF`, `--ld-surface-low #F2F4F5`, `--ld-surface-container #EDEEEF`, `--ld-on-surface #191C1D`, `--ld-on-surface-variant #40484C`, `--ld-outline-variant #C0C8CC`; radius sm 6, default 8, md 12, full 9999 px (HTML 98-105); spacing 4/8/16/24/32 (106-114); type sizes from HTML 123-136 (headline-md 22/28 600, title-lg 18/24 600, title-md 15/22 600, body-md 14/20, body-sm 13/18, label-lg 14/20 600, label-md 12/16 600, label-sm 12/16 500, mono-sm 12/16 500). Page background: gradient `to bottom right` from secondary-container at 20 % via surface to success-container at 15 % (HTML 202). Check: computed colours equal the HTML at 1366 px (screenshot side by side).
-- [ ] P4.1.4 Keep the app sidebar and shell (do not copy HTML 170-199). Check: sidebar identical to other pages.
+- [x] P4.1.1 Move the four `@font-face` rules and `.vd-icon` from `apps/web/src/features/visit-doctor/visit-doc-fonts.css` into `apps/web/src/styles/design-fonts.css` (rename the class `.design-icon`, keep `.vd-icon` as an alias so the visit page is untouched); import it from `DoctorVisitPage.tsx` and `LibraryScreen.tsx`. Why: 4b fonts row, HTML 154-157. Check: visit page screenshot unchanged; Library shows Instrument Sans.
+- [x] P4.1.2 `apps/web/public/fonts/MaterialSymbols.woff2` is a subset with the visit page's glyphs only (8 KB). Re-subset to ALSO include: search, add, close, check_circle, tune, expand_more, swap_vert, arrow_upward, arrow_downward, drag_indicator, save. Which glyphs it holds now is UNVERIFIED (check with fonttools `pyftsubset` / `ttx` before and after). Why: HTML 211-1019 icons. Check: every Library icon renders, none shows its name as text.
+- [x] P4.1.3 New `apps/web/src/features/library/library-doc.css`: on `.library-doc` (and on the modal, banner and suggestion list via the same class) define tokens copied from HTML 13-61: `--ld-primary #054D61`, `--ld-on-primary #FFFFFF`, `--ld-primary-container #0F5266`, `--ld-secondary-container #D0E6F0`, `--ld-on-secondary-container #091E26`, `--ld-success #146C43`, `--ld-success-container #D1F4E0`, `--ld-on-success-container #0B462B`, `--ld-warning #9A5B00`, `--ld-warning-container #FEF0C7`, `--ld-on-warning-container #693D00`, `--ld-info #0F5266`, `--ld-info-container #D0E6F0`, `--ld-on-info-container #003544`, `--ld-error #BA1A1A`, `--ld-surface #F8F9FB`, `--ld-surface-lowest #FFFFFF`, `--ld-surface-low #F2F4F5`, `--ld-surface-container #EDEEEF`, `--ld-on-surface #191C1D`, `--ld-on-surface-variant #40484C`, `--ld-outline-variant #C0C8CC`; radius sm 6, default 8, md 12, full 9999 px (HTML 98-105); spacing 4/8/16/24/32 (106-114); type sizes from HTML 123-136 (headline-md 22/28 600, title-lg 18/24 600, title-md 15/22 600, body-md 14/20, body-sm 13/18, label-lg 14/20 600, label-md 12/16 600, label-sm 12/16 500, mono-sm 12/16 500). Page background: gradient `to bottom right` from secondary-container at 20 % via surface to success-container at 15 % (HTML 202). Check: computed colours equal the HTML at 1366 px (screenshot side by side).
+- [x] P4.1.4 Keep the app sidebar and shell (do not copy HTML 170-199). Check: sidebar identical to other pages.
 
 ### P5 UI: components and states
 Goal: every state of section 2 built as small components (one per file) in `apps/web/src/features/library/`.
 
 #### P5.1 Page frame
-- [ ] P5.1.1 `LibraryScreen.tsx`: wrap in `<div className="library-doc">`; keep lazy route; layout header / tabs / More strip / banner / body as HTML 204-375. Check: at 1366 px matches the HTML.
-- [ ] P5.1.2 `LibraryHeader.tsx`: sticky top 0, white, bottom border, padding 12/24 px; h1 "Library" (headline-md); pill "Doctor only" (hidden under 640 px, HTML 207); search: rounded-full, min height 44 px, width 288 px (208 px under 640), icon left 12 px; placeholder per HTML 915. Check: sticky on scroll; placeholder changes per tab.
-- [ ] P5.1.3 Header Add button: primary fill, min height 44, padding 8/16, radius 8, icon + "Add <LIST_DEFS itemName>" with the HTML words (HTML 914; "medicine set", "procedure", "visit type", "diagnosis", "quick phrase", "tooth condition", "allergen", "referral source", "checklist item": map from LIST_META, HTML 417-428). Check: label per tab.
-- [ ] P5.1.4 List header: title (title-lg) and help text from `LIST_DEFS` (not `LIST_META`), HTML 349-353. Check: text equals LIST_DEFS.
-- [ ] P5.1.5 Keep `MedicinesListReview` under the Medicines cards. Check: still visible on Medicines.
+- [x] P5.1.1 `LibraryScreen.tsx`: wrap in `<div className="library-doc">`; keep lazy route; layout header / tabs / More strip / banner / body as HTML 204-375. Check: at 1366 px matches the HTML.
+- [x] P5.1.2 `LibraryHeader.tsx`: sticky top 0, white, bottom border, padding 12/24 px; h1 "Library" (headline-md); pill "Doctor only" (hidden under 640 px, HTML 207); search: rounded-full, min height 44 px, width 288 px (208 px under 640), icon left 12 px; placeholder per HTML 915. Check: sticky on scroll; placeholder changes per tab.
+- [x] P5.1.3 Header Add button: primary fill, min height 44, padding 8/16, radius 8, icon + "Add <LIST_DEFS itemName>" with the HTML words (HTML 914; "medicine set", "procedure", "visit type", "diagnosis", "quick phrase", "tooth condition", "allergen", "referral source", "checklist item": map from LIST_META, HTML 417-428). Check: label per tab.
+- [x] P5.1.4 List header: title (title-lg) and help text from `LIST_DEFS` (not `LIST_META`), HTML 349-353. Check: text equals LIST_DEFS.
+- [x] P5.1.5 Keep `MedicinesListReview` under the Medicines cards. Check: still visible on Medicines.
 
 #### P5.2 Tabs and More strip
-- [ ] P5.2.1 `LibraryTabs.tsx`: 7 tab links (role tablist, routes unchanged), pill min height 44, padding 6/14, label-md; active = primary fill + white; idle = on-surface-variant, hover surface-low; strip scrolls sideways inside itself (HTML 222). Labels: "Procedures and fees" (LIST_DEFS-style words; the HTML's `&` in 881 is not used). Check: arrow keys move between tabs (existing `tabs-keys`).
-- [ ] P5.2.2 Tab change clears search, resets status pills to Active, leaves reorder, closes expanded cards, hides the banner (HTML 505-516, L20). Check: T1.
-- [ ] P5.2.3 `LibraryMoreStrip.tsx`: shown only under More; "Setup lists:" + 4 buttons (min height 40, radius 8, label-sm, border); selected = secondary-container + primary text; `/app/library/more` redirects to `conditions`; "More" tab stays active on the 4 lists; changing sub-list also clears search (L20; HTML 517 does not). Check: T2.
+- [x] P5.2.1 `LibraryTabs.tsx`: 7 tab links (role tablist, routes unchanged), pill min height 44, padding 6/14, label-md; active = primary fill + white; idle = on-surface-variant, hover surface-low; strip scrolls sideways inside itself (HTML 222). Labels: "Procedures and fees" (LIST_DEFS-style words; the HTML's `&` in 881 is not used). Check: arrow keys move between tabs (existing `tabs-keys`).
+- [x] P5.2.2 Tab change clears search, resets status pills to Active, leaves reorder, closes expanded cards, hides the banner (HTML 505-516, L20). Check: T1.
+- [x] P5.2.3 `LibraryMoreStrip.tsx`: shown only under More; "Setup lists:" + 4 buttons (min height 40, radius 8, label-sm, border); selected = secondary-container + primary text; `/app/library/more` redirects to `conditions`; "More" tab stays active on the 4 lists; changing sub-list also clears search (L20; HTML 517 does not). Check: T2.
 
 #### P5.3 Filters (Medicines) and status pills (others)
-- [ ] P5.3.1 `LibraryFilterColumn.tsx`: lg 3 of 12 columns, sticky top 80 px, white, radius 12, padding 16, gap 16; title "Filter Medicines" + "Reset" link (HTML 253-257). Hidden on other tabs (cards take 12 of 12). Check: sticky while the list scrolls.
-- [ ] P5.3.2 Quick views: "All Medicines" (count of active), "Needs review" (warning pill with count of active + not reviewed), "Hidden" (count). Selected = secondary-container + primary text; min height 40. Address keeps it (`?filter=review|hidden`). Why: owner, HTML 266-274 trimmed. Check: T3.
-- [ ] P5.3.3 "More Filters" button (min height 44, primary text, tinted, border primary 35 %) + collapse box holding ONLY: Category (select of categories in use, case-insensitive, sorted), Dosage form (select by `medicineFormKey`, words from `MEDICINE_FORM_WORD`, L15), Strength + Brand (two text inputs side by side), Combination (All / Yes / No), Added by (select of names in use). Why: owner keeps Added by + Combination. Check: T3.
-- [ ] P5.3.4 Other lists: "Active n" / "Hidden n" round pills (min height 40), selected = primary fill; hidden while reordering (HTML 938-948). Check: counts follow Hide / Show again.
-- [ ] P5.3.5 NOT built: sets-only switch, status select, date filters, custom date row, Advanced box (Route, Manufacturer, Rx, Schedule, Storage). Why: Q1, review. Check: none of these words on screen.
-- [ ] P5.3.6 `library-view.ts` `filterItems`: Medicines search matches label, `salt`, `brand` (case-insensitive); others match label. Unit tests in `library-view.test.ts`. Check: "amox" finds by salt and by brand.
+- [x] P5.3.1 `LibraryFilterColumn.tsx`: lg 3 of 12 columns, sticky top 80 px, white, radius 12, padding 16, gap 16; title "Filter Medicines" + "Reset" link (HTML 253-257). Hidden on other tabs (cards take 12 of 12). Check: sticky while the list scrolls.
+- [x] P5.3.2 Quick views: "All Medicines" (count of active), "Needs review" (warning pill with count of active + not reviewed), "Hidden" (count). Selected = secondary-container + primary text; min height 40. Address keeps it (`?filter=review|hidden`). Why: owner, HTML 266-274 trimmed. Check: T3.
+- [x] P5.3.3 "More Filters" button (min height 44, primary text, tinted, border primary 35 %) + collapse box holding ONLY: Category (select of categories in use, case-insensitive, sorted), Dosage form (select by `medicineFormKey`, words from `MEDICINE_FORM_WORD`, L15), Strength + Brand (two text inputs side by side), Combination (All / Yes / No), Added by (select of names in use). Why: owner keeps Added by + Combination. Check: T3.
+- [x] P5.3.4 Other lists: "Active n" / "Hidden n" round pills (min height 40), selected = primary fill; hidden while reordering (HTML 938-948). Check: counts follow Hide / Show again.
+- [x] P5.3.5 NOT built: sets-only switch, status select, date filters, custom date row, Advanced box (Route, Manufacturer, Rx, Schedule, Storage). Why: Q1, review. Check: none of these words on screen.
+- [x] P5.3.6 `library-view.ts` `filterItems`: Medicines search matches label, `salt`, `brand` (case-insensitive); others match label. Unit tests in `library-view.test.ts`. Check: "amox" finds by salt and by brand.
 
 #### P5.4 Cards
-- [ ] P5.4.1 `LibraryCard.tsx`: article, radius 12, 1 px border, padding 16, small shadow, hover border primary (150 ms, M6); row = left (chevron, name title-md, pills, detail line) + right (actions); stacks under 640 px (HTML 1014-1028). Check: matches HTML at 1366.
-- [ ] P5.4.2 Tints from `categoryTint` (P1.1.8): info -> info-container 25 % / info border 25 %, warning -> warning-container 30 % / warning 30 %, secondary -> secondary-container 30 % / primary 20 %, success -> success-container 30 % / success 25 %, neutral -> surface-low 70 % / outline-variant; other lists per HTML 870-873; hidden card = surface-low 60 % + opacity .8. Category pill only when category is not empty. Check: T3 visual.
-- [ ] P5.4.3 Detail line: Medicines "<form> · <strength> | <dose> · <frequency> | You wrote this <total> times (<last30> in the last 30 days)" (blank form/strength left out, no stray dots; counter "-" if usage failed; "(this name)" added when two active medicines share the name, L3); Sets: chips of CURRENT medicine names from `resolveSetMedicines`, a hidden/missing one shows its word ("Hidden" / "Not in your list") and the card says "Not offered in visits until fixed. Edit the set to remove it." (Q12); Procedures: code (mono) + "Usual fee: ₹4,500" (`formatMoney`); Visit types: "<minutes> mins · <colour name> tag" + a 12 px swatch (L19); Phrases: text clamped to 2 lines; More lists: code in mono. Check: T19, T20, T10.
-- [ ] P5.4.4 Medicine expand (click on card, not on buttons): box with Salt, Brand, Timing (`foodTiming Word`, empty -> "As directed", never the HTML's "After food" default, L16), Days; 3 columns from 640 px. No Route, Mfg, Storage, created/updated (Q1). Check: expand, collapse, survives refresh (keyed by id).
-- [ ] P5.4.5 Non-medicine expand (Q11): box with "Created by", "Created on", "Last updated" ("24 Nov, 4:10 pm by Dr Sharma" via `istDateTime`; seeded rows "Starter list"). Phrases: the box also shows the full text. Check: T34.
-- [ ] P5.4.6 Actions: "Confirm" (needs-review medicines only, warning tint) opens the Edit modal filled in; "Edit"; "Hide" / "Show again"; all min height 44; clicks do not toggle expand (HTML 979). No Delete. Check: T9, T12.
-- [ ] P5.4.7 Pills: "Needs review" (warning), "Hidden" (surface-container, words, not colour alone). Check: T12.
+- [x] P5.4.1 `LibraryCard.tsx`: article, radius 12, 1 px border, padding 16, small shadow, hover border primary (150 ms, M6); row = left (chevron, name title-md, pills, detail line) + right (actions); stacks under 640 px (HTML 1014-1028). Check: matches HTML at 1366.
+- [x] P5.4.2 Tints from `categoryTint` (P1.1.8): info -> info-container 25 % / info border 25 %, warning -> warning-container 30 % / warning 30 %, secondary -> secondary-container 30 % / primary 20 %, success -> success-container 30 % / success 25 %, neutral -> surface-low 70 % / outline-variant; other lists per HTML 870-873; hidden card = surface-low 60 % + opacity .8. Category pill only when category is not empty. Check: T3 visual.
+- [x] P5.4.3 Detail line: Medicines "<form> · <strength> | <dose> · <frequency> | You wrote this <total> times (<last30> in the last 30 days)" (blank form/strength left out, no stray dots; counter "-" if usage failed; "(this name)" added when two active medicines share the name, L3); Sets: chips of CURRENT medicine names from `resolveSetMedicines`, a hidden/missing one shows its word ("Hidden" / "Not in your list") and the card says "Not offered in visits until fixed. Edit the set to remove it." (Q12); Procedures: code (mono) + "Usual fee: ₹4,500" (`formatMoney`); Visit types: "<minutes> mins · <colour name> tag" + a 12 px swatch (L19); Phrases: text clamped to 2 lines; More lists: code in mono. Check: T19, T20, T10.
+- [x] P5.4.4 Medicine expand (click on card, not on buttons): box with Salt, Brand, Timing (`foodTiming Word`, empty -> "As directed", never the HTML's "After food" default, L16), Days; 3 columns from 640 px. No Route, Mfg, Storage, created/updated (Q1). Check: expand, collapse, survives refresh (keyed by id).
+- [x] P5.4.5 Non-medicine expand (Q11): box with "Created by", "Created on", "Last updated" ("24 Nov, 4:10 pm by Dr Sharma" via `istDateTime`; seeded rows "Starter list"). Phrases: the box also shows the full text. Check: T34.
+- [x] P5.4.6 Actions: "Confirm" (needs-review medicines only, warning tint) opens the Edit modal filled in; "Edit"; "Hide" / "Show again"; all min height 44; clicks do not toggle expand (HTML 979). No Delete. Check: T9, T12.
+- [x] P5.4.7 Pills: "Needs review" (warning), "Hidden" (surface-container, words, not colour alone). Check: T12.
 
 #### P5.5 Add/Edit modal
-- [ ] P5.5.1 `LibraryModal.tsx` on `ui/Dialog` (focus trap, Esc, scroll lock, scroll save around `showModal`): max width 512 px, radius 12, padding 20, gap 16; title "Add <item>" / "Edit <item>"; X (40 px); footer Cancel + Save (with icon), top border. Body scrolls, header and footer stay (L21). Check: at 768 x 1024 and 1024 x 768 Save is visible without scrolling the page.
-- [ ] P5.5.2 `MedicineForm.tsx`, field order as HTML 731-757 minus dropped fields: Medicine name (required; label "Medicine name"; suggestions below), Generic / Salt + Brand (2 columns), Category (text with suggestions of categories in use, starts EMPTY) + Form (text, suggestions from `MEDICINE_FORM_WORD`) + Strength (3 columns), Usual dose + Frequency (2 columns), Food timing (select: blank = "As directed", "After food", "Before food"; an existing other value shown as an extra option so nothing is lost, Q10) + Days (2 columns), Combination switch, "More details" (Instruction, Tags), then created/updated lines at the bottom (Edit only). Placeholders from the HTML ("Enter salt", "e.g. 1 tablet, 10 ml", "e.g. 2 times a day", "e.g. 5 days"). Check: T5, T6.
-- [ ] P5.5.3 Combination switch starts ON as a suggestion when the typed name contains "+" and the doctor has not touched it; once touched it keeps the doctor's choice. Check: T6.
-- [ ] P5.5.4 `GenericForm.tsx` for procedures (Usual fee in rupees, "₹" prefix, stored paise, Code), visit types (Usual length select 5..240 step 5; colour = 7 named swatches + "Custom colour" keeps an existing other hex), diagnoses, referral sources (name only), quick phrases (Full text textarea, counter "n / 500"). Check: T19, T20.
-- [ ] P5.5.5 More lists: fields from `LIST_DEFS` (conditions: code, colour, icon, applies to; allergens: match tag + line "A wrong tag can miss an allergy warning."; checklist: code, section, alert label, restricted yes/no + line on the card "Restricted" in words). Check: T21.
-- [ ] P5.5.6 `SuggestBox.tsx`: list under the name field only when `suggest()` returns matches (never on focus with nothing typed); up to 8 rows, 44 px each, arrow keys + Enter, Esc and Tab close; picking fills the NAME only (Q4); never for fees. Check: T18.
-- [ ] P5.5.7 Every Edit view shows at the bottom: "Added <when> by <name>" and "Last changed <when> by <name>" and the line "Past prescriptions, bills and visits keep their own copy." Check: T9.
-- [ ] P5.5.8 `UnsavedChangesGuard`: Cancel, X, Esc, outside click ask "Leave without saving?" only after something was typed. "Save and add another" button on Add. Check: T22.
+- [x] P5.5.1 `LibraryModal.tsx` on `ui/Dialog` (focus trap, Esc, scroll lock, scroll save around `showModal`): max width 512 px, radius 12, padding 20, gap 16; title "Add <item>" / "Edit <item>"; X (40 px); footer Cancel + Save (with icon), top border. Body scrolls, header and footer stay (L21). Check: at 768 x 1024 and 1024 x 768 Save is visible without scrolling the page.
+- [x] P5.5.2 `MedicineForm.tsx`, field order as HTML 731-757 minus dropped fields: Medicine name (required; label "Medicine name"; suggestions below), Generic / Salt + Brand (2 columns), Category (text with suggestions of categories in use, starts EMPTY) + Form (text, suggestions from `MEDICINE_FORM_WORD`) + Strength (3 columns), Usual dose + Frequency (2 columns), Food timing (select: blank = "As directed", "After food", "Before food"; an existing other value shown as an extra option so nothing is lost, Q10) + Days (2 columns), Combination switch, "More details" (Instruction, Tags), then created/updated lines at the bottom (Edit only). Placeholders from the HTML ("Enter salt", "e.g. 1 tablet, 10 ml", "e.g. 2 times a day", "e.g. 5 days"). Check: T5, T6.
+- [x] P5.5.3 Combination switch starts ON as a suggestion when the typed name contains "+" and the doctor has not touched it; once touched it keeps the doctor's choice. Check: T6.
+- [x] P5.5.4 `GenericForm.tsx` for procedures (Usual fee in rupees, "₹" prefix, stored paise, Code), visit types (Usual length select 5..240 step 5; colour = 7 named swatches + "Custom colour" keeps an existing other hex), diagnoses, referral sources (name only), quick phrases (Full text textarea, counter "n / 500"). Check: T19, T20.
+- [x] P5.5.5 More lists: fields from `LIST_DEFS` (conditions: code, colour, icon, applies to; allergens: match tag + line "A wrong tag can miss an allergy warning."; checklist: code, section, alert label, restricted yes/no + line on the card "Restricted" in words). Check: T21.
+- [x] P5.5.6 `SuggestBox.tsx`: list under the name field only when `suggest()` returns matches (never on focus with nothing typed); up to 8 rows, 44 px each, arrow keys + Enter, Esc and Tab close; picking fills the NAME only (Q4); never for fees. Check: T18.
+- [x] P5.5.7 Every Edit view shows at the bottom: "Added <when> by <name>" and "Last changed <when> by <name>" and the line "Past prescriptions, bills and visits keep their own copy." Check: T9.
+- [x] P5.5.8 `UnsavedChangesGuard`: Cancel, X, Esc, outside click ask "Leave without saving?" only after something was typed. "Save and add another" button on Add. Check: T22.
 
 #### P5.6 Medicine sets and hiding
-- [ ] P5.6.1 `SetForm.tsx`: Name + medicine picker (search ACTIVE medicines, chips with remove "x", 44 px); a medicine not in the list offers "Add it to Medicines first" which opens the medicine modal and returns to the set with it added. Saves `item_ids` and `items` (current labels). Why: Q3, Q6. Check: T17.
-- [ ] P5.6.2 Editing a set that holds a hidden or missing medicine shows that chip marked "Hidden" / "Not in your list" with its remove "x"; Save is allowed only when every chip is "ok" and at least one medicine is left ("A set needs at least one medicine."). Why: Q12. Check: T35.
-- [ ] P5.6.3 Old sets without `item_ids`: the form fills chips via `resolveSetMedicines` (active name matches); saving writes `item_ids`. Check: T35.
-- [ ] P5.6.4 NOT built: Delete button, delete modal, 7-second timer (HTML 398-414, 819-860, 983). Check: no "Delete" word on the page.
-- [ ] P5.6.5 `HideMedicineDialog.tsx` (app `ConfirmDialog` look): when "Hide" is pressed on a medicine that `setsUsingMedicine` finds, show "This medicine is in N sets: <names>." with buttons "Remove from sets and hide" (default), "Hide only (these sets stop showing in visits)", "Cancel"; calls `POST /lists/medicines/:id/hide`; `emptySets` from the reply shows "Not changed: <set> would have no medicine left. Edit or hide that set." Why: Q12. Check: T10, T36.
+- [x] P5.6.1 `SetForm.tsx`: Name + medicine picker (search ACTIVE medicines, chips with remove "x", 44 px); a medicine not in the list offers "Add it to Medicines first" which opens the medicine modal and returns to the set with it added. Saves `item_ids` and `items` (current labels). Why: Q3, Q6. Check: T17.
+- [x] P5.6.2 Editing a set that holds a hidden or missing medicine shows that chip marked "Hidden" / "Not in your list" with its remove "x"; Save is allowed only when every chip is "ok" and at least one medicine is left ("A set needs at least one medicine."). Why: Q12. Check: T35.
+- [x] P5.6.3 Old sets without `item_ids`: the form fills chips via `resolveSetMedicines` (active name matches); saving writes `item_ids`. Check: T35.
+- [x] P5.6.4 NOT built: Delete button, delete modal, 7-second timer (HTML 398-414, 819-860, 983). Check: no "Delete" word on the page.
+- [x] P5.6.5 `HideMedicineDialog.tsx` (app `ConfirmDialog` look): when "Hide" is pressed on a medicine that `setsUsingMedicine` finds, show "This medicine is in N sets: <names>." with buttons "Remove from sets and hide" (default), "Hide only (these sets stop showing in visits)", "Cancel"; calls `POST /lists/medicines/:id/hide`; `emptySets` from the reply shows "Not changed: <set> would have no medicine left. Edit or hide that set." Why: Q12. Check: T10, T36.
 
 #### P5.7 Banner, save states, empty and loading
-- [ ] P5.7.1 `LibraryBanner.tsx`: under the tabs, margin 12 top / 24 sides, radius 12, success-container, success border 40 %, padding 10/16, check icon + text + X (36 px), `role="status"`; texts: `"<name>" added to <List>. It is at the end (position N).`, `Updated "<name>".`, `Saved and marked reviewed.`, `"<name>" is hidden from clinic choices.`, `"<name>" is active again.`; no auto-hide; hides on X and on tab / sub-list change (L20); re-keyed per message so M1/M2 replay. Errors go to the app toast. Check: T32.
-- [ ] P5.7.2 All writes through `useSubmitOnce`: Save shows "Saving...", one request per click; failure keeps typed values and shows `problemText`; 409 says "This item was changed. Reloaded." and reloads the list. Check: T23, T24.
-- [ ] P5.7.3 Offline: `OfflineGuard` blocks Save with its sentence, typed text kept. Check: T27.
-- [ ] P5.7.4 Empty: "Nothing matches your current filter." + "Reset filters" (HTML 955); an empty list (no items at all) says "No <items> yet." + the Add button; Needs review 0 says "All medicines reviewed." Check: T3, T37.
-- [ ] P5.7.5 Loading: tab names and title at once, 3 skeleton cards; load error: sentence + Retry (other tabs still work); usage failure shows "-" in the counter only; "Show more (N left)" after 25 cards. Medicines and Sets lists load in parallel on first open (`scope.shared`, no waterfall). Check: T16, T26.
+- [x] P5.7.1 `LibraryBanner.tsx`: under the tabs, margin 12 top / 24 sides, radius 12, success-container, success border 40 %, padding 10/16, check icon + text + X (36 px), `role="status"`; texts: `"<name>" added to <List>. It is at the end (position N).`, `Updated "<name>".`, `Saved and marked reviewed.`, `"<name>" is hidden from clinic choices.`, `"<name>" is active again.`; no auto-hide; hides on X and on tab / sub-list change (L20); re-keyed per message so M1/M2 replay. Errors go to the app toast. Check: T32.
+- [x] P5.7.2 All writes through `useSubmitOnce`: Save shows "Saving...", one request per click; failure keeps typed values and shows `problemText`; 409 says "This item was changed. Reloaded." and reloads the list. Check: T23, T24.
+- [x] P5.7.3 Offline: `OfflineGuard` blocks Save with its sentence, typed text kept. Check: T27.
+- [x] P5.7.4 Empty: "Nothing matches your current filter." + "Reset filters" (HTML 955); an empty list (no items at all) says "No <items> yet." + the Add button; Needs review 0 says "All medicines reviewed." Check: T3, T37.
+- [x] P5.7.5 Loading: tab names and title at once, 3 skeleton cards; load error: sentence + Retry (other tabs still work); usage failure shows "-" in the counter only; "Show more (N left)" after 25 cards. Medicines and Sets lists load in parallel on first open (`scope.shared`, no waterfall). Check: T16, T26.
 
 #### P5.8 Reorder and sort
-- [ ] P5.8.1 "Reorder" button (min height 44, swap icon) turns on reorder: clears search, filters and sort (restored on Done), shows the banner of HTML 368-371, shows only ACTIVE items, hides status pills, cards show the drag handle and up/down arrows (44 px), no expand. Why: brief, HTML 916-917. Check: T13, T14.
-- [ ] P5.8.2 Arrows call `move` (optimistic order, rollback with a sentence on refusal); first "up" and last "down" disabled; with one item Reorder is disabled ("Only one item."). Announce "Moved to position N of M" (aria-live polite). Check: T13.
-- [ ] P5.8.3 Drag (mouse only; touch uses arrows, L22): on drop call `move-to` with the target's position; optimistic, rollback on refusal. Check: T13.
-- [ ] P5.8.4 Sort select (min height 44): "Sort: Custom order", "Sort: A → Z", "Sort: Z → A" (HTML 357-359), client-side; A to Z / Z to A disables Reorder with the reason "Switch to Custom order to reorder." Check: T15.
+- [x] P5.8.1 "Reorder" button (min height 44, swap icon) turns on reorder: clears search, filters and sort (restored on Done), shows the banner of HTML 368-371, shows only ACTIVE items, hides status pills, cards show the drag handle and up/down arrows (44 px), no expand. Why: brief, HTML 916-917. Check: T13, T14.
+- [x] P5.8.2 Arrows call `move` (optimistic order, rollback with a sentence on refusal); first "up" and last "down" disabled; with one item Reorder is disabled ("Only one item."). Announce "Moved to position N of M" (aria-live polite). Check: T13.
+- [x] P5.8.3 Drag (mouse only; touch uses arrows, L22): on drop call `move-to` with the target's position; optimistic, rollback on refusal. Check: T13.
+- [x] P5.8.4 Sort select (min height 44): "Sort: Custom order", "Sort: A → Z", "Sort: Z → A" (HTML 357-359), client-side; A to Z / Z to A disables Reorder with the reason "Switch to Custom order to reorder." Check: T15.
 
 ### P6 UI: motion (one sub-point per row of section 3)
 Goal: every animation of the HTML, same duration and easing, measured.
 
 #### P6.1 Motions
-- [ ] P6.1.1 M1 banner enter: keyframes opacity 0 -> 1, translateY(-8px) -> 0, scale .98 -> 1, 220 ms cubic-bezier(0.2,0,0,1), replays per message. Check: probe 220 ms +-20 %, >= 8 frames.
-- [ ] P6.1.2 M2 check pop: scale .5 -> 1.18 (65 %) -> 1, opacity 0 -> 1, 320 ms same easing. Check: peak near 208 ms.
-- [ ] P6.1.3 M3 More Filters: `grid-template-rows` 0fr <-> 1fr 240 ms cubic-bezier(0.2,0,0,1) + opacity 200 ms ease; inner `overflow: hidden`; `aria-expanded`. Check: T4, no jump of other elements.
-- [ ] P6.1.4 M4 chevron 0 -> 180 deg, 200 ms cubic-bezier(0.4,0,0.2,1). Check: probe.
-- [ ] P6.1.5 M5 card chevron: instant (no transition). Check: computed transition none.
-- [ ] P6.1.6 M6 hover colours 150 ms cubic-bezier(0.4,0,0.2,1) on header Add, tabs, cards, More Filters. Check: computed 150 ms.
-- [ ] P6.1.7 M7 drag: dragged card opacity .6; drop target 1 px ring + primary border; instant. Check: state classes during drag.
-- [ ] P6.1.8 M8 modal: app Dialog behaviour, no new motion. Check: none.
-- [ ] P6.1.9 M9 list change: no animation; scroll position and expanded cards kept. Check: scrollY same after Hide.
+- [x] P6.1.1 M1 banner enter: keyframes opacity 0 -> 1, translateY(-8px) -> 0, scale .98 -> 1, 220 ms cubic-bezier(0.2,0,0,1), replays per message. Check: probe 220 ms +-20 %, >= 8 frames.
+- [x] P6.1.2 M2 check pop: scale .5 -> 1.18 (65 %) -> 1, opacity 0 -> 1, 320 ms same easing. Check: peak near 208 ms.
+- [x] P6.1.3 M3 More Filters: `grid-template-rows` 0fr <-> 1fr 240 ms cubic-bezier(0.2,0,0,1) + opacity 200 ms ease; inner `overflow: hidden`; `aria-expanded`. Check: T4, no jump of other elements.
+- [x] P6.1.4 M4 chevron 0 -> 180 deg, 200 ms cubic-bezier(0.4,0,0.2,1). Check: probe.
+- [x] P6.1.5 M5 card chevron: instant (no transition). Check: computed transition none.
+- [x] P6.1.6 M6 hover colours 150 ms cubic-bezier(0.4,0,0.2,1) on header Add, tabs, cards, More Filters. Check: computed 150 ms.
+- [x] P6.1.7 M7 drag: dragged card opacity .6; drop target 1 px ring + primary border; instant. Check: state classes during drag.
+- [x] P6.1.8 M8 modal: app Dialog behaviour, no new motion. Check: none.
+- [x] P6.1.9 M9 list change: no animation; scroll position and expanded cards kept. Check: scrollY same after Hide.
 
 #### P6.2 Reduced motion
-- [ ] P6.2.1 `@media (prefers-reduced-motion: reduce)` in `library-doc.css`: M1 opacity only, M2-M4 instant. Check: probe with reduced motion on.
+- [x] P6.2.1 `@media (prefers-reduced-motion: reduce)` in `library-doc.css`: M1 opacity only, M2-M4 instant. Check: probe with reduced motion on.
 
 ### P7 UI: phone/tablet, keyboard, shared pieces
 Goal: the page works at 360 and 768 px and with the keyboard, and the shared pieces of 4b are applied where they live.
 
 #### P7.1 Widths (HTML silent; copied from `docs/design/proposal/PhoneLibrary.dc.html` and the current library.css)
-- [ ] P7.1.1 768 px: one column; the filter column becomes a "Filters" row above the cards (collapsed, same M3 motion). Check: T30.
+- [x] P7.1.1 768 px: one column; the filter column becomes a "Filters" row above the cards (collapsed, same M3 motion). Check: T30.
 - [ ] P7.1.2 360 px: header wraps (title row, then search full width + Add icon button 44 px); tabs scroll sideways inside their strip; "Filters" button opens a bottom sheet (`ui/Dialog`); card actions on their own line; modal full screen with sticky footer; a "‹ More" link back on the More lists. Check: T30, no sideways page scroll.
 
 #### P7.2 Keyboard and focus
-- [ ] P7.2.1 Visible focus ring (2 px primary) on tabs, chips, cards (card itself focusable, Enter/Space toggles expand), actions, modal fields, suggestions; Esc closes the modal and returns focus to the opener; arrow buttons reachable. Check: T31.
+- [x] P7.2.1 Visible focus ring (2 px primary) on tabs, chips, cards (card itself focusable, Enter/Space toggles expand), actions, modal fields, suggestions; Esc closes the modal and returns focus to the opener; arrow buttons reachable. Check: T31.
 
 #### P7.3 Shared pieces (4b)
-- [ ] P7.3.1 `apps/web/src/features/prescriptions/useVisitPrescription.ts` `applySet` (118-123): resolve with `resolveSetMedicines`; build all new lines first and call `replaceItems` ONCE (fixes L12: today each `addMedicine` reuses the `rx`, `lines` and `busy` of the render before the loop, so the 2nd medicine can create a second draft or hit a 409). Check: new unit/e2e test "set of 3 adds 3 lines in one request" (write it FAILING first on the old code).
-- [ ] P7.3.2 `VisitMedicinesPanel.tsx:253`: offer only sets where `isSetUsable` is true (Q12). The visit page look does not change. Check: T36.
-- [ ] P7.3.3 `apps/web/src/features/prescriptions/AddMedicineInline.tsx:30-40`: use the `item` from the add reply (P2.1.1) instead of `list.find(label)`; build input with shared `fillAsDirected` (`apps/web/src/features/lists/medicine-input.ts` re-uses `AS_DIRECTED` from shared). Check: visit "Add to my list" spec green.
-- [ ] P7.3.4 `apps/web/src/features/library/api.ts`: usage shape `{ total, last30 }`; remove the old 30-day-only type. Check: types pass.
+- [x] P7.3.1 `apps/web/src/features/prescriptions/useVisitPrescription.ts` `applySet` (118-123): resolve with `resolveSetMedicines`; build all new lines first and call `replaceItems` ONCE (fixes L12: today each `addMedicine` reuses the `rx`, `lines` and `busy` of the render before the loop, so the 2nd medicine can create a second draft or hit a 409). Check: new unit/e2e test "set of 3 adds 3 lines in one request" (write it FAILING first on the old code).
+- [x] P7.3.2 `VisitMedicinesPanel.tsx:253`: offer only sets where `isSetUsable` is true (Q12). The visit page look does not change. Check: T36.
+- [x] P7.3.3 `apps/web/src/features/prescriptions/AddMedicineInline.tsx:30-40`: use the `item` from the add reply (P2.1.1) instead of `list.find(label)`; build input with shared `fillAsDirected` (`apps/web/src/features/lists/medicine-input.ts` re-uses `AS_DIRECTED` from shared). Check: visit "Add to my list" spec green.
+- [x] P7.3.4 `apps/web/src/features/library/api.ts`: usage shape `{ total, last30 }`; remove the old 30-day-only type. Check: types pass.
 - [ ] P7.3.5 Pickers that read lists (QuickBookDialog, VisitChartPanel, MedicalHistoryForm, PlanAddForm, WalkInDialog, visit medicine search): when two ACTIVE items share a label, show "label · detail" (medicine: strength; procedure: fee; others: code). Which pickers can show twins is UNVERIFIED: list each in the Log. Check: T33.
 
 ### P8 Docs and measurement
 Goal: the work is recorded and measured.
 
 #### P8.1 Docs
-- [ ] P8.1.1 `docs/MAP.md` (new library files, design-fonts.css, medicine-set.ts, dental-suggestions.ts), `docs/STATE.md`, `docs/USER_MANUAL.md` (Library section: Needs review, sets rule, Hide dialog), `docs/HANDOFF.md` (0065 for the owner, next free 0066), `docs/design/handoff/INDEX.md` status. Check: files updated.
-- [ ] P8.1.2 Give the owner the migration command for 0065 (never applied by the agent).
+- [x] P8.1.1 `docs/MAP.md` (new library files, design-fonts.css, medicine-set.ts, dental-suggestions.ts), `docs/STATE.md`, `docs/USER_MANUAL.md` (Library section: Needs review, sets rule, Hide dialog), `docs/HANDOFF.md` (0065 for the owner, next free 0066), `docs/design/handoff/INDEX.md` status. Check: files updated.
+- [x] P8.1.2 Give the owner the migration command for 0065 (never applied by the agent).
 
 #### P8.2 Measurement and specs
-- [ ] P8.2.1 Motion probe (`.claude/skills/design-apply/motion-probe.template.ts`) for M1-M4, M6 with a 300 ms delay on `**/api/**`; numbers in the Log. Check: section 11 targets.
-- [ ] P8.2.2 Port `e2e/library.spec.ts`, Library parts of `e2e/part5-keyboard-widths.spec.ts` and `redesign-part5.spec.ts` to the new selectors; run the visit specs that use sets and "Add to my list". Check: all green.
-- [ ] P8.2.3 Screenshots at 360, 768, 1366 into `docs/ui-audit/screenshots/redesign/library/`. Check: files present.
+- [x] P8.2.1 Motion probe (`.claude/skills/design-apply/motion-probe.template.ts`) for M1-M4, M6 with a 300 ms delay on `**/api/**`; numbers in the Log. Check: section 11 targets.
+- [x] P8.2.2 Port `e2e/library.spec.ts`, Library parts of `e2e/part5-keyboard-widths.spec.ts` and `redesign-part5.spec.ts` to the new selectors; run the visit specs that use sets and "Add to my list". Check: all green.
+- [x] P8.2.3 Screenshots at 360, 768, 1366 into `docs/ui-audit/screenshots/redesign/library/`. Check: files present.
 
 Migration number: 0065 (the owner applies it). Status machines: none touched.
 
@@ -375,11 +375,11 @@ Decided by the plan (tell the plan if you disagree): modal instead of the right 
 ## 9. Design apply checklist
 - [x] HTML saved and README.md row added (2026-11-26)
 - [x] P1 to P3 backend done and tested; migration 0065 given to the owner
-- [ ] P4 tokens, fonts, icons (scoped `.library-doc`, also on modal, banner, suggestion list)
-- [ ] P5 components (one per file, small)
-- [ ] P6 every motion in section 3 + reduced motion
-- [ ] P7 phone 360 / tablet 768, keyboard, shared pieces (visit sets, Add to my list, pickers)
-- [ ] P8 docs (MAP, STATE, USER_MANUAL, HANDOFF, INDEX), probe numbers, specs, screenshots
+- [x] P4 tokens, fonts, icons (scoped `.library-doc`, also on modal, banner, suggestion list)
+- [x] P5 components (one per file, small)
+- [x] P6 every motion in section 3 + reduced motion
+- [x] P7 phone 360 / tablet 768, keyboard, shared pieces (visit sets, Add to my list, pickers)
+- [x] P8 docs (MAP, STATE, USER_MANUAL, HANDOFF, INDEX), probe numbers, specs, screenshots
 
 ## 10. Test cases (state x interaction x edge)
 | # | Case | Steps | Expect (look) | Expect (numbers) |
@@ -442,3 +442,10 @@ Decided by the plan (tell the plan if you disagree): modal instead of the right 
   - P1.4.4: `seed-local-clinical.mjs` seeds no medicines (they come from migration 0032, which 0065 marks reviewed), so the file was not touched.
   - P1.4.5 / P3.2.2 plans: usage query `SEARCH prescriptions USING INDEX prescriptions_doctor_status_idx (doctor_id=? AND status=?)` + `SEARCH prescription_items USING INDEX prescription_items_rx_idx`; duplicate read `SEARCH list_items USING INDEX list_items_key_order_idx (list_key=?)`; names `SEARCH users USING INDEX sqlite_autoindex_users_1`. The new index is in 0065. Query-plan guard runs moveTo, hideMedicine and medicineUsage: no scans.
   - P3.2.1 round trips (test `lists-query-count.test.ts`): GET list 2 (1 when only seeded rows), POST 4, PUT 5, move 5, move-to 5, hide with sets 7, usage 1. All <= 10.
+- 2026-11-26 design-apply Phase B (UI) and C (measure) DONE. Commits c75e8f3 (P4-P6 UI), 10c9156 (P7.3 visit sets and Add to my list), 4f686e2 (P8.2 specs, 44 px targets, screenshots), plus this docs commit.
+  - Deviations, tell the plan if you disagree: (a) P4.1.2: icons are inline SVG (`LibraryIcon.tsx`, Material shapes) instead of re-subsetting the icon font (needs Python fonttools, not allowed here); the visit page font subset is unchanged. (b) Targets are 44 px where the HTML has 40 px (quick views, More strip, status pills, filter fields, Reset) and 36 px (banner X): the project rule and part5-keyboard-widths require 44 px. (c) Under 1024 px the filter column folds into a "Filters" row (same box), no bottom sheet at 360 (P7.1.2 open). No "‹ More" link at 360: the More strip shows the four lists. (d) A validation problem shows as one sentence at the bottom of the form (role alert), not next to the field. (e) `ui/Dialog` got two optional props, `className` and `beforeClose` (other pages unchanged). (f) The page hides the app top bar from 768 px (`body.ld-page`, like the visit page); the app sidebar is untouched. (g) LIST_DEFS medicine_sets help now says "Pick them from your Medicines list." (h) Banner shows after the server answers; the card itself changes at once.
+  - Probe (300 ms delay on every API call, 1366 px): M1 banner 214-233 ms (HTML 220), M2 check 314-334 ms (HTML 320), both replay on every message; M3 More Filters rows 215-218 ms (HTML 240), start +50 to +99 ms, 12-14 frames, x5 in a row; M4 chevron 183-218 ms (HTML 200); M5 card chevron transition 0 s; M6 hover 150 ms on cards, tabs, Add, More Filters; T12 Hide / Show again: card leaves the view after 5-22 ms (x3 each); T13 arrows: card moves after 2-5 ms (x5 in a row, no 409); 409 on Hide: card back + "This item was changed. Reloaded."; widths 360/768/1366: no sideways scroll, no control under 40 px (then 44 px in the specs); reduced motion: collapse 0 s, banner fades only. Not measurable: easing curves by eye, real-device speed.
+  - P7.3.5 pickers: the visit medicine search already shows "name + strength" per row, so twin medicines are told apart. QuickBookDialog, VisitChartPanel, MedicalHistoryForm, PlanAddForm, WalkInDialog: unchanged (twins there need the same name with other data in visit types, conditions, checklist or procedures; not seen in seed data).
+  - L12: the bug was confirmed by reading (stale `rx`/`lines` in the loop); fixed by `linesOfSet` + one `replaceItems`; unit test rx-lines.test.ts (a failing-first test on the old code was not possible: the old code had no pure part to test).
+  - Specs: e2e/library.spec.ts 6/6, redesign-part5 Q2.13 2/2, part5-keyboard-widths 20/20, visit-doctor-lines 10/10, visit-to-bill 3/3, frame 5/5, lazy-chunks, role-matrix pass. FAILS: e2e/rx-not-issued.spec.ts at the doctor Today "Open" button on the pending-issue card (Today screen, not touched by this work; the draft prescription itself is made).
+  - Note for the owner: running redesign-part5.spec.ts re-saves docs/ui-audit/screenshots/redesign/Q2.11 and Q2.13 PNGs, which already had your uncommitted changes (not committed by the agent).
