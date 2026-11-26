@@ -1,9 +1,4 @@
-import {
-  medicineSnapshot,
-  parseMedicineSetItems,
-  prescriptionSafetyWarnings,
-  type ListItem,
-} from "@clinic/shared";
+import { isSetUsable, prescriptionSafetyWarnings, type ListItem } from "@clinic/shared";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
 import { problemText } from "../../api/problem-text";
@@ -19,7 +14,7 @@ import {
   replaceItems,
   type PrescriptionDto,
 } from "./api";
-import { asItems, toLines, type DraftLine } from "./rx-lines";
+import { asItems, lineFromMedicine, linesOfSet, toLines, type DraftLine } from "./rx-lines";
 
 /** State and actions of the one prescription that belongs to a visit (4.2.2 to 4.2.7). */
 export function useVisitPrescription(visitId: string, patientId: string, canWrite: boolean) {
@@ -49,7 +44,8 @@ export function useVisitPrescription(visitId: string, patientId: string, canWrit
         .catch(() => [] as ListItem[]),
     ]);
     setMedicines(meds.filter((m) => m.active));
-    setSets(setList.filter((s) => s.active));
+    // Q12: a set with a hidden or missing medicine is not offered until it is fixed.
+    setSets(setList.filter((s) => s.active && isSetUsable(s, meds)));
     const alerts = mh.alerts ?? [];
     const tags: Array<{ tag: string; label: string }> = [];
     for (const a of allergenList) {
@@ -84,44 +80,28 @@ export function useVisitPrescription(visitId: string, patientId: string, canWrit
     return created;
   }
 
-  async function addMedicine(item: ListItem) {
-    if (!canWrite || locked || busy) return;
+  /** Adds lines in ONE request (L12: a set used to add them one by one with stale state). */
+  async function addLines(added: DraftLine[]) {
+    if (!canWrite || locked || busy || added.length === 0) return;
     setBusy(true);
     setProblem(null);
     try {
       const draft = await ensureDraft();
-      const snap = medicineSnapshot(item);
-      const added: DraftLine = {
-        key: `new-${Date.now()}`,
-        medicineId: snap.medicineId,
-        genericName: snap.genericName,
-        brand: snap.brand,
-        form: snap.form,
-        strength: snap.strength,
-        dose: snap.dose,
-        frequency: snap.frequency,
-        days: snap.days,
-        timing: snap.timing,
-        instruction: snap.instruction,
-        tags: snap.tags,
-      };
-      const saved = await replaceItems(draft.id, draft.version, asItems([...lines, added]));
+      const saved = await replaceItems(draft.id, draft.version, asItems([...lines, ...added]));
       setRx(saved);
       setLines(toLines(saved));
     } catch (err) {
       setProblem(problemText(err));
+      if (err instanceof ApiError && err.status === 409) await load();
     } finally {
       setBusy(false);
     }
   }
 
-  async function applySet(setItem: ListItem) {
-    const names = parseMedicineSetItems(String(setItem.data.items ?? ""));
-    for (const name of names) {
-      const med = medicines.find((m) => m.label.toLowerCase() === name.toLowerCase());
-      if (med) await addMedicine(med);
-    }
-  }
+  const addMedicine = (item: ListItem) => addLines([lineFromMedicine(item, `new-${Date.now()}`)]);
+
+  /** Library Q12: only usable sets are offered; all their medicines go in one request. */
+  const applySet = (setItem: ListItem) => addLines(linesOfSet(setItem, medicines, Date.now()));
 
   async function saveLines(next: DraftLine[]) {
     if (!rx || locked) return;

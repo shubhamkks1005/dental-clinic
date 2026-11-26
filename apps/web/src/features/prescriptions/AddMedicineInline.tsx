@@ -4,7 +4,7 @@ import { problemText } from "../../api/problem-text";
 import { Select, TextInput } from "../../ui/form";
 import { scopeKey } from "../../ui/request-scope";
 import { useRequestScope } from "../../ui/RequestScope";
-import { addItem, MEDICINE_FORMS, newMedicineInput } from "../lists";
+import { addItemWithReply, MEDICINE_FORMS, newMedicineInput } from "../lists";
 
 type Props = {
   /** What the doctor typed in the search box. */
@@ -30,13 +30,14 @@ export function AddMedicineInline({ name, onAdded, onCancel }: Props) {
     setBusy(true);
     setError(null);
     try {
-      const list = await addItem(
+      const reply = await addItemWithReply(
         "medicines",
         newMedicineInput({ label, strength, form, reviewed: false }),
       );
       // The screen's shared medicine list is old now; the next load() must ask the server.
       scope.forget(scopeKey.list("medicines"));
-      const added = list.find((i) => i.label === label.trim());
+      // The reply names the new item by id: two medicines may share a name (L5).
+      const added = reply.item;
       if (added) onAdded(added);
     } catch (err) {
       setError(problemText(err));
