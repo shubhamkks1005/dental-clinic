@@ -1,0 +1,1602 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Appointments Calendar — Align Dentistry</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    globalThis.tailwind = globalThis.tailwind || {};
+    globalThis.tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'nav-surface': '#263F4D',
+            'on-nav-surface': '#F4F8FA',
+            'on-nav-surface-variant': '#C2D3DC',
+            'nav-border': '#355363',
+            'success': '#146C43',
+            'on-success': '#FFFFFF',
+            'success-container': '#D1F4E0',
+            'on-success-container': '#0B462B',
+            'warning': '#9A5B00',
+            'on-warning': '#FFFFFF',
+            'warning-container': '#FEF0C7',
+            'on-warning-container': '#693D00',
+            'info': '#0F5266',
+            'on-info': '#FFFFFF',
+            'info-container': '#D0E6F0',
+            'on-info-container': '#003544',
+            'light-primary': '#054D61',
+            'light-on-primary': '#FFFFFF',
+            'light-primary-container': '#0F5266',
+            'light-on-primary-container': '#B9EAFF',
+            'light-secondary': '#4D616A',
+            'light-on-secondary': '#FFFFFF',
+            'light-secondary-container': '#D0E6F0',
+            'light-on-secondary-container': '#091E26',
+            'light-tertiary': '#502C00',
+            'light-on-tertiary': '#FFFFFF',
+            'light-tertiary-container': '#6B4213',
+            'light-on-tertiary-container': '#FFDCBE',
+            'light-error': '#BA1A1A',
+            'light-on-error': '#FFFFFF',
+            'light-error-container': '#FFDAD6',
+            'light-on-error-container': '#93000A',
+            'light-surface': '#F8F9FB',
+            'light-surface-dim': '#D9DADC',
+            'light-surface-bright': '#F8F9FB',
+            'light-surface-container-lowest': '#FFFFFF',
+            'light-surface-container-low': '#F2F4F5',
+            'light-surface-container': '#EDEEEF',
+            'light-surface-container-high': '#E7E8EA',
+            'light-surface-container-highest': '#E1E2E4',
+            'light-on-surface': '#191C1D',
+            'light-surface-variant': '#DCE4E8',
+            'light-on-surface-variant': '#40484C',
+            'light-outline': '#70787C',
+            'light-outline-variant': '#C0C8CC',
+            'light-inverse-surface': '#2E3132',
+            'light-inverse-on-surface': '#F0F1F2',
+            'light-inverse-primary': '#96CFE6',
+          },
+          fontFamily: {
+            'display': ['"Wix Madefor Display"', 'sans-serif'],
+            'headline': ['"Wix Madefor Display"', 'sans-serif'],
+            'title': ['"Instrument Sans"', 'sans-serif'],
+            'body': ['"Instrument Sans"', 'sans-serif'],
+            'label': ['"Instrument Sans"', 'sans-serif'],
+            'mono': ['"Spline Sans Mono"', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=Spline+Sans+Mono:wght@400;500;600&amp;family=Wix+Madefor+Display:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+<style>
+    .material-symbols-outlined { display: inline-block; width: 1em; height: 1em; line-height: 1 !important; box-sizing: content-box; overflow: hidden; white-space: nowrap; vertical-align: middle; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(5, 77, 97, 0.2); border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+
+    /* Input highlight during Phase 1 */
+    .input-anim-highlight {
+      box-shadow: 0 0 0 2px rgba(5, 77, 97, 0.45), 0 0 12px rgba(5, 77, 97, 0.25) !important;
+      border-color: #054D61 !important;
+      transition: all 0.35s ease;
+    }
+
+    /* Popover entrance and morph transitions */
+    .popover-container {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
+      will-change: transform, opacity, left, top, width, height, border-radius;
+    }
+
+    /* Target slot pulse highlight */
+    .calendar-slot-active {
+      outline: 2px dashed #054D61 !important;
+      outline-offset: -2px;
+      background-color: rgba(208, 230, 240, 0.4) !important;
+    }
+
+    /* Real-time slot preview box transition */
+    #slot-preview-box {
+      transition: height 0.22s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, border-color 0.2s ease;
+    }
+
+    @keyframes liveSlotGlow {
+      0%, 100% { border-color: #054D61; box-shadow: 0 0 0 0 rgba(5, 77, 97, 0.2); }
+      50% { border-color: #0F5266; box-shadow: 0 0 0 4px rgba(5, 77, 97, 0.12); }
+    }
+    .preview-glow-pulse {
+      animation: liveSlotGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes dockGlowPulse {
+      0% { box-shadow: 0 0 0 0 rgba(5, 77, 97, 0.5); transform: scale(0.96); }
+      50% { box-shadow: 0 0 0 6px rgba(5, 77, 97, 0); transform: scale(1.02); }
+      100% { box-shadow: 0 0 0 0 rgba(5, 77, 97, 0); transform: scale(1); }
+    }
+    .dock-pulse-confirmed {
+      animation: dockGlowPulse 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-light-surface text-light-on-surface font-body antialiased min-h-screen flex flex-col relative select-none">
+<div class="flex-1 flex min-h-screen bg-light-surface">
+<!-- Persistent Left Navigation Rail -->
+<aside class="w-[240px] shrink-0 bg-nav-surface border-r border-nav-border text-on-nav-surface min-h-screen lg:sticky lg:top-0 lg:h-screen flex flex-col justify-between p-3 gap-2 z-20">
+<div class="flex flex-col gap-2">
+<!-- Clinic Branding -->
+<div class="flex items-center gap-2 p-2.5 rounded-md bg-light-secondary-container border border-light-on-primary-container/50 shadow-sm">
+<div class="w-9 h-9 rounded bg-light-primary flex items-center justify-center shrink-0">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px] text-light-on-primary">dentistry</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline text-[15px] font-semibold text-light-on-secondary-container leading-tight">Align Dentistry</span>
+<span class="font-label text-[12px] font-medium text-light-primary">Orthodontics</span>
+</div>
+</div>
+<!-- Nav Items -->
+<nav aria-label="Primary navigation" class="flex flex-col gap-1 mt-1">
+<span class="px-3 pt-1 font-label text-[12px] font-semibold uppercase tracking-wider text-on-nav-surface-variant">Clinic</span>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px] text-light-on-primary-container">schedule</span>
+<span>Today</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px] text-light-on-primary-container">group</span>
+<span>Patients</span>
+</a>
+<!-- ACTIVE: Appointments -->
+<a class="flex items-center justify-between px-3 py-1.5 rounded-full bg-nav-border/90 text-on-nav-surface font-label text-[14px] font-semibold shadow-sm border border-light-on-primary-container/30" href="/app/appointments">
+<div class="flex items-center gap-2">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px] text-success-container">calendar_today</span>
+<span>Appointments</span>
+</div>
+<span class="px-1.5 py-0.2 rounded-full bg-light-primary text-[10px] font-mono text-light-on-primary">Doctor</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px] text-warning-container">receipt_long</span>
+<span>Billing</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px] text-light-error-container">chat_bubble</span>
+<span>Messages</span>
+</a>
+<span class="px-3 pt-3 mt-1 border-t border-nav-border/80 font-label text-[12px] font-semibold uppercase tracking-wider text-on-nav-surface-variant">Practice</span>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">bar_chart</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">menu_book</span>
+<span>Library</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-full text-on-nav-surface-variant hover:bg-nav-border/80 font-label text-[14px] font-semibold transition-colors" href="#">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">tune</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<!-- Doctor Profile Badge in Nav Bottom -->
+<div class="p-2.5 rounded-md bg-nav-border/65 border border-nav-border flex items-center gap-2">
+<div class="w-9 h-9 rounded-full bg-light-secondary-container text-light-on-secondary-container flex items-center justify-center font-label text-[12px] font-bold shrink-0">AM</div>
+<div class="min-w-0">
+<span class="block font-label text-[14px] font-semibold text-light-on-primary leading-tight truncate">Dr. Arvind Mehta</span>
+<span class="block font-body text-[12px] text-on-nav-surface/90">Orthodontist</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 bg-gradient-to-br from-light-secondary-container/15 via-light-surface to-success-container/10">
+<!-- Header Strip: Title, Date Navigator, Week/Day Toggle, Action Buttons -->
+<header class="bg-light-surface-container-lowest border-b border-light-outline-variant px-6 py-3 flex flex-col gap-3 sticky top-0 z-20 shadow-xs">
+<div class="flex flex-wrap items-center justify-between gap-3">
+<!-- Left: Page Title + Context -->
+<div class="flex flex-wrap items-center gap-3">
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline text-[22px] font-bold text-light-on-surface leading-tight">Appointments Calendar</h1>
+<span class="px-2 py-0.5 rounded bg-light-secondary-container text-light-primary font-mono text-[11px] font-semibold">Doctor View</span>
+</div>
+<p class="font-body text-[13px] text-light-on-surface-variant" id="schedule-summary-text">
+                Week: <span class="font-semibold text-light-on-surface">23 Nov – 29 Nov 2026</span> · <strong class="text-light-primary font-semibold" id="booked-count-text">14 appointments booked</strong> · 1 chair (Room 1)
+              </p>
+</div>
+</div>
+<!-- Center-Right Controls: Navigation, View Switcher & Primary Action -->
+<div class="flex flex-wrap items-center gap-2.5">
+<!-- Quick Date Controls -->
+<div class="flex items-center rounded-md border border-light-outline-variant bg-light-surface-container-low p-0.5 shadow-2xs">
+<button class="min-h-[38px] px-2.5 rounded hover:bg-light-surface-container-lowest text-light-on-surface flex items-center justify-center transition-colors" title="Previous week" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="min-h-[38px] px-3 rounded hover:bg-light-surface-container-lowest text-light-on-surface font-label text-[13px] font-semibold transition-colors" type="button">
+                Today
+              </button>
+<button class="min-h-[38px] px-2.5 rounded hover:bg-light-surface-container-lowest text-light-on-surface flex items-center justify-center transition-colors" title="Next week" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<!-- Date Picker Shortcut -->
+<div class="relative">
+<input class="min-h-[38px] text-[13px] font-label font-medium rounded-md border border-light-outline-variant bg-light-surface-container-low text-light-on-surface py-1.5 pl-3 pr-2 focus:border-light-primary focus:ring-1 focus:ring-light-primary" id="calendar-header-datepicker" type="date" value="2026-11-25">
+</div>
+<!-- View Switcher (Week / Day) -->
+<div aria-label="Calendar view" class="flex items-center rounded-md border border-light-outline-variant bg-light-surface-container-low p-0.5 shadow-2xs" role="group">
+<button class="min-h-[36px] px-3 rounded bg-light-surface-container-lowest text-light-primary font-label text-[13px] font-bold shadow-2xs transition-colors" type="button">
+                Week
+              </button>
+<button class="min-h-[36px] px-3 rounded text-light-on-surface-variant hover:text-light-on-surface font-label text-[13px] font-medium transition-colors" type="button">
+                Day
+              </button>
+</div>
+<!-- Print Day List -->
+<button class="min-h-[38px] px-3 py-1.5 rounded-md border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface hover:bg-light-surface-container-low font-label text-[13px] font-medium inline-flex items-center gap-1.5 shadow-2xs transition-colors" onclick="window.print()" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[16px] text-light-secondary">print</span>
+<span class="hidden sm:inline">Print list</span>
+</button>
+<!-- Book Appointment CTA -->
+<button class="min-h-[38px] px-3.5 py-1.5 rounded-md bg-light-primary hover:bg-light-primary/90 text-light-on-primary font-label text-[13px] font-semibold inline-flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer" id="btn-top-book" onclick="window.openBookingModal(event, null, '2026-11-25', '12:00 PM')" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[18px]">add</span>
+<span>Book Appointment</span>
+</button>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-light-outline-variant/60 text-[12px]" id="doctor-filter-bar"><div class="flex flex-wrap items-center gap-2"><span class="font-label text-[11px] font-bold text-light-on-surface-variant flex items-center gap-1 shrink-0"><span class="material-symbols-outlined text-[15px] text-light-primary">groups</span><span>Doctors:</span></span><div class="flex flex-wrap items-center gap-1.5" id="doctor-filter-checkboxes"><label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-light-primary/40 bg-light-secondary-container/40 text-light-primary font-semibold text-[11px] cursor-pointer hover:bg-light-secondary-container/70 transition-colors select-none" data-doc-id="dr-mehta"><input type="checkbox" checked="" class="doctor-filter-cb rounded text-light-primary focus:ring-0 h-3.5 w-3.5" value="dr-mehta" onchange="filterAppointmentsByDoctor()"><span class="w-2 h-2 rounded-full bg-[#054D61]"></span><span>Dr. Arvind Mehta</span><span class="text-[10px] text-light-secondary font-normal">(Ortho)</span></label><label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#5E35B1]/40 bg-[#EDE7F6] text-[#5E35B1] font-semibold text-[11px] cursor-pointer hover:bg-[#D1C4E9]/60 transition-colors select-none" data-doc-id="dr-sharma"><input type="checkbox" checked="" class="doctor-filter-cb rounded text-[#5E35B1] focus:ring-0 h-3.5 w-3.5" value="dr-sharma" onchange="filterAppointmentsByDoctor()"><span class="w-2 h-2 rounded-full bg-[#5E35B1]"></span><span>Dr. Priya Sharma</span><span class="text-[10px] text-[#5E35B1]/80 font-normal">(Endo)</span></label><label class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#C25E00]/40 bg-[#FFF3E0] text-[#C25E00] font-semibold text-[11px] cursor-pointer hover:bg-[#FFE0B2]/60 transition-colors select-none" data-doc-id="dr-sen"><input type="checkbox" checked="" class="doctor-filter-cb rounded text-[#C25E00] focus:ring-0 h-3.5 w-3.5" value="dr-sen" onchange="filterAppointmentsByDoctor()"><span class="w-2 h-2 rounded-full bg-[#C25E00]"></span><span>Dr. Rohan Sen</span><span class="text-[10px] text-[#C25E00]/80 font-normal">(Surgeon)</span></label></div></div><div class="flex items-center gap-2"><button type="button" onclick="setAllDoctors(true)" class="font-label text-[11px] font-semibold text-light-primary hover:underline px-1.5 py-0.5">All</button><span class="text-light-outline-variant">|</span><button type="button" onclick="setAllDoctors(false)" class="font-label text-[11px] font-semibold text-light-on-surface-variant hover:text-light-error hover:underline px-1.5 py-0.5">Clear</button></div></div></header>
+<!-- Main Calendar Grid Area -->
+<main class="flex-1 p-6 flex flex-col gap-4 max-w-[1600px] w-full mx-auto relative">
+<div class="flex flex-col bg-light-surface-container-lowest border border-light-outline-variant rounded-lg shadow-sm overflow-hidden" id="week-view-container">
+<!-- Week Header -->
+<div class="grid grid-cols-8 border-b border-light-outline-variant bg-light-surface-container-low/70 divide-x divide-light-outline-variant">
+<div class="p-2.5 flex flex-col justify-center items-center text-center">
+<span class="font-mono text-[11px] text-light-on-surface-variant font-medium">Time (IST)</span>
+<span class="font-label text-[10px] text-light-primary font-bold">1 Chair</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center" data-col-day="Mon">
+<span class="font-label text-[12px] text-light-on-surface-variant">Mon</span>
+<span class="font-headline text-[16px] font-bold text-light-on-surface">23 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-secondary-container text-light-primary font-mono text-[11px] font-semibold">3 booked</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center" data-col-day="Tue">
+<span class="font-label text-[12px] text-light-on-surface-variant">Tue</span>
+<span class="font-headline text-[16px] font-bold text-light-on-surface">24 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-secondary-container text-light-primary font-mono text-[11px] font-semibold">3 booked</span>
+</div>
+<!-- Wed 25 Nov (TODAY) -->
+<div class="p-2.5 flex flex-col items-center justify-center text-center bg-light-secondary-container/60 border-t-2 border-t-light-primary" data-col-day="Wed">
+<div class="flex items-center gap-1">
+<span class="font-label text-[12px] text-light-primary font-bold">Wed</span>
+<span class="px-1.5 py-0.2 rounded bg-light-primary text-light-on-primary font-mono text-[9px] uppercase tracking-wider font-semibold">Today</span>
+</div>
+<span class="font-headline text-[16px] font-bold text-light-primary">25 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-primary text-light-on-primary font-mono text-[11px] font-semibold" id="wed-count-badge">4 booked</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center" data-col-day="Thu">
+<span class="font-label text-[12px] text-light-on-surface-variant">Thu</span>
+<span class="font-headline text-[16px] font-bold text-light-on-surface">26 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-success-container text-on-success-container font-mono text-[11px] font-semibold">2 booked · Free gaps</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center" data-col-day="Fri">
+<span class="font-label text-[12px] text-light-on-surface-variant">Fri</span>
+<span class="font-headline text-[16px] font-bold text-light-on-surface">27 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-secondary-container text-light-primary font-mono text-[11px] font-semibold">2 booked</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center" data-col-day="Sat">
+<span class="font-label text-[12px] text-light-on-surface-variant">Sat</span>
+<span class="font-headline text-[16px] font-bold text-light-on-surface">28 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-secondary-container text-light-primary font-mono text-[11px] font-semibold">0 booked</span>
+</div>
+<div class="p-2.5 flex flex-col items-center justify-center text-center bg-light-surface-container-high/60 border-t-2 border-t-light-outline" data-col-day="Sun">
+<span class="font-label text-[12px] text-light-on-surface-variant">Sun</span>
+<span class="font-headline text-[16px] font-semibold text-light-on-surface-variant">29 Nov</span>
+<span class="mt-0.5 px-2 py-0.2 rounded-full bg-light-outline-variant text-light-on-surface-variant font-mono text-[10px] font-bold uppercase tracking-wider">Closed</span>
+</div>
+</div>
+<!-- Time Grid: 12 Hours (08:00 AM - 08:00 PM) -->
+<div class="overflow-x-auto custom-scrollbar overflow-y-auto" style="max-height: calc(100vh - 270px);">
+<div class="min-w-[980px] divide-y divide-light-outline-variant/60" id="calendar-grid-body">
+<!-- 08:00 AM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px]" data-row-hour="08:00 AM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>08:00 AM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-23', '08:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-24', '08:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-25', '08:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-26', '08:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-27', '08:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="08:00 AM" onclick="window.openBookingModal(event, this, '2026-11-28', '08:00 AM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 09:00 AM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px]" data-row-hour="09:00 AM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>09:00 AM</span></div>
+<div class="p-1">
+<div class="appointment-card p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]" data-doctor="dr-mehta"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface block truncate">Vikas Rawat</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-light-secondary-container text-light-primary font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#054D61]"></span>Dr. Mehta</span></div><span class="text-[10px] text-light-primary font-medium block mt-0.5">Consultation</span></div>
+</div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="09:00 AM" onclick="window.openBookingModal(event, this, '2026-11-24', '09:00 AM')"></div>
+<div class="p-1 bg-light-secondary-container/20">
+<div class="appointment-card p-1.5 rounded border border-success/40 bg-success-container/40 shadow-2xs text-[11px]" data-doctor="dr-sharma"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface block truncate">Rohan Mathur</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#EDE7F6] text-[#5E35B1] font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#5E35B1]"></span>Dr. Sharma</span></div><div class="flex items-center justify-between mt-0.5"><span class="text-[10px] text-light-primary font-medium">Scaling</span><span class="px-1 rounded bg-success text-on-success text-[9px] font-semibold">Completed</span></div></div>
+</div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="09:00 AM" onclick="window.openBookingModal(event, this, '2026-11-26', '09:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="09:00 AM" onclick="window.openBookingModal(event, this, '2026-11-27', '09:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="09:00 AM" onclick="window.openBookingModal(event, this, '2026-11-28', '09:00 AM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 10:00 AM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[72px] relative" data-row-hour="10:00 AM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>10:00 AM</span></div>
+<div class="p-1"><div class="appointment-card p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]" data-doctor="dr-sharma"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface truncate block">Sneha Kapoor</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#EDE7F6] text-[#5E35B1] font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#5E35B1]"></span>Dr. Sharma</span></div><span class="text-[10px] text-light-primary font-medium block mt-0.5">Composite Filling</span></div></div>
+<div class="p-1"><div class="appointment-card p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]" data-doctor="dr-mehta"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface truncate block">Amitabh Sen</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-light-secondary-container text-light-primary font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#054D61]"></span>Dr. Mehta</span></div><span class="text-[10px] text-light-primary font-medium block mt-0.5">Consultation</span></div></div>
+<!-- Wed NOW IN CHAIR -->
+<div class="p-1 relative bg-light-secondary-container/20">
+<div class="absolute left-0 right-0 top-3 border-t-2 border-light-error z-10 flex items-center pointer-events-none">
+<span class="w-2 h-2 rounded-full bg-light-error -ml-1"></span>
+<span class="bg-light-error text-light-on-error font-mono text-[9px] px-1 rounded-sm ml-1 font-semibold">NOW 10:45 AM</span>
+</div>
+<div class="appointment-card mt-4 p-2 rounded-md border-2 border-warning bg-warning-container/40 text-[11px] shadow-sm ring-2 ring-warning/20" data-doctor="dr-sharma"><div class="flex items-start justify-between gap-1"><div class="min-w-0"><span class="font-bold text-light-on-surface truncate block">Karan Yadav</span><div class="flex items-center gap-1.5"><span class="text-[10px] font-mono text-light-primary font-semibold">P-000405</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#EDE7F6] text-[#5E35B1] font-mono text-[9px] font-bold"><span class="w-1.5 h-1.5 rounded-full bg-[#5E35B1]"></span>Dr. Sharma</span></div></div><span class="px-1.5 py-0.2 rounded-full bg-warning text-on-warning font-label text-[10px] font-bold">In chair</span></div><div class="flex items-center gap-1.5 mt-1"><span class="text-[11px] font-semibold text-light-primary">RCT 36 (Sitting 1)</span><span class="material-symbols-outlined text-[14px] text-light-error">warning</span><span class="text-[10px] font-bold text-warning">Due</span></div></div>
+</div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-success-container/15 hover:bg-success-container/25 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="10:00 AM" onclick="window.openBookingModal(event, this, '2026-11-26', '10:00 AM')"></div>
+<div class="p-1"><div class="appointment-card p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]" data-doctor="dr-mehta"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface truncate block">Deepa Nair</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-light-secondary-container text-light-primary font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#054D61]"></span>Dr. Mehta</span></div><span class="text-[10px] text-light-primary font-medium block mt-0.5">Orthodontic Review</span></div></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="10:00 AM" onclick="window.openBookingModal(event, this, '2026-11-28', '10:00 AM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 11:00 AM (Side-by-side clash showcase) -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[68px]" data-row-hour="11:00 AM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>11:00 AM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="11:00 AM" onclick="window.openBookingModal(event, this, '2026-11-23', '11:00 AM')"></div>
+<div class="p-1"><div class="p-1.5 rounded border border-light-outline-variant/60 bg-light-surface-container-low/50 opacity-60 text-[11px]"><span class="text-light-on-surface-variant line-through truncate block">Pooja Sharma</span><span class="text-[10px] text-light-outline">Cancelled</span></div></div>
+<!-- Wed (TODAY: Side-by-side 50/50 clash) -->
+<div class="p-1 relative bg-light-secondary-container/20">
+<div class="grid grid-cols-2 gap-1.5 h-full items-stretch"><div class="appointment-card p-1.5 rounded border border-light-primary/50 bg-light-surface-container-lowest shadow-2xs text-[11px] flex flex-col justify-between" data-doctor="dr-sen"><div class="flex items-start justify-between gap-1"><span class="font-bold text-light-on-surface truncate">Meera Iyer</span><span class="px-1.5 py-0.2 rounded-full bg-light-secondary-container text-light-primary text-[9px] font-semibold shrink-0">Confirmed</span></div><div class="flex items-center justify-between gap-1 mt-1"><span class="font-medium text-light-primary text-[10px] truncate block">Extraction 18</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#FFF3E0] text-[#C25E00] font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#C25E00]"></span>Dr. Sen</span></div></div><div class="appointment-card p-1.5 rounded border border-light-error/40 border-l-2 border-l-light-error bg-light-error-container/40 text-light-on-error-container shadow-2xs text-[11px] flex flex-col justify-between" data-doctor="dr-sen"><div class="flex items-start justify-between gap-1"><span class="font-bold text-light-error truncate flex items-center gap-1"><span class="material-symbols-outlined text-[12px] shrink-0">emergency</span><span class="truncate">Vikram Patel</span></span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#FFF3E0] text-[#C25E00] font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#C25E00]"></span>Dr. Sen</span></div><span class="text-[10px] font-medium text-light-error truncate block mt-1">Severe Tooth Fracture</span></div></div>
+</div>
+<div class="p-1"><div class="appointment-card p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]" data-doctor="dr-sharma"><div class="flex items-center justify-between gap-1"><span class="font-bold text-light-on-surface truncate block">Rajesh K.</span><span class="inline-flex items-center gap-0.5 px-1 py-0.2 rounded bg-[#EDE7F6] text-[#5E35B1] font-mono text-[9px] font-bold shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-[#5E35B1]"></span>Dr. Sharma</span></div><span class="text-[10px] text-light-primary font-medium block mt-0.5">Crown Prep 46</span></div></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="11:00 AM" onclick="window.openBookingModal(event, this, '2026-11-27', '11:00 AM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="11:00 AM" onclick="window.openBookingModal(event, this, '2026-11-28', '11:00 AM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 12:00 PM (Key target demo slot for Wednesday 12:00 PM) -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px] relative" data-row-hour="12:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>12:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="12:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '12:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="12:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '12:00 PM')"></div>
+<!-- Wednesday 12:00 PM Target Slot with real-time preview element container -->
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 overflow-visible transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="12:00 PM" id="slot-wed-12pm" onclick="window.openBookingModal(event, this, '2026-11-25', '12:00 PM')">
+<!-- Confirmed Booked Appointment Box (Target of fold & fit morph) -->
+<div class="hidden p-1.5 rounded border border-light-primary/70 bg-light-surface-container-lowest shadow-sm text-[11px] flex-col justify-between h-full" id="confirmed-appointment-card">
+<div class="flex items-start justify-between gap-1">
+<span class="font-bold text-light-on-surface truncate" id="confirmed-card-name">Aakash Verma</span>
+<span class="px-1.5 py-0.2 rounded-full bg-success text-on-success text-[9px] font-semibold shrink-0">Confirmed</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-[10px]">
+<span class="font-semibold text-light-primary truncate" id="confirmed-card-procedure">Consultation (30m)</span>
+<span class="font-mono text-light-outline text-[9px]" id="confirmed-card-time">12:00 PM</span>
+</div>
+</div>
+</div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="12:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '12:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="12:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '12:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="12:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '12:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 01:00 PM Lunch Break -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 bg-light-surface-container-high/30 min-h-[44px]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 8px, rgba(5, 77, 97, 0.03) 8px, rgba(5, 77, 97, 0.03) 16px);">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant flex items-center justify-center"><span>01:00 PM</span></div>
+<div class="col-span-7 p-2 flex items-center justify-center">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-light-surface-container-lowest border border-light-outline-variant/80 shadow-2xs text-[12px] font-label font-medium text-light-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-light-secondary">coffee</span>
+<span>Clinic Lunch Break (1:00 PM – 2:00 PM) · One chair clinic schedule paused</span>
+</div>
+</div>
+</div>
+<!-- 02:00 PM to 08:00 PM rows (standard 12-hr view) -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px]" data-row-hour="02:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>02:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '02:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '02:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-25', '02:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '02:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '02:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="02:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '02:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 03:00 PM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px]" data-row-hour="03:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>03:00 PM</span></div>
+<div class="p-1"><div class="p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]"><span class="font-bold text-light-on-surface truncate block">Gaurav Sethi</span><span class="text-[10px] text-light-primary font-medium">Braces Adjustment</span></div></div>
+<div class="p-1"><div class="p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]"><span class="font-bold text-light-on-surface truncate block">Priyanka Varma</span><span class="text-[10px] text-light-primary font-medium">Suture Removal</span></div></div>
+<div class="p-1 bg-light-secondary-container/20">
+<div class="p-1.5 rounded border border-light-primary/40 bg-light-surface-container-lowest shadow-2xs text-[11px]">
+<span class="font-bold text-light-on-surface truncate block">Anita Desai</span>
+<span class="text-[10px] text-light-primary font-medium">Teeth Whitening</span>
+</div>
+</div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="03:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '03:00 PM')"></div>
+<div class="p-1"><div class="p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low shadow-2xs text-[11px]"><span class="font-bold text-light-on-surface truncate block">Sanjay Singhal</span><span class="text-[10px] text-light-primary font-medium">Consultation</span></div></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="03:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '03:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline select-none">Closed</div>
+</div>
+<!-- 04:00 PM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[64px]" data-row-hour="04:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>04:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="04:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '04:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="04:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '04:00 PM')"></div>
+<div class="p-1 bg-light-secondary-container/20"><div class="p-1.5 rounded border border-light-outline-variant bg-light-surface-container-low/70 opacity-80 text-[11px]"><span class="font-bold text-light-on-surface truncate block">Tanya Bose</span><span class="text-[10px] text-light-on-surface-variant">Missed (No-show)</span></div></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="04:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '04:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="04:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '04:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="04:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '04:00 PM')"></div>
+<div class="p-1 bg-light-surface-container-high/40 flex items-center justify-center"></div>
+</div>
+<!-- 05:00 PM - 08:00 PM -->
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[60px]" data-row-hour="05:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex items-center justify-center"><span>05:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '05:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '05:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-25', '05:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '05:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '05:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="05:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '05:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline">Closed</div>
+</div>
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[60px]" data-row-hour="06:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>06:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '06:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '06:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-25', '06:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '06:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '06:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="06:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '06:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline">Closed</div>
+</div>
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[60px]" data-row-hour="07:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>07:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '07:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '07:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-25', '07:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '07:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '07:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="07:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '07:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline">Closed</div>
+</div>
+<div class="grid grid-cols-8 divide-x divide-light-outline-variant/60 min-h-[60px]" data-row-hour="08:00 PM">
+<div class="p-2 font-mono text-[11px] text-light-on-surface-variant bg-light-surface-container-low/20 flex flex-col items-center justify-start"><span>08:00 PM</span></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Mon" data-col-index="1" data-date="2026-11-23" data-day="Monday, 23 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-23', '08:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Tue" data-col-index="2" data-date="2026-11-24" data-day="Tuesday, 24 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-24', '08:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer bg-light-secondary-container/20 hover:bg-light-secondary-container/30 transition-colors" data-col-day="Wed" data-col-index="3" data-date="2026-11-25" data-day="Wednesday, 25 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-25', '08:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Thu" data-col-index="4" data-date="2026-11-26" data-day="Thursday, 26 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-26', '08:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Fri" data-col-index="5" data-date="2026-11-27" data-day="Friday, 27 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-27', '08:00 PM')"></div>
+<div class="calendar-slot relative p-1 cursor-pointer hover:bg-light-secondary-container/20 transition-colors" data-col-day="Sat" data-col-index="6" data-date="2026-11-28" data-day="Saturday, 28 Nov 2026" data-time="08:00 PM" onclick="window.openBookingModal(event, this, '2026-11-28', '08:00 PM')"></div>
+<div class="p-2 bg-light-surface-container-high/40 flex items-center justify-center text-[11px] text-light-outline">Closed</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- CONTEXTUAL SIDE-ANCHORED POPOVER & PREVIEW HIGHLIGHT SYSTEM -->
+<!-- ============================================================== -->
+<!-- REUSABLE DYNAMIC LIVE PREVIEW BOX (CONFINED TO THE CLICKED DAY COLUMN ONLY) -->
+
+<!-- FLOATING POPOVER CONTAINER (ANCHORED NEXT TO SLOT OR TOP-BAR) -->
+<div class="fixed inset-0 z-50 pointer-events-auto" id="popover-wrapper" style="display: block;">
+<!-- Subtle Non-blocking light click-outside backdrop keeping grid clearly legible -->
+<div class="absolute inset-0 bg-light-on-surface/15 pointer-events-auto transition-opacity duration-200 opacity-100" id="popover-backdrop" onclick="window.closeBookingModal()"></div>
+<!-- Floating micro-toast indicator -->
+<div class="hidden fixed top-5 left-1/2 -translate-x-1/2 z-[80] bg-nav-surface text-on-nav-surface border border-light-on-primary-container/40 px-4 py-2 rounded-full shadow-2xl flex items-center gap-2.5 text-[12px] font-label transition-all duration-300 pointer-events-none transform -translate-y-2 opacity-0" id="registration-toast">
+<div class="w-5 h-5 rounded-full bg-success text-on-success flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</div>
+<span class="font-medium text-on-nav-surface" id="registration-toast-msg">Patient Registered: P-000409 · Proceeding to Slot Selection</span>
+</div>
+<!-- FLYER CARD ELEMENT FOR PATIENT REGISTRATION FLIP -->
+<div class="hidden fixed z-[75] pointer-events-none rounded-lg border border-light-primary/40 bg-light-secondary-container/95 flex items-center justify-between shadow-none transition-none overflow-hidden" id="morphing-flyer" style="transition: none; opacity: 0; pointer-events: none; transform: none; box-shadow: none; backdrop-filter: none;">
+<div class="flex items-center gap-2.5 min-w-0 flex-1">
+<div class="w-8 h-8 rounded-full bg-light-primary text-light-on-primary flex items-center justify-center font-bold text-[12px] shrink-0" id="flyer-initials">AV</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-bold text-light-on-surface leading-tight truncate" id="flyer-name">Aakash Verma</span>
+<span class="font-mono text-[11px] px-1.5 py-0.2 rounded bg-light-surface-container-lowest text-light-primary border border-light-outline-variant font-semibold" id="flyer-code">P-000409</span>
+</div>
+<span class="text-[11px] text-light-on-surface-variant font-mono block truncate mt-0.5" id="flyer-mobile">+91 98201 44556</span>
+</div>
+</div>
+<button class="text-light-primary hover:text-light-error text-[12px] font-semibold px-2 py-1 transition-opacity duration-200 shrink-0 opacity-0 pointer-events-none" id="flyer-change-btn" onclick="clearSelectedPatient()" type="button">Change</button>
+</div>
+<!-- THE CONTEXTUAL POPOVER DIALOG -->
+<div class="popover-container pointer-events-auto absolute bg-light-surface-container-lowest rounded-xl w-[440px] max-w-[calc(100vw-24px)] max-h-[calc(100vh-24px)] border border-light-outline-variant/80 shadow-2xl flex flex-col overflow-hidden opacity-100" id="book-popover" style="transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s; width: 440px; border-radius: 0.75rem; display: flex; left: 706px; top: 523px; transform: scale(1) translateY(0px); transform-origin: center center;">
+<!-- Popover Header -->
+<div class="p-3.5 border-b border-light-outline-variant/60 flex items-center justify-between bg-light-surface-container-low/60 shrink-0">
+<div class="flex items-center gap-2.5 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-light-secondary-container text-light-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<h3 class="font-headline text-[15px] font-bold text-light-on-surface leading-tight truncate">Schedule Appointment</h3>
+<span class="px-1.5 py-0.2 rounded bg-light-secondary-container text-light-primary font-mono text-[10px] font-bold shrink-0">Room 1</span>
+</div>
+<p class="text-[11px] text-light-on-surface-variant truncate" id="popover-header-date">Wednesday, 25 Nov 2026 · Align Dentistry</p>
+</div>
+</div>
+<div class="flex items-center gap-1 shrink-0 ml-2">
+<button class="w-7 h-7 rounded-full hover:bg-light-surface-container-high flex items-center justify-center text-light-on-surface-variant transition-colors cursor-pointer" onclick="window.closeBookingModal()" title="Close without saving" type="button">
+<span class="material-symbols-outlined text-[17px]">close</span>
+</button>
+</div>
+</div>
+<!-- Tab Switcher with sliding background pill indicator -->
+<div class="px-3.5 pt-2 pb-1.5 border-b border-light-outline-variant/60 bg-light-surface-container-low/20 shrink-0">
+<div class="relative flex items-center p-1 bg-light-surface-container-low rounded-lg border border-light-outline-variant/60">
+<div class="absolute top-1 bottom-1 left-1 rounded-md bg-light-primary shadow-xs transition-transform duration-[400ms] ease-in-out pointer-events-none" id="tab-active-indicator" style="width: calc(50% - 4px); transform: translateX(0%);"></div>
+<button class="flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-primary cursor-pointer" id="tab-btn-existing" onclick="switchBookTab('existing')" type="button">
+<span class="material-symbols-outlined text-[15px]">person_search</span>
+<span>Slot Selection</span>
+</button>
+<button class="flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-medium flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-surface-variant hover:text-light-on-surface cursor-pointer" id="tab-btn-new" onclick="switchBookTab('new')" type="button">
+<span class="material-symbols-outlined text-[15px]">person_add</span>
+<span>+ New Patient</span>
+</button>
+</div>
+</div>
+<!-- FIXED-WIDTH VIEWPORT CONTAINER: Crisp clipping with internal scroll -->
+<div class="w-full flex-1 relative overflow-hidden flex flex-col" id="slider-viewport">
+<div class="flex flex-1 w-[200%] transition-transform duration-[450ms] ease-in-out h-full" id="modal-slider-track" style="transform: translateX(0%);">
+<!-- PANEL 0: EXISTING PATIENT / APPOINTMENT DETAILS -->
+<div class="w-1/2 shrink-0 p-3.5 overflow-y-auto overscroll-contain custom-scrollbar flex flex-col gap-2.5 text-[13px] box-border" id="panel-existing-patient">
+<!-- Patient Selection Container -->
+<div class="flex flex-col gap-1">
+<label class="font-label text-[11px] font-bold text-light-on-surface flex items-center justify-between">
+<span>Patient Profile <span class="text-light-error">*</span></span>
+<button class="text-light-primary hover:underline text-[11px] font-semibold cursor-pointer" onclick="switchBookTab('new')" type="button">+ Register New Patient</button>
+</label>
+<!-- Target Docked Patient Box -->
+<div class="p-2 rounded-lg border border-light-primary/40 bg-light-secondary-container/30 flex items-center justify-between transition-all duration-300" id="selected-patient-box" style="opacity: 1;">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-7 h-7 rounded-full bg-light-primary text-light-on-primary flex items-center justify-center font-bold text-[11px] shrink-0" id="selected-patient-initials">AV</div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-bold text-light-on-surface text-[12px] truncate" id="selected-patient-name">Aakash Verma</span>
+<span class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-light-surface-container-lowest text-light-primary border border-light-outline-variant font-semibold" id="selected-patient-code">P-000409</span>
+</div>
+<span class="text-[10px] text-light-on-surface-variant font-mono block" id="selected-patient-phone">+91 98201 44556</span>
+</div>
+</div>
+<button class="text-light-primary hover:text-light-error text-[11px] font-semibold px-2 py-0.5 transition-colors cursor-pointer" id="selected-patient-change-btn" onclick="clearSelectedPatient()" type="button">Change</button>
+</div>
+<!-- Patient Search Input (Hidden when patient is selected) -->
+<div class="relative hidden" id="patient-search-wrapper">
+<span class="material-symbols-outlined text-[15px] text-light-primary absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+<input class="w-full min-h-[34px] pl-8 pr-2.5 py-1 rounded-md border border-light-outline-variant bg-light-surface-container-lowest text-[12px] font-medium text-light-on-surface placeholder:text-light-on-surface-variant/80 focus:border-light-primary focus:ring-1 focus:ring-light-primary" id="modal-patient-search" placeholder="Search patient name, code or phone..." type="text">
+</div>
+</div><div class="flex flex-col gap-1"><label class="font-label text-[11px] font-bold text-light-on-surface flex items-center justify-between"><span>Assign Doctor <span class="text-light-error">*</span></span></label><div class="grid grid-cols-3 gap-1.5" id="popover-doctor-radios"><label class="flex items-center gap-1.5 p-1.5 rounded-lg border-2 border-light-primary bg-light-secondary-container/40 cursor-pointer text-[11px] font-semibold text-light-primary transition-all doc-radio-label" data-doc="dr-mehta"><input type="radio" name="booking-doctor" value="dr-mehta" checked="" class="hidden" onchange="updateBookingDoctorSelection(this.value)"><span class="w-2.5 h-2.5 rounded-full bg-[#054D61] shrink-0"></span><span class="truncate">Dr. Mehta</span></label><label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-light-outline-variant bg-light-surface-container-lowest hover:border-[#5E35B1] cursor-pointer text-[11px] font-medium text-light-on-surface transition-all doc-radio-label" data-doc="dr-sharma"><input type="radio" name="booking-doctor" value="dr-sharma" class="hidden" onchange="updateBookingDoctorSelection(this.value)"><span class="w-2.5 h-2.5 rounded-full bg-[#5E35B1] shrink-0"></span><span class="truncate">Dr. Sharma</span></label><label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-light-outline-variant bg-light-surface-container-lowest hover:border-[#C25E00] cursor-pointer text-[11px] font-medium text-light-on-surface transition-all doc-radio-label" data-doc="dr-sen"><input type="radio" name="booking-doctor" value="dr-sen" class="hidden" onchange="updateBookingDoctorSelection(this.value)"><span class="w-2.5 h-2.5 rounded-full bg-[#C25E00] shrink-0"></span><span class="truncate">Dr. Sen</span></label></div></div>
+<!-- Visit Type Presets -->
+<div>
+<label class="block font-label text-[11px] font-bold text-light-on-surface mb-1">Visit Type &amp; Procedure Preset</label>
+<div class="flex flex-wrap gap-1" id="procedure-chips-group">
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-primary bg-light-secondary-container text-light-primary font-semibold text-[11px] transition-colors cursor-pointer" onclick="selectProcedure('Consultation', 30, this)" type="button">Consultation (30m)</button>
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer" onclick="selectProcedure('RCT (60m)', 60, this)" type="button">RCT (60m)</button>
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer" onclick="selectProcedure('Scaling', 30, this)" type="button">Scaling (30m)</button>
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer" onclick="selectProcedure('Extraction', 45, this)" type="button">Extraction (45m)</button>
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer" onclick="selectProcedure('Crown Prep', 60, this)" type="button">Crown Prep (60m)</button>
+<button class="visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer" onclick="selectProcedure('Ortho Review', 15, this)" type="button">Ortho Review (15m)</button>
+</div>
+</div>
+<!-- Time & Slot Adjuster with Direct Manual Typing + Confined Column Preview Sync -->
+<div class="p-2.5 rounded-lg border border-light-outline-variant/80 bg-light-surface-container-low/40 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label text-[11px] font-bold text-light-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-light-primary">schedule</span>
+<span>Time &amp; Duration Adjuster</span>
+</span>
+<div class="flex items-center gap-1 text-[10px] font-mono text-light-primary font-bold bg-light-surface-container-lowest px-1.5 py-0.5 rounded border border-light-outline-variant/60">
+
+
+</div>
+</div>
+<!-- Direct Type Inputs: Date, Direct Time (Typeable), Direct Duration (Minutes Number Input) -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+<div>
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Date</label>
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-light-on-surface text-[11px] font-medium focus:border-light-primary" id="slot-input-date" onchange="handleDateOrTimeChange()" type="date" value="2026-11-25">
+</div>
+<div>
+<div class="flex items-center justify-between mb-0.5">
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold">Start Time&nbsp;</label>
+
+</div>
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest px-2 py-1 text-light-on-surface text-[11px] font-mono font-medium focus:border-light-primary" id="slot-input-time-manual" oninput="handleManualTimeInput(this.value)" type="time" value="12:00">
+</div>
+<div>
+<div class="flex items-center justify-between mb-0.5">
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold">Duration (Min)</label>
+<span class="text-[9px] font-mono text-light-primary font-medium">Any min</span>
+</div>
+<div class="relative">
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest px-2 py-1 pr-9 text-light-on-surface text-[11px] font-mono font-medium focus:border-light-primary" id="slot-input-duration-manual" max="240" min="5" oninput="handleManualDurationInput(this.value)" step="5" type="number" value="30">
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-light-on-surface-variant font-medium pointer-events-none">min</span>
+</div>
+</div>
+</div>
+<!-- Duration Quick Pills -->
+<div class="flex flex-wrap items-center justify-between gap-1.5 pt-0.5">
+<div class="flex items-center gap-1 text-[11px]">
+<span class="text-light-on-surface-variant text-[10px] font-medium">Quick:</span>
+<div class="inline-flex gap-1" id="duration-quick-pills">
+<button class="dur-pill px-2 py-0.5 rounded border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-light-on-surface text-[10px] font-medium transition-colors cursor-pointer" data-dur="15" onclick="setSlotDuration(15, this)" type="button">15m</button>
+<button class="dur-pill px-2 py-0.5 rounded border border-light-primary bg-light-secondary-container text-light-primary text-[10px] font-bold transition-colors cursor-pointer" data-dur="30" onclick="setSlotDuration(30, this)" type="button">30m</button>
+<button class="dur-pill px-2 py-0.5 rounded border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-light-on-surface text-[10px] font-medium transition-colors cursor-pointer" data-dur="45" onclick="setSlotDuration(45, this)" type="button">45m</button>
+<button class="dur-pill px-2 py-0.5 rounded border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-light-on-surface text-[10px] font-medium transition-colors cursor-pointer" data-dur="60" onclick="setSlotDuration(60, this)" type="button">60m</button>
+<button class="dur-pill px-2 py-0.5 rounded border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-light-on-surface text-[10px] font-medium transition-colors cursor-pointer" data-dur="90" onclick="setSlotDuration(90, this)" type="button">90m</button>
+</div>
+</div>
+<span class="text-[10px] text-light-primary font-semibold flex items-center gap-1">
+
+
+</span>
+</div>
+</div>
+<!-- Notes -->
+<div>
+<label class="block font-label text-[11px] font-bold text-light-on-surface mb-0.5">Reason for visit / Chief complaint (Optional)</label>
+<textarea class="w-full rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-light-on-surface text-[11px] focus:border-light-primary" id="appointment-notes" placeholder="e.g. Regular orthodontics checkup, composite filling review..." rows="2"></textarea>
+</div>
+
+</div>
+<!-- PANEL 1: NEW PATIENT REGISTRATION -->
+<div class="w-1/2 shrink-0 p-3.5 overflow-y-auto overscroll-contain custom-scrollbar flex flex-col gap-2.5 text-[12px] box-border" id="panel-new-patient">
+<!-- Top code & header bar -->
+<div class="p-2 rounded bg-light-surface-container-low border border-light-outline-variant/60 flex items-center justify-between text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-label text-light-on-surface-variant font-semibold">Auto-Generated Patient ID:</span>
+<span class="font-mono font-bold text-light-primary px-1.5 py-0.2 rounded bg-light-surface-container-lowest border border-light-outline-variant" id="next-patient-code-badge">P-000409</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="font-label text-[10px] font-semibold text-success">New Registration</span>
+</div>
+</div>
+<!-- Primary Inputs -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-2.5 rounded-lg border border-light-outline-variant/60 bg-light-surface-container-lowest transition-all" id="new-patient-primary-inputs">
+<div>
+<label class="block font-label text-[11px] font-bold text-light-on-surface mb-0.5">Full Name <span class="text-light-error">*</span></label>
+<input class="w-full min-h-[34px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-light-on-surface text-[12px] focus:border-light-primary font-medium" id="new-patient-name" placeholder="e.g. Ramesh Kumar" type="text" value="Aakash Verma">
+</div>
+<div>
+<div class="flex items-center justify-between mb-0.5">
+<label class="font-label text-[11px] font-bold text-light-on-surface">Mobile <span class="text-light-error">*</span></label>
+<label class="flex items-center gap-1 text-[10px] text-light-on-surface-variant cursor-pointer">
+<input class="rounded border-light-outline-variant text-light-primary focus:ring-light-primary h-3 w-3" id="no-mobile-checkbox" onchange="toggleNoMobile(this.checked)" type="checkbox">
+<span>No mobile</span>
+</label>
+</div>
+<div id="mobile-input-container">
+<input class="w-full min-h-[34px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-light-on-surface font-mono text-[12px] focus:border-light-primary font-medium" id="new-patient-mobile" placeholder="10-digit mobile number" type="tel" value="9820144556">
+</div>
+<div class="hidden mt-1" id="no-mobile-reason-box">
+<input class="w-full rounded border border-warning/50 bg-warning-container/20 p-1 text-[10px] text-light-on-surface placeholder:text-light-on-surface-variant" id="no-mobile-reason" placeholder="Reason (e.g. Elderly / Child)" type="text">
+</div>
+</div>
+</div>
+<!-- Gender & Age / DOB -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<div>
+<label class="block font-label text-[11px] font-bold text-light-on-surface mb-0.5">Gender <span class="text-light-error">*</span></label>
+<div class="flex items-center gap-1.5">
+<label class="flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest cursor-pointer text-[11px] hover:border-light-primary">
+<input class="text-light-primary focus:ring-light-primary" name="gender" type="radio" value="Female">
+<span>Female</span>
+</label>
+<label class="flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest cursor-pointer text-[11px] hover:border-light-primary">
+<input checked="" class="text-light-primary focus:ring-light-primary" name="gender" type="radio" value="Male">
+<span>Male</span>
+</label>
+<label class="flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest cursor-pointer text-[11px] hover:border-light-primary">
+<input class="text-light-primary focus:ring-light-primary" name="gender" type="radio" value="Other">
+<span>Other</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label text-[11px] font-bold text-light-on-surface mb-0.5">DOB / Age</label>
+<div class="grid grid-cols-2 gap-1.5">
+<div>
+<input class="w-full min-h-[34px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-light-on-surface text-[11px] focus:border-light-primary" id="new-patient-dob" oninput="calcAgeFromDob(this.value)" type="date" value="1998-05-14">
+</div>
+<div class="relative">
+<input class="w-full min-h-[34px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 pr-8 text-light-on-surface text-[11px] font-mono focus:border-light-primary" id="new-patient-age" max="120" min="0" oninput="handleAgeDirectInput(this.value)" placeholder="Age" type="number" value="28">
+<span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-light-on-surface-variant font-medium pointer-events-none">yrs</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Guardian / Attendant Details (RULE: Strictly HIDDEN if Age >= 10; Shown only if Age < 10) -->
+<div class="hidden p-2.5 rounded-lg border border-warning/40 bg-warning-container/20 flex flex-col gap-2 transition-all duration-300" id="guardian-details-container">
+<div class="flex items-center justify-between">
+<span class="font-label text-[11px] font-bold text-light-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-warning">family_restroom</span>
+<span>Guardian Details (<strong class="text-warning font-semibold">Required for Minor &lt; 10 yrs</strong>)</span>
+</span>
+<span class="px-1.5 py-0.2 rounded bg-warning text-on-warning font-mono text-[9px] font-bold">Minor</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+<div>
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Guardian Name</label>
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-[11px] text-light-on-surface" id="guardian-name" placeholder="Parent Name" type="text">
+</div>
+<div>
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Relationship</label>
+<select class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-[11px] text-light-on-surface" id="guardian-rel">
+<option value="">Select</option>
+<option value="Father">Father</option>
+<option value="Mother">Mother</option>
+<option value="Guardian">Guardian</option>
+<option value="Other">Other</option>
+</select>
+</div>
+<div>
+<label class="block font-label text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Guardian Phone</label>
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-[11px] font-mono text-light-on-surface" id="guardian-phone" placeholder="Mobile" type="tel">
+</div>
+</div>
+</div>
+<!-- Additional Details Accordion -->
+<details class="rounded-lg border border-light-outline-variant bg-light-surface-container-lowest text-[11px] group" id="additional-details-accordion">
+<summary class="p-2.5 font-label font-bold text-light-primary cursor-pointer flex items-center justify-between select-none hover:bg-light-secondary-container/20 rounded-lg transition-colors">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">tune</span>
+<span>+ Additional Patient Details (Address, Contact, File #)</span>
+</span>
+<span class="material-symbols-outlined text-[16px] text-light-secondary transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="p-2.5 pt-1.5 border-t border-light-outline-variant/60 flex flex-col gap-2">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+<div>
+<label class="block text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Whose mobile is this?</label>
+<select class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1 text-[11px] text-light-on-surface">
+<option selected="">Self</option>
+<option>Mother</option>
+<option>Father</option>
+<option>Spouse</option>
+<option>Guardian</option>
+</select>
+</div>
+<div>
+<label class="block text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Locality / City</label>
+<input class="w-full min-h-[32px] rounded border border-light-outline-variant bg-light-surface-container-lowest p-1 text-[11px] text-light-on-surface" placeholder="Bandra West, Mumbai" type="text" value="Bandra West">
+</div>
+</div>
+<div>
+<label class="block text-[10px] text-light-on-surface-variant font-semibold mb-0.5">Medical Alert / Remarks</label>
+<textarea class="w-full rounded border border-light-outline-variant bg-light-surface-container-lowest p-1.5 text-[11px] text-light-on-surface focus:border-light-primary" placeholder="e.g. Penicillin allergy, anxious with drills..." rows="2"></textarea>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<!-- Popover Footer -->
+<div class="p-3 border-t border-light-outline-variant/60 bg-light-surface-container-low shrink-0 flex items-center justify-between relative overflow-hidden min-h-[56px]">
+<button class="px-3 py-1.5 rounded border border-light-outline-variant bg-light-surface-container-lowest text-light-on-surface font-label text-[12px] font-medium hover:bg-light-surface transition-colors cursor-pointer" onclick="window.closeBookingModal()" type="button">Cancel</button>
+<div class="relative flex items-center justify-end">
+<!-- Slot Selection Panel Actions -->
+<div class="flex items-center gap-2 transition-opacity duration-300 ease-in-out opacity-100" id="existing-actions">
+<button class="px-3.5 py-1.5 rounded-md bg-light-primary hover:bg-light-primary/90 text-light-on-primary font-label text-[12px] font-semibold inline-flex items-center gap-1.5 shadow-sm transition-all transform active:scale-95 cursor-pointer" id="btn-final-book" onclick="bookAppointmentAndFoldMorph()" type="button">
+<span class="material-symbols-outlined text-[16px]">event_available</span>
+<span>Book Appointment</span>
+</button>
+</div>
+<!-- New Patient Panel Actions -->
+<div class="absolute right-0 flex items-center gap-2 transition-opacity duration-300 ease-in-out opacity-0 pointer-events-none" id="new-actions">
+<button class="whitespace-nowrap px-3 py-1.5 rounded border border-light-outline-variant bg-light-surface-container-low hover:bg-light-surface text-light-on-surface font-label text-[11px] font-medium transition-colors cursor-pointer" onclick="savePatientOnly()" type="button">
+            Save only
+          </button>
+<button class="save-patient-book-trigger whitespace-nowrap px-3.5 py-1.5 rounded-md bg-light-primary hover:bg-light-primary/90 text-light-on-primary font-label text-[12px] font-semibold inline-flex items-center gap-1 shadow-sm transition-all transform active:scale-95 cursor-pointer" id="save-and-book-btn" onclick="savePatientAndBook()" type="button">
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+<span>Save &amp; Book</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+    // State variables
+    var nextGeneratedPatientIndex = 409;
+    var isAnimating = false;
+    var animationTimeouts = [];
+    var currentTab = 'existing';
+    var activeAnchorElement = null;
+    var currentDurationMinutes = 30;
+    var currentProcedureName = 'Consultation';
+    var currentStart24 = '12:00'; // 'HH:mm' 24-hr format
+
+    function clearAllAnimationTimeouts() {
+      animationTimeouts.forEach(function(t) { clearTimeout(t); });
+      animationTimeouts = [];
+    }
+
+    // Toggle Mobile input
+    function toggleNoMobile(isChecked) {
+      const box = document.getElementById('no-mobile-reason-box');
+      const mobileInput = document.getElementById('new-patient-mobile');
+      if (box) box.classList.toggle('hidden', !isChecked);
+      if (mobileInput) {
+        mobileInput.disabled = isChecked;
+        if (isChecked) mobileInput.value = '';
+      }
+    }
+
+    // DOB and Age calculation
+    function calcAgeFromDob(dobValue) {
+      if (!dobValue) return;
+      const dob = new Date(dobValue);
+      const diffMs = Date.now() - dob.getTime();
+      const ageDt = new Date(diffMs);
+      const age = Math.abs(ageDt.getUTCFullYear() - 1970);
+      const ageInput = document.getElementById('new-patient-age');
+      if (ageInput && !isNaN(age)) {
+        ageInput.value = age;
+        evaluateGuardianVisibility(age);
+      }
+    }
+
+    function handleAgeDirectInput(ageVal) {
+      const age = parseInt(ageVal, 10);
+      evaluateGuardianVisibility(isNaN(age) ? 28 : age);
+    }
+
+    function evaluateGuardianVisibility(age) {
+      const guardianBox = document.getElementById('guardian-details-container');
+      if (!guardianBox) return;
+      if (age < 10) {
+        guardianBox.classList.remove('hidden');
+      } else {
+        guardianBox.classList.add('hidden');
+      }
+    }
+
+    // Time string helpers
+    function time24To12(time24) {
+      if (!time24) return '12:00 PM';
+      const parts = time24.split(':');
+      let h = parseInt(parts[0], 10);
+      const m = parts[1] || '00';
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+    }
+
+    function time12To24(time12) {
+      if (!time12) return '12:00';
+      const clean = time12.trim();
+      const match = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+      if (!match) return '12:00';
+      let h = parseInt(match[1], 10);
+      const m = match[2];
+      const ampm = match[3].toUpperCase();
+      if (ampm === 'PM' && h < 12) h += 12;
+      if (ampm === 'AM' && h === 12) h = 0;
+      return `${String(h).padStart(2, '0')}:${m}`;
+    }
+
+    function calculateEndTime(start24, durationMins) {
+      const parts = (start24 || '12:00').split(':');
+      let totalMins = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10) + durationMins;
+      const endH24 = Math.floor(totalMins / 60) % 24;
+      const endM = totalMins % 60;
+      const end24Str = `${String(endH24).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
+      return time24To12(end24Str);
+    }
+
+    // =========================================================================
+    // DYNAMIC RECT ANCHORING & THURSDAY/WEEKEND LEFT-SIDE PLACEMENT + STRICT CLAMPING
+    // =========================================================================
+    function positionPopoverAdjacent(slotElement, dayName) {
+      const popover = document.getElementById('book-popover');
+      if (!popover) return;
+
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Temporarily ensure popover has layout dimensions
+      const popoverWidth = popover.offsetWidth || 440;
+      const popoverHeight = popover.offsetHeight || Math.min(540, viewportHeight - 24);
+
+      let desiredLeft = 0;
+      let desiredTop = 0;
+
+      // If no specific slot was clicked (e.g. Header button), center in viewport
+      if (!slotElement || !slotElement.getBoundingClientRect) {
+        desiredLeft = (viewportWidth - popoverWidth) / 2;
+        desiredTop = (viewportHeight - popoverHeight) / 2;
+      } else {
+        const slotRect = slotElement.getBoundingClientRect();
+        const colDay = dayName || slotElement.getAttribute('data-col-day') || '';
+        const colIndex = parseInt(slotElement.getAttribute('data-col-index') || '3', 10);
+        const gap = 12;
+
+        // Thursday (col 4 or Thu), Friday (Fri), Saturday (Sat), Sunday -> anchor to LEFT of slot
+        const isRightColumn = ['Thu', 'Fri', 'Sat', 'Sun'].includes(colDay) || colIndex >= 4;
+
+        if (isRightColumn) {
+          desiredLeft = slotRect.left - popoverWidth - gap;
+          // Fallback to right side if left exceeds viewport edge
+          if (desiredLeft < 12) {
+            desiredLeft = slotRect.right + gap;
+          }
+        } else {
+          // Monday, Tuesday, Wednesday -> anchor to RIGHT of slot
+          desiredLeft = slotRect.right + gap;
+          // Fallback to left side if right exceeds viewport edge
+          if (desiredLeft + popoverWidth > viewportWidth - 12) {
+            desiredLeft = slotRect.left - popoverWidth - gap;
+          }
+        }
+
+        // Align vertically with target slot, slightly shifted up
+        desiredTop = slotRect.top - 24;
+      }
+
+      // STRICT CLAMPING: Both Top & Bottom must never overflow viewport margins (12px)
+      const clampedTop = Math.max(12, Math.min(viewportHeight - popoverHeight - 12, desiredTop));
+      const clampedLeft = Math.max(12, Math.min(viewportWidth - popoverWidth - 12, desiredLeft));
+
+      popover.style.left = `${Math.round(clampedLeft)}px`;
+      popover.style.top = `${Math.round(clampedTop)}px`;
+    }
+
+    // =========================================================================
+    // OPEN / CLOSE BOOKING MODAL
+    // =========================================================================
+    window.openBookingModal = function(e, slotRef, dateStr, timeStr) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (isAnimating) return;
+
+      const wrapper = document.getElementById('popover-wrapper');
+      const popover = document.getElementById('book-popover');
+      const backdrop = document.getElementById('popover-backdrop');
+
+      if (!wrapper || !popover || !backdrop) return;
+
+      // Reset any leftover morph transition styles on popover
+      popover.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease';
+      popover.style.width = '440px';
+      popover.style.borderRadius = '0.75rem';
+
+      // Clear previous active slot highlights
+      document.querySelectorAll('.calendar-slot-active').forEach(function(el) { el.classList.remove('calendar-slot-active'); });
+
+      // Resolve target element
+      let targetEl = null;
+      if (typeof slotRef === 'string') {
+        targetEl = document.getElementById(slotRef);
+      } else if (slotRef && slotRef.nodeType) {
+        targetEl = slotRef;
+      }
+
+      activeAnchorElement = targetEl;
+
+      if (targetEl) {
+        targetEl.classList.add('calendar-slot-active');
+      }
+
+      // Populate Date & Time fields from slot attributes or arguments
+      const slotDate = dateStr || (targetEl ? targetEl.getAttribute('data-date') : '2026-11-25') || '2026-11-25';
+      const rawSlotTime = timeStr || (targetEl ? targetEl.getAttribute('data-time') : '12:00 PM') || '12:00 PM';
+      const slotDayLabel = (targetEl && targetEl.getAttribute) ? targetEl.getAttribute('data-day') : 'Wednesday, 25 Nov 2026';
+      const slotDayCode = (targetEl && targetEl.getAttribute) ? targetEl.getAttribute('data-col-day') : 'Wed';
+
+      currentStart24 = time12To24(rawSlotTime);
+
+      const dateInput = document.getElementById('slot-input-date');
+      const manualTimeInput = document.getElementById('slot-input-time-manual');
+      const manualDurationInput = document.getElementById('slot-input-duration-manual');
+      const headerDateLabel = document.getElementById('popover-header-date');
+
+      if (dateInput) dateInput.value = slotDate;
+      if (manualTimeInput) manualTimeInput.value = currentStart24;
+      if (manualDurationInput) manualDurationInput.value = currentDurationMinutes;
+
+      if (headerDateLabel) {
+        headerDateLabel.textContent = (slotDayLabel || 'Wednesday, 25 Nov 2026') + ' · Align Dentistry';
+      }
+
+      // Make popover DOM accessible to measure
+      wrapper.classList.remove('hidden', 'pointer-events-none');
+      wrapper.classList.add('pointer-events-auto');
+      wrapper.style.display = 'block';
+
+      popover.style.display = 'flex';
+
+      // Position anchored popover with viewport clamping
+      positionPopoverAdjacent(targetEl, slotDayCode);
+
+      backdrop.classList.remove('opacity-0');
+      backdrop.classList.add('opacity-100');
+
+      popover.style.transform = 'scale(0.96) translateY(6px)';
+      popover.classList.remove('opacity-0');
+      popover.classList.add('opacity-100');
+
+      requestAnimationFrame(function() {
+        popover.style.transform = 'scale(1) translateY(0)';
+      });
+
+      // Show live preview highlight inside clicked column
+      showSlotPreview(targetEl || document.getElementById('slot-wed-12pm'));
+    };
+
+    window.closeBookingModal = function() {
+      if (isAnimating) return;
+      const wrapper = document.getElementById('popover-wrapper');
+      const popover = document.getElementById('book-popover');
+      const backdrop = document.getElementById('popover-backdrop');
+      const previewBox = document.getElementById('slot-preview-box');
+
+      if (!popover || !wrapper || !backdrop) return;
+
+      popover.classList.remove('opacity-100');
+      popover.classList.add('opacity-0');
+      popover.style.transform = 'scale(0.96) translateY(6px)';
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+
+      document.querySelectorAll('.calendar-slot-active').forEach(function(el) { el.classList.remove('calendar-slot-active'); });
+
+      setTimeout(function() {
+        wrapper.classList.add('hidden', 'pointer-events-none');
+        wrapper.classList.remove('pointer-events-auto');
+        wrapper.style.display = 'none';
+        resetAnimationState();
+      }, 180);
+
+      if (previewBox) {
+        previewBox.classList.add('hidden');
+      }
+    };
+
+    // =========================================================================
+    // DURATION & REAL-TIME PREVIEW (MANUAL TYPING + PRESET CHIPS SYNC)
+    // =========================================================================
+    function handleManualTimeInput(val) {
+      if (!val) return;
+      currentStart24 = val;
+      updateSlotPreview();
+    }
+
+    function handleManualDurationInput(val) {
+      const num = parseInt(val, 10);
+      if (isNaN(num) || num <= 0) return;
+      currentDurationMinutes = num;
+      syncDurationChips(num);
+      updateSlotPreview();
+    }
+
+    function syncDurationChips(duration) {
+      let matched = false;
+      document.querySelectorAll('#duration-quick-pills .dur-pill').forEach(function(pill) {
+        const pVal = parseInt(pill.getAttribute('data-dur'), 10);
+        if (pVal === duration) {
+          pill.className = 'dur-pill px-2 py-0.5 rounded border border-light-primary bg-light-secondary-container text-light-primary text-[10px] font-bold transition-colors cursor-pointer';
+          matched = true;
+        } else {
+          pill.className = 'dur-pill px-2 py-0.5 rounded border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-light-on-surface text-[10px] font-medium transition-colors cursor-pointer';
+        }
+      });
+      return matched;
+    }
+
+    function setSlotDuration(minutes, btnRef) {
+      currentDurationMinutes = minutes;
+      const manualInput = document.getElementById('slot-input-duration-manual');
+      if (manualInput) manualInput.value = minutes;
+
+      syncDurationChips(minutes);
+      updateSlotPreview();
+    }
+
+    function handleDateOrTimeChange() {
+      // Find matching slot for selected date and start time
+      const dateVal = document.getElementById('slot-input-date')?.value;
+      const start12 = time24To12(currentStart24);
+      if (dateVal && start12) {
+        const matchingSlot = document.querySelector(`.calendar-slot[data-date="${dateVal}"][data-time="${start12}"]`);
+        if (matchingSlot) {
+          document.querySelectorAll('.calendar-slot-active').forEach(function(el) { el.classList.remove('calendar-slot-active'); });
+          matchingSlot.classList.add('calendar-slot-active');
+          activeAnchorElement = matchingSlot;
+          showSlotPreview(matchingSlot);
+          positionPopoverAdjacent(matchingSlot, matchingSlot.getAttribute('data-col-day'));
+          return;
+        }
+      }
+      updateSlotPreview();
+    }
+
+    function selectProcedure(name, defaultMinutes, chipRef) {
+      currentProcedureName = name;
+      document.querySelectorAll('.visit-chip').forEach(function(c) {
+        c.className = 'visit-chip px-2 py-0.5 rounded-full border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary text-[11px] font-medium text-light-on-surface transition-colors cursor-pointer';
+      });
+      if (chipRef) {
+        chipRef.className = 'visit-chip px-2 py-0.5 rounded-full border border-light-primary bg-light-secondary-container text-light-primary font-semibold text-[11px] transition-colors cursor-pointer';
+      }
+      setSlotDuration(defaultMinutes);
+    }
+
+    // Attach preview box strictly to the clicked day column's slot
+    function showSlotPreview(targetSlot) {
+      const previewBox = document.getElementById('slot-preview-box');
+      if (!previewBox || !targetSlot) return;
+
+      if (!targetSlot.contains(previewBox)) {
+        targetSlot.appendChild(previewBox);
+      }
+      previewBox.classList.remove('hidden');
+      updateSlotPreview();
+    }
+
+    function updateSlotPreview() {
+      const previewBox = document.getElementById('slot-preview-box');
+      if (!previewBox) return;
+
+      const durBadge = document.getElementById('preview-duration-badge');
+      const procText = document.getElementById('preview-procedure-text');
+      const timeRange = document.getElementById('preview-time-range');
+      const activeDurationLabel = document.getElementById('active-duration-label');
+      const patientNameEl = document.getElementById('selected-patient-name');
+      const prevName = document.getElementById('preview-patient-name');
+
+      const start12 = time24To12(currentStart24);
+      const end12 = calculateEndTime(currentStart24, currentDurationMinutes);
+
+      if (prevName && patientNameEl) prevName.textContent = patientNameEl.textContent || 'Aakash Verma';
+      if (durBadge) durBadge.textContent = `${currentDurationMinutes}m`;
+      if (procText) procText.textContent = currentProcedureName;
+
+      let calculatedHeight = Math.max(34, Math.round((currentDurationMinutes / 60) * 64) - 8);
+
+      previewBox.style.height = `${calculatedHeight}px`;
+      if (timeRange) timeRange.textContent = `${start12} - ${end12} (${currentDurationMinutes}m)`;
+      if (activeDurationLabel) activeDurationLabel.textContent = `${start12} – ${end12} (${currentDurationMinutes}m)`;
+    }
+
+    // =========================================================================
+    // FLIP SHRINK-TO-SLOT ANIMATION & COMPLETE CALENDAR PRESERVATION
+    // =========================================================================
+    function bookAppointmentAndFoldMorph() {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const popover = document.getElementById('book-popover');
+      const backdrop = document.getElementById('popover-backdrop');
+      const targetSlot = activeAnchorElement || document.getElementById('slot-wed-12pm');
+      const previewBox = document.getElementById('slot-preview-box');
+
+      const patName = document.getElementById('selected-patient-name')?.textContent || 'Aakash Verma';
+      const notesVal = document.getElementById('appointment-notes')?.value.trim();
+      const start12 = time24To12(currentStart24);
+      const end12 = calculateEndTime(currentStart24, currentDurationMinutes);
+
+      // 1. Fade out the backdrop immediately so calendar stays 100% visible
+      if (backdrop) {
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+      }
+
+      // 2. Perform FLIP shrink animation on the modal card directly to target slot
+      if (popover && targetSlot) {
+        const slotRect = targetSlot.getBoundingClientRect();
+        const popoverRect = popover.getBoundingClientRect();
+
+        const deltaX = (slotRect.left + 4) - popoverRect.left;
+        const deltaY = (slotRect.top + 4) - popoverRect.top;
+        const scaleX = Math.max(0.18, (slotRect.width - 8) / popoverRect.width);
+        const targetH = Math.max(48, Math.min(slotRect.height - 8, 90));
+        const scaleY = Math.max(0.12, targetH / popoverRect.height);
+
+        popover.style.transition = 'transform 500ms cubic-bezier(0.2, 0.9, 0.3, 1.0), opacity 480ms ease, border-radius 450ms ease';
+        popover.style.transformOrigin = 'top left';
+        popover.style.transform = `translate3d(${Math.round(deltaX)}px, ${Math.round(deltaY)}px, 0) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
+        popover.style.opacity = '0.9';
+        popover.style.borderRadius = '8px';
+      }
+
+      // Hide live preview pulse
+      if (previewBox) previewBox.classList.add('hidden');
+
+      // 3. Immediately reveal newly booked card in target slot (seamlessly integrated)
+      if (targetSlot) {
+        let cardInSlot = targetSlot.querySelector('.booked-card-permanent');
+        if (!cardInSlot) {
+          cardInSlot = document.createElement('div');
+          cardInSlot.className = 'booked-card-permanent p-1.5 rounded border border-light-primary/70 bg-light-surface-container-lowest shadow-sm text-[11px] flex flex-col justify-between h-full dock-pulse-confirmed';
+          targetSlot.appendChild(cardInSlot);
+        }
+        cardInSlot.innerHTML = `
+          <div class="flex items-start justify-between gap-1">
+            <span class="font-bold text-light-on-surface truncate">${patName}</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-success text-on-success text-[9px] font-semibold shrink-0">Confirmed</span>
+          </div>
+          <div class="flex items-center justify-between mt-1 text-[10px]">
+            <span class="font-semibold text-light-primary truncate">${currentProcedureName} (${currentDurationMinutes}m)</span>
+            <span class="font-mono text-light-outline text-[9px]">${start12}</span>
+          </div>
+          ${notesVal ? `<div class="text-[9px] text-light-on-surface-variant truncate mt-0.5">${notesVal}</div>` : ''}
+        `;
+        cardInSlot.classList.remove('hidden');
+      }
+
+      // 4. Complete shrink animation cleanup after 500ms
+      setTimeout(function() {
+        const wrapper = document.getElementById('popover-wrapper');
+        if (popover) {
+          popover.classList.remove('opacity-100');
+          popover.classList.add('opacity-0');
+          popover.style.transform = 'scale(0.96) translateY(6px)';
+        }
+        if (wrapper) {
+          wrapper.classList.add('hidden', 'pointer-events-none');
+          wrapper.classList.remove('pointer-events-auto');
+          wrapper.style.display = 'none';
+        }
+
+        document.querySelectorAll('.calendar-slot-active').forEach(function(el) { el.classList.remove('calendar-slot-active'); });
+        resetAnimationState();
+
+        // 5. Display subtle micro-toast
+        const toast = document.getElementById('registration-toast');
+        const toastMsg = document.getElementById('registration-toast-msg');
+        if (toast && toastMsg) {
+          toastMsg.innerHTML = `<span class="material-symbols-outlined text-[15px] text-success">task_alt</span> Appointment confirmed and slotted on calendar`;
+          toast.classList.remove('hidden');
+          requestAnimationFrame(function() {
+            toast.classList.remove('-translate-y-2', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+          });
+          setTimeout(function() {
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('-translate-y-2', 'opacity-0');
+            setTimeout(function() { toast.classList.add('hidden'); }, 300);
+          }, 3000);
+        }
+
+        // Increment summary count
+        const summaryBadge = document.getElementById('booked-count-text');
+        const wedBadge = document.getElementById('wed-count-badge');
+        if (summaryBadge) summaryBadge.textContent = '15 appointments booked';
+        if (wedBadge) wedBadge.textContent = '5 booked';
+
+        isAnimating = false;
+      }, 510);
+    }
+
+    // =========================================================================
+    // PATIENT FORM HANDLING & SYNCHRONIZED TAB SLIDER
+    // =========================================================================
+    function switchBookTab(tab) {
+      if (isAnimating) return;
+      currentTab = tab;
+      resetAnimationState();
+
+      const track = document.getElementById('modal-slider-track');
+      const tabIndicator = document.getElementById('tab-active-indicator');
+      const existingBtn = document.getElementById('tab-btn-existing');
+      const newBtn = document.getElementById('tab-btn-new');
+      const existingActions = document.getElementById('existing-actions');
+      const newActions = document.getElementById('new-actions');
+
+      if (tab === 'new') {
+        if (track) track.style.transform = 'translateX(-50%)';
+        if (tabIndicator) tabIndicator.style.transform = 'translateX(100%)';
+        if (existingBtn) existingBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-medium flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-surface-variant hover:text-light-on-surface cursor-pointer';
+        if (newBtn) newBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-primary cursor-pointer';
+
+        if (existingActions) {
+          existingActions.classList.add('opacity-0', 'pointer-events-none');
+          existingActions.classList.remove('opacity-100');
+        }
+        if (newActions) {
+          newActions.classList.remove('opacity-0', 'pointer-events-none');
+          newActions.classList.add('opacity-100');
+        }
+      } else {
+        if (track) track.style.transform = 'translateX(0%)';
+        if (tabIndicator) tabIndicator.style.transform = 'translateX(0%)';
+        if (existingBtn) existingBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-primary cursor-pointer';
+        if (newBtn) newBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-medium flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-surface-variant hover:text-light-on-surface cursor-pointer';
+
+        if (newActions) {
+          newActions.classList.add('opacity-0', 'pointer-events-none');
+          newActions.classList.remove('opacity-100');
+        }
+        if (existingActions) {
+          existingActions.classList.remove('opacity-0', 'pointer-events-none');
+          existingActions.classList.add('opacity-100');
+        }
+      }
+    }
+
+    function savePatientOnly() {
+      if (isAnimating) return;
+      const name = document.getElementById('new-patient-name')?.value.trim() || 'Patient';
+      alert(`Patient record for ${name} saved successfully.`);
+      window.closeBookingModal();
+    }
+
+    function clearSelectedPatient() {
+      const selectedBox = document.getElementById('selected-patient-box');
+      const searchWrapper = document.getElementById('patient-search-wrapper');
+      if (selectedBox) selectedBox.classList.add('hidden');
+      if (searchWrapper) {
+        searchWrapper.classList.remove('hidden');
+        const input = document.getElementById('modal-patient-search');
+        if (input) input.focus();
+      }
+    }
+
+    function resetAnimationState() {
+      clearAllAnimationTimeouts();
+      isAnimating = false;
+
+      const flyer = document.getElementById('morphing-flyer');
+      if (flyer) {
+        flyer.classList.add('hidden');
+        flyer.style.transition = 'none';
+        flyer.style.opacity = '0';
+        flyer.style.pointerEvents = 'none';
+      }
+
+      const toast = document.getElementById('registration-toast');
+      if (toast) {
+        toast.classList.add('hidden', '-translate-y-2', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }
+
+      const selectedBox = document.getElementById('selected-patient-box');
+      if (selectedBox) {
+        selectedBox.style.opacity = '1';
+        selectedBox.classList.remove('hidden');
+      }
+
+      const popover = document.getElementById('book-popover');
+      if (popover) {
+        popover.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease';
+        popover.style.transformOrigin = 'center center';
+        popover.style.transform = 'scale(1) translateY(0)';
+        popover.style.width = '440px';
+        popover.style.borderRadius = '0.75rem';
+      }
+    }
+
+    function savePatientAndBook() {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const nameInput = document.getElementById('new-patient-name');
+      const mobileInput = document.getElementById('new-patient-mobile');
+
+      let patientName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'Aakash Verma';
+      let patientMobile = mobileInput && mobileInput.value.trim() ? mobileInput.value.trim() : '+91 98201 44556';
+      if (!patientMobile.startsWith('+91') && patientMobile.length === 10) {
+        patientMobile = `+91 ${patientMobile.slice(0, 5)} ${patientMobile.slice(5)}`;
+      }
+
+      const currentPatientCode = 'P-000' + nextGeneratedPatientIndex;
+      const initials = patientName
+        .split(' ')
+        .filter(Boolean)
+        .map(function(part) { return part[0].toUpperCase(); })
+        .slice(0, 2)
+        .join('') || 'AV';
+
+      const sourceInputsBox = document.getElementById('new-patient-primary-inputs');
+      const flyer = document.getElementById('morphing-flyer');
+      const flyerName = document.getElementById('flyer-name');
+      const flyerCode = document.getElementById('flyer-code');
+      const flyerMobile = document.getElementById('flyer-mobile');
+      const flyerInitials = document.getElementById('flyer-initials');
+      const flyerChangeBtn = document.getElementById('flyer-change-btn');
+
+      const selectedBox = document.getElementById('selected-patient-box');
+      const searchWrapper = document.getElementById('patient-search-wrapper');
+
+      if (flyerName) flyerName.textContent = patientName;
+      if (flyerCode) flyerCode.textContent = currentPatientCode;
+      if (flyerMobile) flyerMobile.textContent = patientMobile;
+      if (flyerInitials) flyerInitials.textContent = initials;
+      if (flyerChangeBtn) flyerChangeBtn.classList.add('opacity-0', 'pointer-events-none');
+
+      document.getElementById('selected-patient-name').textContent = patientName;
+      document.getElementById('selected-patient-code').textContent = currentPatientCode;
+      document.getElementById('selected-patient-phone').textContent = patientMobile;
+      document.getElementById('selected-patient-initials').textContent = initials;
+      if (selectedBox) {
+        selectedBox.classList.remove('hidden');
+        selectedBox.style.opacity = '0';
+      }
+      if (searchWrapper) searchWrapper.classList.add('hidden');
+
+      const livePrevName = document.getElementById('preview-patient-name');
+      if (livePrevName) livePrevName.textContent = patientName;
+
+      if (nameInput) nameInput.classList.add('input-anim-highlight');
+      if (mobileInput) mobileInput.classList.add('input-anim-highlight');
+
+      if (sourceInputsBox && flyer) {
+        const startRect = sourceInputsBox.getBoundingClientRect();
+        flyer.style.transition = 'none';
+        flyer.style.left = `${Math.round(startRect.left)}px`;
+        flyer.style.top = `${Math.round(startRect.top)}px`;
+        flyer.style.width = `${Math.round(startRect.width)}px`;
+        flyer.style.height = `${Math.round(startRect.height)}px`;
+        flyer.style.padding = '0.75rem 1rem';
+        flyer.style.opacity = '0.85';
+        flyer.style.transform = 'translateY(0px) scale(0.99)';
+        flyer.classList.remove('hidden');
+
+        requestAnimationFrame(function() {
+          flyer.style.transition = 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 320ms cubic-bezier(0.4, 0, 0.2, 1)';
+          flyer.style.transform = 'translateY(-14px) scale(1.02)';
+          flyer.style.boxShadow = '0 16px 24px -5px rgba(0, 0, 0, 0.2)';
+        });
+      }
+
+      const toast = document.getElementById('registration-toast');
+      const toastMsg = document.getElementById('registration-toast-msg');
+      if (toast && toastMsg) {
+        toastMsg.innerHTML = `<span class="font-bold text-light-on-primary bg-light-primary px-1.5 py-0.5 rounded text-[11px] mr-1.5">${currentPatientCode}</span> Patient Registered · <strong>${patientName}</strong> · Proceeding to Slot`;
+        toast.classList.remove('hidden');
+        requestAnimationFrame(function() {
+          toast.classList.remove('-translate-y-2', 'opacity-0');
+          toast.classList.add('translate-y-0', 'opacity-100');
+        });
+      }
+
+      const tSlide = setTimeout(function() {
+        if (nameInput) nameInput.classList.remove('input-anim-highlight');
+        if (mobileInput) mobileInput.classList.remove('input-anim-highlight');
+
+        const track = document.getElementById('modal-slider-track');
+        if (track) track.style.transform = 'translateX(0%)';
+
+        const tabIndicator = document.getElementById('tab-active-indicator');
+        const existingBtn = document.getElementById('tab-btn-existing');
+        const newBtn = document.getElementById('tab-btn-new');
+        if (tabIndicator) tabIndicator.style.transform = 'translateX(0%)';
+        if (existingBtn) existingBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-semibold flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-primary cursor-pointer';
+        if (newBtn) newBtn.className = 'flex-1 relative z-10 py-1.5 px-3 rounded-md font-label text-[12px] font-medium flex items-center justify-center gap-1.5 transition-colors duration-[400ms] text-light-on-surface-variant hover:text-light-on-surface cursor-pointer';
+
+        const existingActions = document.getElementById('existing-actions');
+        const newActions = document.getElementById('new-actions');
+        if (newActions) {
+          newActions.classList.add('opacity-0', 'pointer-events-none');
+          newActions.classList.remove('opacity-100');
+        }
+        if (existingActions) {
+          existingActions.classList.remove('opacity-0', 'pointer-events-none');
+          existingActions.classList.add('opacity-100');
+        }
+      }, 320);
+      animationTimeouts.push(tSlide);
+
+      const tDock = setTimeout(function() {
+        if (flyer && selectedBox) {
+          const targetRect = selectedBox.getBoundingClientRect();
+          flyer.style.transition = 'all 260ms cubic-bezier(0.4, 0, 0.2, 1)';
+          flyer.style.left = `${Math.round(targetRect.left)}px`;
+          flyer.style.top = `${Math.round(targetRect.top)}px`;
+          flyer.style.width = `${Math.round(targetRect.width)}px`;
+          flyer.style.height = `${Math.round(targetRect.height)}px`;
+          flyer.style.transform = 'translateY(0px) scale(1)';
+          flyer.style.opacity = '1';
+          flyer.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+          flyer.style.padding = '0.5rem';
+        }
+
+        nextGeneratedPatientIndex++;
+        const nextCodeBadge = document.getElementById('next-patient-code-badge');
+        if (nextCodeBadge) nextCodeBadge.textContent = 'P-000' + nextGeneratedPatientIndex;
+      }, 760);
+      animationTimeouts.push(tDock);
+
+      const tComplete = setTimeout(function() {
+        if (flyerChangeBtn) flyerChangeBtn.classList.remove('opacity-0', 'pointer-events-none');
+        if (flyer) flyer.style.pointerEvents = 'auto';
+        isAnimating = false;
+        currentTab = 'existing';
+      }, 1050);
+      animationTimeouts.push(tComplete);
+
+      const tToast = setTimeout(function() {
+        if (toast) {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('-translate-y-2', 'opacity-0');
+          setTimeout(function() { toast.classList.add('hidden'); }, 300);
+        }
+      }, 3500);
+      animationTimeouts.push(tToast);
+    }
+
+    // Attach listeners on DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      const ageInput = document.getElementById('new-patient-age');
+      if (ageInput) evaluateGuardianVisibility(parseInt(ageInput.value, 10) || 28);
+
+      // Top Book Appointment CTA
+      const topBtn = document.getElementById('btn-top-book');
+      if (topBtn) {
+        topBtn.addEventListener('click', function(e) {
+          window.openBookingModal(e, null, '2026-11-25', '12:00 PM');
+        });
+      }
+
+      // Individual calendar-slot click handlers
+      document.querySelectorAll('.calendar-slot').forEach(function(slot) {
+        slot.addEventListener('click', function(e) {
+          const dateVal = slot.getAttribute('data-date') || '2026-11-25';
+          const timeVal = slot.getAttribute('data-time') || '12:00 PM';
+          window.openBookingModal(e, slot, dateVal, timeVal);
+        });
+      });
+
+      // Recalculate side anchor position on window resize
+      window.addEventListener('resize', function() {
+        if (!document.getElementById('popover-wrapper').classList.contains('hidden')) {
+          positionPopoverAdjacent(activeAnchorElement, activeAnchorElement ? activeAnchorElement.getAttribute('data-col-day') : null);
+        }
+      });
+    });
+  </script>
+
+
+<script>
+  var currentSelectedDoctor = 'dr-mehta';
+  var doctorMeta = {
+    'dr-mehta': { name: 'Dr. Mehta', fullName: 'Dr. Arvind Mehta', color: '#054D61', badgeBg: 'bg-light-secondary-container', badgeText: 'text-light-primary' },
+    'dr-sharma': { name: 'Dr. Sharma', fullName: 'Dr. Priya Sharma', color: '#5E35B1', badgeBg: 'bg-[#EDE7F6]', badgeText: 'text-[#5E35B1]' },
+    'dr-sen': { name: 'Dr. Sen', fullName: 'Dr. Rohan Sen', color: '#C25E00', badgeBg: 'bg-[#FFF3E0]', badgeText: 'text-[#C25E00]' }
+  };
+
+  function updateBookingDoctorSelection(docVal) {
+    currentSelectedDoctor = docVal;
+    document.querySelectorAll('#popover-doctor-radios .doc-radio-label').forEach(function(lbl) {
+      var d = lbl.getAttribute('data-doc');
+      if (d === docVal) {
+        lbl.className = 'flex items-center gap-1.5 p-1.5 rounded-lg border-2 border-light-primary bg-light-secondary-container/40 cursor-pointer text-[11px] font-semibold text-light-primary transition-all doc-radio-label';
+      } else {
+        lbl.className = 'flex items-center gap-1.5 p-1.5 rounded-lg border border-light-outline-variant bg-light-surface-container-lowest hover:border-light-primary cursor-pointer text-[11px] font-medium text-light-on-surface transition-all doc-radio-label';
+      }
+    });
+  }
+
+  function filterAppointmentsByDoctor() {
+    var checkedBoxes = document.querySelectorAll('.doctor-filter-cb:checked');
+    var activeDocs = Array.from(checkedBoxes).map(function(cb) { return cb.value; });
+    var allCards = document.querySelectorAll('.appointment-card');
+    var visibleCount = 0;
+
+    allCards.forEach(function(card) {
+      var cardDoc = card.getAttribute('data-doctor');
+      if (!cardDoc || activeDocs.includes(cardDoc)) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+
+  function setAllDoctors(checked) {
+    document.querySelectorAll('.doctor-filter-cb').forEach(function(cb) {
+      cb.checked = checked;
+    });
+    filterAppointmentsByDoctor();
+  }
+</script></body></html>
