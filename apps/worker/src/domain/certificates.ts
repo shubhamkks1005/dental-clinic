@@ -12,9 +12,11 @@ export async function createCertificate(repos: Repos, body: unknown) {
   return { ok: true as const, certificate };
 }
 
+/** The certificate's doctor's own letterhead lines come with it (owner 2026-11-26). */
 export async function getCertificate(repos: Repos, id: string) {
   const certificate = await repos.certificates.get(id);
-  return { ok: true as const, certificate };
+  const doctorProfile = await repos.doctorProfiles.getFor(certificate.doctorId);
+  return { ok: true as const, certificate, doctorProfile };
 }
 
 export async function patchCertificate(repos: Repos, id: string, body: unknown) {

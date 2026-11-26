@@ -277,6 +277,46 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "GET",
+    path: "/api/staff/doctors",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/doctor-leaves",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/doctor-leaves",
+    access: { kind: "permission", action: "breaks.manage" },
+  },
+  {
+    method: "POST",
+    path: "/api/staff/doctor-leaves/:id/remove",
+    access: { kind: "permission", action: "breaks.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/appointments/search",
+    access: { kind: "permission", action: "appointments.manage" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/patients/:id/last-visit",
+    access: { kind: "permission", action: "clinical.view" },
+  },
+  {
+    method: "GET",
+    path: "/api/staff/doctor-profile/me",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "PUT",
+    path: "/api/staff/doctor-profile/me",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "GET",
     path: "/api/staff/breaks/current",
     access: { kind: "permission", action: "appointments.manage" },
   },

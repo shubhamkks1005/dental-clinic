@@ -1,3 +1,4 @@
+import type { DoctorProfile } from "@clinic/shared";
 import { api } from "../../api/client";
 
 export type CertificateDto = {
@@ -25,6 +26,13 @@ export function getCertificate(id: string) {
   return api<{ certificate: CertificateDto }>(
     `/api/staff/certificates/${encodeURIComponent(id)}`,
   ).then((r) => r.certificate);
+}
+
+/** For printing: the certificate plus its doctor's own letterhead lines (null = none saved). */
+export function getCertificateForPrint(id: string) {
+  return api<{ certificate: CertificateDto; doctorProfile: DoctorProfile | null }>(
+    `/api/staff/certificates/${encodeURIComponent(id)}`,
+  );
 }
 
 export function listCertificateRegister() {

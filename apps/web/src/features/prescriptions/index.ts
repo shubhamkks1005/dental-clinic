@@ -1,6 +1,7 @@
 export { VisitMedicinesPanel, type RxSnapshot, type RxStatus } from "./VisitMedicinesPanel";
 export {
   getPrescription,
+  getPrescriptionForPrint,
   listVisitPrescriptions,
   listDraftPrescriptions,
   createPrescription,

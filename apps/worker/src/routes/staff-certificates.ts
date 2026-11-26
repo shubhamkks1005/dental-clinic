@@ -29,7 +29,7 @@ staffCertificates.get("/certificates", async (c) => {
 
 staffCertificates.get("/certificates/:id", async (c) => {
   const result = await getCertificate(signedIn(c).repos, c.req.param("id"));
-  return c.json(ok({ certificate: result.certificate }));
+  return c.json(ok({ certificate: result.certificate, doctorProfile: result.doctorProfile }));
 });
 
 staffCertificates.get("/patients/:id/certificates", async (c) => {

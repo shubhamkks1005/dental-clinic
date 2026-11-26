@@ -1,4 +1,4 @@
-import type { PrescriptionItemInput } from "@clinic/shared";
+import type { DoctorProfile, PrescriptionItemInput } from "@clinic/shared";
 import { api } from "../../api/client";
 
 export type PrescriptionDto = {
@@ -124,4 +124,11 @@ export async function copyPreviousPrescription(
 export async function getPrescription(id: string): Promise<PrescriptionDto> {
   const res = await api<{ prescription: PrescriptionDto }>(`/api/staff/prescriptions/${id}`);
   return res.prescription;
+}
+
+/** For printing: the prescription plus its doctor's own letterhead lines (null = none saved). */
+export function getPrescriptionForPrint(id: string) {
+  return api<{ prescription: PrescriptionDto; doctorProfile: DoctorProfile | null }>(
+    `/api/staff/prescriptions/${id}`,
+  );
 }

@@ -90,6 +90,8 @@ import { doctorBreaksRepo } from "./doctor-breaks";
 import { doctorLeavesRepo } from "./doctor-leaves";
 import { doctorProfilesRepo } from "./doctor-profiles";
 import { doctorsRepo } from "./doctors";
+import { appointmentsSearchRepo } from "./appointments-search";
+import { patientLastVisitRepo } from "./patient-last-visit";
 import { patientRequestsRepo } from "./patient-requests";
 
 // All SQL lives in repositories. The Worker builds this once per request and hands it to
@@ -204,6 +206,8 @@ export function createRepos(db: Db, ctx: Ctx) {
     doctors: doctorsRepo(db, ctx),
     doctorLeaves: doctorLeavesRepo(db, ctx),
     doctorProfiles: doctorProfilesRepo(db, ctx),
+    appointmentSearch: appointmentsSearchRepo(db, ctx),
+    lastVisit: patientLastVisitRepo(db, ctx),
   };
 }
 

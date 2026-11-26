@@ -102,3 +102,4 @@ export * from "./clash-lanes";
 export * from "./doctor";
 export * from "./patient-duplicate-rule";
 export * from "./doctor-profile";
+export * from "./appointment-search";

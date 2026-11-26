@@ -1,10 +1,11 @@
 import { addIstDays, formatClockTime, formatDate, istDate, type ListItem } from "@clinic/shared";
 import { useEffect, useState } from "react";
 import { ApiError } from "../../api/client";
+import { useMe } from "../auth";
 import { Dialog } from "../../ui/Dialog";
 import { getList } from "../lists";
 import { getPatient, type PatientListRow } from "../patients";
-import { bookAppointment, rescheduleAppointment, type SuggestedSlot } from "./api";
+import { bookAppointment, defaultDoctorId, rescheduleAppointment, type SuggestedSlot } from "./api";
 import { noFreeTimesText, TimeChips, VisitTypeChips } from "./BookPickers";
 import { DateStrip } from "./DateStrip";
 import { LateEntry, type LateEntryValue } from "./LateEntry";
@@ -32,6 +33,7 @@ type Props = {
 
 // S07 Book appointment — quick dialog (2.4.2): patient → visit type → slot → confirm.
 export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }: Props) {
+  const me = useMe();
   const [patient, setPatient] = useState<PatientListRow | null>(null);
   const [visitTypes, setVisitTypes] = useState<ListItem[]>([]);
   const [visitTypeId, setVisitTypeId] = useState("");
@@ -113,6 +115,7 @@ export function QuickBookDialog({ open, prefill, onClose, onBooked, reschedule }
         await bookAppointment({
           patientId: patient.id,
           visitTypeId,
+          doctorId: await defaultDoctorId(me),
           dateLocal: chosen.dateLocal,
           startMin: chosen.startMin,
           source: "phone",

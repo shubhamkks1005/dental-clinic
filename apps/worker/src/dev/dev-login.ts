@@ -1,3 +1,4 @@
+import { authRepo } from "@clinic/db";
 import { ensureDevUser } from "@clinic/db/dev";
 import { fail } from "@clinic/shared";
 import type { Handler } from "hono";
@@ -18,8 +19,16 @@ export const devLogin: Handler<AppEnv> = async (c) => {
   if (c.env.AUTH_MODE !== "dev-stub" || (host !== "localhost" && host !== "127.0.0.1")) {
     return c.json(fail("not_found", "This address does not exist."), 404);
   }
+  // ?email= signs in as an EXISTING active staff member (for example a second doctor the owner
+  // added in Settings > Staff), so "a doctor sees only their own" can be tried locally.
+  const email = c.req.query("email")?.trim().toLowerCase();
   const role = c.req.query("role") === "receptionist" ? "receptionist" : "doctor";
-  const user = await ensureDevUser(c.var.db, role);
+  const user = email
+    ? await authRepo(c.var.db).findStaffByEmail(email)
+    : await ensureDevUser(c.var.db, role);
+  if (!user || user.status !== "active") {
+    return c.json(fail("not_found", "No active staff member has that email."), 404);
+  }
   const token = await openSession(
     c.var.db,
     user,

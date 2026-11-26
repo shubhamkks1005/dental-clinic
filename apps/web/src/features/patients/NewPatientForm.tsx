@@ -22,7 +22,7 @@ import {
   type CreatedPatient,
   type DuplicateWarning,
 } from "./api";
-import { DuplicateWarnings } from "./DuplicateWarnings";
+import { asksSamePerson, DuplicateWarnings } from "./DuplicateWarnings";
 import {
   NEW_PATIENT_DEFAULTS,
   newPatientSchema,
@@ -117,7 +117,7 @@ export function NewPatientForm({ onCreated }: Props) {
       noValidate
       onSubmit={handleSubmit(async (values) => {
         setFormError(null);
-        if (warnings.length > 0 && !saveAsNew) {
+        if (asksSamePerson(warnings) && !saveAsNew) {
           setAskSamePerson(true);
           return;
         }

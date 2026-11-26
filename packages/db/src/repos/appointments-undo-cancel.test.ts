@@ -47,7 +47,7 @@ describe("undo after cancel (PA-M06)", () => {
     expect(audit.n).toBe(1);
   });
 
-  it("refuses after the window, when not cancelled, or when the time was taken", async () => {
+  it("refuses after the window, when not cancelled, or as an exact repeat", async () => {
     addAppt("OLD", "cancelled", "2026-11-23T04:00:00.000Z");
     await expect(repos().appointments.undoCancel("OLD", 2, NOW)).rejects.toBeInstanceOf(
       InvalidError,
@@ -56,7 +56,8 @@ describe("undo after cancel (PA-M06)", () => {
     await expect(repos().appointments.undoCancel("LIVE", 2, NOW)).rejects.toBeInstanceOf(
       ConflictError,
     );
-    // LIVE holds 10:00-10:30, so a just-cancelled twin cannot come back on top of it.
+    // LIVE is the same patient at the same start: the twin would be an exact repeat (clashes with
+    // other patients are allowed since 2026-11-26).
     addAppt("TWIN", "cancelled", "2026-11-23T04:30:30.000Z");
     await expect(repos().appointments.undoCancel("TWIN", 2, NOW)).rejects.toBeInstanceOf(
       ConflictError,

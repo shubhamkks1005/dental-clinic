@@ -10,7 +10,7 @@ import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
 import { problemText } from "../../api/problem-text";
 import { PrintLayout, printTitle } from "../../ui/print";
-import { getCertificate, type CertificateDto } from "../certificates";
+import { getCertificateForPrint, type CertificateDto } from "../certificates";
 import { clinicHeaderFromSettings } from "./clinic-header";
 import "./certificate-print.css";
 import "./print-screen.css";
@@ -29,8 +29,8 @@ export function PrintCertificateScreen() {
     let cancelled = false;
     (async () => {
       try {
-        const [certificate, settings] = await Promise.all([
-          getCertificate(id),
+        const [{ certificate, doctorProfile }, settings] = await Promise.all([
+          getCertificateForPrint(id),
           api<{ settings: Array<{ key: string; value: unknown }> }>("/api/staff/settings"),
         ]);
         if (cancelled) return;
@@ -39,7 +39,7 @@ export function PrintCertificateScreen() {
           return;
         }
         setCert(certificate);
-        setClinic(clinicHeaderFromSettings(settings.settings));
+        setClinic(clinicHeaderFromSettings(settings.settings, doctorProfile));
         const preview = await api<{ isReprint: boolean }>(
           `/api/staff/print-log/preview?kind=certificate&id=${encodeURIComponent(id)}`,
         ).catch(() => ({ isReprint: false }));

@@ -13,9 +13,11 @@ export async function createPrescription(repos: Repos, body: unknown) {
   return { ok: true as const, prescription };
 }
 
+/** The prescribing doctor's own letterhead lines come with it (owner 2026-11-26; null = none saved). */
 export async function getPrescription(repos: Repos, id: string) {
   const prescription = await repos.prescriptions.get(id);
-  return { ok: true as const, prescription };
+  const doctorProfile = await repos.doctorProfiles.getFor(prescription.doctorId);
+  return { ok: true as const, prescription, doctorProfile };
 }
 
 export async function listDraftPrescriptions(repos: Repos) {

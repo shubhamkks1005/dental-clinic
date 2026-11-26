@@ -9,12 +9,16 @@ import { assertAllowed, isAllowed } from "../permissions";
 import { certificates, settings } from "../schema";
 import { nowUtcSql } from "../sql";
 import { certificatesGetRepo, type CertificateRow } from "./certificates-get";
+import { loadDoctorProfile } from "./doctor-profiles";
 
 function formatCertNo(period: string, value: ReturnType<typeof sql<number>>) {
   return sql<string>`printf('MC-%s-%04d', ${period}, ${value})`;
 }
 
-async function doctorRegistration(db: Db): Promise<string> {
+/** The certificate doctor's own number first (0066 profile); the old shared setting otherwise. */
+async function doctorRegistration(db: Db, doctorId: string): Promise<string> {
+  const own = await loadDoctorProfile(db, doctorId);
+  if (own && !registrationMissing(own.registrationNo)) return own.registrationNo;
   const row = await db
     .select({ valueJson: settings.valueJson })
     .from(settings)
@@ -46,10 +50,10 @@ export function certificatesFinaliseRepo(db: Db, ctx: Ctx) {
       }
       if (row.version !== version) throw new ConflictError();
 
-      const reg = await doctorRegistration(db);
+      const reg = await doctorRegistration(db, row.doctorId);
       if (registrationMissing(reg)) {
         throw new InvalidError(
-          "Set the doctor registration number in Settings before finalising a certificate.",
+          "Set your registration number in Settings (My prescription details) before finalising a certificate.",
         );
       }
 

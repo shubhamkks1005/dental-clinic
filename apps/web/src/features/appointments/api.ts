@@ -5,8 +5,9 @@ import type {
   AppointmentStatus,
   CancelReasonCode,
   DayWindow,
+  Doctor,
 } from "@clinic/shared";
-import { api } from "../../api/client";
+import { api, ApiError } from "../../api/client";
 
 export type DayAppointment = {
   id: string;
@@ -93,9 +94,26 @@ export function suggestSlots(
   return api<{ slots: SuggestedSlot[] }>(`/api/staff/appointments/slots?${q}`).then((r) => r.slots);
 }
 
+/** Active doctors (several doctors, 2026-11-26). */
+export function listDoctors() {
+  return api<{ doctors: Doctor[] }>("/api/staff/doctors").then((r) => r.doctors);
+}
+
+/**
+ * BRIDGE until the calendar popover's "Assign Doctor" (handoff P5.7.4): a doctor books for
+ * themself; the desk books for the first active doctor.
+ */
+export async function defaultDoctorId(me: { id: string; role: string }): Promise<string> {
+  if (me.role === "doctor") return me.id;
+  const [first] = await listDoctors();
+  if (!first) throw new ApiError(400, "invalid", "No active doctor. Add one in Settings > Staff.");
+  return first.id;
+}
+
 export function bookAppointment(body: {
   patientId: string;
   visitTypeId: string;
+  doctorId: string;
   dateLocal: string;
   startMin: number;
   source: "phone";

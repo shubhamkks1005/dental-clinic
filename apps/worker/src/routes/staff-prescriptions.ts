@@ -31,7 +31,7 @@ staffPrescriptions.get("/prescriptions/drafts", async (c) => {
 
 staffPrescriptions.get("/prescriptions/:id", async (c) => {
   const result = await getPrescription(signedIn(c).repos, c.req.param("id"));
-  return c.json(ok({ prescription: result.prescription }));
+  return c.json(ok({ prescription: result.prescription, doctorProfile: result.doctorProfile }));
 });
 
 staffPrescriptions.get("/visits/:id/prescriptions", async (c) => {

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
 import { problemText } from "../../api/problem-text";
 import { PrintLayout, printTitle } from "../../ui/print";
-import { getPrescription, type PrescriptionDto } from "../prescriptions";
+import { getPrescriptionForPrint, type PrescriptionDto } from "../prescriptions";
 import { getPatient } from "../patients";
 import { getQrImage } from "../settings/api";
 import { clinicHeaderFromSettings, clinicRegistrationMissing } from "./clinic-header";
@@ -56,8 +56,8 @@ export function PrintPrescriptionScreen() {
     let cancelled = false;
     (async () => {
       try {
-        const [prescription, settings] = await Promise.all([
-          getPrescription(id),
+        const [{ prescription, doctorProfile }, settings] = await Promise.all([
+          getPrescriptionForPrint(id),
           api<{ settings: Array<{ key: string; value: unknown }> }>("/api/staff/settings"),
         ]);
         if (cancelled) return;
@@ -70,9 +70,9 @@ export function PrintPrescriptionScreen() {
         setRx(prescription);
         setPatientName(patient.fullName);
         setPatientCode(patient.code);
-        const header = clinicHeaderFromSettings(settings.settings);
+        const header = clinicHeaderFromSettings(settings.settings, doctorProfile);
         setClinic(header);
-        setRegMissing(clinicRegistrationMissing(settings.settings));
+        setRegMissing(clinicRegistrationMissing(settings.settings, doctorProfile));
         const preview = await api<{ isReprint: boolean }>(
           `/api/staff/print-log/preview?kind=prescription&id=${encodeURIComponent(id)}`,
         ).catch(() => ({ isReprint: false }));

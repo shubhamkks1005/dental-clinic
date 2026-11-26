@@ -3,10 +3,13 @@ import { Link } from "react-router";
 import type { DuplicateWarning } from "./api";
 
 const REASON: Record<DuplicateWarning["reason"], string> = {
-  mobile_name: "Same mobile and a matching name",
-  name_age: "Same name and similar age",
-  secondary_mobile: "Matches another patient's other mobile",
+  first_name_mobile: "Same first name and mobile",
+  mobile_only: "Same mobile",
 };
+
+/** Only a same-first-name match stops Save with "Same person?"; a family mobile never does (L35). */
+export const asksSamePerson = (warnings: DuplicateWarning[]) =>
+  warnings.some((w) => w.reason === "first_name_mobile");
 
 // The list is soft; Save asks "Same person?" once (Q1.8) and the desk can still save as new.
 export function DuplicateWarnings({
@@ -22,14 +25,10 @@ export function DuplicateWarnings({
   onOpenExisting?: () => void;
 }) {
   if (warnings.length === 0) return null;
-  // The strongest match first: same mobile and name, then another patient's other mobile.
-  const rank = (w: DuplicateWarning) =>
-    w.reason === "mobile_name" ? 0 : w.reason === "secondary_mobile" ? 1 : 2;
+  // The strongest match first: same first name and mobile, then the same mobile only.
+  const rank = (w: DuplicateWarning) => (w.reason === "first_name_mobile" ? 0 : 1);
   const sorted = [...warnings].sort((a, b) => rank(a) - rank(b));
-  const best =
-    warnings.find((w) => w.reason === "mobile_name") ??
-    warnings.find((w) => w.reason === "secondary_mobile") ??
-    warnings[0]!;
+  const best = sorted[0]!;
   return (
     <div className="notice notice-warning new-patient-dupes" role="status">
       <p>Possible match — check before saving:</p>

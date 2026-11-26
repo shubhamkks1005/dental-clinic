@@ -1,4 +1,10 @@
-import type { AppointmentStatus, ConsentRow, Page, PageQuery } from "@clinic/shared";
+import type {
+  AppointmentStatus,
+  ConsentRow,
+  Page,
+  PageQuery,
+  DuplicateReason,
+} from "@clinic/shared";
 import { pageQueryParams } from "@clinic/shared";
 import { api } from "../../api/client";
 
@@ -68,7 +74,8 @@ export type DuplicateWarning = {
   code: string;
   fullName: string;
   mobile: string | null;
-  reason: "mobile_name" | "name_age" | "secondary_mobile";
+  /** Owner Q5 (2026-11-26): rule in @clinic/shared patient-duplicate-rule. */
+  reason: DuplicateReason;
 };
 
 export type PatientListFilter = "new_month" | "inactive_6m" | "balance_due";

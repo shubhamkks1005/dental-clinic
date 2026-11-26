@@ -2,6 +2,7 @@ import {
   consultationTimingsLines,
   registrationMissing,
   timingsSchema,
+  type DoctorProfile,
   type SettingKey,
 } from "@clinic/shared";
 import type { ClinicHeader } from "../../ui/print";
@@ -18,8 +19,27 @@ function timingsLines(settings: SettingRow[]): string[] {
   return parsed.success ? consultationTimingsLines(parsed.data) : [];
 }
 
-/** Build print letterhead from Settings (4.3.2). */
-export function clinicHeaderFromSettings(settings: SettingRow[]): ClinicHeader {
+/**
+ * Build print letterhead from Settings (4.3.2). With several doctors (owner 2026-11-26) the doctor
+ * lines come from the prescribing doctor's own profile; the old doctor.* settings are the fallback.
+ */
+export function clinicHeaderFromSettings(
+  settings: SettingRow[],
+  doctor: DoctorProfile | null = null,
+): ClinicHeader {
+  const base = clinicFromSettings(settings);
+  if (!doctor) return base;
+  return {
+    ...base,
+    doctorName: doctor.nameOnRx,
+    qualifications: doctor.qualifications,
+    speciality: doctor.speciality,
+    registrationNo: doctor.registrationNo,
+    extraLine: doctor.extraLine,
+  };
+}
+
+function clinicFromSettings(settings: SettingRow[]): ClinicHeader {
   return {
     name: text(settings, "clinic.name", "Clinic"),
     tagline: text(settings, "clinic.tagline"),
@@ -38,6 +58,9 @@ export function clinicHeaderFromSettings(settings: SettingRow[]): ClinicHeader {
   };
 }
 
-export function clinicRegistrationMissing(settings: SettingRow[]): boolean {
-  return registrationMissing(clinicHeaderFromSettings(settings).registrationNo);
+export function clinicRegistrationMissing(
+  settings: SettingRow[],
+  doctor: DoctorProfile | null = null,
+): boolean {
+  return registrationMissing(clinicHeaderFromSettings(settings, doctor).registrationNo);
 }

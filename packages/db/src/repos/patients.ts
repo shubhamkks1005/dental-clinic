@@ -153,7 +153,8 @@ export function patientsRepo(db: Db, ctx: Ctx) {
   return { listPage, visitAndNext: visitAndNextFor, list };
 }
 
-async function matchPatientIds(db: Db, words: string[]): Promise<string[]> {
+/** Patient ids for typed search words (name words, code, mobile; also used by the calendar search). */
+export async function matchPatientIds(db: Db, words: string[]): Promise<string[]> {
   const first = words[0]!;
   const prefixes = [first];
   // Last-4 (and other digit tails) hit mobile_rev via the reversed prefix.
