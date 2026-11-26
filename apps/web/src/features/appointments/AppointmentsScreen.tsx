@@ -6,7 +6,7 @@ import { useMe } from "../auth";
 import type { DayAppointment, DayAppointmentsReply } from "./api";
 import { BookPopover } from "./book/BookPopover";
 import { sideForColumn } from "./book/place-popover";
-import type { BookRequest } from "./book/useBookDraft";
+import { loadVisitTypes, type BookRequest } from "./book/useBookDraft";
 import type { Anchor } from "./book/usePopoverPlace";
 import { CalendarBody } from "./CalendarBody";
 import type { CellPick } from "./CalColumn";
@@ -51,6 +51,8 @@ export function AppointmentsScreen() {
   const keySeq = useRef(0);
 
   useEffect(() => {
+    // The popover's chips are ready before the first click (no late growth).
+    loadVisitTypes().catch(() => undefined);
     document.body.classList.add("cal-body");
     return () => document.body.classList.remove("cal-body");
   }, []);

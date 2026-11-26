@@ -32,6 +32,18 @@ const SOFT_RULE = /override with a reason\.$/;
 
 export type BookDraft = ReturnType<typeof useBookDraft>;
 
+// The visit types are kept after the first load (and preloaded by the calendar), so the chips
+// are there when the popover opens: a list arriving later grew the popover and moved it (probe).
+let visitTypesCache: ListItem[] | null = null;
+export function loadVisitTypes(): Promise<ListItem[]> {
+  return getList("visit_types").then((items) => {
+    visitTypesCache = items.filter((i) => i.active);
+    return visitTypesCache;
+  });
+}
+const firstVisit = (list: ListItem[] | null, wanted?: string) =>
+  list ? (list.find((v) => v.id === wanted) ?? list[0] ?? null) : null;
+
 // Popover form state and the one submit (P5.7). Nothing is optimistic: the server decides the
 // doctor, length bounds, soft rules (past, closed, lunch, 90 days, leave) and repeats.
 export function useBookDraft(
@@ -40,9 +52,12 @@ export function useBookDraft(
   onlyDoctor: string | null,
 ) {
   const [patient, setPatient] = useState<PickedPatient | null>(req.patient ?? null);
-  const [visitTypes, setVisitTypes] = useState<ListItem[]>([]);
-  const [visitTypeId, setVisitTypeId] = useState(req.visitTypeId ?? "");
-  const [minutes, setMinutes] = useState(req.durationMin ?? 30);
+  const cachedFirst = firstVisit(visitTypesCache, req.visitTypeId);
+  const [visitTypes, setVisitTypes] = useState<ListItem[]>(visitTypesCache ?? []);
+  const [visitTypeId, setVisitTypeId] = useState(cachedFirst?.id ?? req.visitTypeId ?? "");
+  const [minutes, setMinutes] = useState(
+    req.durationMin ?? (cachedFirst ? Number(cachedFirst.data.minutes ?? 30) : 30),
+  );
   const [dateLocal, setDateLocal] = useState(req.dateLocal);
   const [time, setTime] = useState(toHHMM(req.startMin));
   const [doctorId, setDoctorId] = useState(
@@ -56,10 +71,11 @@ export function useBookDraft(
   const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
-    getList("visit_types")
-      .then((items) => {
-        const active = items.filter((i) => i.active);
+    const hadCache = visitTypesCache !== null;
+    loadVisitTypes()
+      .then((active) => {
         setVisitTypes(active);
+        if (hadCache) return;
         // HTML 578: the first chip starts chosen; its minutes give the length unless one was asked.
         setVisitTypeId((cur) => {
           const chosen = active.find((v) => v.id === cur) ?? active[0];
@@ -68,7 +84,9 @@ export function useBookDraft(
           return chosen?.id ?? "";
         });
       })
-      .catch(() => setVisitTypes([]));
+      .catch(() => {
+        if (!hadCache) setVisitTypes([]);
+      });
     if (!req.patient && req.patientId) {
       getPatient(req.patientId)
         .then((p) => setPatient({ id: p.id, code: p.code, fullName: p.fullName, mobile: p.mobile }))

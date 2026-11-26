@@ -53,6 +53,20 @@ export function usePopoverPlace(pop: RefObject<HTMLDivElement | null>, first: An
     return () => window.removeEventListener("resize", place);
   }, [place]);
 
+  // A message or the "Book anyway" reason makes the popover taller: clamp again so the footer
+  // never leaves the window (probe T9). Only while open, never during the fold morph.
+  useEffect(() => {
+    const el = pop.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    // Only when it now pokes out at the bottom: shrinking never moves it (probe: a jump at Book).
+    const ro = new ResizeObserver(() => {
+      if (el.style.transformOrigin === "top left") return;
+      if (el.offsetTop + el.offsetHeight > window.innerHeight - 12) place();
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [place, pop]);
+
   /** The date or time moved the target cell (HTML 1115). */
   const retarget = useCallback(
     (next: Anchor | null) => {
