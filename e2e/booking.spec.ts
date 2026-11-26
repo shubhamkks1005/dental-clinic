@@ -1,11 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { bookFutureSlot } from "./calendar-helpers";
 
 // Q0.4: booking with the optional note left empty must work (C4: "expected string, received null").
-
-function isoDate(daysAhead: number): string {
-  const d = new Date(Date.now() + daysAhead * 86_400_000);
-  return d.toISOString().slice(0, 10);
-}
 
 test("receptionist books a future slot with the note empty", async ({ page }) => {
   const bad: string[] = [];
@@ -23,24 +19,7 @@ test("receptionist books a future slot with the note empty", async ({ page }) =>
   await page.getByRole("button", { name: "Save patient" }).click();
   await expect(page.getByRole("heading", { name: "Patient saved" })).toBeVisible();
 
-  await page
-    .getByRole("button", { name: "Book appointment" })
-    .or(page.getByRole("link", { name: "Book appointment" }))
-    .click();
-  const dialog = page.locator("dialog[open]");
-  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
-
-  // First of the next 7 days that has a free time (closed days have none).
-  const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
-  for (let day = 1; day <= 7; day++) {
-    await dialog.getByLabel("Date").fill(isoDate(day));
-    await page.waitForTimeout(1200);
-    if ((await times.count()) > 0) break;
-  }
-  await times.first().click();
-  // Note stays empty on purpose.
-  await dialog.getByRole("button", { name: "Book", exact: true }).click();
-
-  await expect(page.locator(".toast-text", { hasText: /Booked for/ })).toBeVisible();
+  // The booking popover opens with the patient set; the note stays empty on purpose.
+  await bookFutureSlot(page);
   expect(bad, bad.join("\n")).toEqual([]);
 });

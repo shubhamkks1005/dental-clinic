@@ -1,11 +1,8 @@
 import { expect, test } from "@playwright/test";
+import { bookInPopover, bookPopover } from "./calendar-helpers";
 
 // Q1.5: the confirmation is due at once, the reminder waits for 17:00 the day before and shows its
 // due time, and moving the booking makes the old messages "out of date". Fake data only.
-
-function isoDate(daysAhead: number): string {
-  return new Date(Date.now() + daysAhead * 86_400_000).toISOString().slice(0, 10);
-}
 
 test("confirm now, reminder scheduled with a due time, move makes old ones out of date", async ({
   page,
@@ -32,20 +29,10 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
   await page
     .getByRole("button", { name: "Book appointment" })
     .or(page.getByRole("link", { name: "Book appointment" }))
+    .first()
     .click();
-  const dialog = page.locator("dialog[open]");
-  await dialog.getByRole("button", { name: "Consultation", exact: true }).click();
-  const times = dialog.getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ });
-  let date = "";
-  for (let day = 1; day <= 8; day++) {
-    date = isoDate(day);
-    await dialog.getByLabel("Date").fill(date);
-    await page.waitForTimeout(1200);
-    if ((await times.count()) > 1) break;
-  }
-  await times.first().click();
-  await dialog.getByRole("button", { name: "Book", exact: true }).click();
-  await expect(page.locator(".toast-text", { hasText: /Booked for/ })).toBeVisible();
+  // From day 2: isoDate is UTC, and after midnight IST "day 1" is still today here.
+  const date = await bookInPopover(page, 2);
 
   await page.request.get("/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*");
   await page.goto("/app/messages");
@@ -62,18 +49,13 @@ test("confirm now, reminder scheduled with a due time, move makes old ones out o
 
   // Move the booking to the last free time of that day.
   await page.goto(`/app/appointments?date=${date}&view=day`);
-  await page.locator(".day-card", { hasText: name }).click();
+  await page.locator(".cal-card", { hasText: name }).click();
   await page.getByLabel("Appointment details").getByRole("button", { name: "Reschedule" }).click();
-  // The Reschedule dialog opens on today, not on the booking's day. Pick that day, or late in the
-  // day the move lands today within the 2 h reminder lead and no new reminder is made.
-  await dialog.getByLabel("Date").fill(date);
-  await page.waitForTimeout(1200);
-  await dialog
-    .getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ })
-    .last()
-    .click();
-  await dialog.getByRole("button", { name: "Move", exact: true }).click();
-  await expect(page.locator(".toast-text", { hasText: /Moved to/ })).toBeVisible();
+  // The popover keeps the booking's day; a later time the same day.
+  const pop = bookPopover(page);
+  await pop.getByLabel("Start Time").fill("17:00");
+  await pop.getByRole("button", { name: "Move appointment" }).click();
+  await expect(page.locator(".cal-toast")).toContainText("Moved to");
 
   await page.request.get("/cdn-cgi/handler/scheduled?cron=*/5+*+*+*+*");
   await page.goto("/app/messages");

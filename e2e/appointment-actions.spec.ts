@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { readdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
-import { bookFutureSlot, registerPatient } from "./calendar-helpers";
+import { bookFutureSlot, bookPopover, registerPatient } from "./calendar-helpers";
 
 // Q1.4: Reschedule, Cancel with a reason, Missed with a reason, blockers named on Close day.
 // Fake data only. Any 4xx/5xx from the API fails the test.
@@ -48,26 +48,23 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   const bookedDate = await bookFutureSlot(page);
   await page.goto(`/app/appointments?date=${bookedDate}&view=day`);
 
-  // ---- Calendar panel: Reschedule reopens the Book dialog with the patient filled ----
-  const card = page.locator(".day-card", { hasText: name });
+  // ---- Calendar panel: Reschedule opens the booking popover in move mode, patient locked ----
+  const card = page.locator(".cal-card", { hasText: name });
   await card.click();
   const panel = page.getByLabel("Appointment details");
   await panel.getByRole("button", { name: "Reschedule" }).click();
+  const pop = bookPopover(page);
+  await expect(pop.getByRole("heading", { name: "Move appointment" })).toBeVisible();
+  await expect(pop).toContainText(name);
+  await expect(pop.getByRole("button", { name: "Change" })).toHaveCount(0);
+  // Same day, a later time.
+  await pop.getByLabel("Start Time").fill("16:00");
+  await pop.getByRole("button", { name: "Move appointment" }).click();
+  await expect(page.locator(".cal-toast")).toContainText("Moved to");
   const dialog = page.locator("dialog[open]");
-  await expect(dialog.getByText("Reschedule appointment")).toBeVisible();
-  await expect(dialog).toContainText(name);
-  // The dialog opens on today: pick the booked day again, then its last time.
-  await dialog.getByLabel(/More dates/).fill(bookedDate);
-  await page.waitForTimeout(1200);
-  await dialog
-    .getByRole("button", { name: /^\d{1,2}:\d{2} [AP]M$/ })
-    .last()
-    .click();
-  await dialog.getByRole("button", { name: "Move", exact: true }).click();
-  await expect(page.locator(".toast-text", { hasText: /Moved to/ })).toBeVisible();
 
   // Missed is not offered yet for a future booking (the 15 minute rule).
-  const moved = page.locator(".day-card:not(.day-card-muted)", { hasText: name });
+  const moved = page.locator(".cal-card:not(.tone-gone):not(.tone-missed)", { hasText: name });
   await expect(moved).toHaveCount(1);
   await moved.click();
   await expect(page.getByLabel("Appointment details")).toContainText("Booked");
@@ -88,8 +85,10 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await dialog.getByLabel("Note").fill("Fake: patient is travelling");
   await dialog.getByRole("button", { name: "Cancel appointment" }).click();
   await expect(page.locator(".toast-text", { hasText: /Cancelled Action Test/ })).toBeVisible();
-  await expect(page.locator(".day-card-muted", { hasText: name })).toHaveCount(2);
-  await expect(page.locator(".day-card:not(.day-card-muted)", { hasText: name })).toHaveCount(0);
+  await expect(page.locator(".cal-card.tone-gone", { hasText: name })).toHaveCount(2);
+  await expect(
+    page.locator(".cal-card:not(.tone-gone):not(.tone-missed)", { hasText: name }),
+  ).toHaveCount(0);
 
   // ---- Patient Appointments tab shows the reason ----
   await page.goto(profileHref);
@@ -100,7 +99,7 @@ test("reschedule, cancel with a reason, missed with a reason", async ({ page }) 
   await bookFutureSlot(page);
   const yesterday = moveBookingToPast(name, -1, 23 * 60);
   await page.goto(`/app/appointments?date=${yesterday}&view=day`);
-  await page.locator(".day-card", { hasText: name }).click();
+  await page.locator(".cal-card", { hasText: name }).click();
   await page
     .getByLabel("Appointment details")
     .getByRole("button", { name: "Missed", exact: true })

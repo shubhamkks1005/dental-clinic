@@ -138,6 +138,11 @@ Owner's real hours (owner fills): Phase 0: -
 - Known: staging logs showed no errors for Library. e2e messages.spec.ts line 60 fails when the reminder is already due (time of day), not a code fault. /assets/<missing> returns index.html with immutable (S2.1.3, low).
 - Open owner decisions: cache for Phase 4 (React Query or own); S0.3.1 put the 12 speed rules into AGENTS.md.
 
+## Appointments calendar: final design UI (2026-11-27, design-apply Phase B + C, local commits, not pushed)
+- Built from docs/design/final/appointments_calendar.html: week/day grid by minutes with clash lanes, doctor filter (desk), search, side-anchored booking popover with the HTML motion (open, preview, fold into the slot, tabs, Save & Book flyer), details panel in the new look. The popover is now the only booking UI in the app.
+- Motion probe passed (numbers in the handoff Log); e2e appointments-calendar, booking, appointment-actions, calendar-late-undo, data-rules, messages, part5-keyboard-widths pass.
+- Open: TOTAL JS over the budget (1,231 KB vs 1,210 KB; owner decides). Not built yet: leave editor, desk Today per doctor, own letterhead screen, patient tab doctor ticks, print Doctor column (handoff Log "Not done").
+
 ## Appointments calendar, several doctors: backend (2026-11-26, design-apply Phase A, local commits, not pushed)
 - Handoff docs/design/handoff/appointments-calendar.md (Status BACKEND DONE; Log has the numbers and 11 deviations). UI (P4-P8) is the next session.
 - Migration **0066_doctors_on_appointments** is NEW (owner applies on staging): appointments.doctor_id (old rows -> first active doctor, chair stays "1"), doctor_leaves, doctor_profiles (first doctor gets today's doctor.* letterhead), doctor_breaks/approval_requests.doctor_id, per-doctor queue index.

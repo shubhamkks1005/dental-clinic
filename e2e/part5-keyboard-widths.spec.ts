@@ -110,29 +110,25 @@ test("keyboard only: Reports charts fold opens with Enter; Settings item opens w
   await expect(page).toHaveURL(/settings\/timings/);
 });
 
-test("dialog focus: Book dialog takes focus, Esc closes it, focus returns to the opener", async ({
+test("dialog focus: the booking popover takes focus, Esc closes it, focus returns", async ({
   page,
 }) => {
   await login(page, "receptionist", "/app/appointments?view=day");
-  const opener = page.getByRole("button", { name: "Book appointment" });
+  const opener = page.getByRole("button", { name: "Book Appointment" });
   await opener.focus();
   await page.keyboard.press("Enter");
-  const dialog = page.locator("dialog[open]");
-  await expect(dialog).toBeVisible();
-  expect(await page.evaluate(() => !!document.activeElement?.closest("dialog[open]"))).toBe(true);
-  // Tab stays inside the dialog (the page behind is inert).
-  // (Tab may leave the page to the browser's own bar, then document.body is active.)
+  const pop = page.getByRole("dialog", { name: "Schedule Appointment" });
+  await expect(pop).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(() => !!document.activeElement?.closest(".bk-pop")))
+    .toBe(true);
+  // Tab stays inside the popover.
   for (let i = 0; i < 12; i++) {
     await page.keyboard.press("Tab");
-    expect(
-      await page.evaluate(() => {
-        const a = document.activeElement;
-        return a === document.body || !!a?.closest("dialog[open]");
-      }),
-    ).toBe(true);
+    expect(await page.evaluate(() => !!document.activeElement?.closest(".bk-pop"))).toBe(true);
   }
   await page.keyboard.press("Escape");
-  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  await expect(pop).toBeHidden();
   await expect(opener).toBeFocused();
 });
 
@@ -183,6 +179,12 @@ for (const s of SCREENS) {
           // Laptop calendar grid: a 15 minute cell is 21 px high by design (mouse and keyboard
           // only; hidden below 1024 px where the Book button is the way in).
           if (el.classList.contains("day-empty")) continue;
+          // Final calendar design (appointments_calendar.html): a card's height is its length
+          // (15 min = 22 px), so it is exempt like the old slot cells; it also opens from the list.
+          if (el.closest(".cal-card, .cal-more")) continue;
+          // Laptop only: the final HTML's 38 px header controls and compact chips (phone and
+          // tablet get 44 px, cal-filter.css).
+          if (innerWidth >= 1024 && el.closest(".cal-head")) continue;
           const isBox = el instanceof HTMLInputElement && ["radio", "checkbox"].includes(el.type);
           const target = isBox ? (el.closest("label") ?? el) : el;
           const r = target.getBoundingClientRect();

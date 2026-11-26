@@ -1,6 +1,6 @@
 # Handoff: appointments calendar (docs/design/final/appointments_calendar.html)
 
-Status: BACKEND DONE (2026-11-26, commits f664c15, f3f5ece and the docs commit; UI P4-P8 next session). Migration 0066 written, NOT applied.
+Status: DESIGN APPLIED + MEASURED (2026-11-27: calendar, popover, motion, probe passed; commits 284cf77, b23ba15, 1c5af50 and the specs/docs commit). NOT DONE yet: P5.10.2 leave editor, P5.11 desk Today per doctor, P5.12.1 own letterhead screen, P5.14.2 patient tab doctor ticks, P7.4.3 print Doctor column. Migration 0066 written, NOT applied. Total JS over budget (owner decision, see Log).
 Written: 2026-11-26. Plan by: design-plan. Next skill: design-apply.
 Inputs read: the whole HTML (style lines 76-123, markup 124-803, script 804-1602), brief `docs/design/briefs/appointments-doctor.md`, review `docs/design/reviews/appointments-doctor.md` (owner answers 2026-11-26 WIN over the HTML), AGENTS.md, RUN_PROMPT.md, final/README.md, handoff/INDEX.md, HANDOFF.md, the real code named below.
 
@@ -204,63 +204,63 @@ All motion off (end state at once) under `prefers-reduced-motion: reduce` (P7.3.
 
 ### P4 UI: frame, tokens, fonts, icons
 #### P4.1
-- [ ] P4.1.1 `apps/web/src/features/appointments/cal-tokens.css` (new, scoped `.cal-page`): copy the HTML colour tokens 13-60 as CSS vars (`--cal-primary:#054D61`, `--cal-surface:#F8F9FB`, `--cal-outline-variant:#C0C8CC`, success/warning/error containers...). Fonts: reuse `styles/design-fonts.css` (Wix Madefor Display, Instrument Sans, Spline Sans Mono already shared with visit + Library). Check: no Tailwind, no CDN.
-- [ ] P4.1.2 Icons: add to the existing inline SVG icon subset (as Library `LibraryIcon`): chevron_left/right, print, add, groups, calendar_add_on, person_search, person_add, schedule, coffee, emergency, close, check, task_alt, arrow_forward, event_available, tune, expand_more, family_restroom, search, plus `medical_alert` (distinct from warning, L7). Check: no font icon download.
-- [ ] P4.1.3 Page background: gradient `secondary-container/15 -> surface -> success-container/10` (HTML 192); header white, 1 px bottom border, sticky top 0 (194).
+- [x] P4.1.1 `apps/web/src/features/appointments/cal-tokens.css` (new, scoped `.cal-page`): copy the HTML colour tokens 13-60 as CSS vars (`--cal-primary:#054D61`, `--cal-surface:#F8F9FB`, `--cal-outline-variant:#C0C8CC`, success/warning/error containers...). Fonts: reuse `styles/design-fonts.css` (Wix Madefor Display, Instrument Sans, Spline Sans Mono already shared with visit + Library). Check: no Tailwind, no CDN.
+- [x] P4.1.2 Icons: add to the existing inline SVG icon subset (as Library `LibraryIcon`): chevron_left/right, print, add, groups, calendar_add_on, person_search, person_add, schedule, coffee, emergency, close, check, task_alt, arrow_forward, event_available, tune, expand_more, family_restroom, search, plus `medical_alert` (distinct from warning, L7). Check: no font icon download.
+- [x] P4.1.3 Page background: gradient `secondary-container/15 -> surface -> success-container/10` (HTML 192); header white, 1 px bottom border, sticky top 0 (194).
 
 ### P5 UI: components and states
 #### P5.1 Header (`CalHeader.tsx`)
-- [ ] P5.1.1 Title "Appointments" (keep the app's nav word; HTML says "Appointments Calendar", 200: use HTML wording "Appointments Calendar" for the h1). Summary line: "Week: <d Mon> – <d Mon yyyy> · <N> appointments booked" (week) / "<Weekday d Mon yyyy> · <N> booked" (day); N from `weekBooked` on the filtered rows (L3). Drop "· 1 chair (Room 1)" (L9).
-- [ ] P5.1.2 Role chip after the title: "Doctor View" for doctor, "Desk View" for receptionist (HTML 201, mono 11 px).
-- [ ] P5.1.3 Controls in order (HTML 211-244): [‹ | Today | ›] group (38 px min, tooltips "Previous week"/"Next week" or day), date input, Week/Day toggle (aria-pressed), "Print list" -> `/app/print/day?date=<shown day or today in week>` (C3), primary "Book Appointment" (opens popover centred, prefill today + next free 15-min start, not a fixed 12:00, L19).
+- [x] P5.1.1 Title "Appointments" (keep the app's nav word; HTML says "Appointments Calendar", 200: use HTML wording "Appointments Calendar" for the h1). Summary line: "Week: <d Mon> – <d Mon yyyy> · <N> appointments booked" (week) / "<Weekday d Mon yyyy> · <N> booked" (day); N from `weekBooked` on the filtered rows (L3). Drop "· 1 chair (Room 1)" (L9).
+- [x] P5.1.2 Role chip after the title: "Doctor View" for doctor, "Desk View" for receptionist (HTML 201, mono 11 px).
+- [x] P5.1.3 Controls in order (HTML 211-244): [‹ | Today | ›] group (38 px min, tooltips "Previous week"/"Next week" or day), date input, Week/Day toggle (aria-pressed), "Print list" -> `/app/print/day?date=<shown day or today in week>` (C3), primary "Book Appointment" (opens popover centred, prefill today + next free 15-min start, not a fixed 12:00, L19).
 #### P5.2 Doctor filter bar (`DoctorFilter.tsx`, receptionist only)
-- [ ] P5.2.1 HTML 247: "Doctors:" + one checkbox chip per doctor from `GET /doctors` (dot colour, name, specialty in brackets if set), "All | Clear". Filter is client side, kept in URL `?doctors=id,id` (default all).
-- [ ] P5.2.2 Doctor role: bar not rendered; server already sends own rows only.
-- [ ] P5.2.3 None checked: grid with no cards + line "No doctor chosen." with button "Show all".
+- [x] P5.2.1 HTML 247: "Doctors:" + one checkbox chip per doctor from `GET /doctors` (dot colour, name, specialty in brackets if set), "All | Clear". Filter is client side, kept in URL `?doctors=id,id` (default all).
+- [x] P5.2.2 Doctor role: bar not rendered; server already sends own rows only.
+- [x] P5.2.3 None checked: grid with no cards + line "No doctor chosen." with button "Show all".
 #### P5.3 Day heads (`WeekHead.tsx`)
-- [ ] P5.3.1 Weekday 12 px, date 16 px bold, pill "N booked" (mono 11). Today: tinted bg, 2 px top border primary, "TODAY" tag, filled pill (HTML 268-275).
+- [x] P5.3.1 Weekday 12 px, date 16 px bold, pill "N booked" (mono 11). Today: tinted bg, 2 px top border primary, "TODAY" tag, filled pill (HTML 268-275).
 - [ ] ~~P5.3.2 Free gaps pill~~ (dropped 2026-11-26: Q8). Thursday's head looks like every other day ("N booked").
-- [ ] P5.3.3 Closed: grey head + "CLOSED" pill; holiday "Closed · <holiday name>" (review B5). Show all 7 days (HTML shows Sunday as a column; today the app hides Sunday unless it has bookings: change `WeekView.tsx:37`).
-- [ ] P5.3.4 Leave: under the pill "Dr Mehta on leave" (one line per doctor, filtered); the cells of that doctor are not bookable for that doctor (popover warns via soft rule).
+- [x] P5.3.3 Closed: grey head + "CLOSED" pill; holiday "Closed · <holiday name>" (review B5). Show all 7 days (HTML shows Sunday as a column; today the app hides Sunday unless it has bookings: change `WeekView.tsx:37`).
+- [x] P5.3.4 Leave: under the pill "Dr Mehta on leave" (one line per doctor, filtered); the cells of that doctor are not bookable for that doctor (popover warns via soft rule).
 #### P5.4 Grid and cells (`WeekGrid.tsx`, `DayGrid.tsx`)
-- [ ] P5.4.1 Rows per hour, 64 px per hour (HTML min-h 64), positioned by minutes (keep the app's absolute positioning from `WeekView.tsx`, PX_PER_HOUR 56 -> 64). Hours from `DayWindow` of the shown days (L5). Time column "Time (IST)" header, mono 11 px; drop "1 Chair" (L9). Grid scrolls inside its card, `max-height: calc(100vh - 270px)` (HTML 298); no page horizontal scroll at 1366.
-- [ ] P5.4.2 Clickable empty time = 15-minute target (snap with `snapToSlot`), not clickable: past (before server now), closed, lunch band. Closed column cells show "Closed" (HTML 309).
-- [ ] P5.4.3 Active target: dashed 2 px outline primary, offset -2, tint (M4).
-- [ ] P5.4.4 Live preview block (`SlotPreview.tsx`) in the clicked day column at the chosen start: height = max(34, duration/60*64 - 8) px; shows patient name, visit type, "10:00 AM - 10:30 AM (30m)", duration badge (ids referenced by HTML 1149-1154; the element itself is missing in the HTML, L2). Moves when date/time changes (HTML 1104-1120).
+- [x] P5.4.1 Rows per hour, 64 px per hour (HTML min-h 64), positioned by minutes (keep the app's absolute positioning from `WeekView.tsx`, PX_PER_HOUR 56 -> 64). Hours from `DayWindow` of the shown days (L5). Time column "Time (IST)" header, mono 11 px; drop "1 Chair" (L9). Grid scrolls inside its card, `max-height: calc(100vh - 270px)` (HTML 298); no page horizontal scroll at 1366.
+- [x] P5.4.2 Clickable empty time = 15-minute target (snap with `snapToSlot`), not clickable: past (before server now), closed, lunch band. Closed column cells show "Closed" (HTML 309).
+- [x] P5.4.3 Active target: dashed 2 px outline primary, offset -2, tint (M4).
+- [x] P5.4.4 Live preview block (`SlotPreview.tsx`) in the clicked day column at the chosen start: height = max(34, duration/60*64 - 8) px; shows patient name, visit type, "10:00 AM - 10:30 AM (30m)", duration badge (ids referenced by HTML 1149-1154; the element itself is missing in the HTML, L2). Moves when date/time changes (HTML 1104-1120).
 #### P5.5 Cards (`CalCard.tsx`)
-- [ ] P5.5.1 Content order (review B1): name (bold, truncate), time "10:00 AM" (mono 9-10), visit type, doctor badge (receptionist only; doctor sees only own so no badge), status pill with the word from `APPOINTMENT_STATUS_LABEL` on every card. Tones: Scheduled/Confirmed neutral white with primary/50 border (351); In chair warning border 2 px + ring + code line (337); Completed success tint (319). Whole card is a button -> opens details (P5.9.1). aria-label "<day> <time> <name>, <status>".
-- [ ] P5.5.2 Gone rows: Cancelled line-through + 60 % (348), Missed 80 % word "Missed" (L8), Moved like Cancelled with "Moved". Not counted.
-- [ ] P5.5.3 Emergency: red left border 2 px, emergency icon, red name, word "Emergency" in the pill row (icon never alone). Overbook flag (soft-rule override): word "Overbooked".
-- [ ] P5.5.4 Marks row: medical-alert icon with accessible name "Medical alert" (doctor and desk both see the mark only), restricted icon "Restricted history" (doctor only), word "Due" (L7). Receptionist sees due amount only in the details panel.
-- [ ] P5.5.5 Clashes: lanes from `clashLanes` (P1.1.6), gap 6 px, min lane width 64 px; more lanes than fit -> "+N more" button that opens the day view.
-- [ ] P5.5.6 Tiny cards (< 34 px tall): name only + time in title; full text in details.
+- [x] P5.5.1 Content order (review B1): name (bold, truncate), time "10:00 AM" (mono 9-10), visit type, doctor badge (receptionist only; doctor sees only own so no badge), status pill with the word from `APPOINTMENT_STATUS_LABEL` on every card. Tones: Scheduled/Confirmed neutral white with primary/50 border (351); In chair warning border 2 px + ring + code line (337); Completed success tint (319). Whole card is a button -> opens details (P5.9.1). aria-label "<day> <time> <name>, <status>".
+- [x] P5.5.2 Gone rows: Cancelled line-through + 60 % (348), Missed 80 % word "Missed" (L8), Moved like Cancelled with "Moved". Not counted.
+- [x] P5.5.3 Emergency: red left border 2 px, emergency icon, red name, word "Emergency" in the pill row (icon never alone). Overbook flag (soft-rule override): word "Overbooked".
+- [x] P5.5.4 Marks row: medical-alert icon with accessible name "Medical alert" (doctor and desk both see the mark only), restricted icon "Restricted history" (doctor only), word "Due" (L7). Receptionist sees due amount only in the details panel.
+- [x] P5.5.5 Clashes: lanes from `clashLanes` (P1.1.6), gap 6 px, min lane width 64 px; more lanes than fit -> "+N more" button that opens the day view.
+- [x] P5.5.6 Tiny cards (< 34 px tall): name only + time in title; full text in details.
 #### P5.6 Now line and lunch
-- [ ] P5.6.1 Now line on today's column only: 2 px error colour + 8 px dot + label "NOW 10:45 AM" (mono 9), position from `serverNow` + elapsed, updated each minute (HTML 333-336).
-- [ ] P5.6.2 Lunch band from `DayWindow` intervals: striped (HTML 383 gradient), pill with coffee icon "Clinic Lunch Break (1:30 PM – 2:30 PM)"; drop "· One chair clinic schedule paused" (L9). Days with different lunch: band only in those columns.
+- [x] P5.6.1 Now line on today's column only: 2 px error colour + 8 px dot + label "NOW 10:45 AM" (mono 9), position from `serverNow` + elapsed, updated each minute (HTML 333-336).
+- [x] P5.6.2 Lunch band from `DayWindow` intervals: striped (HTML 383 gradient), pill with coffee icon "Clinic Lunch Break (1:30 PM – 2:30 PM)"; drop "· One chair clinic schedule paused" (L9). Days with different lunch: band only in those columns.
 #### P5.7 Booking popover, Slot Selection tab (`book/BookPopover.tsx`, `book/SlotPanel.tsx`, `book/place-popover.ts`)
-- [ ] P5.7.1 Starts closed (L1). Wrapper fixed inset 0 z 50; backdrop 15 % on-surface, click = close (with guard P5.7.10). Popover 440 px wide, max `100vw-24px`, max-height `100vh-24px`, radius 12, shadow-2xl.
-- [ ] P5.7.2 `place-popover.ts` (pure, tested): columns Thu-Sun (index >= 4) open to the LEFT of the cell, Mon-Wed to the RIGHT, gap 12, fall back to the other side, top = cell top - 24, clamp 12 px on all sides; no anchor -> centred (HTML 897-949). Re-place on resize (M24) and when the date/time input moves the target (1115).
-- [ ] P5.7.3 Header: icon tile, "Schedule Appointment" (move mode: "Move appointment"), date line "Wednesday, 25 Nov 2026" (drop "Room 1" and "· Align Dentistry", L9), close X (44 px hit area). Patient: docked box (initials, name, code chip, mobile via `displayMobile`, "Change") or search input "Search patient name, code or phone..." (existing patient search API). "+ Register New Patient" link switches tab.
-- [ ] P5.7.4 "Assign Doctor *" radios (HTML 573), 3-column grid, one per active doctor (dot + short name). Doctor role: preselected self and hidden or locked per Q3. Receptionist: preselected when the filter shows exactly one doctor, else none (must choose; error "Choose a doctor.").
-- [ ] P5.7.5 "Visit Type & Procedure Preset" chips from the clinic list: "<label> (<minutes>m)"; choosing one sets duration to its minutes (HTML 1122-1131).
-- [ ] P5.7.6 "Time & Duration Adjuster": Date (date input), Start Time (time input, 15-min steps shown but any minute allowed), Duration (Min) number 5-240 step 5 with "Any min" hint; quick pills 15m 30m 45m 60m 90m; the active pill follows the number (HTML 1081-1093). Summary right side "12:00 PM – 12:30 PM (30m)" (element 593-596 and 634-637 are empty in the HTML; fill them as the script's `active-duration-label` does, 1167).
-- [ ] P5.7.7 "Reason for visit / Chief complaint (Optional)" textarea, 2 rows, max 500 (existing schema).
-- [ ] P5.7.8 Footer: "Cancel" left; "Book Appointment" primary right. Click: button text -> "Booking…", disabled, `useSubmitOnce` (first visible change < 100 ms). Server OK -> morph (P6.3). 
-- [ ] P5.7.9 Server says no: popover stays, form kept, message under the time fields (role=alert). Soft rule (past, closed, lunch, more than 90 days, doctor on leave): message + "Book anyway" which shows a reason field (existing `LateEntry` logic, sent as `overrideReason`). Hard errors (patient archived, version) as text.
-- [ ] P5.7.10 Unsaved guard: any field changed -> backdrop click, X, Cancel, Esc ask "Discard this booking?" (Keep editing / Discard). Unchanged -> close at once.
-- [ ] P5.7.11 Move mode (Reschedule from details, Today, patient tab): same popover, patient locked (no Change, no New Patient tab), doctor and duration prefilled from the booking, button "Move appointment", sends `version`. Replaces QuickBookDialog reschedule mode.
-- [ ] P5.7.12 Focus: opens with focus on the patient search (or first chip when a patient is set); Tab stays inside; Esc = close with guard; focus returns to the cell or button that opened it.
+- [x] P5.7.1 Starts closed (L1). Wrapper fixed inset 0 z 50; backdrop 15 % on-surface, click = close (with guard P5.7.10). Popover 440 px wide, max `100vw-24px`, max-height `100vh-24px`, radius 12, shadow-2xl.
+- [x] P5.7.2 `place-popover.ts` (pure, tested): columns Thu-Sun (index >= 4) open to the LEFT of the cell, Mon-Wed to the RIGHT, gap 12, fall back to the other side, top = cell top - 24, clamp 12 px on all sides; no anchor -> centred (HTML 897-949). Re-place on resize (M24) and when the date/time input moves the target (1115).
+- [x] P5.7.3 Header: icon tile, "Schedule Appointment" (move mode: "Move appointment"), date line "Wednesday, 25 Nov 2026" (drop "Room 1" and "· Align Dentistry", L9), close X (44 px hit area). Patient: docked box (initials, name, code chip, mobile via `displayMobile`, "Change") or search input "Search patient name, code or phone..." (existing patient search API). "+ Register New Patient" link switches tab.
+- [x] P5.7.4 "Assign Doctor *" radios (HTML 573), 3-column grid, one per active doctor (dot + short name). Doctor role: preselected self and hidden or locked per Q3. Receptionist: preselected when the filter shows exactly one doctor, else none (must choose; error "Choose a doctor.").
+- [x] P5.7.5 "Visit Type & Procedure Preset" chips from the clinic list: "<label> (<minutes>m)"; choosing one sets duration to its minutes (HTML 1122-1131).
+- [x] P5.7.6 "Time & Duration Adjuster": Date (date input), Start Time (time input, 15-min steps shown but any minute allowed), Duration (Min) number 5-240 step 5 with "Any min" hint; quick pills 15m 30m 45m 60m 90m; the active pill follows the number (HTML 1081-1093). Summary right side "12:00 PM – 12:30 PM (30m)" (element 593-596 and 634-637 are empty in the HTML; fill them as the script's `active-duration-label` does, 1167).
+- [x] P5.7.7 "Reason for visit / Chief complaint (Optional)" textarea, 2 rows, max 500 (existing schema).
+- [x] P5.7.8 Footer: "Cancel" left; "Book Appointment" primary right. Click: button text -> "Booking…", disabled, `useSubmitOnce` (first visible change < 100 ms). Server OK -> morph (P6.3). 
+- [x] P5.7.9 Server says no: popover stays, form kept, message under the time fields (role=alert). Soft rule (past, closed, lunch, more than 90 days, doctor on leave): message + "Book anyway" which shows a reason field (existing `LateEntry` logic, sent as `overrideReason`). Hard errors (patient archived, version) as text.
+- [x] P5.7.10 Unsaved guard: any field changed -> backdrop click, X, Cancel, Esc ask "Discard this booking?" (Keep editing / Discard). Unchanged -> close at once.
+- [x] P5.7.11 Move mode (Reschedule from details, Today, patient tab): same popover, patient locked (no Change, no New Patient tab), doctor and duration prefilled from the booking, button "Move appointment", sends `version`. Replaces QuickBookDialog reschedule mode.
+- [x] P5.7.12 Focus: opens with focus on the patient search (or first chip when a patient is set); Tab stays inside; Esc = close with guard; focus returns to the cell or button that opened it.
 #### P5.8 New Patient tab (`book/NewPatientPanel.tsx`)
-- [ ] P5.8.1 Uses the NewPatientForm schema (`packages/shared/src/patient-create.ts`), not its own: Full Name *, Mobile * with "No mobile" checkbox + reason (HTML 667-680; check the reason field exists in the schema; if not, keep the app's existing no-mobile handling and record it), Gender * Female/Male/Other with NO default (L12), DOB / Age (existing `BirthAgeFields` logic, read-only age when DOB set).
-- [ ] P5.8.2 Top bar: replace "Auto-Generated Patient ID: P-000409" with "Patient number is given on save" + green "New Registration" dot (L11).
-- [ ] P5.8.3 "+ Additional Patient Details" `<details>`: Whose mobile is this?, Locality / City, Medical Alert / Remarks (map to existing patient fields; any field that does not exist in the patient schema is left out and listed in the Log; never a new clinical field from this popover without the owner).
-- [ ] P5.8.4 Guardian box when age < 18 (`patient-guardian.ts`), fields Guardian Name, Relationship, Guardian Phone (L12).
-- [ ] P5.8.5 Footer: "Save only" (saves, toast "Patient saved: <code> <name>", closes; no `alert()`, L13) and "Save & Book" (saves, then M15-M19 flyer sequence, then Slot Selection with this patient chosen).
-- [ ] P5.8.6 Before saving: duplicate check (P1.3.7). (changed 2026-11-26: Q5) `first_name_mobile` hit -> card "Same person? <name> <code> <mobile>" with "Open existing" (choose that patient and go to Slot Selection) and "Save as new patient". `mobile_only` hits -> one quiet line "Same mobile: Ritu Verma P-000124" with "Open" per name; saving is never blocked (L35). Same component on the New patient page (P7.4.2).
-- [ ] P5.8.7 Privacy notice and reminders consent: NewPatientForm has "Privacy notice given" and "Allow reminders" (HANDOFF runner notes). The HTML drops them. Keep both in the tab (compact) since they are legal; listed as L22.
+- [x] P5.8.1 Uses the NewPatientForm schema (`packages/shared/src/patient-create.ts`), not its own: Full Name *, Mobile * with "No mobile" checkbox + reason (HTML 667-680; check the reason field exists in the schema; if not, keep the app's existing no-mobile handling and record it), Gender * Female/Male/Other with NO default (L12), DOB / Age (existing `BirthAgeFields` logic, read-only age when DOB set).
+- [x] P5.8.2 Top bar: replace "Auto-Generated Patient ID: P-000409" with "Patient number is given on save" + green "New Registration" dot (L11).
+- [x] P5.8.3 "+ Additional Patient Details" `<details>`: Whose mobile is this?, Locality / City, Medical Alert / Remarks (map to existing patient fields; any field that does not exist in the patient schema is left out and listed in the Log; never a new clinical field from this popover without the owner).
+- [x] P5.8.4 Guardian box when age < 18 (`patient-guardian.ts`), fields Guardian Name, Relationship, Guardian Phone (L12).
+- [x] P5.8.5 Footer: "Save only" (saves, toast "Patient saved: <code> <name>", closes; no `alert()`, L13) and "Save & Book" (saves, then M15-M19 flyer sequence, then Slot Selection with this patient chosen).
+- [x] P5.8.6 Before saving: duplicate check (P1.3.7). (changed 2026-11-26: Q5) `first_name_mobile` hit -> card "Same person? <name> <code> <mobile>" with "Open existing" (choose that patient and go to Slot Selection) and "Save as new patient". `mobile_only` hits -> one quiet line "Same mobile: Ritu Verma P-000124" with "Open" per name; saving is never blocked (L35). Same component on the New patient page (P7.4.2).
+- [x] P5.8.7 Privacy notice and reminders consent: NewPatientForm has "Privacy notice given" and "Allow reminders" (HANDOFF runner notes). The HTML drops them. Keep both in the tab (compact) since they are legal; listed as L22.
 #### P5.9 Booking details panel (not in the HTML; existing; owner 2026-11-26: "click a patient -> details on the right, in the new theme")
-- [ ] P5.9.1 `DayDetails.tsx` restyled with cal tokens (radius 12, header like the popover header: icon tile, name 15 px Wix Madefor Display, close X; body 13 px Instrument Sans; chips mono; buttons like the popover footer). Click on any card (week or day) opens it on the RIGHT of the grid on laptop and tablet (grid narrows, no overlap of the clicked card; selected card gets the active outline); a second click or X closes: name, code chip, time + length, visit type, status word, doctor (receptionist), marks, complaint, mobile or "No mobile", "Moved from …" (existing chain route), Due (doctor: word; desk: amount). Actions unchanged (AppointmentActions: Start visit today only, Reschedule -> P5.7.11, Cancel, Missed, Open profile, Go to Today). Laptop: side panel right of the grid; tablet/phone: bottom sheet (existing PhoneDayList pattern).
-- [ ] P5.9.2 Doctor only: "Last visit 12 Nov: Scaling" or "First visit" (P1.4.3), loaded on open with a 1-line skeleton.
+- [x] P5.9.1 `DayDetails.tsx` restyled with cal tokens (radius 12, header like the popover header: icon tile, name 15 px Wix Madefor Display, close X; body 13 px Instrument Sans; chips mono; buttons like the popover footer). Click on any card (week or day) opens it on the RIGHT of the grid on laptop and tablet (grid narrows, no overlap of the clicked card; selected card gets the active outline); a second click or X closes: name, code chip, time + length, visit type, status word, doctor (receptionist), marks, complaint, mobile or "No mobile", "Moved from …" (existing chain route), Due (doctor: word; desk: amount). Actions unchanged (AppointmentActions: Start visit today only, Reschedule -> P5.7.11, Cancel, Missed, Open profile, Go to Today). Laptop: side panel right of the grid; tablet/phone: bottom sheet (existing PhoneDayList pattern).
+- [x] P5.9.2 Doctor only: "Last visit 12 Nov: Scaling" or "First visit" (P1.4.3), loaded on open with a 1-line skeleton.
 #### P5.10 Settings pieces
 - [ ] P5.10.1 Settings > Staff: optional "Specialty" on add/edit doctor (P1.3.1).
 - [ ] ~~P5.10.1 Specialty in Settings > Staff~~ (changed 2026-11-26: specialty is in the doctor's own letterhead profile, P5.12.1).
@@ -272,7 +272,7 @@ All motion off (end state at once) under `prefers-reduced-motion: reduce` (P7.3.
 #### P5.12 Per-doctor letterhead (added 2026-11-26: Q1)
 - [ ] P5.12.1 Settings > Clinic and doctor (`ClinicDetailsSettings.tsx`): the "Doctor" part edits the SIGNED-IN doctor's own profile (P1.6.4): name on prescriptions, qualifications, speciality, registration no., extra line; the live preview (ClinicPreview) shows that doctor. Clinic part unchanged. Receptionist: no Doctor part. Heading "My prescription details".
 #### P5.13 Calendar search (added 2026-11-26: Q7)
-- [ ] P5.13.1 `CalSearch.tsx` in the header row (left of the date controls; HTML has no box, so copy the doctor_today search look: `DoctorSearch.tsx`): placeholder "Find a booking: name, code or mobile", 250 ms debounce, min 2 letters, sends the selected doctors (desk) or none (doctor). Results dropdown: "Sunita Verma · P-000123 — Fri 28 Nov, 11:00 AM · Dr Mehta · Root canal · Confirmed" (doctor name only for the desk). Empty: "No coming bookings for "<q>"." Enter/click: jump to that date (week or day as now), open the details panel (P5.9.1) for that booking. "/" focuses the box (as doctor Today). Check: T33-T35.
+- [x] P5.13.1 `CalSearch.tsx` in the header row (left of the date controls; HTML has no box, so copy the doctor_today search look: `DoctorSearch.tsx`): placeholder "Find a booking: name, code or mobile", 250 ms debounce, min 2 letters, sends the selected doctors (desk) or none (doctor). Results dropdown: "Sunita Verma · P-000123 — Fri 28 Nov, 11:00 AM · Dr Mehta · Root canal · Confirmed" (doctor name only for the desk). Empty: "No coming bookings for "<q>"." Enter/click: jump to that date (week or day as now), open the details panel (P5.9.1) for that booking. "/" focuses the box (as doctor Today). Check: T33-T35.
 
 #### P5.14 Patient Appointments tab doctor ticks (added 2026-11-26: Q9)
 - [x] P5.14.1 Backend: `listForPatient` and the move chain rows carry `doctorId` (all doctors' rows still come; the filter is on screen).
@@ -280,52 +280,52 @@ All motion off (end state at once) under `prefers-reduced-motion: reduce` (P7.3.
 
 ### P6 UI: motion (one sub-point per row of section 3)
 #### P6.1 Popover in and out (`book/book-motion.css`)
-- [ ] P6.1.1 M1: `.bk-popover` enters from `scale(.96) translateY(6px)` to none, transform 200 ms cubic-bezier(.16,1,.3,1), opacity 180 ms ease; set the start style, then the end style on the next animation frame.
-- [ ] P6.1.2 M2: backdrop opacity 200 ms.
-- [ ] P6.1.3 M3: close = reverse styles, unmount after 180 ms.
+- [x] P6.1.1 M1: `.bk-popover` enters from `scale(.96) translateY(6px)` to none, transform 200 ms cubic-bezier(.16,1,.3,1), opacity 180 ms ease; set the start style, then the end style on the next animation frame.
+- [x] P6.1.2 M2: backdrop opacity 200 ms.
+- [x] P6.1.3 M3: close = reverse styles, unmount after 180 ms.
 #### P6.2 Preview
-- [ ] P6.2.1 M5: preview height transition 220 ms cubic-bezier(.4,0,.2,1), opacity/border 200 ms.
-- [ ] P6.2.2 M6: `@keyframes cal-live-glow` 2 s infinite ease-in-out (border #054D61 <-> #0F5266, ring 0 -> 4 px rgba(5,77,97,.12)).
+- [x] P6.2.1 M5: preview height transition 220 ms cubic-bezier(.4,0,.2,1), opacity/border 200 ms.
+- [x] P6.2.2 M6: `@keyframes cal-live-glow` 2 s infinite ease-in-out (border #054D61 <-> #0F5266, ring 0 -> 4 px rgba(5,77,97,.12)).
 #### P6.3 Book fold morph (`book/fold-morph.ts`)
-- [ ] P6.3.1 M7: after server OK, measure the popover and the NEW card's rect (render the card first, invisible), transform popover with translate3d + scale(x,y) (scaleX >= .18, scaleY >= .12, target height 48-90 px, HTML 1198-1202), transform-origin top left, 500 ms cubic-bezier(.2,.9,.3,1), opacity .9 over 480 ms, radius 8 px over 450 ms; backdrop fades (M2) at the same time.
-- [ ] P6.3.2 M8: unmount the popover at 510 ms; clear the active outline.
-- [ ] P6.3.3 M9: the new card (real server row, put into the list state at once) gets class `cal-card-docked`: keyframes scale .96 -> 1.02 -> 1 + glow, 600 ms cubic-bezier(.2,.8,.2,1). Then the normal refresh confirms it.
-- [ ] P6.3.4 M10: toast "Appointment confirmed and slotted on calendar" with task_alt icon at 510 ms, 300 ms in, 3000 ms shown, 300 ms out (app Toast with these timings, or its default if it cannot: record). Booked on another week: no morph (target not on screen); jump to that date and toast `bookedMessage` (existing behaviour, AppointmentsScreen.tsx onBooked).
+- [x] P6.3.1 M7: after server OK, measure the popover and the NEW card's rect (render the card first, invisible), transform popover with translate3d + scale(x,y) (scaleX >= .18, scaleY >= .12, target height 48-90 px, HTML 1198-1202), transform-origin top left, 500 ms cubic-bezier(.2,.9,.3,1), opacity .9 over 480 ms, radius 8 px over 450 ms; backdrop fades (M2) at the same time.
+- [x] P6.3.2 M8: unmount the popover at 510 ms; clear the active outline.
+- [x] P6.3.3 M9: the new card (real server row, put into the list state at once) gets class `cal-card-docked`: keyframes scale .96 -> 1.02 -> 1 + glow, 600 ms cubic-bezier(.2,.8,.2,1). Then the normal refresh confirms it.
+- [x] P6.3.4 M10: toast "Appointment confirmed and slotted on calendar" with task_alt icon at 510 ms, 300 ms in, 3000 ms shown, 300 ms out (app Toast with these timings, or its default if it cannot: record). Booked on another week: no morph (target not on screen); jump to that date and toast `bookedMessage` (existing behaviour, AppointmentsScreen.tsx onBooked).
 #### P6.4 Tabs and Save & Book flyer
-- [ ] P6.4.1 M11/M12: tab pill translateX 0 / 100 %, 400 ms ease-in-out; text colour 400 ms.
-- [ ] P6.4.2 M13: two panels in a 200 % track, translateX 0 / -50 %, 450 ms ease-in-out; each panel scrolls on its own (overscroll contain).
-- [ ] P6.4.3 M14: footer groups cross-fade 300 ms, the hidden one `pointer-events:none` and `inert`.
-- [ ] P6.4.4 M15-M19 (after the server saved the patient and returned its code): t=0 name+mobile ring 350 ms, flyer (fixed copy of the inputs box with initials, name, code from the server, mobile) lifts 320 ms; t=320 slide back (M11-M14); t=760 flyer docks onto the selected-patient box 260 ms; t=1050 remove the flyer, show the real box (opacity 1) with "Change" (fixes L18: the HTML leaves the flyer on top and the real box at opacity 0). Keep all timers in one cleanup list (HTML 808-818) and clear on unmount.
-- [ ] P6.4.5 M20: toast "<code> Patient Registered · <name> · Proceeding to Slot" 300 ms in, out at 3500 ms.
+- [x] P6.4.1 M11/M12: tab pill translateX 0 / 100 %, 400 ms ease-in-out; text colour 400 ms.
+- [x] P6.4.2 M13: two panels in a 200 % track, translateX 0 / -50 %, 450 ms ease-in-out; each panel scrolls on its own (overscroll contain).
+- [x] P6.4.3 M14: footer groups cross-fade 300 ms, the hidden one `pointer-events:none` and `inert`.
+- [x] P6.4.4 M15-M19 (after the server saved the patient and returned its code): t=0 name+mobile ring 350 ms, flyer (fixed copy of the inputs box with initials, name, code from the server, mobile) lifts 320 ms; t=320 slide back (M11-M14); t=760 flyer docks onto the selected-patient box 260 ms; t=1050 remove the flyer, show the real box (opacity 1) with "Change" (fixes L18: the HTML leaves the flyer on top and the real box at opacity 0). Keep all timers in one cleanup list (HTML 808-818) and clear on unmount.
+- [x] P6.4.5 M20: toast "<code> Patient Registered · <name> · Proceeding to Slot" 300 ms in, out at 3500 ms.
 #### P6.5 Small motion
-- [ ] P6.5.1 M21/M22: `:active` scale .95 on the two primary buttons; colour transitions 150 ms.
-- [ ] P6.5.2 M23: details chevron rotate 180°, 150 ms.
+- [x] P6.5.1 M21/M22: `:active` scale .95 on the two primary buttons; colour transitions 150 ms.
+- [x] P6.5.2 M23: details chevron rotate 180°, 150 ms.
 
 ### P7 UI: phone/tablet, keyboard, reduced motion, states, shared pieces
 #### P7.1 Widths
-- [ ] P7.1.1 1366: week grid, no horizontal page scroll; grid min width 980 px only inside its own scroll box (HTML 299) when the main area is narrower.
-- [ ] P7.1.2 768 (tablet): Day view by default (brief Q1), grid of one day with the same cards and popover (popover anchored right or left of the column, clamped).
+- [x] P7.1.1 1366: week grid, no horizontal page scroll; grid min width 980 px only inside its own scroll box (HTML 299) when the main area is narrower.
+- [x] P7.1.2 768 (tablet): Day view by default (brief Q1), grid of one day with the same cards and popover (popover anchored right or left of the column, clamped).
 - [ ] ~~P7.1.3 360 (phone) redesign~~ (parked 2026-11-26: Q6 "leave phone design for now"). Phone keeps today's `DateStrip` + `PhoneDayList`, which must still work with the new data (doctor badge for the desk, own rows for the doctor) and open the new popover as a plain full-width dialog. No new phone styling.
 #### P7.2 States
-- [ ] P7.2.1 First load: skeleton in the grid shape (head row + 6 hour rows with 3 grey blocks).
-- [ ] P7.2.2 Refresh fail: keep data, `refreshFailure` line + Retry (existing ui/refresh-fail.ts).
-- [ ] P7.2.3 First-load error: "Could not load the week. Check the connection, then try again." + Retry.
-- [ ] P7.2.4 Empty day / week: "No appointments" + "Book" (opens popover at the first open time).
-- [ ] P7.2.5 Offline: existing offline banner; Book, Move, Cancel buttons disabled with "You are offline."
-- [ ] P7.2.6 409 on any action: "This appointment was changed by someone else. Reload." + Reload button; list refreshes.
+- [x] P7.2.1 First load: skeleton in the grid shape (head row + 6 hour rows with 3 grey blocks).
+- [x] P7.2.2 Refresh fail: keep data, `refreshFailure` line + Retry (existing ui/refresh-fail.ts).
+- [x] P7.2.3 First-load error: "Could not load the week. Check the connection, then try again." + Retry.
+- [x] P7.2.4 Empty day / week: "No appointments" + "Book" (opens popover at the first open time).
+- [x] P7.2.5 Offline: existing offline banner; Book, Move, Cancel buttons disabled with "You are offline."
+- [x] P7.2.6 409 on any action: "This appointment was changed by someone else. Reload." + Reload button; list refreshes.
 #### P7.3 Access and motion
-- [ ] P7.3.1 `prefers-reduced-motion`: M1-M23 off (end state at once), toast still shows.
-- [ ] P7.3.2 Keyboard: every card and every bookable cell reachable (roving tabindex per column: arrows move, Enter opens; review F4), popover focus trap (P5.7.12).
+- [x] P7.3.1 `prefers-reduced-motion`: M1-M23 off (end state at once), toast still shows.
+- [x] P7.3.2 Keyboard: every card and every bookable cell reachable (roving tabindex per column: arrows move, Enter opens; review F4), popover focus trap (P5.7.12).
 #### P7.4 Shared pieces (section 4b)
-- [ ] P7.4.1 Move every QuickBookDialog caller to BookPopover (Today Book, Today Reschedule, patient profile book, patient tab Reschedule, NewPatientScreen, `?book=` URL params). Then delete QuickBookDialog.tsx, QuickBookPatient.tsx (if unused), quick-book.css, BookPickers TimeChips if unused, useBookSlots if unused; update MAP.md.
-- [ ] P7.4.2 New patient page uses the shared duplicate rule (P1.1.4) and the "Same person?" card text.
+- [x] P7.4.1 Move every QuickBookDialog caller to BookPopover (Today Book, Today Reschedule, patient profile book, patient tab Reschedule, NewPatientScreen, `?book=` URL params). Then delete QuickBookDialog.tsx, QuickBookPatient.tsx (if unused), quick-book.css, BookPickers TimeChips if unused, useBookSlots if unused; update MAP.md.
+- [x] P7.4.2 New patient page uses the shared duplicate rule (P1.1.4) and the "Same person?" card text.
 - [ ] P7.4.3 Print day list: Doctor column; doctor prints own.
-- [ ] P7.4.4 Update e2e helpers (`e2e/calendar-helpers.ts`, booking.spec, calendar-booking, calendar-late-undo, appointment-actions): new button names ("Book Appointment", "Schedule Appointment" dialog, "Assign Doctor").
+- [x] P7.4.4 Update e2e helpers (`e2e/calendar-helpers.ts`, booking.spec, calendar-booking, calendar-late-undo, appointment-actions): new button names ("Book Appointment", "Schedule Appointment" dialog, "Assign Doctor").
 
 ### P8 Docs and measurement
 #### P8.1
-- [ ] P8.1.1 Motion probe (as Library/visit): Playwright rAF sampler for M1, M3, M5, M7, M9, M11, M13, M16-M18 at 1366; numbers in the Log.
-- [ ] P8.1.2 Screenshots 360/768/1366, doctor and receptionist, into `docs/ui-audit/screenshots/redesign/calendar/`.
+- [x] P8.1.1 Motion probe (as Library/visit): Playwright rAF sampler for M1, M3, M5, M7, M9, M11, M13, M16-M18 at 1366; numbers in the Log.
+- [x] P8.1.2 Screenshots 360/768/1366, doctor and receptionist, into `docs/ui-audit/screenshots/redesign/calendar/`.
 - [ ] P8.1.3 Docs: MAP.md (new files), STATE.md, USER_MANUAL.md (calendar section: doctors, popover, leave), HANDOFF.md (migration 0066 for the owner; next free 0067), DECISIONS.md, final/README.md row, handoff/INDEX.md status, PRODUCT_DESIGN_CONTEXT.md "one doctor, one chair" -> several doctors, own chair each (review C1 note).
 
 Migration number: **0066_doctors_on_appointments** (the owner applies it on staging; never applied by the agent).
@@ -406,11 +406,11 @@ Migration number: **0066_doctors_on_appointments** (the owner applies it on stag
 - (2026-11-26, owner answers Q1-Q8) per-doctor Today, breaks (warn, never block), approvals to the patient's doctor, per-doctor prescription profile; old bookings -> first active doctor; doctor books only for self; leave in Settings > Timings; duplicates on first name + mobile ("Same person?") and on mobile alone (quiet line), never blocking; phone parked; calendar-only search over the selected doctors; no Free gaps pill; no doctors in seeds; dev-login `?email=` for local testing.
 
 ## 9. Design apply checklist
-- [ ] tokens/colours (scoped `.cal-page`), icons, CSS files
-- [ ] components (one per file, small: CalHeader, DoctorFilter, WeekHead, WeekGrid, DayGrid, CalCard, SlotPreview, NowLine, LunchBand, book/BookPopover, SlotPanel, NewPatientPanel, place-popover, fold-morph)
-- [ ] every motion in section 3
-- [ ] reduced motion
-- [ ] phone 360 / tablet 768 layout
+- [x] tokens/colours (scoped `.cal-page`), icons, CSS files
+- [x] components (one per file, small: CalHeader, DoctorFilter, WeekHead, WeekGrid, DayGrid, CalCard, SlotPreview, NowLine, LunchBand, book/BookPopover, SlotPanel, NewPatientPanel, place-popover, fold-morph)
+- [x] every motion in section 3
+- [x] reduced motion
+- [x] phone 360 / tablet 768 layout
 - [ ] shared pieces from 4b applied on the other pages (and checked there)
 - [ ] docs: MAP.md, STATE.md, USER_MANUAL.md, handoff INDEX.md
 
@@ -473,3 +473,10 @@ Migration number: **0066_doctors_on_appointments** (the owner applies it on stag
   - Deviations, with reasons: (1) DELETE leave is `POST /doctor-leaves/:id/remove` with {version} (the app's other closes are POSTs, e.g. /breaks/:id/end). (2) Leave add/remove permission = `breaks.manage` (doctor only) plus settings.write to manage another doctor's days (Q4 A); no new permission. (3) Day reply keeps `currentBreak` (the doctor's own, or the desk's first) and adds `openBreaks[]` (desk: every doctor, with name) and `leaves[]`. (4) Undo-cancel still refuses an EXACT repeat (same patient, doctor, start) besides dropping the free-time check. (5) A move to the same doctor and start (only the length changes) is not counted as a repeat of itself. (6) Walk-in without doctorId: a doctor takes it themself; the desk gets the only active doctor, else "Choose a doctor.". (7) Approval without a booking or bill and several doctors: "Choose the doctor to ask." (body doctorId). (8) Old rows with doctor_id NULL are shown to every doctor (lists, breaks, approvals) instead of being hidden. (9) Last visit read writes no access-log row (no other clinical read does). (10) P2.1.5: each day-list row carries doctorId; the print screen maps names from GET /doctors in the UI phase (P7.4.3). (11) Patient Appointments tab: owner answered Q9 = tick to choose doctors (P5.14); backend part done.
   - Web bridge (so the app keeps working until the UI phase): QuickBookDialog sends doctorId (self, or the desk's first active doctor) via `defaultDoctorId` in features/appointments/api.ts, marked BRIDGE; DuplicateWarnings use the new reasons and only first_name_mobile asks "Same person?". Prescription/certificate print use the doctor's profile with the old settings as fallback.
   - Not done here (UI phase): P4-P8, Settings screens for leave (P5.10.2) and "My prescription details" (P5.12.1), desk "Ask the doctor" doctor choice (P5.11.3), docs/DECISIONS.md and handoff/INDEX.md (both have the owner's uncommitted edits, so not touched).
+- 2026-11-27 design-apply Phase B + C (UI P4-P8, partly). Commits 284cf77 (calendar, popover, motion), b23ba15 (calendar in its own chunk), 1c5af50 (probe fixes), then specs + docs. NOTE: another session's commit 1468a97 "Brief: billing" swept up this work's staged deletions of the old calendar files (QuickBookDialog, WeekView, DayView, DayCard, LateEntry, useBookSlots, week-view.css, day-view.css); nothing lost.
+  - Built: tokens (.cal-scope), inline SVG icons, header, doctor filter (desk, URL ?doctors=), calendar search, week/day grid 64 px per hour with cards by minutes in clash lanes ("+N more" past 2 lanes in the week), day heads (today, closed, "Dr X on leave"), now line from the server clock, lunch band from DayWindow, live preview, side-anchored popover (Slot Selection + New Patient, Assign Doctor, any length, soft rule -> Book anyway + reason, 409 -> Reload, unsaved guard, focus trap), fold morph into the new card, Save & Book flyer, toasts, restyled details panel (doctor badge for the desk, Moved from, Last visit for the doctor, Go to Today). The popover replaces QuickBookDialog everywhere (calendar, Reschedule from the details panel / patient tab / Today menus, Today follow-up, doctor Today).
+  - Motion probe (Playwright rAF sampler, server delayed 300 ms, 1366 px; repeats 3x): M1 open 184 ms (HTML 200), M2 backdrop 167 (200), M3 exit ~150 then unmount (180 timer), M5 preview 182 ms, height 88 px for 90 min (HTML 88), M7 morph 484 ms after the server answers (500), M8 unmount at +510, M9 card pulse 601 ms (600), M10 toast at morph+516 ms for 3300 ms (510 / 300+3000), M11 tab pill ~385 ms (400), M13 panel slide ~434 ms (450), M14 footer fade ~260 ms (300), M15-M19 flyer removed at ~1000 ms (1050), real box visible after. First visible change at Book: +7 to +56 ms ("Booking…"). Double click: 1 POST. Popover position unchanged while the server is busy. 768/360: popover inside the window, no sideways scroll. Reduced motion: nothing animates. Easing curves cannot be judged by the probe.
+  - Fixed after measuring: (a) the visit-type list arrived 300 ms late and grew/moved the open popover -> preloaded by the calendar and kept; (b) a refusal message pushed the footer below the window -> re-clamp only when it grows past the bottom (never on shrink: that caused a 110 px jump at Book); (c) two toasts overlapped -> one at a time; (d) clash cards hid the name behind the badge -> narrow lanes move the badge to the bottom row.
+  - Deviations, with reasons: (1) Toast: the calendar's own pill (HTML 487) with the HTML timings instead of the app's Radix toast (5 s, bottom), because M10/M20 timings and look are final; cancel/undo still use the app toast. (2) A 14 px strip on the right of each column stays clickable under cards (clashes allowed; otherwise a booked time could not be clicked). (3) Header controls and chips are 44 px under 1024 px (touch rule); laptop keeps the HTML's 38 px; e2e part5 width check exempts .cal-head at >= 1024 and .cal-card (height = length), like the old slot cells. (4) "Closed · <holiday name>": the day reply has no holiday name, so a holiday shows "Closed". (5) Start visit is not in the details panel (it was not there before either; Today does it). (6) Offline: only the header Book is disabled ("You are offline."); Move/Cancel rely on the app's offline banner. (7) The range summary is shown once (HTML 593 badge), not twice. (8) Old e2e spec calendar-booking.spec.ts (Q2.7 dialog) replaced by e2e/appointments-calendar.spec.ts; booking, appointment-actions, calendar-late-undo, data-rules, messages, part5 specs ported to the popover (helpers bookInPopover / openDay in calendar-helpers.ts).
+  - Bundle: first load 778 KB raw (was 804 KB; the calendar is now a lazy chunk) but TOTAL JS is 1,231 KB raw / 370.7 KB gzip vs limits 1,210,000 / 358,000. Raising the limit is the owner's decision (scripts/bundle-budget/check.mjs); not raised.
+  - Not done (next session): P5.10.2 leave editor (Settings > Timings), P5.11.1-3 desk Today per doctor (badges, filter, break notice, Ask the doctor "To: Dr X"), P5.12.1 "My prescription details", P5.14.2 patient tab doctor ticks, P7.4.3 print Doctor column, DECISIONS.md + handoff/INDEX.md + final/README.md rows (the owner has uncommitted edits in those files), PRODUCT_DESIGN_CONTEXT.md wording.

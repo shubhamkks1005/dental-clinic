@@ -96,3 +96,20 @@
   width: 14px;
   height: 14px;
 }
+/* Phone and tablet (touch, rule: 44 px targets). The HTML's 38 px controls stay on laptop. */
+@media (max-width: 1023px) {
+  .cal-scope .cal-seg button,
+  .cal-scope .cal-date.input,
+  .cal-scope .cal-btn,
+  .cal-scope label.cal-doc-chip,
+  .cal-scope .cal-search-input,
+  .cal-scope .cal-link {
+    min-height: 44px;
+  }
+  .cal-scope .cal-seg button {
+    min-width: 44px;
+  }
+  .cal-scope .cal-link {
+    min-width: 44px;
+  }
+}

@@ -32,16 +32,21 @@ This manual covers everyday tasks in the clinic software. For technical problems
 > **[Screenshot placeholder: New patient form]**
 
 ### Book an appointment
-1. From the Today screen or the Appointments tab, click **+ New appointment**.
-2. Search for the patient by name or last 4 digits of mobile.
-3. Pick the visit type and choose a time slot.
-4. Click "Book."
+1. On **Appointments**, click an empty time in the calendar (or **Book Appointment** at the top; it starts at the next free time today).
+2. A small booking box opens next to that time. Search the patient by name, patient number or mobile, or use **+ New Patient** to register them right there (**Save & Book** saves and comes back to the booking).
+3. Choose the doctor under **Assign Doctor** (a doctor always books for themself).
+4. Choose the visit type. Its usual length is filled in; you can type any length from 5 to 240 minutes, or use the 15m to 90m buttons. The grey box in the calendar shows where it will go.
+5. Click **Book Appointment**. The box folds into the calendar and a short message confirms it.
+- If the time is past, the clinic is closed, it is lunch, too far ahead or the doctor is on leave, the box says so. **Book anyway** books after you write a short reason (it is saved).
+- Two bookings at the same time are allowed; they show side by side.
+- Closing a box you already typed in asks "Discard this booking?" first.
 
 ### Appointments screen
-- Shows the full day view as a timeline.
-- Click an empty slot to quick-book.
-- Drag and drop to reschedule (a confirmation dialog appears).
-- Print today's or tomorrow's list: click "Print" at the top.
+- Week view on a laptop (Day view with the switch at the top); tablets show one day, phones a list.
+- The desk sees every doctor: tick or untick doctors at **Doctors:** (All / Clear). A doctor sees only their own bookings.
+- Find a booking: type a name, patient number or mobile in **Find a booking** (or press /). Choosing a result jumps to that day and opens the booking.
+- Click a booking to see its details on the right: **Reschedule** (the same box, "Move appointment"), Open profile, Cancel or Missed (a reason is needed).
+- **Print list** prints the day list.
 
 ### Print the day list (every evening)
 1. From the Today screen, click "Print tomorrow's list."
