@@ -315,17 +315,6 @@ test("the live prescription sheet follows the visit and takes its details from S
   // The letterhead of the design: the problem teeth come from the chart marks, not from the lines.
   await expect(sheet).toContainText("Consultation Timings");
 });
-  await dx.fill("Fake sheet finding");
-  await dx.press("Enter");
-  const tooth = page
-    .locator('[data-line="diagnosis"]')
-    .first()
-    .getByLabel(/Tooth number for/);
-  await tooth.fill("46");
-  await tooth.blur();
-  await expect(sheet).toContainText("Problem teeth");
-  await expect(sheet).toContainText("46: Fake sheet finding");
-});
 
 test("the dock folds to a bubble with the design motion, and the side pane can be resized", async ({
   page,
