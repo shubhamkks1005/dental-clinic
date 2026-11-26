@@ -9,7 +9,6 @@ import {
   PatientSearch,
   PatientsScreen,
 } from "../features/patients";
-import { AppointmentsScreen } from "../features/appointments";
 import { TodayScreen } from "../features/today";
 import { ErrorBoundary } from "../ui/ErrorBoundary";
 import { NotFound } from "../ui/PageMessage";
@@ -18,11 +17,17 @@ import { RouteFallback } from "../ui/RouteFallback";
 import { MAIN_NAV, NEW_PATIENT_PERMISSION, PHONE_TABS, visibleNav } from "../ui/shell/nav-items";
 import { StaffShell } from "../ui/shell/StaffShell";
 
-// S3.1.1: rarely used screens load as their own chunk. Today, Appointments, Patients, the patient
+// S3.1.1: rarely used screens load as their own chunk. Today, Patients, the patient
 // profile and Visit stay in the main bundle. If a chunk fails to download (for example a new
 // deploy renamed the file), React throws while rendering and the ErrorBoundary shows Reload.
 const PrintRoutes = lazy(() =>
   import("../features/print").then((m) => ({ default: m.PrintRoutes })),
+);
+// The appointments calendar (final design appointments_calendar.html): its own chunk.
+const AppointmentsScreen = lazy(() =>
+  import("../features/appointments/AppointmentsScreen").then((m) => ({
+    default: m.AppointmentsScreen,
+  })),
 );
 const SettingsScreen = lazy(() =>
   import("../features/settings/SettingsScreen").then((m) => ({ default: m.SettingsScreen })),
