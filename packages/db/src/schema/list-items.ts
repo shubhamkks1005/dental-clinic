@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, index, integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { check, index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { standardColumns } from "./columns";
 
 // 1.5.4 items of the doctor's editable lists (visit types, referral sources, ...). Which lists
@@ -16,7 +16,7 @@ export const listItems = sqliteTable(
     sortOrder: integer("sort_order").notNull(),
   },
   (t) => [
-    unique("list_items_key_label_unique").on(t.listKey, t.label),
+    index("list_items_key_label_idx").on(t.listKey, t.label),
     index("list_items_key_order_idx").on(t.listKey, t.sortOrder),
     check("list_items_data_is_json", sql.raw(`json_valid("data_json")`)),
     check("list_items_active_bool", sql.raw(`"active" IN (0, 1)`)),

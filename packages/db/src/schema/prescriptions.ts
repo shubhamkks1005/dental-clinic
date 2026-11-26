@@ -27,6 +27,7 @@ export const prescriptions = sqliteTable(
   (t) => [
     index("prescriptions_patient_created_idx").on(t.patientId, t.createdAt),
     index("prescriptions_visit_idx").on(t.visitId),
+    index("prescriptions_doctor_status_idx").on(t.doctorId, t.status),
     check("prescriptions_status_check", oneOf(t.status.name, PRESCRIPTION_STATUSES)),
     check(
       "prescriptions_follow_up_on_format",
