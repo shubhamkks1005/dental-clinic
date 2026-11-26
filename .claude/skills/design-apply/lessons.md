@@ -48,3 +48,11 @@ Each line is a mistake that really happened here. The cause is written so you ca
 - First-load and total JS budgets are tight: put the screen in its own `lazy` chunk.
 - A tunable or setting needs a shared entry, a seed migration and tests (tunables-guard).
 - A new table needs a retention rule; a new index may be needed for a new list query (query-plan test).
+
+## From the appointments calendar (2026-11-27)
+- **Late content moves a placed popover.** A list that arrives after the popover is placed (visit types, 300 ms server) makes it taller and the clamp moves it: a one-frame jump. Load such lists before the first click and keep them. Re-clamp only when the box grows past the window edge, never when it shrinks (shrinking at "Book" moved it 110 px).
+- **One toast element.** Two toasts from back-to-back actions stacked on the same spot; remove the old one first (the HTML has one element).
+- **Rebuilding `apps/web/dist` while `wrangler dev` runs** leaves the server answering 404 or hanging. Restart the dev server after every web build. Stopping the background task may leave its wrangler and workerd running: stop only the processes on port 8787 that this session started (match command line and start time), never every workerd.
+- **`git rm` stages at once.** Another session committed in between and took the staged deletions into its own commit. Stage and commit in the same command.
+- **Probe clicks inside a scroll box**: centre the target first (`el.scrollIntoView({ block: "center" })`); a sticky head row can cover a cell that Playwright thinks is visible. Cards over a cell intercept the click: click the cell's free strip.
+- **Dates in specs**: `new Date().toISOString()` is UTC; after midnight IST "day + 1" is still today. Book from day 2 when the test depends on "tomorrow".
