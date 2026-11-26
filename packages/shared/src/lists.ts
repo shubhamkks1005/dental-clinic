@@ -155,7 +155,7 @@ export const LIST_DEFS = {
   medicine_sets: {
     title: "Medicine sets",
     itemName: "set",
-    help: "One click adds several medicines to a draft prescription. Items are generic names separated by |.",
+    help: "One click adds several medicines to a draft prescription. Pick them from your Medicines list.",
     fields: [
       { name: "items", label: "Medicines", kind: "text", max: 500 },
       // Q6 (2026-11-26): ids of the medicines, |-separated; names in items stay for old readers.

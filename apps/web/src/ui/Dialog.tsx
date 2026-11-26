@@ -10,6 +10,10 @@ type Props = {
   role?: "dialog" | "alertdialog";
   /** "drawer" slides in from the right edge (see Drawer.tsx). */
   variant?: "center" | "drawer";
+  /** Extra class on the <dialog> (a page's design scope, e.g. "library-doc"). */
+  className?: string;
+  /** Asked before Esc or an outside click closes it; false keeps it open (unsaved changes). */
+  beforeClose?: () => boolean;
 };
 
 // 1.4.2: modal dialog on the browser's own <dialog> (focus stays inside, the page behind is
@@ -21,6 +25,8 @@ export function Dialog({
   children,
   role = "dialog",
   variant = "center",
+  className,
+  beforeClose,
 }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
   const opener = useRef<Element | null>(null);
@@ -49,13 +55,19 @@ export function Dialog({
   return (
     <dialog
       ref={ref}
-      className={variant === "drawer" ? "dialog dialog-drawer" : "dialog"}
+      className={[variant === "drawer" ? "dialog dialog-drawer" : "dialog", className]
+        .filter(Boolean)
+        .join(" ")}
       role={role === "alertdialog" ? "alertdialog" : undefined}
       aria-labelledby={titleId}
       onClose={handleClose}
+      onCancel={(e) => {
+        if (beforeClose && !beforeClose()) e.preventDefault();
+      }}
       onClick={(e) => {
         // A click on the dimmed area outside the box lands on <dialog> itself.
-        if (role === "dialog" && e.target === e.currentTarget) e.currentTarget.close();
+        if (role !== "dialog" || e.target !== e.currentTarget) return;
+        if (!beforeClose || beforeClose()) e.currentTarget.close();
       }}
     >
       <div className="dialog-body">

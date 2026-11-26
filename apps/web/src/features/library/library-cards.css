@@ -1,0 +1,250 @@
+/* Library cards (HTML 862-874, 1014-1030). */
+.ld-card {
+  padding: 16px;
+  border: 1px solid var(--ld-outline-variant);
+  border-radius: var(--ld-r-md);
+  background: var(--ld-surface-lowest);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  cursor: pointer;
+  transition:
+    border-color var(--ld-hover),
+    background-color var(--ld-hover),
+    color var(--ld-hover);
+}
+.ld-card:hover {
+  border-color: var(--ld-primary);
+}
+.ld-card.reorder {
+  cursor: grab;
+}
+.ld-card.reorder:hover {
+  border-color: var(--ld-outline-variant);
+}
+.ld-card.dragging {
+  opacity: 0.6;
+}
+.ld-card.drop-target {
+  border-color: var(--ld-primary);
+  box-shadow: 0 0 0 1px var(--ld-primary);
+}
+.ld-card.tint-info {
+  border-color: rgb(15 82 102 / 25%);
+  background: rgb(208 230 240 / 25%);
+}
+.ld-card.tint-warning {
+  border-color: rgb(154 91 0 / 30%);
+  background: rgb(254 240 199 / 30%);
+}
+.ld-card.tint-secondary {
+  border-color: rgb(5 77 97 / 20%);
+  background: rgb(208 230 240 / 30%);
+}
+.ld-card.tint-success {
+  border-color: rgb(20 108 67 / 25%);
+  background: rgb(209 244 224 / 30%);
+}
+.ld-card.tint-neutral,
+.ld-card.tint-other {
+  border-color: var(--ld-outline-variant);
+  background: rgb(242 244 245 / 70%);
+}
+.ld-card.tint-sets {
+  border-color: rgb(5 77 97 / 20%);
+  background: rgb(208 230 240 / 25%);
+}
+.ld-card.tint-procedures {
+  border-color: rgb(15 82 102 / 20%);
+  background: rgb(208 230 240 / 20%);
+}
+.ld-card.tint-green {
+  border-color: rgb(20 108 67 / 20%);
+  background: rgb(209 244 224 / 25%);
+}
+.ld-card.is-hidden {
+  border-color: var(--ld-outline-variant);
+  background: rgb(242 244 245 / 60%);
+  opacity: 0.8;
+}
+.ld-card-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+@media (min-width: 640px) {
+  .ld-card-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+.ld-card-main {
+  flex: 1;
+  min-width: 0;
+}
+.ld-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ld-card-head h3 {
+  overflow-wrap: anywhere;
+}
+/* M5: the card chevron swaps at once (no transition in the HTML). */
+.ld-card-chevron {
+  color: var(--ld-on-surface-variant);
+}
+.ld-card-chevron.open {
+  transform: rotate(180deg);
+  color: var(--ld-primary);
+}
+.ld-drag {
+  color: var(--ld-primary);
+}
+.ld-tint-pill-info {
+  background: var(--ld-info-container);
+  color: var(--ld-on-info-container);
+}
+.ld-tint-pill-warning {
+  background: var(--ld-warning-container);
+  color: var(--ld-on-warning-container);
+}
+.ld-tint-pill-secondary {
+  background: var(--ld-secondary-container);
+  color: var(--ld-on-secondary-container);
+}
+.ld-tint-pill-success {
+  background: var(--ld-success-container);
+  color: var(--ld-on-success-container);
+}
+.ld-line {
+  margin: 4px 0 0;
+  color: var(--ld-on-surface-variant);
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+.ld-line strong {
+  color: var(--ld-on-surface);
+}
+.ld-clamp {
+  display: -webkit-box;
+  max-width: 65ch;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.ld-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+.ld-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.ld-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border: 1px solid var(--ld-outline-variant);
+  border-radius: var(--ld-r);
+  background: var(--ld-surface-lowest);
+  font-size: 13px;
+}
+.ld-chip.bad {
+  border-color: rgb(186 26 26 / 40%);
+  color: var(--ld-error);
+}
+.ld-warn-line {
+  margin: 6px 0 0;
+  color: var(--ld-warning);
+  font-size: 13px;
+}
+.ld-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ld-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--ld-outline-variant);
+  border-radius: var(--ld-r);
+  background: var(--ld-surface-lowest);
+  color: var(--ld-on-surface);
+  font:
+    600 12px/16px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+}
+.ld-action:hover:not(:disabled) {
+  border-color: var(--ld-primary);
+}
+.ld-action:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.ld-action.muted {
+  color: var(--ld-on-surface-variant);
+}
+.ld-action.confirm {
+  border-color: rgb(154 91 0 / 40%);
+  background: var(--ld-warning-container);
+  color: var(--ld-on-warning-container);
+}
+.ld-action.icon {
+  padding: 0;
+}
+.ld-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  border-top: 1px solid rgb(192 200 204 / 50%);
+  border-radius: var(--ld-r);
+  background: rgb(255 255 255 / 85%);
+  font-size: 13px;
+  line-height: 18px;
+  cursor: auto;
+}
+@media (min-width: 640px) {
+  .ld-details {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.ld-details dt {
+  display: inline;
+  color: var(--ld-on-surface-variant);
+}
+.ld-details dd {
+  display: inline;
+  margin: 0 0 0 4px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.ld-details .wide {
+  grid-column: 1 / -1;
+  white-space: pre-wrap;
+}
+.ld-show-more {
+  align-self: center;
+}
+@media (max-width: 639px) {
+  .ld-actions {
+    width: 100%;
+  }
+}

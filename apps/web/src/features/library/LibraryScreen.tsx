@@ -1,74 +1,34 @@
-import { isListKey, LIST_DEFS, type ListKey } from "@clinic/shared";
-import { NavLink, Navigate, Route, Routes, useLocation, useParams } from "react-router";
-import { PageHeader } from "../../ui/page/Page";
+import { isListKey } from "@clinic/shared";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useParams } from "react-router";
 import { NotFound } from "../../ui/PageMessage";
-import { MedicinesListReview } from "../settings";
-import { LibraryList } from "./LibraryList";
-import "./library.css";
+import { LibraryPage } from "./LibraryPage";
+import { MORE_LISTS } from "./LibraryTabs";
+import "../../styles/design-fonts.css";
+import "./library-doc.css";
+import "./library-body.css";
+import "./library-cards.css";
+import "./library-banner.css";
+import "./library-list.css";
 
-// Library.dc.html: the doctor's own lists, tabs first. Medicines come first because they are what
-// the doctor adds most (also from inside a visit). Edits are versioned by the list editor.
-const TABS: { to: string; label: string }[] = [
-  { to: "medicines", label: "Medicines" },
-  { to: "medicine_sets", label: "Medicine sets" },
-  { to: "procedures", label: "Procedures and fees" },
-  { to: "visit_types", label: "Visit types" },
-  { to: "diagnoses", label: "Diagnoses" },
-  { to: "quick_phrases", label: "Quick phrases" },
-  { to: "more", label: "More" },
-];
-
-const MORE: ListKey[] = ["conditions", "allergens", "referral_sources", "medical_history_items"];
-
-function ListTab() {
+// docs/design/final/library_align_dentistry (7).html, with the owner's answers (handoff
+// docs/design/handoff/library.md). The page is keyed by list: a tab change starts clean (L20).
+function ListRoute() {
   const { key = "" } = useParams();
   if (!isListKey(key)) return <NotFound />;
-  return (
-    <>
-      <LibraryList key={key} listKey={key} />
-      {key === "medicines" ? <MedicinesListReview /> : null}
-    </>
-  );
-}
-
-function MoreTab() {
-  return (
-    <ul className="library-more">
-      {MORE.map((key) => (
-        <li key={key}>
-          <NavLink className="card" to={`/app/library/${key}`}>
-            <strong>{LIST_DEFS[key].title}</strong>
-            <span className="muted small">{LIST_DEFS[key].help}</span>
-          </NavLink>
-        </li>
-      ))}
-    </ul>
-  );
+  return <LibraryPage key={key} listKey={key} />;
 }
 
 export function LibraryScreen() {
-  const { pathname } = useLocation();
+  useEffect(() => {
+    document.body.classList.add("ld-page");
+    return () => document.body.classList.remove("ld-page");
+  }, []);
   return (
-    <>
-      <PageHeader title="Library" subtitle="Your medicines, procedures and fees." />
-      <nav className="library-tabs" aria-label="Library lists">
-        {TABS.map((t) => (
-          <NavLink
-            key={t.to}
-            to={`/app/library/${t.to}`}
-            className={({ isActive }) =>
-              `pill${isActive || (t.to === "more" && MORE.some((k) => pathname.endsWith(`/${k}`))) ? " pill-on" : ""}`
-            }
-          >
-            {t.label}
-          </NavLink>
-        ))}
-      </nav>
-      <Routes>
-        <Route index element={<Navigate to="medicines" replace />} />
-        <Route path="more" element={<MoreTab />} />
-        <Route path=":key" element={<ListTab />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route index element={<Navigate to="medicines" replace />} />
+      <Route path="more" element={<Navigate to={`../${MORE_LISTS[0]}`} replace />} />
+      <Route path=":key" element={<ListRoute />} />
+    </Routes>
   );
 }

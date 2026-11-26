@@ -1,0 +1,79 @@
+/* Banner (HTML 242-248) with M1 and M2. */
+.ld-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 12px 24px 0;
+  padding: 10px 16px;
+  border: 1px solid rgb(20 108 67 / 40%);
+  border-radius: var(--ld-r-md);
+  background: var(--ld-success-container);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+  color: var(--ld-on-success-container);
+  animation: ld-toast-enter 220ms var(--ld-ease) forwards;
+}
+.ld-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ld-banner .ld-check {
+  animation: ld-check-pop 320ms var(--ld-ease) forwards;
+}
+.ld-banner-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: var(--ld-r);
+  background: none;
+  color: rgb(11 70 43 / 80%);
+  cursor: pointer;
+}
+@keyframes ld-toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes ld-check-pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes ld-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ld-banner {
+    animation-name: ld-fade-in;
+  }
+  .ld-banner .ld-check {
+    animation: none;
+  }
+  .library-doc .ld-collapse,
+  .library-doc .ld-chevron {
+    transition: none;
+  }
+}

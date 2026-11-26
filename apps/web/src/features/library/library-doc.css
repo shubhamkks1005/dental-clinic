@@ -1,0 +1,265 @@
+/* Library final design (docs/design/final/library_align_dentistry (7).html). Tokens from HTML
+   13-136, scoped to .library-doc (also put on the modal, so portals keep the tokens: lessons). */
+.library-doc {
+  --ld-primary: #054d61;
+  --ld-on-primary: #fff;
+  --ld-primary-container: #0f5266;
+  --ld-secondary-container: #d0e6f0;
+  --ld-on-secondary-container: #091e26;
+  --ld-success: #146c43;
+  --ld-success-container: #d1f4e0;
+  --ld-on-success-container: #0b462b;
+  --ld-warning: #9a5b00;
+  --ld-warning-container: #fef0c7;
+  --ld-on-warning-container: #693d00;
+  --ld-info: #0f5266;
+  --ld-info-container: #d0e6f0;
+  --ld-on-info-container: #003544;
+  --ld-error: #ba1a1a;
+  --ld-surface: #f8f9fb;
+  --ld-surface-lowest: #fff;
+  --ld-surface-low: #f2f4f5;
+  --ld-surface-container: #edeeef;
+  --ld-on-surface: #191c1d;
+  --ld-on-surface-variant: #40484c;
+  --ld-outline-variant: #c0c8cc;
+  --ld-r-sm: 6px;
+  --ld-r: 8px;
+  --ld-r-md: 12px;
+  --ld-ease: cubic-bezier(0.2, 0, 0, 1);
+  --ld-hover: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ld-on-surface);
+  font-family: "Instrument Sans", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+body.ld-page .page {
+  max-width: none;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  body.ld-page .shell-top {
+    display: none;
+  }
+}
+.library-page {
+  min-height: 100dvh;
+  background: linear-gradient(
+    to bottom right,
+    rgb(208 230 240 / 20%),
+    var(--ld-surface),
+    rgb(209 244 224 / 15%)
+  );
+}
+.ld-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: currentColor;
+}
+.ld-icon-sm {
+  width: 18px;
+  height: 18px;
+}
+.library-doc :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ld-primary);
+  outline-offset: 2px;
+}
+.ld-headline {
+  margin: 0;
+  font:
+    600 22px/28px "Wix Madefor Display",
+    sans-serif;
+  letter-spacing: -0.2px;
+}
+.ld-title-lg {
+  margin: 0;
+  font:
+    600 18px/24px "Wix Madefor Display",
+    sans-serif;
+  letter-spacing: -0.1px;
+}
+.ld-title-md {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.ld-body-sm {
+  margin: 0;
+  color: var(--ld-on-surface-variant);
+  font-size: 13px;
+  line-height: 18px;
+}
+.ld-mono {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+}
+.ld-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.3px;
+}
+.ld-pill-secondary {
+  background: var(--ld-secondary-container);
+  color: var(--ld-on-secondary-container);
+}
+.ld-pill-warning {
+  background: var(--ld-warning-container);
+  color: var(--ld-on-warning-container);
+}
+.ld-pill-hidden {
+  background: var(--ld-surface-container);
+  color: var(--ld-on-surface-variant);
+}
+
+/* Header (HTML 204-219). */
+.ld-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--ld-outline-variant);
+  background: var(--ld-surface-lowest);
+}
+.ld-header-title,
+.ld-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ld-header-tools {
+  gap: 8px;
+}
+.ld-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 288px;
+}
+.ld-search .ld-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--ld-on-surface-variant);
+  pointer-events: none;
+}
+.ld-search input {
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 12px 6px 40px;
+  border: 1px solid var(--ld-outline-variant);
+  border-radius: 9999px;
+  background: var(--ld-surface-low);
+  color: var(--ld-on-surface);
+  font: inherit;
+}
+.ld-search input:focus {
+  border-color: var(--ld-primary);
+  background: var(--ld-surface-lowest);
+  box-shadow: 0 0 0 1px var(--ld-primary);
+}
+.ld-btn-primary {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: var(--ld-r);
+  background: var(--ld-primary);
+  color: var(--ld-on-primary);
+  font:
+    600 14px/20px "Instrument Sans",
+    sans-serif;
+  cursor: pointer;
+  transition:
+    background-color var(--ld-hover),
+    color var(--ld-hover);
+}
+.ld-btn-primary:hover {
+  background: var(--ld-primary-container);
+}
+.ld-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Tabs (HTML 222-230) and the More strip (233-239). */
+.ld-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--ld-outline-variant);
+  background: rgb(255 255 255 / 80%);
+}
+.ld-tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  color: var(--ld-on-surface-variant);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.2px;
+  text-decoration: none;
+  transition:
+    background-color var(--ld-hover),
+    color var(--ld-hover);
+}
+.ld-tab:hover {
+  background: var(--ld-surface-low);
+}
+.ld-tab[aria-selected="true"] {
+  background: var(--ld-primary);
+  color: var(--ld-on-primary);
+}
+.ld-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--ld-outline-variant);
+  background: rgb(242 244 245 / 80%);
+}
+.ld-more-label {
+  color: var(--ld-on-surface-variant);
+  font-size: 12px;
+  font-weight: 500;
+}
+.ld-more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 4px 12px;
+  border: 1px solid var(--ld-outline-variant);
+  border-radius: var(--ld-r);
+  background: var(--ld-surface-lowest);
+  color: var(--ld-on-surface-variant);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.ld-more a[aria-current="page"] {
+  border-color: rgb(5 77 97 / 40%);
+  background: var(--ld-secondary-container);
+  color: var(--ld-primary);
+}
