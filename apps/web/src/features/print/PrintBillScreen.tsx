@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
 import { problemText } from "../../api/problem-text";
-import { PrintLayout, printTitle } from "../../ui/print";
+import { PrintLayout, printTitle, useAutoPrint } from "../../ui/print";
 import { getBill, type BillDto } from "../billing/api";
 import { getPatient } from "../patients/api";
 import { clinicHeaderFromSettings } from "./clinic-header";
@@ -49,7 +49,7 @@ export function PrintBillScreen() {
         ).catch(() => ({ isReprint: false }));
         setDuplicate(preview.isReprint);
         if (preview.isReprint) setDupDate(istDate(new Date()));
-        document.title = printTitle("Bill", b.billNo ?? b.id, new Date().toISOString());
+        document.title = printTitle("Invoice", b.billNo ?? b.id, new Date().toISOString());
       } catch (err) {
         if (!cancelled) setProblem(problemText(err));
       }
@@ -58,6 +58,8 @@ export function PrintBillScreen() {
       cancelled = true;
     };
   }, [id]);
+
+  useAutoPrint(Boolean(bill && patient), onPrint);
 
   async function onPrint() {
     if (!bill) return;
@@ -101,7 +103,7 @@ export function PrintBillScreen() {
         </Link>
       </div>
       <PrintLayout
-        size="A5"
+        size="A4"
         header="print"
         clinic={clinic}
         duplicate={duplicate}

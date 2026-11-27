@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../api/client";
 import { problemText } from "../../api/problem-text";
-import { PrintLayout, printTitle } from "../../ui/print";
+import { PrintLayout, printTitle, useAutoPrint } from "../../ui/print";
 import { getPrescriptionForPrint, type PrescriptionDto } from "../prescriptions";
 import { getPatient } from "../patients";
 import { getQrImage } from "../settings/api";
@@ -33,7 +33,7 @@ function bodyData(rx: PrescriptionDto, patientName: string, patientCode: string)
   };
 }
 
-/** 4.3.3 real prescription print (S13). English, A5 default; duplicate mark on reprint. */
+/** 4.3.3 real prescription print (S13). English, A4 (owner 2026-11-26); duplicate mark on reprint. */
 export function PrintPrescriptionScreen() {
   const { id } = useParams<{ id: string }>();
   const [rx, setRx] = useState<PrescriptionDto | null>(null);
@@ -87,6 +87,8 @@ export function PrintPrescriptionScreen() {
       cancelled = true;
     };
   }, [id]);
+
+  useAutoPrint(Boolean(rx) && !regMissing, onPrint);
 
   async function onPrint() {
     if (!rx || regMissing) return;
@@ -149,7 +151,7 @@ export function PrintPrescriptionScreen() {
       </div>
       <div className="print-scroll">
         <PrintLayout
-          size="A5"
+          size="A4"
           header="print"
           clinic={clinic}
           duplicate={duplicate}

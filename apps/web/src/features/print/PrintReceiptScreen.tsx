@@ -106,7 +106,7 @@ export function PrintReceiptScreen() {
         </Link>
       </div>
       <PrintLayout
-        size="A5"
+        size="A4"
         header="print"
         clinic={clinic}
         duplicate={duplicate}
