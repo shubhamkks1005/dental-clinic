@@ -134,6 +134,31 @@ describe("visit after read (handoff section 13)", () => {
     expect(paid).toMatchObject({ billState: "paid", bill: { duePaise: 0, paidPaise: 120000 } });
   });
 
+  it("paid at arrival: unused payments of the visit day, with what for and who; the usual fee", async () => {
+    const t = countingDb();
+    seed(t.sqlite);
+    t.sqlite.exec(
+      `INSERT INTO users (id, created_by, updated_by, email, name, role, status)
+         VALUES ('rec-x', 's', 's', 'rec-x@example.test', 'Priya Desk', 'receptionist', 'active');
+       INSERT INTO payments (id, created_by, updated_by, patient_id, amount_paise, mode, reference, notes, received_at, received_by, day_local)
+         VALUES ('pa1', 's', 's', 'p1', 50000, 'cash', '', 'For: Consultation', '2026-11-25T04:35:00.000Z', 'rec-x', '2026-11-25'),
+                ('pa2', 's', 's', 'p1', 50000, 'upi', '1234', 'For: X-ray', '2026-11-25T04:36:00.000Z', 'rec-x', '2026-11-25');
+       UPDATE settings SET value_json = '50000' WHERE key = 'billing.consultation_fee_paise';
+       UPDATE visits SET finalised_at = '2026-11-25T06:10:00.000Z' WHERE id = 'v-now';`,
+    );
+    const after = await createRepos(t.db, doctor).visitAfter.get("v-now", NOW);
+    expect(after.arrival.totalPaise).toBe(100000);
+    expect(after.arrival.items.map((i) => [i.notes, i.mode, i.receivedByName])).toEqual([
+      ["For: Consultation", "cash", "Priya Desk"],
+      ["For: X-ray", "upi", "Priya Desk"],
+    ]);
+    expect(after.consultationFeePaise).toBe(50000);
+    expect(after.visit).toMatchObject({
+      doctorId: "doc-a",
+      finalisedAt: "2026-11-25T06:10:00.000Z",
+    });
+  });
+
   it("a cancelled bill does not count", async () => {
     const t = countingDb();
     seed(t.sqlite);
@@ -151,7 +176,8 @@ describe("visit after read (handoff section 13)", () => {
     await repos.visitAfter.get("v-now", NOW);
     const c = t.counts();
     expect(c).toMatchObject({ batches: 1, roundTrips: 2 });
-    expect(c.statements).toBeLessThanOrEqual(9);
+    // 9 + the "paid at arrival" read (visit finished plan P1.2.3): the limit of about 10.
+    expect(c.statements).toBeLessThanOrEqual(10);
   });
 
   it("uses an index for every statement", async () => {

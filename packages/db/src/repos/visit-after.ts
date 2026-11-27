@@ -5,7 +5,6 @@ import {
   istDate,
   NEXT_APPOINTMENT_STATUSES,
   pickNextAppointment,
-  type BillStateWord,
 } from "@clinic/shared";
 import { and, asc, desc, eq, gte, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
@@ -15,6 +14,10 @@ import { assertAllowed, isAllowed } from "../permissions";
 import {
   appointments,
   bills,
+  paymentAllocations,
+  payments,
+  refunds,
+  users,
   files,
   planItems,
   prescriptions,
@@ -23,58 +26,13 @@ import {
   visits,
 } from "../schema";
 import { issuedBillPaidSql } from "./bills-paid";
+import { arrivalOf, parseFee, type VisitAfter } from "./visit-after-parts";
 import { parseSurfaces } from "./visit-line-parts";
+
+export type { VisitAfter } from "./visit-after-parts";
 
 const OPEN_PLAN_STATUSES = ["planned", "accepted", "in_progress", "deferred"] as const;
 const FILES_SHOWN = 20;
-
-export type VisitAfter = {
-  visit: { id: string; patientId: string; status: string; visitDateLocal: string; version: number };
-  /** Names only, no fees (owner decision): the money is in `bill`. */
-  diagnoses: { id: string; label: string; toothFdi: number | null }[];
-  procedures: { id: string; label: string; toothFdi: number | null; surfaces: string[] }[];
-  nextAppointment: {
-    id: string;
-    dateLocal: string;
-    startMin: number;
-    visitTypeLabel: string;
-  } | null;
-  /** Plan items still open, "left" = sittings - sittingsDone. */
-  openPlanItems: {
-    id: string;
-    toothFdi: number | null;
-    procedureLabel: string;
-    status: string;
-    sittings: number;
-    sittingsDone: number;
-  }[];
-  /** Follow-up date written on the prescription of THIS visit (latest issued one). */
-  followUpOn: string | null;
-  /** Files added since this visit was opened. */
-  filesAdded: {
-    id: string;
-    kind: string;
-    originalFilename: string;
-    toothFdi: number | null;
-    createdAt: string;
-  }[];
-  /** Dues of the patient's OTHER bills (what was owed before this visit), in paise. */
-  earlierDuesPaise: number;
-  /** The visit's live bill, or null. `state` is the one rule from packages/shared/bill-state.ts. */
-  bill: {
-    id: string;
-    version: number;
-    status: string;
-    billNo: string | null;
-    totalPaise: number;
-    discountPaise: number;
-    discountApproved: boolean;
-    notes: string;
-    paidPaise: number;
-    duePaise: number;
-  } | null;
-  billState: BillStateWord;
-};
 
 // Visit finished page: what the doctor wants beside the prescription. One visit read (it names the
 // patient) then ONE db.batch of 8 reads: 9 queries, two round trips. Doctor only (clinical.view).
@@ -90,6 +48,8 @@ export function visitAfterRepo(db: Db, ctx: Ctx) {
           visitDateLocal: visits.visitDateLocal,
           version: visits.version,
           createdAt: visits.createdAt,
+          doctorId: visits.doctorId,
+          finalisedAt: visits.finalisedAt,
         })
         .from(visits)
         .where(and(eq(visits.id, visitId), isNull(visits.deletedAt)))
@@ -98,7 +58,7 @@ export function visitAfterRepo(db: Db, ctx: Ctx) {
       const patientId = visit.patientId;
       const today = istDate(now);
 
-      const [diagnoses, procedures, candidates, plan, rx, fileRows, billRows, money] =
+      const [diagnoses, procedures, candidates, plan, rx, fileRows, billRows, money, arrivalRows] =
         await db.batch([
           db
             .select({
@@ -219,9 +179,39 @@ export function visitAfterRepo(db: Db, ctx: Ctx) {
                 SELECT SUM(due) FROM open_bills
                 WHERE id IN (SELECT id FROM bills WHERE visit_id = ${visitId}
                   AND status != 'cancelled' AND deleted_at IS NULL))`,
+              consultFee: sql<string | null>`(SELECT value_json FROM settings
+                WHERE key = 'billing.consultation_fee_paise' AND deleted_at IS NULL LIMIT 1)`,
             })
             .from(visits)
             .where(eq(visits.id, visitId)),
+          // "Paid at arrival": this patient's payments of the visit day with what is still unused.
+          db
+            .select({
+              paymentId: payments.id,
+              amountPaise: payments.amountPaise,
+              mode: payments.mode,
+              reference: payments.reference,
+              notes: payments.notes,
+              receivedAt: payments.receivedAt,
+              receivedByName: sql<string>`coalesce(${users.name}, '')`,
+              allocated: sql<number>`(SELECT coalesce(sum(${paymentAllocations.amountPaise}), 0)
+                FROM ${paymentAllocations} WHERE ${paymentAllocations.paymentId} = ${payments.id}
+                AND ${paymentAllocations.deletedAt} IS NULL)`,
+              refunded: sql<number>`(SELECT coalesce(sum(${refunds.amountPaise}), 0)
+                FROM ${refunds} WHERE ${refunds.paymentId} = ${payments.id}
+                AND ${refunds.deletedAt} IS NULL)`,
+            })
+            .from(payments)
+            .leftJoin(users, eq(users.id, payments.receivedBy))
+            .where(
+              and(
+                eq(payments.patientId, patientId),
+                eq(payments.dayLocal, visit.visitDateLocal),
+                isNull(payments.deletedAt),
+              ),
+            )
+            .orderBy(asc(payments.receivedAt))
+            .limit(20),
         ]);
 
       const next = pickNextAppointment(candidates, now);
@@ -240,8 +230,12 @@ export function visitAfterRepo(db: Db, ctx: Ctx) {
           patientId,
           status: visit.status,
           visitDateLocal: visit.visitDateLocal,
+          finalisedAt: visit.finalisedAt,
+          doctorId: visit.doctorId,
           version: visit.version,
         },
+        consultationFeePaise: parseFee(money[0]?.consultFee ?? null),
+        arrival: arrivalOf(arrivalRows),
         diagnoses,
         procedures: procedures.map((p) => ({
           id: p.id,
