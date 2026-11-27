@@ -159,5 +159,58 @@ Jobs: 1) see and fix the bill made from the visit; 2) settle the remaining (disc
 - NEW only if the owner keeps them: prescription hand-over to the desk (C1), PDF download (C2), un-issue a bill (E1, against the rules).
 - Size: the page itself is medium (client work on existing routes); the FIX FIRST list is small to medium.
 
+## 8. Prompt for the design AI (fix round): paste this together with visit_finished.html
+
+```
+You made the attached page "Visit finished" (visit_finished.html) for a single dental clinic in India. The doctor sees it right after finishing a visit: the invoice made from the visit, the prescription preview as the patient will get it, and today's other details. Please improve this same file.
+
+KEEP: the same theme, colours, fonts, spacing style, left rail and overall layout (prescription preview on the left, Today's details on the right, the invoice below; the doctor scrolls to the invoice). Make it look clean and professional, like a real clinic product. English only. Laptop 1366x768 and tablet 768 wide. Touch targets at least 44 px. Never show a status by colour alone; always use words. Use obviously fake sample data. Make sure the <script> runs without errors in every state.
+
+WORDING: use "Invoice" everywhere (Invoice total, Invoice note, Print invoice). No GST.
+
+CHANGES:
+
+1. Invoice flow: Save, then Edit or Lock.
+   - While editing, the invoice is a Draft with no number. The main invoice button is "Save".
+   - After Save, show two buttons: "Edit" (back to editing, still a draft) and "Lock" (the invoice gets its number, e.g. BL-2026-27-0042, and can no longer be changed).
+   - After that the doctor can "Pass to reception", "Print invoice" or "Download". If the invoice is not locked yet, each of these three first shows a small confirm popup: "After this you cannot change the invoice." with Confirm and Cancel. Confirm locks it and then does the action.
+   - Remove "Edit invoice" (the button that unlocks a passed invoice). After locking, show "Open full invoice" (cancelling a locked invoice happens on that screen).
+   - The invoice note can still be edited after locking, and editing it does not unlock the invoice.
+   - Pass, Lock, Print and Download are disabled, with the reason in words, when the invoice has no lines ("Nothing to invoice. Add a consultation fee or go back to Today.") or a line has no amount ("Custom item has no amount").
+   - While a save or pass is running: "Saving..." and the button cannot be pressed twice. If it fails: "Not saved. Try again." in a red message (the toast must not show a green tick for errors).
+
+2. Bring back these parts (they were removed):
+   - Under the title: "Visit finalised 11:40 am. The visit is now read only."
+   - In the patient strip: a "Medical alert" mark (words + icon).
+   - Next to the invoice badge: the invoice number once locked, and one save line ("Saved", "Saving...", "Not saved").
+   - Above the invoice lines, a small non-blocking reminder when something done today is not on the invoice: "Composite restoration (36) was done today. Add it to the invoice?" with "Add" and "Keep off". In the sample data this procedure is in Today's details but not on the invoice, so the reminder must show. It shows once more next to the button when the doctor passes or locks.
+   - In the money summary, always one row: "Remaining ₹200", or "Extra paid ₹400", or "Nothing remaining".
+   - "Earlier due ₹1,500" under the money summary when the patient owes from earlier visits.
+   - In Today's details: an "Addenda" list (text, reason, who, when) and an "Add addendum" button with a small form.
+   - Below Today's details: "Next: Sunita Rao, waiting 12 min" with "Open", or "No one waiting."
+
+3. Money summary fixes:
+   - "Paid at arrival" shows what it was for, plus the time and who took it: "Paid at arrival: ₹1,000 (Consultation ₹500, X-ray ₹500) · 10:05 am · Priya (desk)". Not the payment modes.
+   - Money taken after the invoice (at the chair or at the desk) shows as "Received ₹2,000 of ₹3,700", not as "Paid at arrival".
+   - Discount: amount or percent, plus a reason field. "Remaining as discount" fills the reason "Settled at visit end", which the doctor can edit. A discount larger than the subtotal shows "Discount cannot be more than ₹1,200".
+   - Extra paid: "Returned to patient" and "Keep as advance" start with nothing chosen. The doctor must pick one before passing or locking. Nothing is saved until then.
+   - Take payment here: add a "Reference" field (UPI ref or last 4 digits of the card). The amount starts at the remaining amount. Hide this button when nothing remains.
+
+4. Prescription part:
+   - The header "Pass to reception · Prescription" stays. The doctor chooses each time: print it, download it, or pass it to the desk to print.
+   - Replace "Edit prescription" with two actions: "Revise prescription" (makes a new version) and "Add addendum".
+   - The preview opens at true A4 size by default, so it looks exactly like the print. The doctor can resize it vertically, horizontally and from the corner (handles at least 44 px), and can click the % chip to reset to A4.
+   - Also design "No prescription for this visit." and the Revised status (for example "Revised · RX-2026-27-0001 v2").
+
+5. Missing states to design:
+   - Today's details: loading, error with retry (the rest of the page still works), "Nothing else recorded for today.", and "Show all" when a list has more than 5 items.
+   - The invoice: 15 lines with the total still visible; a line from the Library with no fee shows "No fee set" and an amount box.
+   - "Last updated 10:42 am" when the 30-second refresh fails.
+   - "The desk changed this invoice. Showing the latest." when the reception acts on it at the same time.
+   - Keyboard: Enter on the main invoice button.
+
+Do not add other new features. If something is unclear, list your assumptions at the end.
+```
+
 ## 7. Next step
 Owner answered all questions in chat on 2026-11-27 (table above; also docs/DECISIONS.md). Findings changed by the answers: C1 kept (with a Settings option), C2/C3 kept, D1 reversed (Invoice everywhere), D2 accepted as designed, E1 replaced by Save, then Edit or Lock. Then the designer or owner fixes the HTML (bring back the removed MUST parts, remove the forbidden ones), then run design-plan on the final file.
