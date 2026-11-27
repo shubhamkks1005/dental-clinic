@@ -1,6 +1,6 @@
 import { chartConditionsFromList, type FdiTooth, type ListItem } from "@clinic/shared";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { ApiError } from "../../api/client";
 import { createRequestScope } from "../../ui/request-scope";
 import { RequestScopeProvider, useRequestScope } from "../../ui/RequestScope";
@@ -177,6 +177,13 @@ function VisitDocLoader({ id }: { id: string | undefined }) {
 }
 
 function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) {
+  // After Finalise the visit finished page opens (brief section 4). The guard is off for that move:
+  // the visit is locked, there is nothing left to save here.
+  const navigate = useNavigate();
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => {
+    if (leaving) navigate(`/app/visits/${data.page.visit.id}/finished`, { replace: true });
+  }, [leaving, navigate, data.page.visit.id]);
   const { permissions } = useMe();
   const { page, patient } = data;
   const visit = page.visit;
@@ -247,7 +254,7 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
 
   return (
     <div className="visit-doc">
-      {!readOnly && <UnsavedChangesGuard dirty={notes.dirty} />}
+      {!readOnly && <UnsavedChangesGuard dirty={notes.dirty && !leaving} />}
       {finalised && (
         <div className="vd-after">
           {/* The invoice moved to the visit finished page (handoff visit-finished P5.1.2). */}
@@ -487,7 +494,7 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
         notesStatus={notes.status}
         rxStatus={rxStatus}
         version={() => notes.versionRef.current}
-        onFinalised={onReload}
+        onFinalised={() => setLeaving(true)}
       />
     </div>
   );

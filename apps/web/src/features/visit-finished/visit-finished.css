@@ -144,6 +144,10 @@
   border-color: var(--vf-success);
   color: #fff;
 }
+.vf-btn-done:disabled {
+  opacity: 1;
+  cursor: default;
+}
 .vf-btn-done:hover:not(:disabled) {
   background: var(--vf-success);
 }
