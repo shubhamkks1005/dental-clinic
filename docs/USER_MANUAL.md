@@ -176,6 +176,13 @@ This manual covers everyday tasks in the clinic software. For technical problems
 - **Reorder** sets your order: arrows (or drag with a mouse). Sorting A to Z or Z to A is for viewing only; switch back to Custom order to reorder.
 - Each medicine shows "You wrote this N times (M in the last 30 days)": your own issued prescriptions, one per visit.
 
+### After Finalise: the visit finished page
+- Finalise opens **Visit finished**: the prescription as the patient gets it (A4; drag the right edge, bottom edge or corner to resize, click the % to go back to real size), today's details, addenda, the next waiting patient, and the **invoice**.
+- The invoice opens saved. Press **Edit** to change any line, add a line or the consultation fee, give a discount (or **Remaining as discount**), then **Save**. A yellow note says when something done today is not on the invoice: **Add** or **Keep off**.
+- **Lock**, **Pass to reception**, **Print invoice**, **Download** and **Take payment here** ask once: "After this you cannot change the invoice." After that a mistake is a cancel on the full invoice. The note can still change.
+- Patient paid more than the invoice: choose **Returned to patient** or **Keep as advance** first.
+- **Pass to reception · Prescription** sends the issued prescription to the desk; the desk sees **Print prescription** on its Today row. **Revise prescription** makes a new version; **Add addendum** adds a note to the locked visit.
+
 ## Common tasks — both roles
 
 ### Search for a patient

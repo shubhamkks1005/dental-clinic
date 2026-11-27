@@ -1,6 +1,6 @@
 # Handoff: Visit finished (docs/design/final/visit_finished.html)
 
-Status: PLANNED
+Status: DESIGN APPLIED (P1-P8; P9 waits for the owner's go; P10 not built)
 Written: 2026-11-27. Plan by: design-plan. Next skill: design-apply.
 
 ## 0. How to read this file
@@ -332,5 +332,11 @@ Migration number: **0067_rx_desk_print** (owner applies; never applied by the ag
 - durations within +-20 percent of the HTML value.
 
 ## 12. Log
-- 2026-11-27: owner answered Q1 a, Q2 a + desk-first invoice by Settings option (new phase P10, migration 0067 grows: bills.appointment_id, setting billing.invoice_timing), Q3 a, Q4 a. Q5 (may the desk lock a desk-made invoice) not answered directly: plan uses "stays a draft, doctor locks". Status: PLANNED, ready for design-apply after the owner confirms Q5.
+- 2026-11-27 (design-apply): BUILT, local commits f3e9b7a..HEAD, nothing pushed.
+  - Backend: settled discount reason; visitMoney/remainingAsDiscount; parseLockBill; setting billing.invoice_timing; migration 0067 (owner applies). After read +doctorId, finalisedAt, consultationFeePaise, arrival (10 queries). Note route doctor only (bills.adjust). Doctor changes a fee without a reason (audit keeps old/new units). POST /bills/:id/lock (issue + Returned refund, reason "Extra returned at visit end"; second call = same invoice, no second refund). Desk print: POST /prescriptions/:id/desk-print writes a print_log row of kind prescription_desk_request, NOT columns on the prescription (an issued prescription is never updated); 0067 was already locked, so its 3 prescriptions columns stay unused (rule 1.2.2). Desk day list gets rxToPrint inside the ready-to-bill read (day list stays at 10 queries). Prints on A4; ?download=1 opens the print dialog (Save as PDF).
+  - UI: features/visit-finished (own chunk 39.5 KB raw / 11.4 KB gzip). Finalise navigates from the visit page with the unsaved-notes guard off (the guard blocked the move when notes had not autosaved). Icons: the Material Symbols subset lacks these glyphs, so the page draws its own stroke icons (vf-icons.tsx). Draft opens saved (read only): Edit, Save, Lock; Pass/Print/Download/Take payment confirm "After this you cannot change the invoice." then lock.
+  - Measured (Chromium 1366, API +300 ms): toast 180 ms ease-out, 11 frames (HTML 180); check pop 300 ms cubic-bezier(0.2,0,0,1), 18 frames (HTML 300); toast shows 399 ms after Confirm because the lock waits for the server (money is never optimistic; the button says "Locking..." at once). Screenshots 1366 and 768 read; one fix (the passed button looked faded when disabled).
+  - Tests: pnpm check green (shared 438, web 263, db 518, worker); e2e visit-finished (2) + ported visit-to-bill (3) pass.
+  - NOT done: P9 (word Invoice on Billing, desk screens, prints: waits for the go); P10 (desk-first invoice: appointment invoice route, attach, Start invoice, New invoice, payment form "For" chips, unlocked lists); P5.9.1 not needed (the Bill screen has no note editor); a probe of every section-10 case (T9-T12, T15, T21, T26 are covered by worker tests, not by the browser); phone layout (parked). Bundle: JS total 1,271,981 raw / 383,850 gzip vs limits 1,210,000 / 358,000; it was about 1,232,000 before this page, so already over: owner decides.
+- 2026-11-27: owner answered Q1 a, Q2 a + desk-first invoice by Settings option (new phase P10, migration 0067 grows: bills.appointment_id, setting billing.invoice_timing), Q3 a, Q4 a. Q5 (may the desk lock a desk-made invoice) not answered directly: plan uses "stays a draft, doctor locks". Status: DESIGN APPLIED (P1-P8; P9 waits for the owner's go; P10 not built), ready for design-apply after the owner confirms Q5.
 - 2026-11-27: plan written from visit_finished.html (not yet corrected) + review answers Q1-Q8 + lock confirm. Code read: visit-after.ts, bills-update-draft.ts, bill-draft.ts, payments.ts, payments-advance.ts, bills-note.ts, domain/bills.ts, staff-bills.ts, VisitNextSteps.tsx, DocBar.tsx, print screens (A5), permissions. Nothing built. Open: Q1-Q4.

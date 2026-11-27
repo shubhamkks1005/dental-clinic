@@ -3,6 +3,7 @@ Last updated: 2026-11-23. Older history (per-task Done lines, Phase 1-7 gate tab
 Rules: docs/RUN_PROMPT.md. Next free migration: **0058** (0057 is new, the owner applies it). Commands to run by hand: docs/STAGING_READINESS.md.
 
 ## Where we are
+- Visit finished page built locally (2026-11-27): backend P1-P3, UI P4-P8 of docs/design/handoff/visit-finished.md; pnpm check green; e2e visit-finished + visit-to-bill 5 pass. Waiting on me: migration 0067, go-ahead for P9 (word Invoice app-wide), P10 (desk-first invoice) not built, JS bundle total over its limit before this page.
 - Phase 7 complete locally (gate: passed with exceptions). Phase 9 docs drafts and 9.1.x backup minimum done locally. Do not start Phase 8 until the owner says so.
 - Staging-test run (2026-11-23): staging seed, tester guide, error log, patient requests, retention. All local commits, nothing pushed, nothing applied to staging.
 
