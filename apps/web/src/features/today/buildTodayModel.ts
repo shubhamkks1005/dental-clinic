@@ -29,6 +29,8 @@ export type TodayListRow = {
   hasRestrictedAlert: boolean;
   hasDue: boolean;
   duePaise: number | null;
+  /** Visit finished: the doctor passed this prescription to the desk to print (desk only). */
+  rxToPrintId: string | null;
   /** Q1.2: where "Take payment" goes (bill if one exists, else the patient's Billing tab); null = not ready. */
   payLink: string | null;
   /** Raw appointment status (statusLabel can say "Waiting 5 min"). */
@@ -113,6 +115,7 @@ function toRow(a: DayAppointment, now: Date, highlighted: boolean): TodayListRow
     hasRestrictedAlert: a.alertFlags?.hasRestricted ?? false,
     hasDue: a.hasDue ?? false,
     duePaise: a.duePaise ?? null,
+    rxToPrintId: a.rxToPrint?.prescriptionId ?? null,
     payLink: payLink(a),
     status: a.status,
     primary: primaryRowAction({

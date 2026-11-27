@@ -81,6 +81,17 @@ export function TodayList({ rows, busyId, onStatus, onChanged, onAsked }: Props)
                     {row.primary.label}
                   </button>
                 ) : null}
+                {row.rxToPrintId ? (
+                  <a
+                    className="btn btn-compact today-action"
+                    href={`/app/print/prescription/${row.rxToPrintId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => window.setTimeout(onChanged, 3000)}
+                  >
+                    Print prescription
+                  </a>
+                ) : null}
                 <DeskRowActions
                   onAsked={onAsked}
                   row={{
