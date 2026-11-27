@@ -75,7 +75,9 @@ test("Finalise opens the page; Save, Edit, Lock with confirm; one number", async
   // No sideways scroll at 768 and 360.
   for (const width of [768, 360]) {
     await page.setViewportSize({ width, height: 900 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      width,
+    );
   }
   expect(bad, bad.join("\n")).toEqual([]);
 });
