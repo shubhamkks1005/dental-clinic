@@ -2,7 +2,7 @@ import { addProcedure, openVisitFromToday } from "./doctor-helpers";
 import { expect, test, type Page } from "@playwright/test";
 
 // Q1.1: no dead end between Finalise and the bill. Procedures sit on the first visit tab, the
-// Finalise dialog warns when there are none, and Create bill says why it is off. Fake data only.
+// Finalise dialog warns when there are none; Finalise opens the visit finished page. Fake data only.
 
 async function walkInInChair(page: Page, name: string, stamp: string) {
   await page.goto("/api/staff/auth/dev-login?role=receptionist");
@@ -22,6 +22,24 @@ async function walkInInChair(page: Page, name: string, stamp: string) {
   await dialog.getByRole("checkbox").check();
   await dialog.getByRole("button", { name: /Add walk-in/ }).click();
   await expect(dialog).toBeHidden();
+}
+
+// Visit finished page (2026-11-27): Finalise opens /finished, which makes the draft invoice.
+// `lock` passes it to the desk first (the old "Create bill"); otherwise it stays a draft
+// (the old "Review first"). Then the full Bill screen of that invoice opens.
+async function toBillScreen(page: Page, lock: boolean) {
+  await expect(page).toHaveURL(/\/finished$/);
+  const invoice = page.locator("section.vf-invoice");
+  await expect(invoice).toBeVisible();
+  if (lock) {
+    await invoice.getByRole("button", { name: /Pass to reception/ }).click();
+    await page.getByRole("alertdialog").getByRole("button", { name: "Confirm" }).click();
+    await expect(invoice.getByText("With reception")).toBeVisible();
+  }
+  const visitId = new URL(page.url()).pathname.split("/")[3];
+  const after = await page.request.get(`/api/staff/visits/${visitId}/after`);
+  const billId = ((await after.json()) as { data: { bill: { id: string } } }).data.bill.id;
+  await page.goto(`/app/bills/${billId}`);
 }
 
 async function doctorOpensVisitOf(page: Page, name: string) {
@@ -60,8 +78,8 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
   await expect(dialog).toContainText("No procedures are recorded");
   await expect(dialog).toContainText("but not a procedure");
   await dialog.getByRole("button", { name: "Finalise", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Create bill" })).toBeDisabled();
-  await expect(page.getByText(/No procedures were recorded on this visit/)).toBeVisible();
+  await expect(page).toHaveURL(/\/finished$/);
+  await expect(page.getByText("Nothing to invoice on this visit.")).toBeVisible();
 
   // ---- Visit B: procedure added on the FIRST tab, then the bill works ----
   await doctorOpensVisitOf(page, b);
@@ -71,7 +89,7 @@ test("finalise with no procedure warns and Create bill says why it is off; with 
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await expect(dialog).not.toContainText("No procedures are recorded");
   await dialog.getByRole("button", { name: "Finalise", exact: true }).click();
-  await page.getByRole("button", { name: "Create bill" }).click();
+  await toBillScreen(page, true);
   await expect(page).toHaveURL(/\/app\/bills\//);
 
   expect(bad, bad.join("\n")).toEqual([]);
@@ -91,7 +109,7 @@ test("discount request leaves the total alone until the doctor approves", async 
   await addProcedure(page);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
-  await page.getByRole("button", { name: "Review first" }).click();
+  await toBillScreen(page, false);
   await expect(page).toHaveURL(/\/app\/bills\//);
   const billPath = new URL(page.url()).pathname;
   const totalText = async () =>
@@ -156,7 +174,7 @@ test("receptionist asks the doctor to cancel a bill; doctor is told to refund fi
   await addProcedure(page);
   await page.getByRole("button", { name: "Finalise visit" }).click();
   await page.locator("dialog[open]").getByRole("button", { name: "Finalise", exact: true }).click();
-  await page.getByRole("button", { name: "Create bill" }).click();
+  await toBillScreen(page, true);
   await expect(page).toHaveURL(/\/app\/bills\//);
   const billPath = new URL(page.url()).pathname;
   await expect(page.getByRole("button", { name: "Record payment" })).toBeVisible();
