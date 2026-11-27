@@ -18,6 +18,7 @@ const DATE_LOCAL = /^\d{4}-\d{2}-\d{2}$/;
 type DayRows = Awaited<ReturnType<Repos["appointments"]["listForDay"]>>;
 type Flags = { hasAlert: boolean; hasRestricted: boolean };
 type Ready = Map<string, { visitId: string; billId: string | null }>;
+type RxToPrint = Map<string, { prescriptionId: string; rxNo: string | null }>;
 
 /**
  * The extra marks for a list of appointments, all read at the same time (S3.2.1).
@@ -26,14 +27,16 @@ type Ready = Map<string, { visitId: string; billId: string | null }>;
  */
 async function loadMarks(repos: Repos, rows: DayRows, role: Role) {
   const patientIds = [...new Set(rows.map((a) => a.patientId))];
-  const [flags, dues, ready] = await Promise.all([
+  const empty = { ready: new Map() as Ready, rxToPrint: new Map() as RxToPrint };
+  const [flags, dues, desk] = await Promise.all([
     repos.medicalHistory.alertFlagsForPatients(patientIds),
     repos.bills.duesForPatients(patientIds).catch(() => new Map<string, number>()),
+    // Ready to bill and (visit finished, owner 2026-11-27) the prescription to print: one read.
     role === "receptionist"
-      ? repos.bills.readyToBill(rows.map((a) => a.id)).catch((): Ready => new Map())
-      : Promise.resolve(new Map() as Ready),
+      ? repos.bills.deskMarks(rows.map((a) => a.id)).catch(() => empty)
+      : Promise.resolve(empty),
   ]);
-  return { flags, dues, ready };
+  return { flags, dues, ready: desk.ready, rxToPrint: desk.rxToPrint };
 }
 
 function withMarks(rows: DayRows, marks: Awaited<ReturnType<typeof loadMarks>>, role: Role) {
@@ -50,10 +53,14 @@ function withMarks(rows: DayRows, marks: Awaited<ReturnType<typeof loadMarks>>, 
       alertFlags: marks.flags.get(a.patientId) ?? none,
       hasDue: duePaise > 0,
       readyToBill: ready ? { billId: ready.billId } : null,
+      rxToPrint: rxOf(marks.rxToPrint.get(a.id)),
       duePaise: showDueAmount && duePaise > 0 ? duePaise : null,
     };
   });
 }
+
+const rxOf = (r: { prescriptionId: string; rxNo: string | null } | undefined) =>
+  r ? { prescriptionId: r.prescriptionId, rxNo: r.rxNo } : null;
 
 export type DayAppointmentView = ReturnType<typeof withMarks>[number];
 

@@ -5,7 +5,7 @@ import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { assertAllowed } from "../permissions";
 import { bills, duesCalls } from "../schema";
-import { readyToBillByAppointment } from "./bills-ready";
+import { deskMarksByAppointment, readyToBillByAppointment } from "./bills-ready";
 
 export type DuesListRow = {
   patientId: string;
@@ -132,6 +132,12 @@ export function billsDuesListRepo(db: Db, ctx: Ctx) {
     async readyToBill(appointmentIds: string[]) {
       assertAllowed(ctx, "bills.create");
       return readyToBillByAppointment(db, appointmentIds);
+    },
+
+    /** Desk Today marks in one read: ready to bill + prescription to print. */
+    async deskMarks(appointmentIds: string[]) {
+      assertAllowed(ctx, "bills.create");
+      return deskMarksByAppointment(db, appointmentIds);
     },
   };
 }

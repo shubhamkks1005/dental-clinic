@@ -54,6 +54,11 @@ export async function issuePrescription(repos: Repos, id: string, body: unknown)
   return { ok: true as const, prescription };
 }
 
+// Visit finished: the doctor asks the desk to print an issued prescription (a print_log row).
+export async function requestDeskPrint(repos: Repos, id: string) {
+  return repos.rxDeskPrint.requestDeskPrint(id);
+}
+
 export async function revisePrescription(repos: Repos, id: string) {
   const prescription = await repos.prescriptions.revise(id);
   return { ok: true as const, prescription };

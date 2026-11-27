@@ -36,6 +36,7 @@ import { pastRecordsRepo } from "./past-records";
 import { toothHistoryRepo } from "./tooth-history";
 import { toothNotesRepo } from "./tooth-notes";
 import { visitAfterRepo } from "./visit-after";
+import { rxDeskPrintRepo } from "./rx-desk-print";
 import { visitPageRepo } from "./visit-page";
 import { visitsDraftsRepo } from "./visits-drafts";
 import { visitsFinaliseRepo } from "./visits-finalise";
@@ -157,6 +158,7 @@ export function createRepos(db: Db, ctx: Ctx) {
       ...prescriptionsUsageRepo(db, ctx),
     },
     printLog: printLogRepo(db, ctx),
+    rxDeskPrint: rxDeskPrintRepo(db, ctx),
     certificates: {
       ...certificatesGetRepo(db, ctx),
       ...certificatesWriteRepo(db, ctx),

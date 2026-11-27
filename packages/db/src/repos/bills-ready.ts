@@ -3,6 +3,7 @@ import { billStateWord, isReadyToBill } from "@clinic/shared";
 import { and, inArray, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "../client";
 import { bills, visits } from "../schema";
+import { rxDeskColumns, rxWaiting, type RxToPrint } from "./rx-desk-print";
 
 export type ReadyToBill = { visitId: string; billId: string | null };
 
@@ -14,13 +15,29 @@ export async function readyToBillByAppointment(
   db: Db,
   appointmentIds: string[],
 ): Promise<Map<string, ReadyToBill>> {
+  return (await deskMarksByAppointment(db, appointmentIds)).ready;
+}
+
+/**
+ * The desk's two marks from the same visits read (no extra query, S3.2.1): ready to bill, and the
+ * prescription the doctor passed to the desk to print (visit finished, owner 2026-11-27).
+ */
+export async function deskMarksByAppointment(
+  db: Db,
+  appointmentIds: string[],
+): Promise<{ ready: Map<string, ReadyToBill>; rxToPrint: Map<string, RxToPrint> }> {
   const out = new Map<string, ReadyToBill>();
-  if (appointmentIds.length === 0) return out;
+  const rxToPrint = new Map<string, RxToPrint>();
+  if (appointmentIds.length === 0) return { ready: out, rxToPrint };
 
   // A week can hold more than 90 appointments, so ids go to D1 in chunks (S3.2.2).
   const finals = await inChunks(appointmentIds, (part) =>
     db
-      .select({ id: visits.id, appointmentId: visits.appointmentId })
+      .select({
+        id: visits.id,
+        appointmentId: visits.appointmentId,
+        ...rxDeskColumns(sql`${visits.id}`),
+      })
       .from(visits)
       .where(
         and(
@@ -31,7 +48,11 @@ export async function readyToBillByAppointment(
       )
       .all(),
   );
-  if (finals.length === 0) return out;
+  for (const v of finals) {
+    const rx = rxWaiting(v);
+    if (v.appointmentId && rx) rxToPrint.set(v.appointmentId, rx);
+  }
+  if (finals.length === 0) return { ready: out, rxToPrint };
 
   const visitIds = finals.map((v) => v.id);
   const live = await inChunks(visitIds, (part) =>
@@ -62,5 +83,5 @@ export async function readyToBillByAppointment(
     );
     if (isReadyToBill(state)) out.set(v.appointmentId, { visitId: v.id, billId: bill?.id ?? null });
   }
-  return out;
+  return { ready: out, rxToPrint };
 }

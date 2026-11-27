@@ -617,6 +617,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "POST",
+    path: "/api/staff/prescriptions/:id/desk-print",
+    access: { kind: "permission", action: "prescriptions.write" },
+  },
+  {
+    method: "POST",
     path: "/api/staff/prescriptions/copy-previous",
     access: { kind: "permission", action: "prescriptions.write" },
   },

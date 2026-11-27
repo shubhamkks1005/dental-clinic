@@ -9,6 +9,7 @@ import {
   listVisitPrescriptions,
   patchPrescription,
   replacePrescriptionItems,
+  requestDeskPrint,
   revisePrescription,
 } from "../domain/prescriptions";
 import { signedIn } from "../http";
@@ -63,6 +64,12 @@ staffPrescriptions.post("/prescriptions/:id/issue", async (c) => {
 staffPrescriptions.post("/prescriptions/:id/revise", async (c) => {
   const result = await revisePrescription(signedIn(c).repos, c.req.param("id"));
   return c.json(ok({ prescription: result.prescription }), 201);
+});
+
+// Visit finished: the doctor passes an issued prescription to the desk to print.
+staffPrescriptions.post("/prescriptions/:id/desk-print", async (c) => {
+  const result = await requestDeskPrint(signedIn(c).repos, c.req.param("id"));
+  return c.json(ok({ requestedAt: result.requestedAt }));
 });
 
 staffPrescriptions.post("/prescriptions/copy-previous", async (c) => {

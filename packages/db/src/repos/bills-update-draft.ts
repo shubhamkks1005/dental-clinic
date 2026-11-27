@@ -90,7 +90,10 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
         // Owner 2026-11-27 (visit finished Q1): the doctor changes a fee without a reason; the
         // desk still gives one. The audit row keeps the old and new amounts either way.
         const reasonNeeded = ctx.role !== "doctor";
-        if (reasonNeeded && !feeChangeReasonOk(item.unitPaise, listUnitPaise, item.feeChangeReason)) {
+        if (
+          reasonNeeded &&
+          !feeChangeReasonOk(item.unitPaise, listUnitPaise, item.feeChangeReason)
+        ) {
           throw new InvalidError(
             `Give a reason when the fee for "${item.procedureLabel}" differs from the list.`,
           );
@@ -128,7 +131,11 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
       });
 
       const oldItems = await db
-        .select({ id: billItems.id, label: billItems.procedureLabel, unitPaise: billItems.unitPaise })
+        .select({
+          id: billItems.id,
+          label: billItems.procedureLabel,
+          unitPaise: billItems.unitPaise,
+        })
         .from(billItems)
         .where(and(eq(billItems.billId, id), isNull(billItems.deletedAt)))
         .all();
