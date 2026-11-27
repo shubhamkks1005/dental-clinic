@@ -772,6 +772,11 @@ export const STAFF_ROUTE_MATRIX: readonly MatrixEntry[] = [
   },
   {
     method: "POST",
+    path: "/api/staff/bills/:id/lock",
+    access: { kind: "permission", action: "bills.create" },
+  },
+  {
+    method: "POST",
     path: "/api/staff/bills/:id/discount",
     access: { kind: "permission", action: "bills.create" },
   },

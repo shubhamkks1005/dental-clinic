@@ -287,3 +287,61 @@ describe("QR picture route", () => {
     ).toBe(400);
   });
 });
+
+describe("lock route (visit finished P1.4)", () => {
+  async function payArrival(amountPaise: number) {
+    const r = await call("rec@example.test", "POST", "/api/staff/payments", {
+      patientId: "p1",
+      amountPaise,
+      mode: "cash",
+      notes: "For: Consultation",
+      allowAdvance: true,
+    });
+    expect(r.status).toBe(201);
+  }
+  const refunds = () =>
+    sqlite.prepare(`SELECT amount_paise, reason FROM refunds ORDER BY created_at`).all();
+
+  it("no extra: locks once; a second lock is the same invoice", async () => {
+    const bill = await draftBill(100_000);
+    const url = `/api/staff/bills/${bill.id}/lock`;
+    const a = await billOf(await call("doc@example.test", "POST", url, { version: bill.version }));
+    const b = await billOf(await call("doc@example.test", "POST", url, { version: bill.version }));
+    expect(a.status).toBe("issued");
+    expect(b).toMatchObject({ id: a.id, status: "issued" });
+    expect(
+      sqlite.prepare(`SELECT count(*) AS n FROM bills WHERE bill_no IS NOT NULL`).get(),
+    ).toEqual({ n: 1 });
+  });
+
+  it("extra paid needs a choice; Returned refunds what is left with the reason", async () => {
+    await payArrival(160_000);
+    const bill = await draftBill(120_000);
+    const url = `/api/staff/bills/${bill.id}/lock`;
+    const none = await call("doc@example.test", "POST", url, { version: bill.version });
+    expect(none.status).toBe(400);
+    expect(JSON.stringify(await none.json())).toContain("Choose Returned or Keep as advance.");
+    const r = await call("doc@example.test", "POST", url, {
+      version: bill.version,
+      extra: "returned",
+    });
+    expect(r.status).toBe(200);
+    expect((await json(r)).data.refundError).toBeNull();
+    expect(refunds()).toEqual([{ amount_paise: 40_000, reason: "Extra returned at visit end" }]);
+    await call("doc@example.test", "POST", url, { version: bill.version, extra: "returned" });
+    expect(refunds()).toHaveLength(1);
+  });
+
+  it("Keep as advance records no refund and leaves the extra as credit", async () => {
+    await payArrival(160_000);
+    const bill = await draftBill(120_000);
+    const r = await call("doc@example.test", "POST", `/api/staff/bills/${bill.id}/lock`, {
+      version: bill.version,
+      extra: "advance",
+    });
+    expect(r.status).toBe(200);
+    expect(refunds()).toHaveLength(0);
+    const acct = await call("doc@example.test", "GET", "/api/staff/patients/p1/bills");
+    expect((await json(acct)).data.advancePaise).toBe(40_000);
+  });
+});

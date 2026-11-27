@@ -280,6 +280,9 @@ function bodyFor(method: string, path: string): string | undefined {
   if (path === "/api/staff/bills/:id/issue" && method === "POST") {
     return JSON.stringify({ version: 1 });
   }
+  if (path === "/api/staff/bills/:id/lock" && method === "POST") {
+    return JSON.stringify({ version: 1, extra: null });
+  }
   if (path === "/api/staff/bills/:id/note" && method === "PATCH") {
     return JSON.stringify({ version: 1, note: "Matrix note" });
   }

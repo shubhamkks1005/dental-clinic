@@ -1,3 +1,4 @@
+import { lockBill } from "../domain/bills-lock";
 import { fail, istDate, ok } from "@clinic/shared";
 import { Hono } from "hono";
 import {
@@ -122,6 +123,14 @@ staffBills.post("/bills/:id/issue", async (c) => {
   const result = await issueBill(signedIn(c).repos, c.req.param("id"), body);
   if (!result.ok) return c.json(fail("invalid", result.message), 400);
   return c.json(ok({ bill: result.bill }));
+});
+
+// Visit finished: Lock = issue (+ the extra paid returned or kept as advance).
+staffBills.post("/bills/:id/lock", async (c) => {
+  const body: unknown = await c.req.json().catch(() => null);
+  const result = await lockBill(signedIn(c).repos, c.req.param("id"), body);
+  if (!result.ok) return c.json(fail("invalid", result.message), 400);
+  return c.json(ok({ bill: result.bill, refundError: result.refundError }));
 });
 
 staffBills.post("/bills/:id/discount", async (c) => {

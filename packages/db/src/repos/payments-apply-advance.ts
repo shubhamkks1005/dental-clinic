@@ -1,16 +1,39 @@
 import { newUlid } from "@clinic/shared";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { auditInsert } from "../audit";
 import type { Db } from "../client";
 import type { Ctx } from "../context";
 import { InvalidError, NotFoundError } from "../errors";
 import { assertAllowed } from "../permissions";
-import { bills, paymentAllocations } from "../schema";
+import { bills, paymentAllocations, payments } from "../schema";
 import { openBillDues } from "./bills-dues";
 import { advanceSlices } from "./payments-advance";
 
 export function paymentsApplyAdvanceRepo(db: Db, ctx: Ctx) {
   return {
+    /** The patient's unused money (advance), newest payment first, with its mode (visit finished:
+     * "Returned" refunds these). */
+    async advanceLeft(
+      patientId: string,
+    ): Promise<{ paymentId: string; unallocatedPaise: number; mode: string }[]> {
+      assertAllowed(ctx, "bills.create");
+      const slices = await advanceSlices(db, patientId);
+      if (slices.length === 0) return [];
+      const modes = await db
+        .select({ id: payments.id, mode: payments.mode })
+        .from(payments)
+        .where(
+          inArray(
+            payments.id,
+            slices.map((s) => s.paymentId),
+          ),
+        )
+        .all();
+      return slices
+        .map((s) => ({ ...s, mode: modes.find((m) => m.id === s.paymentId)?.mode ?? "cash" }))
+        .reverse();
+    },
+
     /** Allocate existing patient advance onto one issued bill (5.3.5). */
     async applyAdvanceToBill(billId: string): Promise<{ appliedPaise: number }> {
       assertAllowed(ctx, "bills.create");
