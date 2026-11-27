@@ -42,6 +42,7 @@ describe("setting rules (1.5.1)", () => {
       "medicines.list_reviewed",
       "billing.shadow_series",
       "billing.gst_mode",
+      "billing.invoice_timing",
       "messaging.settings",
       "messaging.templates",
       "clinic.qr_image",

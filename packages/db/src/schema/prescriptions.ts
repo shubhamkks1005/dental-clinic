@@ -23,6 +23,10 @@ export const prescriptions = sqliteTable(
     issuedAt: text("issued_at"),
     issuedBy: text("issued_by"),
     shareWithPortal: integer("share_with_portal", { mode: "boolean" }).notNull().default(false),
+    // 0067: the doctor passed it to the desk to print; the desk printed it.
+    deskPrintRequestedAt: text("desk_print_requested_at"),
+    deskPrintRequestedBy: text("desk_print_requested_by"),
+    deskPrintedAt: text("desk_printed_at"),
   },
   (t) => [
     index("prescriptions_patient_created_idx").on(t.patientId, t.createdAt),

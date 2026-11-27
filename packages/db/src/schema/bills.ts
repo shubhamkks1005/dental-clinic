@@ -12,6 +12,8 @@ export const bills = sqliteTable(
     ...standardColumns(),
     patientId: text("patient_id").notNull(),
     visitId: text("visit_id"),
+    // 0067: an invoice the desk started at arrival names its appointment (visit comes later).
+    appointmentId: text("appointment_id"),
     billNo: text("bill_no"),
     billPeriod: text("bill_period"),
     billOn: text("bill_on").notNull(),
@@ -36,6 +38,7 @@ export const bills = sqliteTable(
     index("bills_patient_created_idx").on(t.patientId, t.createdAt),
     index("bills_period_no_idx").on(t.billPeriod, t.billNo),
     index("bills_patient_status_idx").on(t.patientId, t.status),
+    index("bills_appointment_idx").on(t.appointmentId),
     // 0063: one live bill per visit.
     uniqueIndex("bills_visit_live_uidx")
       .on(t.visitId)

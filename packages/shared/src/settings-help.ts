@@ -57,6 +57,8 @@ export const SETTING_HELP: Record<SettingKey, string> = {
     "Record that the doctor reviewed the medicines list. Saving stamps who and when.",
   "billing.shadow_series":
     "When on, bill numbers use SB-/SR-/SF- so they do not collide with paper books.",
+  "billing.invoice_timing":
+    "After the visit: the doctor makes the invoice on the visit finished page. At arrival: the desk starts it when the patient arrives and the doctor adds to it.",
   "billing.gst_mode":
     "DRAFT — accountant to confirm. Off = no tax on bills. On = tax lines when ready.",
   "messaging.settings":

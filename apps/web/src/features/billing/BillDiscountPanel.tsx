@@ -8,6 +8,7 @@ const REASON_LABEL: Record<DiscountReason, string> = {
   hardship: "Hardship",
   staff_family: "Staff or family",
   courtesy: "Courtesy",
+  settled: "Settled at visit end",
   other: "Other",
 };
 

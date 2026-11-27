@@ -96,6 +96,7 @@ describe("migrations on an empty database (1.2.3)", () => {
       "appointments.status_undo_hours",
       "billing.consultation_fee_paise",
       "billing.gst_mode",
+      "billing.invoice_timing",
       "billing.shadow_series",
       "chart.view",
       "clinic.address",

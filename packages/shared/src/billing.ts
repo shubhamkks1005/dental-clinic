@@ -27,7 +27,8 @@ export type PaymentMode = (typeof PAYMENT_MODES)[number];
 export const GST_MODES = ["off", "on"] as const;
 export type GstMode = (typeof GST_MODES)[number];
 
-export const DISCOUNT_REASONS = ["hardship", "staff_family", "courtesy", "other"] as const;
+// "settled": the doctor turned the small remaining into a discount at the end of the visit.
+export const DISCOUNT_REASONS = ["hardship", "staff_family", "courtesy", "settled", "other"] as const;
 export type DiscountReason = (typeof DISCOUNT_REASONS)[number];
 
 const billItemInputSchema = z.object({

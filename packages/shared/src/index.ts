@@ -85,6 +85,8 @@ export * from "./tooth-history";
 export * from "./bill-state";
 export * from "./bill-from-visit";
 export * from "./bill-note";
+export * from "./bill-lock";
+export * from "./visit-money";
 export * from "./dentition";
 export * from "./medical-history";
 export * from "./visit-strip";

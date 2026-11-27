@@ -111,6 +111,8 @@ export const SETTING_SCHEMAS = {
   "billing.shadow_series": z.boolean(),
   // 5.2.6: DRAFT - accountant to confirm. Default off = no tax on bills.
   "billing.gst_mode": z.enum(["off", "on"]),
+  // Visit finished (owner 2026-11-27): the invoice is made after the visit (doctor) or at arrival (desk).
+  "billing.invoice_timing": z.enum(["after_visit", "at_arrival"]),
   // 7.4.1 / 7.4.3 messaging (Phase 7). Templates DRAFT until doctor confirms.
   "messaging.settings": messagingSettingsSchema,
   "messaging.templates": messageTemplatesSchema,
