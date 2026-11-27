@@ -122,6 +122,7 @@ describe("settings store rules (1.5.1)", () => {
       ["medicines.list_reviewed", null, 1],
       ["billing.shadow_series", true, 1],
       ["billing.gst_mode", "off", 1],
+      ["billing.invoice_timing", "after_visit", 1],
       ["messaging.settings", expect.objectContaining({ enabled: true, whatsappEnabled: true }), 1],
       [
         "messaging.templates",
