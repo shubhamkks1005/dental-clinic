@@ -13,7 +13,12 @@ import { PrescriptionBody, rxItemNote, type RxBodyData } from "./PrescriptionBod
 import "./prescription.css";
 import "./print-screen.css";
 
-function bodyData(rx: PrescriptionDto, patientName: string, patientCode: string): RxBodyData {
+/** Also used by the visit finished preview: one mapping for print and preview. */
+export function bodyData(
+  rx: PrescriptionDto,
+  patientName: string,
+  patientCode: string,
+): RxBodyData {
   return {
     patientName,
     patientCode,

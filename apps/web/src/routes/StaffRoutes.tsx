@@ -36,6 +36,10 @@ const SettingsScreen = lazy(() =>
 const DoctorVisitPage = lazy(() =>
   import("../features/visit-doctor").then((m) => ({ default: m.DoctorVisitPage })),
 );
+// The visit finished page (design docs/design/final/visit_finished.html): its own chunk.
+const VisitFinishedPage = lazy(() =>
+  import("../features/visit-finished").then((m) => ({ default: m.VisitFinishedPage })),
+);
 const LibraryScreen = lazy(() =>
   import("../features/library/LibraryScreen").then((m) => ({ default: m.LibraryScreen })),
 );
@@ -141,6 +145,8 @@ function ShellRoutes() {
                 </RequirePermission>
               }
             />
+            {/* Doctor only: the page itself shows the desk a plain "Doctor access only" notice. */}
+            <Route path="visits/:id/finished" element={<VisitFinishedPage />} />
             <Route path="billing" element={<BillingHomeScreen />} />
             <Route path="bills/:id" element={<BillScreen />} />
             <Route path="reports" element={<ReportsScreen />} />

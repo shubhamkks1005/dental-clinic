@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
 import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import type { RxStatus } from "../prescriptions";
@@ -22,6 +23,7 @@ type Props = {
 
 /** Bottom bar: what is saved, what is done, and Finalise. The warnings never block (3.5.6). */
 export function DocBar({ visit, lines, notesStatus, rxStatus, version, onFinalised }: Props) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +60,8 @@ export function DocBar({ visit, lines, notesStatus, rxStatus, version, onFinalis
       await finaliseVisit(visit.id, version());
       setOpen(false);
       onFinalised();
+      // Visit finished page (brief section 4): the invoice, the prescription and today's details.
+      navigate(`/app/visits/${visit.id}/finished`, { replace: true });
     } catch (err: unknown) {
       setOpen(false);
       setError(
@@ -98,7 +102,7 @@ export function DocBar({ visit, lines, notesStatus, rxStatus, version, onFinalis
             {error}
           </span>
         )}
-        <span className="vd-bar-note">Finalise creates bill &amp; updates plan</span>
+        <span className="vd-bar-note">Finalise opens the invoice &amp; updates plan</span>
         <button
           type="button"
           className="vd-finalise"

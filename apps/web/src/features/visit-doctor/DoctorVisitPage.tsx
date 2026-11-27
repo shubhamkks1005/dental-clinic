@@ -22,7 +22,7 @@ import { listOnce } from "../visits/visit-prefetch";
 import { getVisit, type VisitSummary } from "../visits/api";
 import { VisitAddenda } from "../visits/VisitAddenda";
 import { VisitFinalView } from "../visits/VisitFinalView";
-import { VisitNextSteps } from "../visits/VisitNextSteps";
+
 import { VisitConflictBanner } from "../visits/VisitConflictBanner";
 import { VisitMoreNotes } from "../visits/VisitMoreNotes";
 import { DiagProcPanel } from "./DiagProcPanel";
@@ -248,9 +248,12 @@ function VisitDocBody({ data, onReload }: { data: Data; onReload: () => void }) 
   return (
     <div className="visit-doc">
       {!readOnly && <UnsavedChangesGuard dirty={notes.dirty} />}
-      {data.summary && finalised && (
+      {finalised && (
         <div className="vd-after">
-          <VisitNextSteps visit={data.summary} canBill={permissions.includes("bills.create")} />
+          {/* The invoice moved to the visit finished page (handoff visit-finished P5.1.2). */}
+          <Link className="vd-add-file" to={`/app/visits/${visit.id}/finished`}>
+            Open invoice and prescription
+          </Link>
         </div>
       )}
       <VisitDocHeader
