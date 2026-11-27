@@ -92,12 +92,11 @@ describe("bill note (P8, P9)", () => {
     await expect(repos().bills.setNote("nope", { version: 1, note: "x" })).rejects.toBeInstanceOf(
       NotFoundError,
     );
-    const byDesk = await repos(receptionist).bills.setNote(bill.id, {
-      version: bill.version,
-      note: "Desk note",
-    });
-    expect(byDesk.notes).toBe("Desk note");
-    expect(noteAudits().length).toBe(1);
+    // Owner 2026-11-26: the desk only reads the note.
+    await expect(
+      repos(receptionist).bills.setNote(bill.id, { version: bill.version, note: "Desk note" }),
+    ).rejects.toBeInstanceOf(ForbiddenError);
+    expect(noteAudits().length).toBe(0);
   });
 
   it("someone without bill rights is refused", async () => {

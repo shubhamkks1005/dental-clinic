@@ -160,7 +160,7 @@ describe("pass to reception route (P1, P2, P6, P10)", () => {
 });
 
 describe("bill note route (P8, P9)", () => {
-  it("both roles write the note of an issued bill; a long note is 400; a cancelled bill is 400", async () => {
+  it("the doctor writes the note of an issued bill, the desk is 403; a long note is 400; a cancelled bill is 400", async () => {
     const bill = await draftBill();
     const issued = await billOf(
       await call("doc@example.test", "POST", `/api/staff/bills/${bill.id}/issue`, {
@@ -168,7 +168,11 @@ describe("bill note route (P8, P9)", () => {
       }),
     );
     const url = `/api/staff/bills/${bill.id}/note`;
-    const res = await call("rec@example.test", "PATCH", url, {
+    expect(
+      (await call("rec@example.test", "PATCH", url, { version: issued.version, note: "Desk" }))
+        .status,
+    ).toBe(403);
+    const res = await call("doc@example.test", "PATCH", url, {
       version: issued.version,
       note: "Pays on Friday",
     });

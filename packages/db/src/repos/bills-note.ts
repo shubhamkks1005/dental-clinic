@@ -11,12 +11,13 @@ import { billsGetRepo, type BillRow } from "./bills-get";
 
 // Visit finished page: the note stays with the bill and may be changed even after the bill is
 // issued. Only the note moves: no money column is touched. A cancelled bill is refused.
+// The doctor writes it; the desk only reads it (owner 2026-11-26): bills.adjust.
 export function billsNoteRepo(db: Db, ctx: Ctx) {
   const getRepo = billsGetRepo(db, ctx);
 
   return {
     async setNote(id: string, input: BillNoteInput): Promise<BillRow> {
-      assertAllowed(ctx, "bills.create");
+      assertAllowed(ctx, "bills.adjust");
       const note = input.note.trim();
       if (note.length > BILL_NOTE_MAX) {
         throw new InvalidError(`Keep the note under ${BILL_NOTE_MAX} characters.`);

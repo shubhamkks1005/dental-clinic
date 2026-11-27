@@ -87,7 +87,10 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
       }[] = [];
       for (const item of input.items) {
         const listUnitPaise = await resolveListUnitPaise(db, item);
-        if (!feeChangeReasonOk(item.unitPaise, listUnitPaise, item.feeChangeReason)) {
+        // Owner 2026-11-27 (visit finished Q1): the doctor changes a fee without a reason; the
+        // desk still gives one. The audit row keeps the old and new amounts either way.
+        const reasonNeeded = ctx.role !== "doctor";
+        if (reasonNeeded && !feeChangeReasonOk(item.unitPaise, listUnitPaise, item.feeChangeReason)) {
           throw new InvalidError(
             `Give a reason when the fee for "${item.procedureLabel}" differs from the list.`,
           );
@@ -125,11 +128,12 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
       });
 
       const oldItems = await db
-        .select({ id: billItems.id })
+        .select({ id: billItems.id, label: billItems.procedureLabel, unitPaise: billItems.unitPaise })
         .from(billItems)
         .where(and(eq(billItems.billId, id), isNull(billItems.deletedAt)))
         .all();
       const oldIds = oldItems.map((i) => i.id);
+      const oldUnits = oldItems.map((i) => ({ label: i.label, unitPaise: i.unitPaise }));
 
       const itemInserts = itemsForInsert.map((item, i) =>
         db.insert(billItems).values({
@@ -173,8 +177,12 @@ export function billsUpdateDraftRepo(db: Db, ctx: Ctx) {
         action: "update",
         table: "bills",
         rowId: id,
-        before: { totalPaise: row.totalPaise, itemCount: oldIds.length },
-        after: { totalPaise: totals.totalPaise, itemCount: itemsForInsert.length },
+        before: { totalPaise: row.totalPaise, itemCount: oldIds.length, units: oldUnits },
+        after: {
+          totalPaise: totals.totalPaise,
+          itemCount: itemsForInsert.length,
+          units: itemsForInsert.map((i) => ({ label: i.procedureLabel, unitPaise: i.unitPaise })),
+        },
       });
 
       // Soft-delete current lines (0 rows OK), insert replacements, then version bump.

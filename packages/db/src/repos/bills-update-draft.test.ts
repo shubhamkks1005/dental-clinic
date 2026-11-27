@@ -73,5 +73,27 @@ describe("bills updateDraft (5.3.1)", () => {
     expect(updated.totalPaise).toBe(100_000);
     expect(updated.items[0]?.feeChangeReason).toBe("Hard case");
     expect(updated.items[0]?.listUnitPaise).toBe(150_000);
+
+    // Visit finished Q1 (owner 2026-11-27): the doctor needs no reason; the audit keeps the amounts.
+    const byDoctor = await repos().bills.updateDraft(bill.id, {
+      version: updated.version,
+      items: [
+        {
+          procedureLabel: "Scaling fee-change test",
+          qty: 1,
+          unitPaise: 120_000,
+          visitProcedureId,
+          feeChangeReason: null,
+        },
+      ],
+    });
+    expect(byDoctor.totalPaise).toBe(120_000);
+    const audit = t.sqlite
+      .prepare(
+        `SELECT before_json, after_json FROM audit_log WHERE table_name = 'bills' AND row_id = ? AND action = 'update' ORDER BY rowid DESC LIMIT 1`,
+      )
+      .get(bill.id) as { before_json: string; after_json: string };
+    expect(audit.before_json).toContain("100000");
+    expect(audit.after_json).toContain("120000");
   });
 });
